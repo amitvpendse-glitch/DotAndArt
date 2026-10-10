@@ -110,7 +110,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
   }
 
   const selectedProduct = products.find((p) => p.sku === (settings.featured_3d_sku || 'DA-MD-24-0001'));
-  const currentBannerImage = settings.featured_3d_image || selectedProduct?.images?.[0]?.storage_path || `/public/static/assets/images/${settings.featured_3d_sku || 'DA-MD-24-0001'}.jpg`;
+  const currentBannerImage = settings.featured_3d_image || selectedProduct?.images?.[0]?.storage_path || `/static/assets/images/${settings.featured_3d_sku || 'DA-MD-24-0001'}.jpg`;
 
   return (
     <div className="space-y-6 max-w-4xl text-theme-primary">
@@ -190,7 +190,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
                   onChange={(e) => {
                     const newSku = e.target.value;
                     const prod = products.find((p) => p.sku === newSku);
-                    const prodImg = prod?.images?.[0]?.storage_path || `/public/static/assets/images/${newSku}.jpg`;
+                    const prodImg = prod?.images?.[0]?.storage_path || `/static/assets/images/${newSku}.jpg`;
                     setSettings({
                       ...settings,
                       featured_3d_sku: newSku,

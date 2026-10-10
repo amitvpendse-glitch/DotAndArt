@@ -1,24 +1,33 @@
 /**
  * Safe fetch utility that verifies responses are JSON before parsing.
- * Gracefully handles 404s, HTML fallback responses, and network blips
- * without uncaught JSON parsing syntax errors.
+ * Gracefully handles 404s, static platform deployments (e.g. Vercel),
+ * and network blips without uncaught errors or empty screens.
  */
+
+import { handleClientFallbackApi } from './clientFallbackApi';
 
 export async function safeResponseJson<T = any>(
   res: Response,
-  fallbackValue: any = null
+  fallbackValue: any = null,
+  options?: RequestInit
 ): Promise<T> {
   try {
     const contentType = res.headers.get('content-type') || '';
-    if (!contentType.includes('application/json')) {
-      return fallbackValue as T;
+    if (contentType.includes('application/json')) {
+      const data = await res.json();
+      return data as T;
     }
-    const data = await res.json();
-    return data as T;
   } catch (err) {
     console.warn('[safeResponseJson] Failed to parse JSON response', err);
-    return fallbackValue as T;
   }
+
+  // Fallback to client-side API engine if server returns non-JSON or HTML
+  const fallbackData = await handleClientFallbackApi<T>(res.url || '', options);
+  if (fallbackData !== null) {
+    return fallbackData;
+  }
+
+  return fallbackValue as T;
 }
 
 export async function safeFetchJson<T = any>(
@@ -26,14 +35,21 @@ export async function safeFetchJson<T = any>(
   init?: RequestInit,
   fallbackValue: any = null
 ): Promise<T> {
+  const urlString = String(input);
   try {
     const res = await fetch(input, init);
-    if (!res.ok) {
-      return fallbackValue as T;
+    if (res.ok) {
+      return await safeResponseJson<T>(res, fallbackValue, init);
     }
-    return await safeResponseJson<T>(res, fallbackValue);
   } catch (err) {
-    console.warn(`[safeFetchJson] Failed to fetch or parse JSON for: ${String(input)}`, err);
-    return fallbackValue as T;
+    console.warn(`[safeFetchJson] Server fetch error for ${urlString}, switching to client engine`, err);
   }
+
+  // Try client-side fallback API engine (e.g. for static Vercel builds)
+  const clientData = await handleClientFallbackApi<T>(urlString, init);
+  if (clientData !== null) {
+    return clientData;
+  }
+
+  return fallbackValue as T;
 }

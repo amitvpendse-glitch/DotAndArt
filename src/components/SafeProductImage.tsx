@@ -26,7 +26,12 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     category_slug === 'lippan-wall-hangings' ||
     name.toLowerCase().includes('lippan');
 
-  if (!src || hasError) {
+  let cleanSrc = src;
+  if (cleanSrc && cleanSrc.startsWith('/public/')) {
+    cleanSrc = cleanSrc.replace(/^\/public/, '');
+  }
+
+  if (!cleanSrc || hasError) {
     return (
       <ArtworkPlaceholder
         name={name}
@@ -40,7 +45,7 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
 
   return (
     <img
-      src={src}
+      src={cleanSrc}
       alt={alt}
       onError={() => setHasError(true)}
       className={`object-cover ${className}`}

@@ -6,7 +6,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     "name": "Mandala Wall Hangings",
     "slug": "mandala-wall-hangings",
     "description": "Intricately handcrafted sacred dot mandalas painted dot-by-dot with acrylics on premium MDF boards. Meditative focal points designed to infuse balance, serenity, and spiritual energy into living and sacred spaces.",
-    "image_path": "/public/static/assets/images/DA-MD-12-0001.jpg",
+    "image_path": "/static/assets/images/DA-MD-12-0001.jpg",
     "display_order": 1,
     "is_active": true,
     "created_at": "2025-01-01T00:00:00.000Z",
@@ -17,7 +17,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     "name": "Lippan Wall Hangings",
     "slug": "lippan-wall-hangings",
     "description": "Traditional Gujarati mud and mirror art (Lippan Kaam) modernized for contemporary home décor. Hand-kneaded clay reliefs embedded with gleaming geometric mirrors (abhla) that reflect radiant warmth and cultural heritage.",
-    "image_path": "/public/static/assets/images/DA-LP-LG-0001.jpg",
+    "image_path": "/static/assets/images/DA-LP-LG-0001.jpg",
     "display_order": 2,
     "is_active": true,
     "created_at": "2025-01-01T00:00:00.000Z",
@@ -50,7 +50,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-LP-LG-0001-1",
         "product_id": "prod-da-lp-lg-0001",
-        "storage_path": "/public/static/assets/images/DA-LP-LG-0001.jpg",
+        "storage_path": "/static/assets/images/DA-LP-LG-0001.jpg",
         "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0001",
         "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0001",
         "display_order": 1,
@@ -94,7 +94,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-LP-LG-0002-1",
         "product_id": "prod-da-lp-lg-0002",
-        "storage_path": "/public/static/assets/images/DA-LP-LG-0002.jpg",
+        "storage_path": "/static/assets/images/DA-LP-LG-0002.jpg",
         "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0002",
         "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0002",
         "display_order": 1,
@@ -138,7 +138,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-LP-LG-0003-1",
         "product_id": "prod-da-lp-lg-0003",
-        "storage_path": "/public/static/assets/images/DA-LP-LG-0003.jpg",
+        "storage_path": "/static/assets/images/DA-LP-LG-0003.jpg",
         "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0003",
         "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0003",
         "display_order": 1,
@@ -182,7 +182,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-LP-MD-0001-1",
         "product_id": "prod-da-lp-md-0001",
-        "storage_path": "/public/static/assets/images/DA-LP-MD-0001.jpg",
+        "storage_path": "/static/assets/images/DA-LP-MD-0001.jpg",
         "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0001",
         "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0001",
         "display_order": 1,
@@ -226,7 +226,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-LP-MD-0002-1",
         "product_id": "prod-da-lp-md-0002",
-        "storage_path": "/public/static/assets/images/DA-LP-MD-0002.jpg",
+        "storage_path": "/static/assets/images/DA-LP-MD-0002.jpg",
         "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0002",
         "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0002",
         "display_order": 1,
@@ -270,7 +270,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-LP-MD-0003-1",
         "product_id": "prod-da-lp-md-0003",
-        "storage_path": "/public/static/assets/images/DA-LP-MD-0003.jpg",
+        "storage_path": "/static/assets/images/DA-LP-MD-0003.jpg",
         "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0003",
         "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0003",
         "display_order": 1,
@@ -314,7 +314,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-LP-SM-0001-1",
         "product_id": "prod-da-lp-sm-0001",
-        "storage_path": "/public/static/assets/images/DA-LP-SM-0001.jpg",
+        "storage_path": "/static/assets/images/DA-LP-SM-0001.jpg",
         "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-SM-0001",
         "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-SM-0001",
         "display_order": 1,
@@ -358,7 +358,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-LP-SM-0002-1",
         "product_id": "prod-da-lp-sm-0002",
-        "storage_path": "/public/static/assets/images/DA-LP-SM-0002.jpg",
+        "storage_path": "/static/assets/images/DA-LP-SM-0002.jpg",
         "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-SM-0002",
         "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-SM-0002",
         "display_order": 1,
@@ -402,7 +402,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-10-0001-1",
         "product_id": "prod-da-md-10-0001",
-        "storage_path": "/public/static/assets/images/DA-MD-10-0001.jpg",
+        "storage_path": "/static/assets/images/DA-MD-10-0001.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0001",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0001",
         "display_order": 1,
@@ -446,7 +446,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-10-0002-1",
         "product_id": "prod-da-md-10-0002",
-        "storage_path": "/public/static/assets/images/DA-MD-10-0002.jpg",
+        "storage_path": "/static/assets/images/DA-MD-10-0002.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0002",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0002",
         "display_order": 1,
@@ -490,7 +490,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-10-0003-1",
         "product_id": "prod-da-md-10-0003",
-        "storage_path": "/public/static/assets/images/DA-MD-10-0003.jpg",
+        "storage_path": "/static/assets/images/DA-MD-10-0003.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0003",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0003",
         "display_order": 1,
@@ -534,7 +534,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-10-0004-1",
         "product_id": "prod-da-md-10-0004",
-        "storage_path": "/public/static/assets/images/DA-MD-10-0004.jpg",
+        "storage_path": "/static/assets/images/DA-MD-10-0004.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0004",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0004",
         "display_order": 1,
@@ -578,7 +578,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-10-0005-1",
         "product_id": "prod-da-md-10-0005",
-        "storage_path": "/public/static/assets/images/DA-MD-10-0005.jpg",
+        "storage_path": "/static/assets/images/DA-MD-10-0005.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0005",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0005",
         "display_order": 1,
@@ -622,7 +622,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-10-0006-1",
         "product_id": "prod-da-md-10-0006",
-        "storage_path": "/public/static/assets/images/DA-MD-10-0006.jpg",
+        "storage_path": "/static/assets/images/DA-MD-10-0006.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0006",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0006",
         "display_order": 1,
@@ -666,7 +666,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-10-0007-1",
         "product_id": "prod-da-md-10-0007",
-        "storage_path": "/public/static/assets/images/DA-MD-10-0007.jpg",
+        "storage_path": "/static/assets/images/DA-MD-10-0007.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0007",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0007",
         "display_order": 1,
@@ -710,7 +710,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-10-0008-1",
         "product_id": "prod-da-md-10-0008",
-        "storage_path": "/public/static/assets/images/DA-MD-10-0008.jpg",
+        "storage_path": "/static/assets/images/DA-MD-10-0008.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0008",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0008",
         "display_order": 1,
@@ -754,7 +754,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-10-0009-1",
         "product_id": "prod-da-md-10-0009",
-        "storage_path": "/public/static/assets/images/DA-MD-10-0009.jpg",
+        "storage_path": "/static/assets/images/DA-MD-10-0009.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0009",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0009",
         "display_order": 1,
@@ -798,7 +798,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0001-1",
         "product_id": "prod-da-md-12-0001",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0001.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0001.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0001",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0001",
         "display_order": 1,
@@ -842,7 +842,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0002-1",
         "product_id": "prod-da-md-12-0002",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0002.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0002.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0002",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0002",
         "display_order": 1,
@@ -886,7 +886,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0003-1",
         "product_id": "prod-da-md-12-0003",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0003.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0003.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0003",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0003",
         "display_order": 1,
@@ -930,7 +930,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0004-1",
         "product_id": "prod-da-md-12-0004",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0004.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0004.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0004",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0004",
         "display_order": 1,
@@ -974,7 +974,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0005-1",
         "product_id": "prod-da-md-12-0005",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0005.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0005.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0005",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0005",
         "display_order": 1,
@@ -1018,7 +1018,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0006-1",
         "product_id": "prod-da-md-12-0006",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0006.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0006.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0006",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0006",
         "display_order": 1,
@@ -1062,7 +1062,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0007-1",
         "product_id": "prod-da-md-12-0007",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0007.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0007.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0007",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0007",
         "display_order": 1,
@@ -1106,7 +1106,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0008-1",
         "product_id": "prod-da-md-12-0008",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0008.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0008.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0008",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0008",
         "display_order": 1,
@@ -1150,7 +1150,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0009-1",
         "product_id": "prod-da-md-12-0009",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0009.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0009.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0009",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0009",
         "display_order": 1,
@@ -1194,7 +1194,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0010-1",
         "product_id": "prod-da-md-12-0010",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0010.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0010.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0010",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0010",
         "display_order": 1,
@@ -1238,7 +1238,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0011-1",
         "product_id": "prod-da-md-12-0011",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0011.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0011.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0011",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0011",
         "display_order": 1,
@@ -1282,7 +1282,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0012-1",
         "product_id": "prod-da-md-12-0012",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0012.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0012.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0012",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0012",
         "display_order": 1,
@@ -1326,7 +1326,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0013-1",
         "product_id": "prod-da-md-12-0013",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0013.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0013.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0013",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0013",
         "display_order": 1,
@@ -1370,7 +1370,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0014-1",
         "product_id": "prod-da-md-12-0014",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0014.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0014.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0014",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0014",
         "display_order": 1,
@@ -1414,7 +1414,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0015-1",
         "product_id": "prod-da-md-12-0015",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0015.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0015.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0015",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0015",
         "display_order": 1,
@@ -1458,7 +1458,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0016-1",
         "product_id": "prod-da-md-12-0016",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0016.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0016.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0016",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0016",
         "display_order": 1,
@@ -1502,7 +1502,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0017-1",
         "product_id": "prod-da-md-12-0017",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0017.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0017.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0017",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0017",
         "display_order": 1,
@@ -1546,7 +1546,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0018-1",
         "product_id": "prod-da-md-12-0018",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0018.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0018.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0018",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0018",
         "display_order": 1,
@@ -1590,7 +1590,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-12-0019-1",
         "product_id": "prod-da-md-12-0019",
-        "storage_path": "/public/static/assets/images/DA-MD-12-0019.jpg",
+        "storage_path": "/static/assets/images/DA-MD-12-0019.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0019",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0019",
         "display_order": 1,
@@ -1634,7 +1634,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-15-0001-1",
         "product_id": "prod-da-md-15-0001",
-        "storage_path": "/public/static/assets/images/DA-MD-15-0001.jpg",
+        "storage_path": "/static/assets/images/DA-MD-15-0001.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0001",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0001",
         "display_order": 1,
@@ -1678,7 +1678,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-15-0002-1",
         "product_id": "prod-da-md-15-0002",
-        "storage_path": "/public/static/assets/images/DA-MD-15-0002.jpg",
+        "storage_path": "/static/assets/images/DA-MD-15-0002.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0002",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0002",
         "display_order": 1,
@@ -1722,7 +1722,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-15-0003-1",
         "product_id": "prod-da-md-15-0003",
-        "storage_path": "/public/static/assets/images/DA-MD-15-0003.jpg",
+        "storage_path": "/static/assets/images/DA-MD-15-0003.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0003",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0003",
         "display_order": 1,
@@ -1766,7 +1766,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-15-0004-1",
         "product_id": "prod-da-md-15-0004",
-        "storage_path": "/public/static/assets/images/DA-MD-15-0004.jpg",
+        "storage_path": "/static/assets/images/DA-MD-15-0004.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0004",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0004",
         "display_order": 1,
@@ -1810,7 +1810,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-15-0005-1",
         "product_id": "prod-da-md-15-0005",
-        "storage_path": "/public/static/assets/images/DA-MD-15-0005.jpg",
+        "storage_path": "/static/assets/images/DA-MD-15-0005.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0005",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0005",
         "display_order": 1,
@@ -1854,7 +1854,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-15-0006-1",
         "product_id": "prod-da-md-15-0006",
-        "storage_path": "/public/static/assets/images/DA-MD-15-0006.jpg",
+        "storage_path": "/static/assets/images/DA-MD-15-0006.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0006",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0006",
         "display_order": 1,
@@ -1898,7 +1898,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-15-0007-1",
         "product_id": "prod-da-md-15-0007",
-        "storage_path": "/public/static/assets/images/DA-MD-15-0007.jpg",
+        "storage_path": "/static/assets/images/DA-MD-15-0007.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0007",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0007",
         "display_order": 1,
@@ -1942,7 +1942,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-15-0008-1",
         "product_id": "prod-da-md-15-0008",
-        "storage_path": "/public/static/assets/images/DA-MD-15-0008.jpg",
+        "storage_path": "/static/assets/images/DA-MD-15-0008.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0008",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0008",
         "display_order": 1,
@@ -1986,7 +1986,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-15-0009-1",
         "product_id": "prod-da-md-15-0009",
-        "storage_path": "/public/static/assets/images/DA-MD-15-0009.jpg",
+        "storage_path": "/static/assets/images/DA-MD-15-0009.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0009",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0009",
         "display_order": 1,
@@ -2030,7 +2030,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-15-0010-1",
         "product_id": "prod-da-md-15-0010",
-        "storage_path": "/public/static/assets/images/DA-MD-15-0010.jpg",
+        "storage_path": "/static/assets/images/DA-MD-15-0010.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0010",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0010",
         "display_order": 1,
@@ -2074,7 +2074,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-18-0001-1",
         "product_id": "prod-da-md-18-0001",
-        "storage_path": "/public/static/assets/images/DA-MD-18-0001.jpg",
+        "storage_path": "/static/assets/images/DA-MD-18-0001.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0001",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0001",
         "display_order": 1,
@@ -2118,7 +2118,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-18-0002-1",
         "product_id": "prod-da-md-18-0002",
-        "storage_path": "/public/static/assets/images/DA-MD-18-0002.jpg",
+        "storage_path": "/static/assets/images/DA-MD-18-0002.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0002",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0002",
         "display_order": 1,
@@ -2162,7 +2162,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-18-0003-1",
         "product_id": "prod-da-md-18-0003",
-        "storage_path": "/public/static/assets/images/DA-MD-18-0003.jpg",
+        "storage_path": "/static/assets/images/DA-MD-18-0003.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0003",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0003",
         "display_order": 1,
@@ -2206,7 +2206,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-18-0004-1",
         "product_id": "prod-da-md-18-0004",
-        "storage_path": "/public/static/assets/images/DA-MD-18-0004.jpg",
+        "storage_path": "/static/assets/images/DA-MD-18-0004.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0004",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0004",
         "display_order": 1,
@@ -2250,7 +2250,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-18-0005-1",
         "product_id": "prod-da-md-18-0005",
-        "storage_path": "/public/static/assets/images/DA-MD-18-0005.jpg",
+        "storage_path": "/static/assets/images/DA-MD-18-0005.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0005",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0005",
         "display_order": 1,
@@ -2294,7 +2294,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-18-0006-1",
         "product_id": "prod-da-md-18-0006",
-        "storage_path": "/public/static/assets/images/DA-MD-18-0006.jpg",
+        "storage_path": "/static/assets/images/DA-MD-18-0006.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0006",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0006",
         "display_order": 1,
@@ -2338,7 +2338,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-18-0007-1",
         "product_id": "prod-da-md-18-0007",
-        "storage_path": "/public/static/assets/images/DA-MD-18-0007.jpg",
+        "storage_path": "/static/assets/images/DA-MD-18-0007.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0007",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0007",
         "display_order": 1,
@@ -2382,7 +2382,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-18-0008-1",
         "product_id": "prod-da-md-18-0008",
-        "storage_path": "/public/static/assets/images/DA-MD-18-0008.jpg",
+        "storage_path": "/static/assets/images/DA-MD-18-0008.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0008",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0008",
         "display_order": 1,
@@ -2426,7 +2426,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-18-0009-1",
         "product_id": "prod-da-md-18-0009",
-        "storage_path": "/public/static/assets/images/DA-MD-18-0009.jpg",
+        "storage_path": "/static/assets/images/DA-MD-18-0009.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0009",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0009",
         "display_order": 1,
@@ -2470,7 +2470,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-18-0010-1",
         "product_id": "prod-da-md-18-0010",
-        "storage_path": "/public/static/assets/images/DA-MD-18-0010.jpg",
+        "storage_path": "/static/assets/images/DA-MD-18-0010.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0010",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0010",
         "display_order": 1,
@@ -2514,7 +2514,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-24-0001-1",
         "product_id": "prod-da-md-24-0001",
-        "storage_path": "/public/static/assets/images/DA-MD-24-0001.jpg",
+        "storage_path": "/static/assets/images/DA-MD-24-0001.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-24-0001",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-24-0001",
         "display_order": 1,
@@ -2558,7 +2558,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-24-0002-1",
         "product_id": "prod-da-md-24-0002",
-        "storage_path": "/public/static/assets/images/DA-MD-24-0002.jpg",
+        "storage_path": "/static/assets/images/DA-MD-24-0002.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-24-0002",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-24-0002",
         "display_order": 1,
@@ -2602,7 +2602,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       {
         "id": "img-DA-MD-30-0001-1",
         "product_id": "prod-da-md-30-0001",
-        "storage_path": "/public/static/assets/images/DA-MD-30-0001.jpg",
+        "storage_path": "/static/assets/images/DA-MD-30-0001.jpg",
         "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-30-0001",
         "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-30-0001",
         "display_order": 1,

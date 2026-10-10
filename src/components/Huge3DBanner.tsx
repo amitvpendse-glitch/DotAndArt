@@ -169,7 +169,7 @@ export const Huge3DBanner: React.FC<Huge3DBannerProps> = ({ onSelectProduct, onN
 
   // Image source resolution
   const primaryImg = activeProduct?.images?.find((i) => i.is_primary) || activeProduct?.images?.[0];
-  const imageSrc = customBannerImage || primaryImg?.storage_path || `/public/static/assets/images/${featuredSku}.jpg`;
+  const imageSrc = customBannerImage || primaryImg?.storage_path || `/static/assets/images/${featuredSku}.jpg`;
   const fallbackSrc = `/static/assets/images/${featuredSku}.jpg`;
 
   // Dynamic Theme Banner Styling Configurations
@@ -591,7 +591,7 @@ export const Huge3DBanner: React.FC<Huge3DBannerProps> = ({ onSelectProduct, onN
                       }`}
                     >
                       <img
-                        src={pImg?.storage_path || `/public/static/assets/images/${p.sku}.jpg`}
+                        src={pImg?.storage_path || `/static/assets/images/${p.sku}.jpg`}
                         onError={(e) => {
                           e.currentTarget.src = `/static/assets/images/${p.sku}.jpg`;
                         }}
