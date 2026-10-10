@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, SlidersHorizontal, Eye, ShoppingBag, X, Sparkles, ChevronDown, Plus, Minus, Download } from 'lucide-react';
-import { Product, Category } from '../types';
+import { Product, Category, WebsiteSettings } from '../types';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { useCart } from '../context/CartContext';
 import { safeFetchJson } from '../lib/safeFetch';
 import { LightBulbEffect } from '../components/LightBulbEffect';
+import { generateProfessionalCatalogPDF } from '../utils/pdfCatalogGenerator';
+import { FileText, Loader2 } from 'lucide-react';
 
 interface ShopPageProps {
   initialCategory?: string;
@@ -16,7 +18,12 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   const { addToCart, getItemQuantity, decrementItem } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [settings, setSettings] = useState<WebsiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // PDF Generation State
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [pdfProgressText, setPdfProgressText] = useState('');
 
   // Filters State
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'all');
@@ -30,6 +37,12 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
       setSelectedCategory(initialCategory);
     }
   }, [initialCategory]);
+
+  useEffect(() => {
+    safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null).then((s) => {
+      if (s) setSettings(s);
+    });
+  }, []);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -75,7 +88,25 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
 
   const displayedProducts = products;
 
-  const handleDownloadCatalog = () => {
+  const handleDownloadPdfCatalog = async () => {
+    if (!products || products.length === 0) return;
+    setIsGeneratingPdf(true);
+    setPdfProgressText('Initializing PDF Document Engine...');
+
+    try {
+      await generateProfessionalCatalogPDF(products, settings, (current, total, name) => {
+        setPdfProgressText(`Preparing high-res artwork ${current} of ${total} — ${name}`);
+      });
+    } catch (err) {
+      console.error('PDF Generation Error:', err);
+      alert('Unable to generate PDF catalog. Please try again.');
+    } finally {
+      setIsGeneratingPdf(false);
+      setPdfProgressText('');
+    }
+  };
+
+  const handleDownloadCsvCatalog = () => {
     if (!products || products.length === 0) return;
 
     const headers = ['SKU', 'Artwork Name', 'Category', 'Base Size', 'Base Price (INR)', 'Customizable', 'Availability', 'Description'];
@@ -108,6 +139,22 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 bg-theme-page text-theme-primary transition-colors duration-500">
+      {/* PDF Progress Modal Overlay */}
+      {isGeneratingPdf && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+          <div className="glass-panel p-8 rounded-2xl max-w-md w-full text-center space-y-4 border border-theme-glass shadow-2xl animate-fade-in">
+            <div className="w-12 h-12 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center mx-auto animate-spin">
+              <Loader2 className="w-6 h-6" />
+            </div>
+            <h3 className="font-serif text-xl font-bold text-theme-primary">Compiling Professional PDF Catalog</h3>
+            <p className="text-xs text-theme-muted">{pdfProgressText}</p>
+            <div className="w-full bg-theme-glass rounded-full h-2 overflow-hidden">
+              <div className="bg-theme-accent h-full animate-pulse w-full"></div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Page Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
@@ -120,14 +167,25 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           Original handcrafted pieces ranging from intimate 6-inch meditation plaques to monumental 48-inch temple wall hangings.
         </p>
 
-        <div className="pt-2 flex justify-center">
+        <div className="pt-2 flex flex-wrap justify-center gap-3">
           <button
-            onClick={handleDownloadCatalog}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-theme-accent hover:opacity-90 text-white text-xs font-semibold shadow-md transition-all cursor-pointer hover:scale-105 active:scale-95"
-            title="Download full catalog as spreadsheet CSV"
+            onClick={handleDownloadPdfCatalog}
+            disabled={isGeneratingPdf || products.length === 0}
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-theme-accent hover:opacity-90 text-white text-xs font-semibold shadow-md transition-all cursor-pointer hover:scale-105 active:scale-95 disabled:opacity-50"
+            title="Download full professional catalog in PDF format with images and pricing"
           >
-            <Download className="w-4 h-4" />
-            <span>Download Full Catalog (CSV)</span>
+            <FileText className="w-4 h-4" />
+            <span>Download PDF Catalog</span>
+          </button>
+
+          <button
+            onClick={handleDownloadCsvCatalog}
+            disabled={products.length === 0}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-theme-card hover:bg-theme-accent/10 border border-theme-glass text-theme-primary text-xs font-medium transition-all cursor-pointer hover:scale-105 active:scale-95"
+            title="Download catalog as CSV spreadsheet"
+          >
+            <Download className="w-4 h-4 text-theme-muted" />
+            <span>CSV Catalog</span>
           </button>
         </div>
       </div>

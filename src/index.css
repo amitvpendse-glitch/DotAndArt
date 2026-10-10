@@ -177,3 +177,35 @@
 .craft-shadow {
   box-shadow: var(--shadow-glass);
 }
+
+/* Waterfall Side Stream Animations */
+@keyframes waterfallDown {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-33.333%);
+  }
+}
+
+@keyframes waterfallUp {
+  0% {
+    transform: translateY(-33.333%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-waterfall-down {
+  animation: waterfallDown 40s linear infinite;
+}
+
+.animate-waterfall-up {
+  animation: waterfallUp 42s linear infinite;
+}
+
+.animate-waterfall-down:hover,
+.animate-waterfall-up:hover {
+  animation-play-state: paused;
+}

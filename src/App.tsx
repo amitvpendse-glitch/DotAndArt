@@ -36,6 +36,7 @@ import { safeFetchJson } from './lib/safeFetch';
 
 import { ThemeSelector } from './components/ThemeSelector';
 import { FloatingActions } from './components/FloatingActions';
+import { SideArtStreams } from './components/SideArtStreams';
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState<string>(() => {
@@ -266,6 +267,7 @@ export default function App() {
             announcement={settings?.announcement_banner}
           />
           <main className="flex-1 bg-theme-page text-theme-primary">{renderCurrentPage()}</main>
+          <SideArtStreams onSelectProduct={handleSelectProduct} />
           <Footer onNavigate={navigate} />
           <EnquiryDrawer />
           <ThemeSelector />
