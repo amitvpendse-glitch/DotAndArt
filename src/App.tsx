@@ -31,12 +31,13 @@ import { AdminFAQs } from './admin/AdminFAQs';
 import { AdminSettings } from './admin/AdminSettings';
 import { AdminSecurity } from './admin/AdminSecurity';
 
-import { WebsiteSettings } from './types';
+import { WebsiteSettings, Product } from './types';
 import { safeFetchJson } from './lib/safeFetch';
 
 import { ThemeSelector } from './components/ThemeSelector';
 import { FloatingActions } from './components/FloatingActions';
 import { SideArtStreams } from './components/SideArtStreams';
+import { preloadImages } from './utils/imagePreloader';
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState<string>(() => {
@@ -53,6 +54,20 @@ export default function App() {
   });
   const [adminUsername, setAdminUsername] = useState<string>('admin');
   const [adminTab, setAdminTab] = useState<string>('dashboard');
+
+  // Preload primary artwork catalog images in background
+  useEffect(() => {
+    safeFetchJson<{ products: Product[] }>('/api/products', undefined, { products: [] })
+      .then((res) => {
+        if (res?.products && res.products.length > 0) {
+          const imgUrls = res.products.map(
+            (p) => p.images?.find((i) => i.is_primary)?.storage_path || p.images?.[0]?.storage_path || `/static/assets/images/${p.sku}.jpg`
+          );
+          preloadImages(imgUrls);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Handle URL change
   const navigate = (path: string) => {

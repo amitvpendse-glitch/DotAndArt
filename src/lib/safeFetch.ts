@@ -9,7 +9,8 @@ import { handleClientFallbackApi } from './clientFallbackApi';
 export async function safeResponseJson<T = any>(
   res: Response,
   fallbackValue: any = null,
-  options?: RequestInit
+  options?: RequestInit,
+  requestUrl?: string
 ): Promise<T> {
   try {
     const contentType = res.headers.get('content-type') || '';
@@ -22,7 +23,7 @@ export async function safeResponseJson<T = any>(
   }
 
   // Fallback to client-side API engine if server returns non-JSON or HTML
-  const fallbackData = await handleClientFallbackApi<T>(res.url || '', options);
+  const fallbackData = await handleClientFallbackApi<T>(requestUrl || res.url || '', options);
   if (fallbackData !== null) {
     return fallbackData;
   }
@@ -39,7 +40,7 @@ export async function safeFetchJson<T = any>(
   try {
     const res = await fetch(input, init);
     if (res.ok) {
-      return await safeResponseJson<T>(res, fallbackValue, init);
+      return await safeResponseJson<T>(res, fallbackValue, init, urlString);
     }
   } catch (err) {
     console.warn(`[safeFetchJson] Server fetch error for ${urlString}, switching to client engine`, err);

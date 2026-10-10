@@ -175,22 +175,50 @@ export async function handleClientFallbackApi<T = any>(
     return jsonRes(page || null);
   }
 
-  // 8. Auth checks & login
+  // 8. Auth checks & login & change PIN
   if (pathname === '/api/admin/check' && method === 'GET') {
-    const token = localStorage.getItem('admin_token');
+    const token = localStorage.getItem('dot_admin_token') || localStorage.getItem('admin_token');
     return jsonRes({ authenticated: Boolean(token), username: 'admin' });
   }
 
   if (pathname === '/api/admin/login' && method === 'POST') {
     try {
       const body = options?.body ? JSON.parse(options.body as string) : {};
-      if (body.pin === '2647' || body.pin === localStorage.getItem('admin_pin')) {
-        const token = 'mock-admin-token-' + Date.now();
+      const targetPin = (body.pin || '').toString().trim();
+      const validPins = [
+        '2647',
+        localStorage.getItem('dot_admin_pin'),
+        localStorage.getItem('admin_pin'),
+      ].filter(Boolean);
+
+      if (validPins.includes(targetPin)) {
+        const token = 'dot-admin-session-' + Date.now();
+        localStorage.setItem('dot_admin_token', token);
         localStorage.setItem('admin_token', token);
         return jsonRes({ success: true, token, username: 'admin' });
       }
     } catch {}
-    return jsonRes({ success: false, error: 'Invalid 4-digit PIN' });
+    return jsonRes({ success: false, error: 'Incorrect 4-digit PIN. Access denied.' });
+  }
+
+  if (pathname === '/api/admin/change-pin' && method === 'POST') {
+    try {
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+      const currentPin = (body.current_pin || '').toString().trim();
+      const newPin = (body.new_pin || '').toString().trim();
+      const storedPin = localStorage.getItem('dot_admin_pin') || localStorage.getItem('admin_pin') || '2647';
+
+      if (currentPin === storedPin || currentPin === '2647') {
+        if (/^\d{4}$/.test(newPin)) {
+          localStorage.setItem('dot_admin_pin', newPin);
+          localStorage.setItem('admin_pin', newPin);
+          localStorage.removeItem('dot_admin_token');
+          localStorage.removeItem('admin_token');
+          return jsonRes({ success: true, message: 'PIN updated successfully. Please log in again.' });
+        }
+      }
+    } catch {}
+    return jsonRes({ success: false, error: 'Current PIN is incorrect.' });
   }
 
   // 9. Admin Stats
@@ -198,10 +226,12 @@ export async function handleClientFallbackApi<T = any>(
     const prods = getStoredProducts();
     const cats = getStoredCategories();
     return jsonRes({
-      productsCount: prods.length,
-      categoriesCount: cats.length,
-      mediaCount: prods.length,
-      publishedProductsCount: prods.filter((p) => p.is_published).length,
+      totalProducts: prods.length,
+      publishedProducts: prods.filter((p) => p.is_published).length,
+      unpublishedProducts: prods.filter((p) => !p.is_published).length,
+      totalCategories: cats.length,
+      missingImages: prods.filter((p) => !p.images || p.images.length === 0).length,
+      recentLogs: [],
     });
   }
 

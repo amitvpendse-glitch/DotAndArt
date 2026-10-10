@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { KeyRound, ShieldCheck, AlertTriangle, CheckCircle2, Lock } from 'lucide-react';
-import { safeResponseJson } from '../lib/safeFetch';
+import { safeFetchJson } from '../lib/safeFetch';
 
 interface AdminSecurityProps {
   token: string;
@@ -32,22 +32,25 @@ export const AdminSecurity: React.FC<AdminSecurityProps> = ({ token, onPinChange
     setErrorMsg('');
 
     try {
-      const res = await fetch('/api/admin/change-pin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+      const data = await safeFetchJson<{ success?: boolean; message?: string; error?: string }>(
+        '/api/admin/change-pin',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            current_pin: currentPin,
+            new_pin: newPin,
+            confirm_pin: confirmPin,
+          }),
         },
-        body: JSON.stringify({
-          current_pin: currentPin,
-          new_pin: newPin,
-          confirm_pin: confirmPin,
-        }),
-      });
+        null
+      );
 
-      const data = await safeResponseJson(res, {});
-      if (res.ok) {
-        setSuccessMsg('PIN successfully updated. You will now be redirected to sign in with your new PIN.');
+      if (data && data.success !== false) {
+        setSuccessMsg(data.message || 'PIN successfully updated. You will now be redirected to sign in with your new PIN.');
         setTimeout(() => {
           onPinChanged();
         }, 2000);

@@ -426,6 +426,9 @@ export const Huge3DBanner: React.FC<Huge3DBannerProps> = ({ onSelectProduct, onN
                   >
                     <img
                       src={imageSrc}
+                      loading="eager"
+                      decoding="async"
+                      fetchPriority="high"
                       onError={(e) => {
                         e.currentTarget.src = fallbackSrc;
                       }}

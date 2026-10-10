@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Product } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
 import { LightBulbEffect } from './LightBulbEffect';
+import { preloadImages } from '../utils/imagePreloader';
 
 interface SideArtStreamsProps {
   onSelectProduct?: (sku: string) => void;
@@ -15,6 +16,12 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
       .then((res) => {
         if (res && res.products && res.products.length > 0) {
           setArtworks(res.products);
+
+          // Preload images for instantaneous rendering
+          const urls = res.products.map((p) => {
+            return p.images?.find((i) => i.is_primary)?.storage_path || p.images?.[0]?.storage_path || `/static/assets/images/${p.sku}.jpg`;
+          });
+          preloadImages(urls);
         }
       })
       .catch(() => {
@@ -46,13 +53,13 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
 
   return (
     <>
-      {/* LEFT SIDEWATERFALL STREAM */}
+      {/* LEFT SIDE WATERFALL STREAM */}
       <div className="fixed left-2 2xl:left-6 top-24 bottom-12 z-20 w-28 2xl:w-36 hidden xl:flex flex-col overflow-hidden pointer-events-none select-none">
-        <div className="text-[10px] uppercase font-bold tracking-widest text-center text-theme-muted mb-2 py-1 bg-theme-glass/80 backdrop-blur-xs rounded-full border border-theme-glass pointer-events-auto shadow-xs">
+        <div className="text-[10px] uppercase font-bold tracking-widest text-center text-theme-muted mb-2 py-1 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs">
           Mandala Stream
         </div>
         
-        <div className="relative flex-1 overflow-hidden rounded-2xl border border-theme-glass/60 bg-theme-page/30 backdrop-blur-2xs p-1">
+        <div className="relative flex-1 overflow-hidden rounded-2xl border border-theme-glass/60 bg-theme-page/40 p-1">
           <div className="flex flex-col gap-3 animate-waterfall-down pointer-events-auto">
             {leftLoop.map((item, index) => {
               const imgUrl = item.images?.find((i) => i.is_primary)?.storage_path || item.images?.[0]?.storage_path || `/static/assets/images/${item.sku}.jpg`;
@@ -67,6 +74,9 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
                   <img
                     src={imgUrl}
                     alt={item.name}
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     onError={(e) => {
                       e.currentTarget.src = `/static/assets/images/${item.sku}.jpg`;
@@ -88,11 +98,11 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
 
       {/* RIGHT SIDE WATERFALL STREAM */}
       <div className="fixed right-2 2xl:right-6 top-24 bottom-12 z-20 w-28 2xl:w-36 hidden xl:flex flex-col overflow-hidden pointer-events-none select-none">
-        <div className="text-[10px] uppercase font-bold tracking-widest text-center text-theme-muted mb-2 py-1 bg-theme-glass/80 backdrop-blur-xs rounded-full border border-theme-glass pointer-events-auto shadow-xs">
+        <div className="text-[10px] uppercase font-bold tracking-widest text-center text-theme-muted mb-2 py-1 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs">
           Lippan Stream
         </div>
 
-        <div className="relative flex-1 overflow-hidden rounded-2xl border border-theme-glass/60 bg-theme-page/30 backdrop-blur-2xs p-1">
+        <div className="relative flex-1 overflow-hidden rounded-2xl border border-theme-glass/60 bg-theme-page/40 p-1">
           <div className="flex flex-col gap-3 animate-waterfall-up pointer-events-auto">
             {rightLoop.map((item, index) => {
               const imgUrl = item.images?.find((i) => i.is_primary)?.storage_path || item.images?.[0]?.storage_path || `/static/assets/images/${item.sku}.jpg`;
@@ -107,6 +117,9 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
                   <img
                     src={imgUrl}
                     alt={item.name}
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     onError={(e) => {
                       e.currentTarget.src = `/static/assets/images/${item.sku}.jpg`;
@@ -128,3 +141,4 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
     </>
   );
 };
+

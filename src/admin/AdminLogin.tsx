@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ShieldAlert, ArrowRight, ArrowLeft, Home } from 'lucide-react';
-import { safeResponseJson } from '../lib/safeFetch';
+import { safeFetchJson } from '../lib/safeFetch';
 
 interface AdminLoginProps {
   onLoginSuccess: (token: string, username: string) => void;
@@ -58,26 +58,33 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
     setErrorMessage('');
 
     try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pin }),
-      });
+      const data = await safeFetchJson<{
+        success?: boolean;
+        token?: string;
+        username?: string;
+        error?: string;
+        retry_after_seconds?: number;
+      }>(
+        '/api/admin/login',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin }),
+        },
+        null
+      );
 
-      const data = await safeResponseJson(res, {});
-
-      if (!res.ok) {
-        if (res.status === 429) {
-          setLockoutRemaining(data?.retry_after_seconds || 900);
-        }
-        setErrorMessage(data?.error || 'Authentication failed. Please check your PIN.');
-        setPin('');
+      if (data && data.token && data.success !== false) {
+        localStorage.setItem('dot_admin_token', data.token);
+        onLoginSuccess(data.token, data.username || 'admin');
         return;
       }
 
-      // Successful login
-      localStorage.setItem('dot_admin_token', data.token);
-      onLoginSuccess(data.token, data.username);
+      if (data?.retry_after_seconds) {
+        setLockoutRemaining(data.retry_after_seconds);
+      }
+      setErrorMessage(data?.error || 'Authentication failed. Please check your PIN.');
+      setPin('');
     } catch (err) {
       setErrorMessage('Server connection error. Please try again.');
     } finally {

@@ -9,6 +9,8 @@ interface SafeProductImageProps {
   category_slug?: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  priority?: boolean;
+  loading?: 'eager' | 'lazy';
 }
 
 export const SafeProductImage: React.FC<SafeProductImageProps> = ({
@@ -19,8 +21,11 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
   category_slug,
   className = '',
   size = 'md',
+  priority = false,
+  loading,
 }) => {
   const [hasError, setHasError] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const isLippan =
     category_slug === 'lippan-wall-hangings' ||
@@ -43,12 +48,21 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     );
   }
 
+  const loadingStrategy = loading || (priority ? 'eager' : 'lazy');
+
   return (
     <img
       src={cleanSrc}
       alt={alt}
+      loading={loadingStrategy}
+      decoding="async"
+      fetchPriority={priority ? 'high' : 'auto'}
+      onLoad={() => setIsLoaded(true)}
       onError={() => setHasError(true)}
-      className={`object-cover ${className}`}
+      className={`object-cover transition-opacity duration-300 ${
+        isLoaded ? 'opacity-100' : 'opacity-90'
+      } ${className}`}
     />
   );
 };
+
