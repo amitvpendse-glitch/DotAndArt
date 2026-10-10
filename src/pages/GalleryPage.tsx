@@ -4,7 +4,6 @@ import { Product } from '../types';
 import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { safeFetchJson } from '../lib/safeFetch';
-import { LightBulbEffect } from '../components/LightBulbEffect';
 
 interface GalleryPageProps {
   onSelectProduct: (sku: string) => void;
@@ -95,8 +94,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
                 className="w-full h-full group-hover:scale-105 group-hover:brightness-110 group-hover:contrast-105 transition-all duration-500"
               />
 
-              {/* Light Bulb On Effect Overhead Beam */}
-              <LightBulbEffect label="Spotlight On" showBadge={false} />
+
 
               {/* Hover Overlay */}
               <div className="absolute inset-0 bg-theme-dark/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex flex-col justify-between text-white">

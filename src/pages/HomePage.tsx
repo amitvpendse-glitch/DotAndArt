@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, ArrowRight, MessageCircle, Heart, Star, ShieldCheck, CheckCircle2, ChevronRight, Eye, Palette, Droplets, Flame, ShoppingBag, Plus, Minus } from 'lucide-react';
 import { Category, Product, Testimonial, FAQ, WebsitePage } from '../types';
 import { SafeProductImage } from '../components/SafeProductImage';
-import { LightBulbEffect } from '../components/LightBulbEffect';
 import { Huge3DBanner } from '../components/Huge3DBanner';
 import { useCart } from '../context/CartContext';
 import { useTheme, ThemeMode } from '../context/ThemeContext';
@@ -228,8 +227,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
                     className="w-full h-full group-hover:scale-105 group-hover:brightness-110 group-hover:contrast-105 transition-all duration-500"
                   />
 
-                  {/* Light Bulb On Effect Overhead Beam */}
-                  <LightBulbEffect label="Spotlight On" />
+
 
                   <div className="absolute top-3 left-3 z-30 px-2 py-0.5 rounded bg-theme-card/90 backdrop-blur-xs text-[10px] font-mono font-semibold text-theme-primary border border-theme-glass">
                     {product.sku}

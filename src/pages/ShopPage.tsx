@@ -4,7 +4,6 @@ import { Product, Category, WebsiteSettings } from '../types';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { useCart } from '../context/CartContext';
 import { safeFetchJson } from '../lib/safeFetch';
-import { LightBulbEffect } from '../components/LightBulbEffect';
 import { generateProfessionalCatalogPDF } from '../utils/pdfCatalogGenerator';
 import { FileText, Loader2 } from 'lucide-react';
 
@@ -383,8 +382,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
                     className="w-full h-full group-hover:scale-105 group-hover:brightness-110 group-hover:contrast-105 transition-all duration-500"
                   />
 
-                  {/* Light Bulb On Effect Overhead Beam */}
-                  <LightBulbEffect label="Spotlight On" />
+
 
                   {/* SKU Badge */}
                   <div className="absolute top-3 left-3 z-30 px-2 py-0.5 rounded bg-theme-card/90 backdrop-blur-xs text-[10px] font-mono font-semibold text-theme-primary border border-theme-glass">

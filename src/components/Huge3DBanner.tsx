@@ -436,14 +436,6 @@ export const Huge3DBanner: React.FC<Huge3DBannerProps> = ({ onSelectProduct, onN
                       className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                     />
 
-                    {/* Glare Reflection Layer */}
-                    <div
-                      className="absolute inset-0 rounded-full pointer-events-none transition-opacity duration-300"
-                      style={{
-                        background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 60%)`,
-                        opacity: glarePos.opacity,
-                      }}
-                    />
 
                     {/* Inspect High-Res Zoom Button Overlay */}
                     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20">

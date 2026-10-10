@@ -17,7 +17,6 @@ import {
 import { Product, ProductVariant } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
 import { SafeProductImage } from '../components/SafeProductImage';
-import { LightBulbEffect } from '../components/LightBulbEffect';
 import { useCart } from '../context/CartContext';
 import { createWhatsAppUrl, formatSingleProductEnquiry, openExternalLink } from '../utils/whatsapp';
 
@@ -394,7 +393,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                       size="sm"
                       className="w-full h-full group-hover:scale-105 group-hover:brightness-110 transition-all duration-500"
                     />
-                    <LightBulbEffect label="Spotlight On" showBadge={false} />
+
                   </div>
                   <div>
                     <span className="text-[10px] font-mono text-theme-muted">{rel.sku}</span>

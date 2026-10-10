@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Product } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
-import { LightBulbEffect } from './LightBulbEffect';
 import { preloadImages } from '../utils/imagePreloader';
 
 interface SideArtStreamsProps {
@@ -82,7 +81,7 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
                       e.currentTarget.src = `/static/assets/images/${item.sku}.jpg`;
                     }}
                   />
-                  <LightBulbEffect label="Spotlight" />
+
 
                   {/* Hover Overlay Tag */}
                   <div className="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end">
@@ -125,7 +124,7 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
                       e.currentTarget.src = `/static/assets/images/${item.sku}.jpg`;
                     }}
                   />
-                  <LightBulbEffect label="Spotlight" />
+
 
                   {/* Hover Overlay Tag */}
                   <div className="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end">
