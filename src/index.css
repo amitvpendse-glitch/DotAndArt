@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+@layer base {
+  :root, [data-theme="earthy"] {
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    
+    --bg-page: #FAF7F2;
+    --bg-glass: rgba(250, 247, 242, 0.88);
+    --bg-card: #FFFFFF;
+    --bg-dark: #1E1A17;
+    --text-primary: #2C2724;
+    --text-muted: #66574D;
+    --accent-primary: #C85A32;
+    --accent-hover: #A03E1B;
+    --accent-gold: #D4A373;
+    --border-glass: rgba(212, 163, 115, 0.35);
+    --shadow-glass: 0 8px 32px 0 rgba(140, 74, 40, 0.12);
+    --hero-bg-from: #F5EFEB;
+    --hero-bg-to: #FAF7F2;
+  }
+
+  [data-theme="sapphire"] {
+    --bg-page: #EBF3FE;
+    --bg-glass: rgba(235, 243, 254, 0.90);
+    --bg-card: #FFFFFF;
+    --bg-dark: #0A1C36;
+    --text-primary: #0A1C36;
+    --text-muted: #2B4C7E;
+    --accent-primary: #1D529E;
+    --accent-hover: #123C78;
+    --accent-gold: #0096C7;
+    --border-glass: rgba(100, 160, 230, 0.45);
+    --shadow-glass: 0 8px 32px 0 rgba(29, 82, 158, 0.18);
+    --hero-bg-from: #DCEBFF;
+    --hero-bg-to: #EBF3FE;
+  }
+
+  [data-theme="blackgold"] {
+    --bg-page: #12100E;
+    --bg-glass: rgba(18, 16, 14, 0.90);
+    --bg-card: #1A1714;
+    --bg-dark: #0A0908;
+    --text-primary: #FAF5EE;
+    --text-muted: #C7B299;
+    --accent-primary: #D4A373;
+    --accent-hover: #B88655;
+    --accent-gold: #E6C594;
+    --border-glass: rgba(212, 163, 115, 0.40);
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.65);
+    --hero-bg-from: #1E1A16;
+    --hero-bg-to: #12100E;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-serif);
+  }
+}
+
+/* Dynamic Theme Utility Classes */
+.bg-theme-page {
+  background-color: var(--bg-page) !important;
+  transition: background-color 0.4s ease;
+}
+
+.bg-theme-card {
+  background-color: var(--bg-card) !important;
+  transition: background-color 0.4s ease;
+}
+
+.bg-theme-dark {
+  background-color: var(--bg-dark) !important;
+  transition: background-color 0.4s ease;
+}
+
+.text-theme-primary {
+  color: var(--text-primary) !important;
+  transition: color 0.4s ease;
+}
+
+.text-theme-muted {
+  color: var(--text-muted) !important;
+  transition: color 0.4s ease;
+}
+
+.text-theme-accent {
+  color: var(--accent-primary) !important;
+  transition: color 0.4s ease;
+}
+
+.bg-theme-accent {
+  background-color: var(--accent-primary) !important;
+  transition: background-color 0.4s ease;
+}
+
+.bg-theme-accent:hover {
+  background-color: var(--accent-hover) !important;
+}
+
+.border-theme-glass {
+  border-color: var(--border-glass) !important;
+  transition: border-color 0.4s ease;
+}
+
+/* Glassmorphism Styling Utility Classes */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-glass);
+  transition: all 0.4s ease;
+}
+
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-glass);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.16);
+  border-color: var(--accent-primary);
+}
+
+.glass-nav {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border-bottom: 1px solid var(--border-glass);
+  transition: all 0.4s ease;
+}
+
+.glass-button {
+  background: var(--bg-card);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-glass);
+  transition: all 0.25s ease;
+}
+
+.glass-button:hover {
+  background: var(--accent-primary);
+  color: #ffffff !important;
+  border-color: var(--accent-primary);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-page);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent-gold);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+.craft-shadow {
+  box-shadow: var(--shadow-glass);
+}

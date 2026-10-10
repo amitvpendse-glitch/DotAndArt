@@ -1,0 +1,3239 @@
+{
+  "admin": {
+    "username": "admin",
+    "pin_hash": "9c82a5e26b9ec4902f21e17a82761691b0eba9fbf5677cb4d0101413459ddd3a342756f5da74a394063d6482492dbf5fccefbe16e5041d8ebdb03f47e6714d56",
+    "salt": "e3e4e2d3b316cd7756be024a0dfe6bb7",
+    "updated_at": "2026-10-10T01:34:56.072Z"
+  },
+  "sessions": [],
+  "categories": [
+    {
+      "id": "cat-mandala",
+      "name": "Mandala Wall Hangings",
+      "slug": "mandala-wall-hangings",
+      "description": "Intricately handcrafted sacred dot mandalas painted dot-by-dot with acrylics on premium MDF boards. Meditative focal points designed to infuse balance, serenity, and spiritual energy into living and sacred spaces.",
+      "image_path": "/public/static/assets/images/DA-MD-12-0001.jpg",
+      "display_order": 1,
+      "is_active": true,
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "cat-lippan",
+      "name": "Lippan Wall Hangings",
+      "slug": "lippan-wall-hangings",
+      "description": "Traditional Gujarati mud and mirror art (Lippan Kaam) modernized for contemporary home décor. Hand-kneaded clay reliefs embedded with gleaming geometric mirrors (abhla) that reflect radiant warmth and cultural heritage.",
+      "image_path": "/public/static/assets/images/DA-LP-LG-0001.jpg",
+      "display_order": 2,
+      "is_active": true,
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "prod-da-lp-lg-0001",
+      "sku": "DA-LP-LG-0001",
+      "name": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0001",
+      "short_description": "Traditional Gujarati mud and mirror relief artwork featuring geometric abhla mirrors.",
+      "description": "Each piece is painstakingly created using traditional mud relief work embedded with shimmering glass mirrors on a sturdy engineered MDF base. Finished with protective clear sealants for enduring brilliance.",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": true,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4500,
+      "base_size": "24 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-lp-lg-0001-1",
+          "product_id": "prod-da-lp-lg-0001",
+          "storage_path": "/public/static/assets/images/DA-LP-LG-0001.jpg",
+          "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0001 (DA-LP-LG-0001)",
+          "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0001",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-LP-LG-0001-1",
+          "product_id": "prod-da-lp-lg-0001",
+          "size": "24 inches diameter",
+          "price": 4500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-lp-lg-0002",
+      "sku": "DA-LP-LG-0002",
+      "name": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0002",
+      "short_description": "Traditional Gujarati mud and mirror relief artwork featuring geometric abhla mirrors.",
+      "description": "Each piece is painstakingly created using traditional mud relief work embedded with shimmering glass mirrors on a sturdy engineered MDF base. Finished with protective clear sealants for enduring brilliance.",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": true,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4500,
+      "base_size": "24 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-lp-lg-0002-1",
+          "product_id": "prod-da-lp-lg-0002",
+          "storage_path": "/public/static/assets/images/DA-LP-LG-0002.jpg",
+          "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0002 (DA-LP-LG-0002)",
+          "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0002",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-LP-LG-0002-1",
+          "product_id": "prod-da-lp-lg-0002",
+          "size": "24 inches diameter",
+          "price": 4500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-lp-lg-0003",
+      "sku": "DA-LP-LG-0003",
+      "name": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0003",
+      "short_description": "Traditional Gujarati mud and mirror relief artwork featuring geometric abhla mirrors.",
+      "description": "Each piece is painstakingly created using traditional mud relief work embedded with shimmering glass mirrors on a sturdy engineered MDF base. Finished with protective clear sealants for enduring brilliance.",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": true,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4500,
+      "base_size": "24 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-lp-lg-0003-1",
+          "product_id": "prod-da-lp-lg-0003",
+          "storage_path": "/public/static/assets/images/DA-LP-LG-0003.jpg",
+          "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0003 (DA-LP-LG-0003)",
+          "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-LG-0003",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-LP-LG-0003-1",
+          "product_id": "prod-da-lp-lg-0003",
+          "size": "24 inches diameter",
+          "price": 4500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-lp-md-0001",
+      "sku": "DA-LP-MD-0001",
+      "name": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0001",
+      "short_description": "Traditional Gujarati mud and mirror relief artwork featuring geometric abhla mirrors.",
+      "description": "Each piece is painstakingly created using traditional mud relief work embedded with shimmering glass mirrors on a sturdy engineered MDF base. Finished with protective clear sealants for enduring brilliance.",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": true,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3200,
+      "base_size": "16 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-lp-md-0001-1",
+          "product_id": "prod-da-lp-md-0001",
+          "storage_path": "/public/static/assets/images/DA-LP-MD-0001.jpg",
+          "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0001 (DA-LP-MD-0001)",
+          "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0001",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-LP-MD-0001-1",
+          "product_id": "prod-da-lp-md-0001",
+          "size": "16 inches diameter",
+          "price": 3200,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-lp-md-0002",
+      "sku": "DA-LP-MD-0002",
+      "name": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0002",
+      "short_description": "Traditional Gujarati mud and mirror relief artwork featuring geometric abhla mirrors.",
+      "description": "Each piece is painstakingly created using traditional mud relief work embedded with shimmering glass mirrors on a sturdy engineered MDF base. Finished with protective clear sealants for enduring brilliance.",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": true,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3200,
+      "base_size": "16 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-lp-md-0002-1",
+          "product_id": "prod-da-lp-md-0002",
+          "storage_path": "/public/static/assets/images/DA-LP-MD-0002.jpg",
+          "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0002 (DA-LP-MD-0002)",
+          "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0002",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-LP-MD-0002-1",
+          "product_id": "prod-da-lp-md-0002",
+          "size": "16 inches diameter",
+          "price": 3200,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-lp-md-0003",
+      "sku": "DA-LP-MD-0003",
+      "name": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0003",
+      "short_description": "Traditional Gujarati mud and mirror relief artwork featuring geometric abhla mirrors.",
+      "description": "Each piece is painstakingly created using traditional mud relief work embedded with shimmering glass mirrors on a sturdy engineered MDF base. Finished with protective clear sealants for enduring brilliance.",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": true,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3200,
+      "base_size": "16 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-lp-md-0003-1",
+          "product_id": "prod-da-lp-md-0003",
+          "storage_path": "/public/static/assets/images/DA-LP-MD-0003.jpg",
+          "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0003 (DA-LP-MD-0003)",
+          "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-MD-0003",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-LP-MD-0003-1",
+          "product_id": "prod-da-lp-md-0003",
+          "size": "16 inches diameter",
+          "price": 3200,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-lp-sm-0001",
+      "sku": "DA-LP-SM-0001",
+      "name": "Handcrafted Lippan Mirror Wall Art — DA-LP-SM-0001",
+      "short_description": "Traditional Gujarati mud and mirror relief artwork featuring geometric abhla mirrors.",
+      "description": "Each piece is painstakingly created using traditional mud relief work embedded with shimmering glass mirrors on a sturdy engineered MDF base. Finished with protective clear sealants for enduring brilliance.",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 1800,
+      "base_size": "10 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-lp-sm-0001-1",
+          "product_id": "prod-da-lp-sm-0001",
+          "storage_path": "/public/static/assets/images/DA-LP-SM-0001.jpg",
+          "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-SM-0001 (DA-LP-SM-0001)",
+          "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-SM-0001",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-LP-SM-0001-1",
+          "product_id": "prod-da-lp-sm-0001",
+          "size": "10 inches diameter",
+          "price": 1800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-lp-sm-0002",
+      "sku": "DA-LP-SM-0002",
+      "name": "Handcrafted Lippan Mirror Wall Art — DA-LP-SM-0002",
+      "short_description": "Traditional Gujarati mud and mirror relief artwork featuring geometric abhla mirrors.",
+      "description": "Each piece is painstakingly created using traditional mud relief work embedded with shimmering glass mirrors on a sturdy engineered MDF base. Finished with protective clear sealants for enduring brilliance.",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 1800,
+      "base_size": "10 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-lp-sm-0002-1",
+          "product_id": "prod-da-lp-sm-0002",
+          "storage_path": "/public/static/assets/images/DA-LP-SM-0002.jpg",
+          "alt_text": "Handcrafted Lippan Mirror Wall Art — DA-LP-SM-0002 (DA-LP-SM-0002)",
+          "caption": "Handcrafted Lippan Mirror Wall Art — DA-LP-SM-0002",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-LP-SM-0002-1",
+          "product_id": "prod-da-lp-sm-0002",
+          "size": "10 inches diameter",
+          "price": 1800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-10-0001",
+      "sku": "DA-MD-10-0001",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0001",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 1800,
+      "base_size": "10 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-10-0001-1",
+          "product_id": "prod-da-md-10-0001",
+          "storage_path": "/public/static/assets/images/DA-MD-10-0001.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0001 (DA-MD-10-0001)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0001",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-10-0001-1",
+          "product_id": "prod-da-md-10-0001",
+          "size": "10 inches diameter",
+          "price": 1800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-10-0002",
+      "sku": "DA-MD-10-0002",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0002",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 1800,
+      "base_size": "10 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-10-0002-1",
+          "product_id": "prod-da-md-10-0002",
+          "storage_path": "/public/static/assets/images/DA-MD-10-0002.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0002 (DA-MD-10-0002)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0002",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-10-0002-1",
+          "product_id": "prod-da-md-10-0002",
+          "size": "10 inches diameter",
+          "price": 1800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-10-0003",
+      "sku": "DA-MD-10-0003",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0003",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 1800,
+      "base_size": "10 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-10-0003-1",
+          "product_id": "prod-da-md-10-0003",
+          "storage_path": "/public/static/assets/images/DA-MD-10-0003.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0003 (DA-MD-10-0003)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0003",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-10-0003-1",
+          "product_id": "prod-da-md-10-0003",
+          "size": "10 inches diameter",
+          "price": 1800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-10-0004",
+      "sku": "DA-MD-10-0004",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0004",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 1800,
+      "base_size": "10 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-10-0004-1",
+          "product_id": "prod-da-md-10-0004",
+          "storage_path": "/public/static/assets/images/DA-MD-10-0004.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0004 (DA-MD-10-0004)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0004",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-10-0004-1",
+          "product_id": "prod-da-md-10-0004",
+          "size": "10 inches diameter",
+          "price": 1800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-10-0005",
+      "sku": "DA-MD-10-0005",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0005",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 1800,
+      "base_size": "10 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-10-0005-1",
+          "product_id": "prod-da-md-10-0005",
+          "storage_path": "/public/static/assets/images/DA-MD-10-0005.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0005 (DA-MD-10-0005)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0005",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-10-0005-1",
+          "product_id": "prod-da-md-10-0005",
+          "size": "10 inches diameter",
+          "price": 1800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-10-0006",
+      "sku": "DA-MD-10-0006",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0006",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 1800,
+      "base_size": "10 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-10-0006-1",
+          "product_id": "prod-da-md-10-0006",
+          "storage_path": "/public/static/assets/images/DA-MD-10-0006.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0006 (DA-MD-10-0006)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0006",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-10-0006-1",
+          "product_id": "prod-da-md-10-0006",
+          "size": "10 inches diameter",
+          "price": 1800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-10-0007",
+      "sku": "DA-MD-10-0007",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0007",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 1800,
+      "base_size": "10 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-10-0007-1",
+          "product_id": "prod-da-md-10-0007",
+          "storage_path": "/public/static/assets/images/DA-MD-10-0007.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0007 (DA-MD-10-0007)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0007",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-10-0007-1",
+          "product_id": "prod-da-md-10-0007",
+          "size": "10 inches diameter",
+          "price": 1800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-10-0008",
+      "sku": "DA-MD-10-0008",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0008",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 1800,
+      "base_size": "10 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-10-0008-1",
+          "product_id": "prod-da-md-10-0008",
+          "storage_path": "/public/static/assets/images/DA-MD-10-0008.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0008 (DA-MD-10-0008)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0008",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-10-0008-1",
+          "product_id": "prod-da-md-10-0008",
+          "size": "10 inches diameter",
+          "price": 1800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-10-0009",
+      "sku": "DA-MD-10-0009",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0009",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 1800,
+      "base_size": "10 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-10-0009-1",
+          "product_id": "prod-da-md-10-0009",
+          "storage_path": "/public/static/assets/images/DA-MD-10-0009.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0009 (DA-MD-10-0009)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-10-0009",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-10-0009-1",
+          "product_id": "prod-da-md-10-0009",
+          "size": "10 inches diameter",
+          "price": 1800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0001",
+      "sku": "DA-MD-12-0001",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0001",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0001-1",
+          "product_id": "prod-da-md-12-0001",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0001.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0001 (DA-MD-12-0001)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0001",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0001-1",
+          "product_id": "prod-da-md-12-0001",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0002",
+      "sku": "DA-MD-12-0002",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0002",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0002-1",
+          "product_id": "prod-da-md-12-0002",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0002.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0002 (DA-MD-12-0002)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0002",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0002-1",
+          "product_id": "prod-da-md-12-0002",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0003",
+      "sku": "DA-MD-12-0003",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0003",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0003-1",
+          "product_id": "prod-da-md-12-0003",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0003.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0003 (DA-MD-12-0003)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0003",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0003-1",
+          "product_id": "prod-da-md-12-0003",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0004",
+      "sku": "DA-MD-12-0004",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0004",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0004-1",
+          "product_id": "prod-da-md-12-0004",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0004.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0004 (DA-MD-12-0004)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0004",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0004-1",
+          "product_id": "prod-da-md-12-0004",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0005",
+      "sku": "DA-MD-12-0005",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0005",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0005-1",
+          "product_id": "prod-da-md-12-0005",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0005.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0005 (DA-MD-12-0005)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0005",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0005-1",
+          "product_id": "prod-da-md-12-0005",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0006",
+      "sku": "DA-MD-12-0006",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0006",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0006-1",
+          "product_id": "prod-da-md-12-0006",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0006.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0006 (DA-MD-12-0006)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0006",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0006-1",
+          "product_id": "prod-da-md-12-0006",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0007",
+      "sku": "DA-MD-12-0007",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0007",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0007-1",
+          "product_id": "prod-da-md-12-0007",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0007.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0007 (DA-MD-12-0007)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0007",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0007-1",
+          "product_id": "prod-da-md-12-0007",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0008",
+      "sku": "DA-MD-12-0008",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0008",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0008-1",
+          "product_id": "prod-da-md-12-0008",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0008.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0008 (DA-MD-12-0008)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0008",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0008-1",
+          "product_id": "prod-da-md-12-0008",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0009",
+      "sku": "DA-MD-12-0009",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0009",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0009-1",
+          "product_id": "prod-da-md-12-0009",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0009.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0009 (DA-MD-12-0009)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0009",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0009-1",
+          "product_id": "prod-da-md-12-0009",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0010",
+      "sku": "DA-MD-12-0010",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0010",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0010-1",
+          "product_id": "prod-da-md-12-0010",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0010.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0010 (DA-MD-12-0010)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0010",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0010-1",
+          "product_id": "prod-da-md-12-0010",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0011",
+      "sku": "DA-MD-12-0011",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0011",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0011-1",
+          "product_id": "prod-da-md-12-0011",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0011.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0011 (DA-MD-12-0011)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0011",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0011-1",
+          "product_id": "prod-da-md-12-0011",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0012",
+      "sku": "DA-MD-12-0012",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0012",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0012-1",
+          "product_id": "prod-da-md-12-0012",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0012.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0012 (DA-MD-12-0012)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0012",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0012-1",
+          "product_id": "prod-da-md-12-0012",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0013",
+      "sku": "DA-MD-12-0013",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0013",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0013-1",
+          "product_id": "prod-da-md-12-0013",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0013.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0013 (DA-MD-12-0013)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0013",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0013-1",
+          "product_id": "prod-da-md-12-0013",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0014",
+      "sku": "DA-MD-12-0014",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0014",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0014-1",
+          "product_id": "prod-da-md-12-0014",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0014.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0014 (DA-MD-12-0014)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0014",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0014-1",
+          "product_id": "prod-da-md-12-0014",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0015",
+      "sku": "DA-MD-12-0015",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0015",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0015-1",
+          "product_id": "prod-da-md-12-0015",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0015.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0015 (DA-MD-12-0015)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0015",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0015-1",
+          "product_id": "prod-da-md-12-0015",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0016",
+      "sku": "DA-MD-12-0016",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0016",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0016-1",
+          "product_id": "prod-da-md-12-0016",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0016.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0016 (DA-MD-12-0016)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0016",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0016-1",
+          "product_id": "prod-da-md-12-0016",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0017",
+      "sku": "DA-MD-12-0017",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0017",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0017-1",
+          "product_id": "prod-da-md-12-0017",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0017.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0017 (DA-MD-12-0017)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0017",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0017-1",
+          "product_id": "prod-da-md-12-0017",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0018",
+      "sku": "DA-MD-12-0018",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0018",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0018-1",
+          "product_id": "prod-da-md-12-0018",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0018.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0018 (DA-MD-12-0018)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0018",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0018-1",
+          "product_id": "prod-da-md-12-0018",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-12-0019",
+      "sku": "DA-MD-12-0019",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0019",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 2400,
+      "base_size": "12 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0019-1",
+          "product_id": "prod-da-md-12-0019",
+          "storage_path": "/public/static/assets/images/DA-MD-12-0019.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0019 (DA-MD-12-0019)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-12-0019",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-12-0019-1",
+          "product_id": "prod-da-md-12-0019",
+          "size": "12 inches diameter",
+          "price": 2400,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-15-0001",
+      "sku": "DA-MD-15-0001",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0001",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3500,
+      "base_size": "15 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-15-0001-1",
+          "product_id": "prod-da-md-15-0001",
+          "storage_path": "/public/static/assets/images/DA-MD-15-0001.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0001 (DA-MD-15-0001)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0001",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-15-0001-1",
+          "product_id": "prod-da-md-15-0001",
+          "size": "15 inches diameter",
+          "price": 3500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-15-0002",
+      "sku": "DA-MD-15-0002",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0002",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3500,
+      "base_size": "15 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-15-0002-1",
+          "product_id": "prod-da-md-15-0002",
+          "storage_path": "/public/static/assets/images/DA-MD-15-0002.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0002 (DA-MD-15-0002)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0002",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-15-0002-1",
+          "product_id": "prod-da-md-15-0002",
+          "size": "15 inches diameter",
+          "price": 3500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-15-0003",
+      "sku": "DA-MD-15-0003",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0003",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3500,
+      "base_size": "15 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-15-0003-1",
+          "product_id": "prod-da-md-15-0003",
+          "storage_path": "/public/static/assets/images/DA-MD-15-0003.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0003 (DA-MD-15-0003)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0003",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-15-0003-1",
+          "product_id": "prod-da-md-15-0003",
+          "size": "15 inches diameter",
+          "price": 3500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-15-0004",
+      "sku": "DA-MD-15-0004",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0004",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3500,
+      "base_size": "15 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-15-0004-1",
+          "product_id": "prod-da-md-15-0004",
+          "storage_path": "/public/static/assets/images/DA-MD-15-0004.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0004 (DA-MD-15-0004)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0004",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-15-0004-1",
+          "product_id": "prod-da-md-15-0004",
+          "size": "15 inches diameter",
+          "price": 3500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-15-0005",
+      "sku": "DA-MD-15-0005",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0005",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3500,
+      "base_size": "15 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-15-0005-1",
+          "product_id": "prod-da-md-15-0005",
+          "storage_path": "/public/static/assets/images/DA-MD-15-0005.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0005 (DA-MD-15-0005)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0005",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-15-0005-1",
+          "product_id": "prod-da-md-15-0005",
+          "size": "15 inches diameter",
+          "price": 3500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-15-0006",
+      "sku": "DA-MD-15-0006",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0006",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3500,
+      "base_size": "15 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-15-0006-1",
+          "product_id": "prod-da-md-15-0006",
+          "storage_path": "/public/static/assets/images/DA-MD-15-0006.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0006 (DA-MD-15-0006)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0006",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-15-0006-1",
+          "product_id": "prod-da-md-15-0006",
+          "size": "15 inches diameter",
+          "price": 3500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-15-0007",
+      "sku": "DA-MD-15-0007",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0007",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3500,
+      "base_size": "15 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-15-0007-1",
+          "product_id": "prod-da-md-15-0007",
+          "storage_path": "/public/static/assets/images/DA-MD-15-0007.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0007 (DA-MD-15-0007)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0007",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-15-0007-1",
+          "product_id": "prod-da-md-15-0007",
+          "size": "15 inches diameter",
+          "price": 3500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-15-0008",
+      "sku": "DA-MD-15-0008",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0008",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3500,
+      "base_size": "15 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-15-0008-1",
+          "product_id": "prod-da-md-15-0008",
+          "storage_path": "/public/static/assets/images/DA-MD-15-0008.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0008 (DA-MD-15-0008)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0008",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-15-0008-1",
+          "product_id": "prod-da-md-15-0008",
+          "size": "15 inches diameter",
+          "price": 3500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-15-0009",
+      "sku": "DA-MD-15-0009",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0009",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3500,
+      "base_size": "15 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-15-0009-1",
+          "product_id": "prod-da-md-15-0009",
+          "storage_path": "/public/static/assets/images/DA-MD-15-0009.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0009 (DA-MD-15-0009)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0009",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-15-0009-1",
+          "product_id": "prod-da-md-15-0009",
+          "size": "15 inches diameter",
+          "price": 3500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-15-0010",
+      "sku": "DA-MD-15-0010",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0010",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 3500,
+      "base_size": "15 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-15-0010-1",
+          "product_id": "prod-da-md-15-0010",
+          "storage_path": "/public/static/assets/images/DA-MD-15-0010.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0010 (DA-MD-15-0010)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-15-0010",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-15-0010-1",
+          "product_id": "prod-da-md-15-0010",
+          "size": "15 inches diameter",
+          "price": 3500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-18-0001",
+      "sku": "DA-MD-18-0001",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0001",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4800,
+      "base_size": "18 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-18-0001-1",
+          "product_id": "prod-da-md-18-0001",
+          "storage_path": "/public/static/assets/images/DA-MD-18-0001.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0001 (DA-MD-18-0001)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0001",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-18-0001-1",
+          "product_id": "prod-da-md-18-0001",
+          "size": "18 inches diameter",
+          "price": 4800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-18-0002",
+      "sku": "DA-MD-18-0002",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0002",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4800,
+      "base_size": "18 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-18-0002-1",
+          "product_id": "prod-da-md-18-0002",
+          "storage_path": "/public/static/assets/images/DA-MD-18-0002.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0002 (DA-MD-18-0002)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0002",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-18-0002-1",
+          "product_id": "prod-da-md-18-0002",
+          "size": "18 inches diameter",
+          "price": 4800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-18-0003",
+      "sku": "DA-MD-18-0003",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0003",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4800,
+      "base_size": "18 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-18-0003-1",
+          "product_id": "prod-da-md-18-0003",
+          "storage_path": "/public/static/assets/images/DA-MD-18-0003.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0003 (DA-MD-18-0003)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0003",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-18-0003-1",
+          "product_id": "prod-da-md-18-0003",
+          "size": "18 inches diameter",
+          "price": 4800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-18-0004",
+      "sku": "DA-MD-18-0004",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0004",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4800,
+      "base_size": "18 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-18-0004-1",
+          "product_id": "prod-da-md-18-0004",
+          "storage_path": "/public/static/assets/images/DA-MD-18-0004.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0004 (DA-MD-18-0004)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0004",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-18-0004-1",
+          "product_id": "prod-da-md-18-0004",
+          "size": "18 inches diameter",
+          "price": 4800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-18-0005",
+      "sku": "DA-MD-18-0005",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0005",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4800,
+      "base_size": "18 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-18-0005-1",
+          "product_id": "prod-da-md-18-0005",
+          "storage_path": "/public/static/assets/images/DA-MD-18-0005.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0005 (DA-MD-18-0005)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0005",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-18-0005-1",
+          "product_id": "prod-da-md-18-0005",
+          "size": "18 inches diameter",
+          "price": 4800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-18-0006",
+      "sku": "DA-MD-18-0006",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0006",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4800,
+      "base_size": "18 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-18-0006-1",
+          "product_id": "prod-da-md-18-0006",
+          "storage_path": "/public/static/assets/images/DA-MD-18-0006.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0006 (DA-MD-18-0006)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0006",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-18-0006-1",
+          "product_id": "prod-da-md-18-0006",
+          "size": "18 inches diameter",
+          "price": 4800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-18-0007",
+      "sku": "DA-MD-18-0007",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0007",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4800,
+      "base_size": "18 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-18-0007-1",
+          "product_id": "prod-da-md-18-0007",
+          "storage_path": "/public/static/assets/images/DA-MD-18-0007.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0007 (DA-MD-18-0007)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0007",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-18-0007-1",
+          "product_id": "prod-da-md-18-0007",
+          "size": "18 inches diameter",
+          "price": 4800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-18-0008",
+      "sku": "DA-MD-18-0008",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0008",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4800,
+      "base_size": "18 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-18-0008-1",
+          "product_id": "prod-da-md-18-0008",
+          "storage_path": "/public/static/assets/images/DA-MD-18-0008.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0008 (DA-MD-18-0008)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0008",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-18-0008-1",
+          "product_id": "prod-da-md-18-0008",
+          "size": "18 inches diameter",
+          "price": 4800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-18-0009",
+      "sku": "DA-MD-18-0009",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0009",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4800,
+      "base_size": "18 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-18-0009-1",
+          "product_id": "prod-da-md-18-0009",
+          "storage_path": "/public/static/assets/images/DA-MD-18-0009.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0009 (DA-MD-18-0009)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0009",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-18-0009-1",
+          "product_id": "prod-da-md-18-0009",
+          "size": "18 inches diameter",
+          "price": 4800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-18-0010",
+      "sku": "DA-MD-18-0010",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0010",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 4800,
+      "base_size": "18 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-18-0010-1",
+          "product_id": "prod-da-md-18-0010",
+          "storage_path": "/public/static/assets/images/DA-MD-18-0010.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0010 (DA-MD-18-0010)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-18-0010",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-18-0010-1",
+          "product_id": "prod-da-md-18-0010",
+          "size": "18 inches diameter",
+          "price": 4800,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-24-0001",
+      "sku": "DA-MD-24-0001",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-24-0001",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 6500,
+      "base_size": "24 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-24-0001-1",
+          "product_id": "prod-da-md-24-0001",
+          "storage_path": "/public/static/assets/images/DA-MD-24-0001.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-24-0001 (DA-MD-24-0001)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-24-0001",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-24-0001-1",
+          "product_id": "prod-da-md-24-0001",
+          "size": "24 inches diameter",
+          "price": 6500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-24-0002",
+      "sku": "DA-MD-24-0002",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-24-0002",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 6500,
+      "base_size": "24 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-24-0002-1",
+          "product_id": "prod-da-md-24-0002",
+          "storage_path": "/public/static/assets/images/DA-MD-24-0002.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-24-0002 (DA-MD-24-0002)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-24-0002",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-24-0002-1",
+          "product_id": "prod-da-md-24-0002",
+          "size": "24 inches diameter",
+          "price": 6500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod-da-md-30-0001",
+      "sku": "DA-MD-30-0001",
+      "name": "Sacred Dot Mandala Wall Hanging — DA-MD-30-0001",
+      "short_description": "Meticulously painted dot-by-dot sacred mandala artwork in vibrant harmonious acrylics.",
+      "description": "Handcrafted with precision and meditative focus using high-grade acrylics on premium MDF wood. Features hundreds of layered precision dots designed to radiate spiritual calm and aesthetic elegance.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Engineered MDF Wood, Heavy Body Acrylics, Glass Mirrors, Protective Gloss Coat",
+      "framing": "Framing not included (Includes mounted rear hanging hook)",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "Worldwide insured shipping in heavy-duty protective crating.",
+      "special_information": "Clean gently with a soft dry microfiber cloth. Avoid damp exposure.",
+      "featured": false,
+      "is_published": true,
+      "photos_available_note": "Studio high-res asset available",
+      "base_price": 9500,
+      "base_size": "30 inches diameter",
+      "images": [
+        {
+          "id": "img-prod-da-md-30-0001-1",
+          "product_id": "prod-da-md-30-0001",
+          "storage_path": "/public/static/assets/images/DA-MD-30-0001.jpg",
+          "alt_text": "Sacred Dot Mandala Wall Hanging — DA-MD-30-0001 (DA-MD-30-0001)",
+          "caption": "Sacred Dot Mandala Wall Hanging — DA-MD-30-0001",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-DA-MD-30-0001-1",
+          "product_id": "prod-da-md-30-0001",
+          "size": "30 inches diameter",
+          "price": 9500,
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    }
+  ],
+  "media": [
+    {
+      "id": "img-auto-0-da-lp-lg-0001",
+      "storage_path": "/public/static/assets/images/DA-LP-LG-0001.jpg",
+      "media_type": "image",
+      "filename": "DA-LP-LG-0001.jpg",
+      "title": "Artwork DA-LP-LG-0001",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-1-da-lp-lg-0002",
+      "storage_path": "/public/static/assets/images/DA-LP-LG-0002.jpg",
+      "media_type": "image",
+      "filename": "DA-LP-LG-0002.jpg",
+      "title": "Artwork DA-LP-LG-0002",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-2-da-lp-lg-0003",
+      "storage_path": "/public/static/assets/images/DA-LP-LG-0003.jpg",
+      "media_type": "image",
+      "filename": "DA-LP-LG-0003.jpg",
+      "title": "Artwork DA-LP-LG-0003",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-3-da-lp-md-0001",
+      "storage_path": "/public/static/assets/images/DA-LP-MD-0001.jpg",
+      "media_type": "image",
+      "filename": "DA-LP-MD-0001.jpg",
+      "title": "Artwork DA-LP-MD-0001",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-4-da-lp-md-0002",
+      "storage_path": "/public/static/assets/images/DA-LP-MD-0002.jpg",
+      "media_type": "image",
+      "filename": "DA-LP-MD-0002.jpg",
+      "title": "Artwork DA-LP-MD-0002",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-5-da-lp-md-0003",
+      "storage_path": "/public/static/assets/images/DA-LP-MD-0003.jpg",
+      "media_type": "image",
+      "filename": "DA-LP-MD-0003.jpg",
+      "title": "Artwork DA-LP-MD-0003",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-6-da-lp-sm-0001",
+      "storage_path": "/public/static/assets/images/DA-LP-SM-0001.jpg",
+      "media_type": "image",
+      "filename": "DA-LP-SM-0001.jpg",
+      "title": "Artwork DA-LP-SM-0001",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-7-da-lp-sm-0002",
+      "storage_path": "/public/static/assets/images/DA-LP-SM-0002.jpg",
+      "media_type": "image",
+      "filename": "DA-LP-SM-0002.jpg",
+      "title": "Artwork DA-LP-SM-0002",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-8-da-md-10-0001",
+      "storage_path": "/public/static/assets/images/DA-MD-10-0001.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-10-0001.jpg",
+      "title": "Artwork DA-MD-10-0001",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-9-da-md-10-0002",
+      "storage_path": "/public/static/assets/images/DA-MD-10-0002.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-10-0002.jpg",
+      "title": "Artwork DA-MD-10-0002",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-10-da-md-10-0003",
+      "storage_path": "/public/static/assets/images/DA-MD-10-0003.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-10-0003.jpg",
+      "title": "Artwork DA-MD-10-0003",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-11-da-md-10-0004",
+      "storage_path": "/public/static/assets/images/DA-MD-10-0004.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-10-0004.jpg",
+      "title": "Artwork DA-MD-10-0004",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-12-da-md-10-0005",
+      "storage_path": "/public/static/assets/images/DA-MD-10-0005.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-10-0005.jpg",
+      "title": "Artwork DA-MD-10-0005",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-13-da-md-10-0006",
+      "storage_path": "/public/static/assets/images/DA-MD-10-0006.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-10-0006.jpg",
+      "title": "Artwork DA-MD-10-0006",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-14-da-md-10-0007",
+      "storage_path": "/public/static/assets/images/DA-MD-10-0007.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-10-0007.jpg",
+      "title": "Artwork DA-MD-10-0007",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-15-da-md-10-0008",
+      "storage_path": "/public/static/assets/images/DA-MD-10-0008.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-10-0008.jpg",
+      "title": "Artwork DA-MD-10-0008",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-16-da-md-10-0009",
+      "storage_path": "/public/static/assets/images/DA-MD-10-0009.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-10-0009.jpg",
+      "title": "Artwork DA-MD-10-0009",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-17-da-md-12-0001",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0001.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0001.jpg",
+      "title": "Artwork DA-MD-12-0001",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-18-da-md-12-0002",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0002.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0002.jpg",
+      "title": "Artwork DA-MD-12-0002",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-19-da-md-12-0003",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0003.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0003.jpg",
+      "title": "Artwork DA-MD-12-0003",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-20-da-md-12-0004",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0004.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0004.jpg",
+      "title": "Artwork DA-MD-12-0004",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-21-da-md-12-0005",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0005.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0005.jpg",
+      "title": "Artwork DA-MD-12-0005",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-22-da-md-12-0006",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0006.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0006.jpg",
+      "title": "Artwork DA-MD-12-0006",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-23-da-md-12-0007",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0007.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0007.jpg",
+      "title": "Artwork DA-MD-12-0007",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-24-da-md-12-0008",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0008.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0008.jpg",
+      "title": "Artwork DA-MD-12-0008",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-25-da-md-12-0009",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0009.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0009.jpg",
+      "title": "Artwork DA-MD-12-0009",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-26-da-md-12-0010",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0010.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0010.jpg",
+      "title": "Artwork DA-MD-12-0010",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-27-da-md-12-0011",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0011.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0011.jpg",
+      "title": "Artwork DA-MD-12-0011",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-28-da-md-12-0012",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0012.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0012.jpg",
+      "title": "Artwork DA-MD-12-0012",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-29-da-md-12-0013",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0013.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0013.jpg",
+      "title": "Artwork DA-MD-12-0013",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-30-da-md-12-0014",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0014.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0014.jpg",
+      "title": "Artwork DA-MD-12-0014",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-31-da-md-12-0015",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0015.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0015.jpg",
+      "title": "Artwork DA-MD-12-0015",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-32-da-md-12-0016",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0016.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0016.jpg",
+      "title": "Artwork DA-MD-12-0016",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-33-da-md-12-0017",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0017.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0017.jpg",
+      "title": "Artwork DA-MD-12-0017",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-34-da-md-12-0018",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0018.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0018.jpg",
+      "title": "Artwork DA-MD-12-0018",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-35-da-md-12-0019",
+      "storage_path": "/public/static/assets/images/DA-MD-12-0019.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-12-0019.jpg",
+      "title": "Artwork DA-MD-12-0019",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-36-da-md-15-0001",
+      "storage_path": "/public/static/assets/images/DA-MD-15-0001.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-15-0001.jpg",
+      "title": "Artwork DA-MD-15-0001",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-37-da-md-15-0002",
+      "storage_path": "/public/static/assets/images/DA-MD-15-0002.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-15-0002.jpg",
+      "title": "Artwork DA-MD-15-0002",
+      "created_at": "2026-10-10T01:37:33.695Z"
+    },
+    {
+      "id": "img-auto-38-da-md-15-0003",
+      "storage_path": "/public/static/assets/images/DA-MD-15-0003.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-15-0003.jpg",
+      "title": "Artwork DA-MD-15-0003",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-39-da-md-15-0004",
+      "storage_path": "/public/static/assets/images/DA-MD-15-0004.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-15-0004.jpg",
+      "title": "Artwork DA-MD-15-0004",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-40-da-md-15-0005",
+      "storage_path": "/public/static/assets/images/DA-MD-15-0005.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-15-0005.jpg",
+      "title": "Artwork DA-MD-15-0005",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-41-da-md-15-0006",
+      "storage_path": "/public/static/assets/images/DA-MD-15-0006.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-15-0006.jpg",
+      "title": "Artwork DA-MD-15-0006",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-42-da-md-15-0007",
+      "storage_path": "/public/static/assets/images/DA-MD-15-0007.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-15-0007.jpg",
+      "title": "Artwork DA-MD-15-0007",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-43-da-md-15-0008",
+      "storage_path": "/public/static/assets/images/DA-MD-15-0008.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-15-0008.jpg",
+      "title": "Artwork DA-MD-15-0008",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-44-da-md-15-0009",
+      "storage_path": "/public/static/assets/images/DA-MD-15-0009.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-15-0009.jpg",
+      "title": "Artwork DA-MD-15-0009",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-45-da-md-15-0010",
+      "storage_path": "/public/static/assets/images/DA-MD-15-0010.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-15-0010.jpg",
+      "title": "Artwork DA-MD-15-0010",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-46-da-md-18-0001",
+      "storage_path": "/public/static/assets/images/DA-MD-18-0001.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-18-0001.jpg",
+      "title": "Artwork DA-MD-18-0001",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-47-da-md-18-0002",
+      "storage_path": "/public/static/assets/images/DA-MD-18-0002.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-18-0002.jpg",
+      "title": "Artwork DA-MD-18-0002",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-48-da-md-18-0003",
+      "storage_path": "/public/static/assets/images/DA-MD-18-0003.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-18-0003.jpg",
+      "title": "Artwork DA-MD-18-0003",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-49-da-md-18-0004",
+      "storage_path": "/public/static/assets/images/DA-MD-18-0004.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-18-0004.jpg",
+      "title": "Artwork DA-MD-18-0004",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-50-da-md-18-0005",
+      "storage_path": "/public/static/assets/images/DA-MD-18-0005.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-18-0005.jpg",
+      "title": "Artwork DA-MD-18-0005",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-51-da-md-18-0006",
+      "storage_path": "/public/static/assets/images/DA-MD-18-0006.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-18-0006.jpg",
+      "title": "Artwork DA-MD-18-0006",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-52-da-md-18-0007",
+      "storage_path": "/public/static/assets/images/DA-MD-18-0007.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-18-0007.jpg",
+      "title": "Artwork DA-MD-18-0007",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-53-da-md-18-0008",
+      "storage_path": "/public/static/assets/images/DA-MD-18-0008.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-18-0008.jpg",
+      "title": "Artwork DA-MD-18-0008",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-54-da-md-18-0009",
+      "storage_path": "/public/static/assets/images/DA-MD-18-0009.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-18-0009.jpg",
+      "title": "Artwork DA-MD-18-0009",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-55-da-md-18-0010",
+      "storage_path": "/public/static/assets/images/DA-MD-18-0010.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-18-0010.jpg",
+      "title": "Artwork DA-MD-18-0010",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-56-da-md-24-0001",
+      "storage_path": "/public/static/assets/images/DA-MD-24-0001.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-24-0001.jpg",
+      "title": "Artwork DA-MD-24-0001",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-57-da-md-24-0002",
+      "storage_path": "/public/static/assets/images/DA-MD-24-0002.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-24-0002.jpg",
+      "title": "Artwork DA-MD-24-0002",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-auto-58-da-md-30-0001",
+      "storage_path": "/public/static/assets/images/DA-MD-30-0001.jpg",
+      "media_type": "image",
+      "filename": "DA-MD-30-0001.jpg",
+      "title": "Artwork DA-MD-30-0001",
+      "created_at": "2026-10-10T01:37:33.696Z"
+    },
+    {
+      "id": "img-sync-59-test-smart-sync-01",
+      "storage_path": "/public/static/assets/images/TEST-SMART-SYNC-01.jpg",
+      "media_type": "image",
+      "filename": "TEST-SMART-SYNC-01.jpg",
+      "title": "Artwork TEST-SMART-SYNC-01",
+      "created_at": "2026-10-10T01:48:54.013Z"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page-about",
+      "slug": "about-us",
+      "title": "About the Artist",
+      "seo_title": "About Shital Thosar — Dot & Art",
+      "meta_description": "Learn about the artisan journey behind Dot & Art studio creating sacred dot mandalas and Lippan mirror art.",
+      "status": "published",
+      "sections": [
+        {
+          "id": "sec-about-intro",
+          "page_id": "page-about",
+          "section_type": "hero",
+          "section_key": "about_intro",
+          "content_json": {
+            "title": "The Artisanal Journey of Devotion & Precision",
+            "subtitle": "Handcrafting sanctuaries of calm through sacred dot geometry and traditional Lippan mud art.",
+            "body": "Dot & Art is founded on the belief that art should touch the soul and bring tranquil spiritual focus into living spaces. Every piece is born out of meditative practice, patience, and meticulous brushwork."
+          },
+          "display_order": 1,
+          "is_visible": true,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z"
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "test-1",
+      "customer_name": "Ananya Sharma",
+      "content": "The sacred mandala we ordered is an absolute masterpiece. The precision of the dots and the vibrant spiritual energy it radiates in our living room is breathtaking.",
+      "rating": 5,
+      "location": "Mumbai, India",
+      "artwork_purchased": "Surya Mandala",
+      "display_order": 1,
+      "is_published": true,
+      "created_at": "2025-01-10T00:00:00.000Z",
+      "updated_at": "2025-01-10T00:00:00.000Z"
+    },
+    {
+      "id": "test-2",
+      "customer_name": "Vikram & Priya Nair",
+      "content": "Stunning Lippan mirror art! The craftsmanship and packaging quality exceeded our expectations. It adds such warm traditional heritage to our modern entryway.",
+      "rating": 5,
+      "location": "Bengaluru, India",
+      "artwork_purchased": "Lippan Mirror Wall Hanging",
+      "display_order": 2,
+      "is_published": true,
+      "created_at": "2025-01-12T00:00:00.000Z",
+      "updated_at": "2025-01-12T00:00:00.000Z"
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq-1",
+      "question": "Are these artworks 100% handmade?",
+      "answer": "Yes! Every single dot mandala and Lippan mud-mirror piece is meticulously handcrafted by skilled artisans dot-by-dot, with no machine printing whatsoever.",
+      "category": "Craftsmanship",
+      "display_order": 1,
+      "is_published": true,
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "faq-2",
+      "question": "How are artworks shipped safely without transit damage?",
+      "answer": "We use multi-layer bubble wrap, protective corner edge guards, and reinforced wooden or heavy corrugated crating to ensure 100% safe delivery worldwide.",
+      "category": "Shipping",
+      "display_order": 2,
+      "is_published": true,
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    }
+  ],
+  "settings": {
+    "business_name": "Dot & Art Studio",
+    "tagline": "Handcrafted Sacred Mandalas & Lippan Mirror Art",
+    "domain": "dotandart.in",
+    "whatsapp_number": "+918652162647",
+    "whatsapp_display": "+91 86521 62647",
+    "instagram_url": "https://instagram.com",
+    "facebook_url": "https://facebook.com",
+    "email": "shitalthosar@yahoo.com",
+    "studio_address": "Mumbai, Maharashtra, India",
+    "payment_terms": "50% advance for custom commissions, balance upon photo approval prior to dispatch.",
+    "shipping_policy_summary": "Worldwide insured shipping available with robust bubble & crate packing.",
+    "announcement_banner": {
+      "enabled": true,
+      "text": "✨ Explore our newly curated catalog of authentic handcrafted dot mandalas and Lippan mirror art!",
+      "link_url": "/shop"
+    },
+    "default_seo": {
+      "title": "Dot & Art — Handcrafted Sacred Mandalas & Lippan Mirror Art",
+      "description": "Discover exquisite handcrafted dot mandalas and traditional Lippan mirror wall hangings created with devotion and precision.",
+      "keywords": "dot mandala, lippan art, wall hangings, spiritual art, handmade home decor"
+    }
+  },
+  "audit_logs": [
+    {
+      "id": "log-1791596934017-104332d2",
+      "admin_user_id": "admin",
+      "action": "smart_image_auto_sync",
+      "entity_type": "catalog",
+      "entity_id": "file_event",
+      "safe_metadata_json": {
+        "event_type": "change",
+        "filename": "TEST-SMART-SYNC-01.jpg",
+        "media_count": 60,
+        "updated_products": 59
+      },
+      "created_at": "2026-10-10T01:48:54.017Z"
+    },
+    {
+      "id": "log-init",
+      "action": "system_initialized",
+      "entity_type": "system",
+      "entity_id": "db",
+      "safe_metadata_json": {
+        "message": "Database initialized with 59 catalog products and default settings"
+      },
+      "created_at": "2026-10-10T01:34:56.072Z"
+    }
+  ]
+}
