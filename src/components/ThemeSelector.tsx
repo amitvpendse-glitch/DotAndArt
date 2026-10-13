@@ -29,28 +29,28 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({ externalOpen, onCl
     desc: string;
   }[] = [
     {
-      id: 'earthy',
-      label: 'Earthy Terracotta & Gold',
-      tag: 'Classic Studio',
-      icon: <Sparkles className="w-4 h-4 text-[#C85A32]" />,
-      previewColors: ['#C85A32', '#D4A373', '#FAF7F2', '#2C2724'],
-      desc: 'Warm artisan terracotta, gold leaf, and ivory glassmorphism.',
-    },
-    {
-      id: 'sapphire',
-      label: 'Royal Sapphire & Sky Blue',
-      tag: 'Studio Card Theme',
-      icon: <Droplets className="w-4 h-4 text-[#1D529E]" />,
-      previewColors: ['#1D529E', '#00B4D8', '#F0F6FF', '#0F2537'],
-      desc: 'Refined sapphire blue, pastel sky, and ice glass inspired by artist card.',
-    },
-    {
       id: 'blackgold',
-      label: 'Theme Black + Antique Gold',
+      label: 'Theme Black+Antique gold',
       tag: 'Luxurious Midnight',
       icon: <Moon className="w-4 h-4 text-[#D4A373]" />,
       previewColors: ['#12100E', '#D4A373', '#E6C594', '#1A1714'],
-      desc: 'Midnight obsidian black background with metallic antique gold leaf accents.',
+      desc: 'Luxurious obsidian black with metallic antique gold leaf and champagne glassmorphism.',
+    },
+    {
+      id: 'sage',
+      label: 'Sage Green & Rose Gold',
+      tag: 'Calm · Natural · Mindful',
+      icon: <Sparkles className="w-4 h-4 text-[#66765B]" />,
+      previewColors: ['#66765B', '#F43F5E', '#FAF7F0', '#354437'],
+      desc: 'Meditation-inspired mandalas with sage green and rose gold accents.',
+    },
+    {
+      id: 'sapphire',
+      label: 'Royal Sapphire & sky gold',
+      tag: 'Studio Card Theme',
+      icon: <Droplets className="w-4 h-4 text-[#1D529E]" />,
+      previewColors: ['#1D529E', '#D4AF37', '#F0F6FF', '#0F2537'],
+      desc: 'Refined sapphire blue and sky gold inspired by artist card design.',
     },
   ];
 

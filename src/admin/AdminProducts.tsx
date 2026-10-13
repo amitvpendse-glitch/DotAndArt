@@ -563,7 +563,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Surya Solar Mandala Wall Hanging"
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5] focus:outline-none focus:border-[#C85A32]"
+                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5] focus:outline-none focus:border-[#C85A32]"
                     />
                   </div>
 
@@ -575,7 +575,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                       value={sku}
                       onChange={(e) => setSku(e.target.value.toUpperCase())}
                       placeholder="e.g. DNA-MAN-001"
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5] font-mono focus:outline-none focus:border-[#C85A32]"
+                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5] font-mono focus:outline-none focus:border-[#C85A32]"
                     />
                   </div>
                 </div>
@@ -586,7 +586,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                     <select
                       value={categoryId}
                       onChange={(e) => setCategoryId(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5]"
+                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5]"
                     >
                       {categories.map((c) => (
                         <option key={c.id} value={c.id}>
@@ -603,7 +603,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                       required
                       value={basePrice}
                       onChange={(e) => setBasePrice(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5]"
+                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5]"
                     />
                   </div>
                 </div>
@@ -613,7 +613,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                   <select
                     value={baseSize}
                     onChange={(e) => setBaseSize(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5]"
+                    className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5]"
                   >
                     <option value="10 inches">10 inches</option>
                     <option value="12 inches">12 inches</option>
@@ -631,7 +631,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe inspiration, symbolism, craftsmanship..."
-                    className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5] resize-none"
+                    className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5] resize-none"
                   />
                 </div>
               </div>
@@ -785,7 +785,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                     type="text"
                     value={material}
                     onChange={(e) => setMaterial(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5]"
+                    className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5]"
                   />
                 </div>
 
@@ -796,7 +796,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                       type="text"
                       value={creationTime}
                       onChange={(e) => setCreationTime(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5]"
+                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5]"
                     />
                   </div>
 
@@ -806,7 +806,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                       type="text"
                       value={shippingInfo}
                       onChange={(e) => setShippingInfo(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5]"
+                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5]"
                     />
                   </div>
                 </div>
@@ -817,7 +817,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                     type="text"
                     value={specialInfo}
                     onChange={(e) => setSpecialInfo(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5]"
+                    className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5]"
                   />
                 </div>
               </div>

@@ -178,12 +178,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           {/* Thumbnail Strip (if multiple photos available) */}
           {imagesList.length > 1 && (
-            <div className="flex gap-3.5 overflow-x-auto pb-2 pt-1">
+            <div className="flex gap-4 overflow-x-auto pb-3 pt-1">
               {imagesList.map((img, idx) => (
                 <button
                   key={img.id || idx}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer flex items-center justify-center p-1.5 bg-theme-page ${
+                  className={`w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer flex items-center justify-center p-2 bg-theme-page ${
                     activeImageIndex === idx
                       ? 'border-theme-accent scale-105 shadow-md ring-2 ring-theme-accent/20'
                       : 'border-theme-glass opacity-75 hover:opacity-100 hover:scale-102'

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export type ThemeMode = 'earthy' | 'sapphire' | 'blackgold';
+export type ThemeMode = 'blackgold' | 'sage' | 'sapphire';
 
 interface ThemeContextType {
   theme: ThemeMode;
@@ -18,26 +18,26 @@ interface ThemeContextType {
 }
 
 const THEME_CONFIGS: Record<ThemeMode, ThemeContextType['themeConfig']> = {
-  earthy: {
-    name: 'Earthy Terracotta & Gold',
-    description: 'Warm artisan studio palette with terracotta, warm gold, and ivory',
-    primaryHex: '#C85A32',
-    secondaryHex: '#D4A373',
-    bgHex: '#FAF7F2',
-  },
-  sapphire: {
-    name: 'Royal Sapphire & Sky Blue',
-    description: 'Pastel sky blue and royal sapphire theme inspired by artist card design',
-    primaryHex: '#1D529E',
-    secondaryHex: '#00B4D8',
-    bgHex: '#F0F6FF',
-  },
   blackgold: {
-    name: 'Black & Antique Gold',
+    name: 'Theme Black+Antique gold',
     description: 'Luxurious obsidian black with metallic antique gold leaf and champagne glassmorphism',
     primaryHex: '#D4A373',
     secondaryHex: '#E6C594',
     bgHex: '#12100E',
+  },
+  sage: {
+    name: 'Sage Green & Rose Gold',
+    description: 'Calm · Natural · Mindful. Meditation-inspired mandalas with sage green and rose gold accents.',
+    primaryHex: '#66765B',
+    secondaryHex: '#F43F5E',
+    bgHex: '#FAF7F0',
+  },
+  sapphire: {
+    name: 'Royal Sapphire & sky gold',
+    description: 'Refined sapphire blue and sky gold inspired by artist card design',
+    primaryHex: '#1D529E',
+    secondaryHex: '#D4AF37',
+    bgHex: '#F0F6FF',
   },
 };
 
@@ -46,10 +46,10 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
     const saved = localStorage.getItem('dot_art_theme');
-    if (saved === 'earthy' || saved === 'sapphire' || saved === 'blackgold') {
+    if (saved === 'blackgold' || saved === 'sage' || saved === 'sapphire') {
       return saved as ThemeMode;
     }
-    return 'earthy';
+    return 'blackgold';
   });
 
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
