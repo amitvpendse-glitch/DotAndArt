@@ -193,7 +193,7 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
                   required
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  placeholder="e.g. Ordering & Payment, Shipping, Framing..."
+                  placeholder="e.g. Ordering & Payment, Shipping, Dimensions..."
                   className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
                 />
               </div>

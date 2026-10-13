@@ -36,7 +36,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
 
   const handleWhatsAppChat = () => {
     const url = createWhatsAppUrl(
-      'Hello Dot & Art! I am visiting your website and would love to enquire about your handmade mandala and Lippan artwork collections.'
+      'Hello Dot And Art! I am visiting your website and would love to enquire about your handmade mandala and Lippan artwork collections.'
     );
     openExternalLink(url);
   };
@@ -66,31 +66,28 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
           <div
             onClick={() => handleLinkClick('/')}
             className="flex items-center gap-3 cursor-pointer group select-none py-1"
-            title="Dot & Art — Handcrafted Mandala & Lippan Studio"
+            title="Dot And Art — Handcrafted "
           >
-            {/* Handcrafted Mandala Logo Medallion */}
-            <div className="relative shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full p-0.5 ring-2 ring-[var(--accent-gold)] shadow-md bg-white transition-transform duration-300 group-hover:scale-105 overflow-hidden">
+            {/* Handcrafted Mandala Logo — As is, floating in air without white box */}
+            <div className="relative shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 filter drop-shadow-md">
               <img
-                src="/logo.png"
-                onError={(e) => {
-                  e.currentTarget.src = '/logo.svg';
-                }}
-                alt="Dot & Art Studio Logo"
-                className="w-full h-full object-cover rounded-full"
+                src="/static/assets/images/DotAndArt_Logo.jpg"
+                alt="Dot And Art Studio Logo"
+                className="w-full h-full object-cover rounded-full [clip-path:circle(49%)] select-none"
                 loading="eager"
               />
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
                 <span className="font-serif text-xl sm:text-2xl md:text-2xl tracking-wide font-bold text-theme-primary group-hover:text-theme-accent transition-colors leading-tight">
-                  Dot & Art
+                  Dot And Art
                 </span>
                 <span className="hidden sm:inline-block text-[9px] tracking-widest uppercase font-semibold px-2 py-0.5 rounded-full bg-[var(--accent-primary)]/10 text-theme-accent border border-[var(--accent-primary)]/20">
                   Studio
                 </span>
               </div>
               <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-theme-muted font-medium">
-                Mandala & Lippan Studio
+                
               </span>
             </div>
           </div>
@@ -190,19 +187,16 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
               onClick={() => handleLinkClick('/')}
               className="flex items-center gap-3.5 pb-3 mb-1 border-b border-theme-glass cursor-pointer"
             >
-              <div className="w-12 h-12 shrink-0 rounded-full p-0.5 ring-2 ring-[var(--accent-gold)] shadow-sm bg-white overflow-hidden">
+              <div className="w-12 h-12 shrink-0 flex items-center justify-center filter drop-shadow-md">
                 <img
-                  src="/logo.png"
-                  onError={(e) => {
-                    e.currentTarget.src = '/logo.svg';
-                  }}
-                  alt="Dot & Art Logo"
-                  className="w-full h-full object-cover rounded-full"
+                  src="/static/assets/images/DotAndArt_Logo.jpg"
+                  alt="Dot And Art Logo"
+                  className="w-full h-full object-cover rounded-full [clip-path:circle(49%)] select-none"
                 />
               </div>
               <div className="flex flex-col">
-                <span className="font-serif text-xl font-bold text-theme-primary">Dot & Art</span>
-                <span className="text-[10px] uppercase tracking-widest text-theme-muted">Mandala & Lippan Studio</span>
+                <span className="font-serif text-xl font-bold text-theme-primary">Dot And Art</span>
+                
               </div>
             </div>
 

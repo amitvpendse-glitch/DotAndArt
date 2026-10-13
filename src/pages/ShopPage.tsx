@@ -160,10 +160,10 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           Authentic Artwork Catalog
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-theme-primary">
-          Dot & Art Collection
+          Dot And Art Collection
         </h1>
         <p className="text-sm text-theme-muted font-light leading-relaxed">
-          Original handcrafted pieces ranging from intimate 6-inch meditation plaques to monumental 48-inch temple wall hangings.
+          Original handcrafted pieces available in authentic dimensions: 10, 12, 15, 18, 24, and 30 inches.
         </p>
 
         <div className="pt-2 flex flex-wrap justify-center gap-3">
@@ -277,10 +277,12 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
               className="px-2.5 py-1.5 rounded-md bg-theme-page border border-theme-glass text-theme-primary focus:outline-none cursor-pointer"
             >
               <option value="all">All Sizes</option>
-              <option value="6 inches">Compact (6" - 8")</option>
-              <option value="12 inches">Medium (10" - 16")</option>
-              <option value="18 inches">Large (18" - 24")</option>
-              <option value="30 inches">Grand (30" - 36"+)</option>
+              <option value="10 inches">10 inches</option>
+              <option value="12 inches">12 inches</option>
+              <option value="15 inches">15 inches</option>
+              <option value="18 inches">18 inches</option>
+              <option value="24 inches">24 inches</option>
+              <option value="30 inches">30 inches</option>
             </select>
           </div>
 
@@ -398,27 +400,56 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
                   )}
                 </div>
 
-                {/* Content */}
+                {/* Content with complete authentic specifications */}
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                  <div>
-                    <span className="text-[10px] uppercase tracking-wider text-theme-muted font-semibold">
-                      {isLippan ? 'Lippan Mud-Mirror' : 'Dot Mandala'} • {product.base_size}
-                    </span>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-theme-muted font-semibold">
+                      <span>{isLippan ? 'Lippan Wall Hanging' : 'Mandala Wall Hanging'}</span>
+                      <span className="font-mono text-theme-accent font-bold px-1.5 py-0.5 rounded bg-theme-accent/10 border border-theme-glass">
+                        {product.sku}
+                      </span>
+                    </div>
+
                     <h3
                       onClick={() => onSelectProduct(product.sku)}
-                      className="font-serif text-base font-semibold text-theme-primary group-hover:text-theme-accent transition-colors cursor-pointer mt-0.5 line-clamp-1"
+                      className="font-serif text-base font-semibold text-theme-primary group-hover:text-theme-accent transition-colors cursor-pointer leading-tight"
                     >
                       {product.name}
                     </h3>
+
+                    <p className="text-xs text-theme-muted font-light line-clamp-1">
+                      {product.description}
+                    </p>
+
+                    {/* Detailed Specifications Box */}
+                    <div className="pt-2 border-t border-theme-glass space-y-1.5 text-[11px]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-theme-muted">Size:</span>
+                        <span className="font-semibold text-theme-primary">{product.base_size}</span>
+                      </div>
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="text-theme-muted shrink-0">Material:</span>
+                        <span className="font-medium text-theme-primary text-right text-[10px] leading-tight line-clamp-1" title={product.material}>
+                          {product.material}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-[10px] text-theme-muted pt-0.5">
+                        <div>Creation: <strong className="text-theme-primary">{product.creation_time}</strong></div>
+                        <div>Customizable: <strong className="text-emerald-600">Yes</strong></div>
+                      </div>
+                      <div className="text-[10px] text-theme-muted truncate" title="Worldwide shipping in bubble wrap and corrugated box">
+                        Shipping: <strong className="text-theme-primary">Bubble wrap & corrugated box</strong>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Item card action area */}
                   {(() => {
                     const itemQty = getItemQuantity(product.id);
                     return (
-                      <div className="flex items-center justify-between pt-2 border-t border-theme-glass">
+                      <div className="flex items-center justify-between pt-2.5 border-t border-theme-glass">
                         <div>
-                          <span className="text-[10px] text-theme-muted">Displayed Price</span>
+                          <span className="text-[10px] uppercase tracking-wider text-theme-muted font-semibold">Price</span>
                           <p className="font-serif text-base font-bold text-theme-accent">
                             ₹{product.base_price.toLocaleString('en-IN')}
                           </p>

@@ -175,11 +175,18 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
                     <div>
                       <strong className="text-theme-muted">Material:</strong> {activeLightbox.material}
                     </div>
-                    <div>
-                      <strong className="text-theme-muted">Framing:</strong> {activeLightbox.framing}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div><strong className="text-theme-muted">Customizable:</strong> <span className="text-emerald-600 font-bold">Yes</span></div>
+                      <div><strong className="text-theme-muted">Creation:</strong> {activeLightbox.creation_time}</div>
                     </div>
                     <div>
-                      <strong className="text-theme-muted">Estimated Time:</strong> {activeLightbox.creation_time}
+                      <strong className="text-theme-muted">Photos:</strong> {activeLightbox.photos_available_note || 'Yes'}
+                    </div>
+                    <div>
+                      <strong className="text-theme-muted">Shipping:</strong>{' '}
+                      {activeLightbox.shipping_info.toLowerCase().includes('bubble wrap')
+                        ? activeLightbox.shipping_info
+                        : `${activeLightbox.shipping_info} • Bubble wrap and corrugated box`}
                     </div>
                   </div>
                 </div>

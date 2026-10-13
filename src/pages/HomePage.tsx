@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, ArrowRight, MessageCircle, Heart, Star, ShieldCheck, CheckCircle2, ChevronRight, Eye, Palette, Droplets, Flame, ShoppingBag, Plus, Minus } from 'lucide-react';
 import { Category, Product, Testimonial, FAQ, WebsitePage } from '../types';
 import { SafeProductImage } from '../components/SafeProductImage';
-import { Huge3DBanner } from '../components/Huge3DBanner';
+import { HugeShowcaseBanner } from '../components/HugeShowcaseBanner';
 import { useCart } from '../context/CartContext';
 import { useTheme, ThemeMode } from '../context/ThemeContext';
 import { createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
@@ -61,14 +61,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
   const bulkSection = pageData?.sections?.find((s) => s.section_type === 'bulk_gifting')?.content_json;
 
   const handleHeroWhatsApp = () => {
-    const url = createWhatsAppUrl('Hello Dot & Art! I would like to enquire about bespoke handmade mandala and Lippan commissions.');
+    const url = createWhatsAppUrl('Hello Dot And Art! I would like to enquire about bespoke handmade mandala and Lippan commissions.');
     openExternalLink(url);
   };
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-16 bg-theme-page text-theme-primary transition-colors duration-500">
-      {/* 1. HUGE 3D SHOWCASE BANNER (DA-MD-24-0001) AFTER NAVIGATION BAR */}
-      <Huge3DBanner onSelectProduct={onSelectProduct} onNavigate={onNavigate} />
+      {/* 1. HUGE SHOWCASE BANNER (DA-MD-24-0002.jpg) WITH SMART DESCRIPTION SHOWCASE */}
+      <HugeShowcaseBanner onSelectProduct={onSelectProduct} onNavigate={onNavigate} />
 
       {/* 2. HERO INTRO & BRAND STORY */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[var(--hero-bg-from)] via-[var(--bg-page)] to-[var(--bg-page)] pt-10 pb-16 sm:pt-16 sm:pb-20 border-b border-theme-glass">
@@ -103,64 +103,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
             </button>
           </div>
 
-          {/* Quick Interactive Theme Switcher Bar on Home Page */}
-          <div className="pt-6 max-w-xl mx-auto">
-            <div className="glass-panel p-3 sm:p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg border border-theme-glass">
-              <div className="flex items-center gap-2 text-xs font-semibold text-theme-primary">
-                <Palette className="w-4 h-4 text-theme-accent" />
-                <span>Switch Color Theme:</span>
-              </div>
-              <div className="flex items-center gap-2 w-full sm:w-auto justify-center">
-                <button
-                  onClick={() => setTheme('earthy')}
-                  className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
-                    theme === 'earthy'
-                      ? 'bg-[#C85A32] text-white shadow-md ring-2 ring-[#C85A32]/30'
-                      : 'bg-white/60 text-slate-700 hover:bg-white border border-slate-200'
-                  }`}
-                  title="Earthy Terracotta & Gold"
-                >
-                  <Sparkles className="w-3 h-3" />
-                  <span>Terracotta</span>
-                </button>
 
-                <button
-                  onClick={() => setTheme('sapphire')}
-                  className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
-                    theme === 'sapphire'
-                      ? 'bg-[#1D529E] text-white shadow-md ring-2 ring-[#1D529E]/30'
-                      : 'bg-white/60 text-slate-700 hover:bg-white border border-slate-200'
-                  }`}
-                  title="Pastel Blue & Royal Sapphire"
-                >
-                  <Droplets className="w-3 h-3" />
-                  <span>Pastel Blue</span>
-                </button>
-
-                <button
-                  onClick={() => setTheme('blackgold')}
-                  className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
-                    theme === 'blackgold'
-                      ? 'bg-[#12100E] text-[#D4A373] border border-[#D4A373] shadow-md ring-2 ring-[#D4A373]/30'
-                      : 'bg-white/60 text-slate-700 hover:bg-white border border-slate-200'
-                  }`}
-                  title="Theme Black + Antique Gold"
-                >
-                  <Sparkles className="w-3 h-3 text-[#D4A373]" />
-                  <span>Black & Gold</span>
-                </button>
-
-                <button
-                  onClick={openThemeModal}
-                  className="px-3 py-1.5 rounded-full text-xs font-semibold bg-theme-accent text-white hover:opacity-90 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
-                  title="View All Theme Styles & Details"
-                >
-                  <Palette className="w-3.5 h-3.5" />
-                  <span>All Styles</span>
-                </button>
-              </div>
-            </div>
-          </div>
 
           {/* Trust Indicators */}
           <div className="pt-6 grid grid-cols-3 gap-6 border-t border-theme-glass max-w-lg mx-auto text-center">
@@ -242,18 +185,47 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
                   )}
                 </div>
 
-                {/* Details Area */}
+                {/* Details Area with authentic specifications */}
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                  <div>
-                    <span className="text-[10px] uppercase tracking-wider text-theme-muted font-semibold">
-                      {isLippan ? 'Lippan Mud Art' : 'Dot Mandala'} • {product.base_size}
-                    </span>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-theme-muted font-semibold">
+                      <span>{isLippan ? 'Lippan Wall Hanging' : 'Mandala Wall Hanging'}</span>
+                      <span className="font-mono text-theme-accent font-bold px-1.5 py-0.5 rounded bg-theme-accent/10 border border-theme-glass">
+                        {product.sku}
+                      </span>
+                    </div>
+
                     <h3
                       onClick={() => onSelectProduct(product.sku)}
-                      className="font-serif text-base font-semibold text-theme-primary group-hover:text-theme-accent transition-colors cursor-pointer mt-0.5 line-clamp-1"
+                      className="font-serif text-base font-semibold text-theme-primary group-hover:text-theme-accent transition-colors cursor-pointer leading-tight"
                     >
                       {product.name}
                     </h3>
+
+                    <p className="text-xs text-theme-muted font-light line-clamp-1">
+                      {product.description}
+                    </p>
+
+                    {/* Detailed Specifications Box */}
+                    <div className="pt-2 border-t border-theme-glass space-y-1 text-[11px]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-theme-muted">Size:</span>
+                        <span className="font-semibold text-theme-primary">{product.base_size}</span>
+                      </div>
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="text-theme-muted shrink-0">Material:</span>
+                        <span className="font-medium text-theme-primary text-right text-[10px] leading-tight line-clamp-1" title={product.material}>
+                          {product.material}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-[10px] text-theme-muted pt-0.5">
+                        <div>Creation: <strong className="text-theme-primary">{product.creation_time}</strong></div>
+                        <div>Customizable: <strong className="text-emerald-600">Yes</strong></div>
+                      </div>
+                      <div className="text-[10px] text-theme-muted truncate" title="Worldwide shipping in bubble wrap and corrugated box">
+                        Shipping: <strong className="text-theme-primary">Bubble wrap & corrugated box</strong>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Card Action Area */}
@@ -262,7 +234,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
                     return (
                       <div className="flex items-center justify-between pt-2 border-t border-theme-glass">
                         <div>
-                          <span className="text-xs text-theme-muted">Displayed Price</span>
+                          <span className="text-[10px] uppercase tracking-wider text-theme-muted font-semibold">Price</span>
                           <p className="font-serif text-lg font-bold text-theme-accent">
                             ₹{product.base_price.toLocaleString('en-IN')}
                           </p>
@@ -337,7 +309,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
               </h2>
               <p className="text-sm sm:text-base text-theme-muted font-light leading-relaxed">
                 {introSection?.paragraph_1 ||
-                  'At Dot & Art, art is not merely decoration; it is a sacred meditation. Each dot mandala begins at the central Bindu — the spark of primordial consciousness — and blossoms outward in thousands of concentric, hand-dropped acrylic droplets.'}
+                  'At Dot And Art, art is not merely decoration; it is a sacred meditation. Each dot mandala begins at the central Bindu — the spark of primordial consciousness — and blossoms outward in thousands of concentric, hand-dropped acrylic droplets.'}
               </p>
               <p className="text-sm sm:text-base text-theme-muted font-light leading-relaxed">
                 {introSection?.paragraph_2 ||
@@ -412,7 +384,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
               Have a Specific Space, Diameter or Energy in Mind?
             </h2>
             <p className="text-sm sm:text-base text-slate-300 font-light leading-relaxed">
-              From 6-inch desktop meditation plaques to monumental 48-inch feature wall centerpieces, we craft bespoke pieces tailored to your exact color palette, deity symbols, or central photos.
+              From 10-inch sacred meditation wall hangings to grand 30-inch feature wall centerpieces, we craft bespoke pieces tailored to your exact color preferences, deity symbols, or central photos.
             </p>
 
             <div className="pt-2 flex flex-col sm:flex-row items-center gap-4">
@@ -467,7 +439,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
               <button
                 onClick={() => {
                   const url = createWhatsAppUrl(
-                    'Hello Dot & Art! I would like to enquire about bulk/corporate/wedding gifting orders.'
+                    'Hello Dot And Art! I would like to enquire about bulk/corporate/wedding gifting orders.'
                   );
                   openExternalLink(url);
                 }}

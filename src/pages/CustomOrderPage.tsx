@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { Sparkles, MessageCircle, AlertCircle, CheckCircle2, ChevronRight, Palette, Compass, Ruler, Camera } from 'lucide-react';
-import { createWhatsAppUrl, formatCustomMandalaEnquiry, openExternalLink } from '../utils/whatsapp';
+import { Sparkles, MessageCircle, AlertCircle, CheckCircle2, ChevronRight, Palette, Compass, Ruler, Camera, Upload, Image as ImageIcon, Trash2 } from 'lucide-react';
+import {
+  createWhatsAppUrl,
+  formatCustomMandalaEnquiry,
+  openExternalLink,
+  sendNativeWhatsAppShare,
+  WhatsAppAttachmentItem,
+} from '../utils/whatsapp';
+import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
 import { CustomMandalaInquiry } from '../types';
 
 export const CustomOrderPage: React.FC = () => {
@@ -10,8 +17,8 @@ export const CustomOrderPage: React.FC = () => {
     email: '',
     delivery_address: '',
     reference_product_code: '',
-    desired_size: '16 inches diameter (Medium-Large)',
-    preferred_color_scheme: 'Peacock Teal, Indigo & Metallic Bronze',
+    desired_size: '12 inches',
+    preferred_color_scheme: '',
     central_photo_requirement: '',
     specific_pattern_requirements: 'Sacred Star Harmony with concentric dot layers',
     additional_instructions: '',
@@ -19,33 +26,41 @@ export const CustomOrderPage: React.FC = () => {
 
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [referenceImages, setReferenceImages] = useState<WhatsAppAttachmentItem[]>([]);
+  const [attachmentModalOpen, setAttachmentModalOpen] = useState(false);
+  const [preparedEnquiry, setPreparedEnquiry] = useState<{
+    msg: string;
+    attachments: WhatsAppAttachmentItem[];
+  }>({ msg: '', attachments: [] });
 
   const sizeOptions = [
-    '6 inches diameter (Petite Tabletop/Altar)',
-    '8 inches diameter (Compact Accent)',
-    '10 inches diameter (Small Wall Hanging)',
-    '12 inches diameter (Standard Medium)',
-    '14 inches diameter (Featured Medium)',
-    '16 inches diameter (Medium-Large)',
-    '18 inches diameter (Prominent Display)',
-    '20 inches diameter (Statement Piece)',
-    '24 inches diameter (Grand Centerpiece)',
-    '30 inches diameter (Temple / Double Height Wall)',
-    '36 inches or above (Monumental Custom Architectural)',
-    'Custom Dimensions (Specify in instructions)',
+    '10 inches',
+    '12 inches',
+    '15 inches',
+    '18 inches',
+    '24 inches',
+    '30 inches',
   ];
 
-  const colorPalettes = [
-    'Peacock Teal, Indigo & Metallic Bronze',
-    'Radiant Solar Ochre, Warm Terracotta & 24K Gold',
-    'Deep Emerald Green, Forest Jade & Pearl White',
-    'Royal Violet, Amethyst & Champagne Gold',
-    'Monochrome Obsidian, Ivory & Slate Grey',
-    'Rustic Terracotta & White Mud-Mirror Lippan Style',
-    '7-Chakra Rainbow Pranic Spectrum',
-    'Pastel Blush Rose, Sage & Antique Silver',
-    'Custom Palette (Specify below)',
-  ];
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    const newItems: WhatsAppAttachmentItem[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      const objectUrl = URL.createObjectURL(f);
+      newItems.push({
+        url: objectUrl,
+        filename: f.name || `reference_${Date.now()}_${i + 1}.jpg`,
+        title: f.name,
+      });
+    }
+    setReferenceImages((prev) => [...prev, ...newItems]);
+  };
+
+  const handleRemovePhoto = (index: number) => {
+    setReferenceImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +82,21 @@ export const CustomOrderPage: React.FC = () => {
 
     setErrorMessage('');
 
+    // Prepare attachments: any user uploaded photos plus reference product code photo
+    const attachments: WhatsAppAttachmentItem[] = [...referenceImages];
+    if (formData.reference_product_code && formData.reference_product_code.trim()) {
+      const code = formData.reference_product_code.trim().toUpperCase();
+      const refUrl = `/static/assets/images/${code}.jpg`;
+      if (!attachments.some((a) => a.sku === code || a.url === refUrl)) {
+        attachments.unshift({
+          url: refUrl,
+          filename: `${code}.jpg`,
+          title: `Catalog Reference ${code}`,
+          sku: code,
+        });
+      }
+    }
+
     // Safely log on server
     try {
       await fetch('/api/custom-enquiry', {
@@ -78,15 +108,22 @@ export const CustomOrderPage: React.FC = () => {
       // non-blocking
     }
 
-    const message = formatCustomMandalaEnquiry(formData);
-    const whatsappUrl = createWhatsAppUrl(message);
+    const message = formatCustomMandalaEnquiry(formData, attachments.length > 0);
 
-    // Open WhatsApp
-    openExternalLink(whatsappUrl);
+    // Try native share on mobile devices
+    const result = await sendNativeWhatsAppShare(message, attachments);
+    if (result === 'shared') {
+      setSubmitted(true);
+      return;
+    }
+
+    // Otherwise show attachment assistant modal
+    setPreparedEnquiry({ msg: message, attachments });
+    setAttachmentModalOpen(true);
     setSubmitted(true);
   };
 
-  const formattedPreview = formatCustomMandalaEnquiry(formData);
+  const formattedPreview = formatCustomMandalaEnquiry(formData, referenceImages.length > 0);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12 bg-theme-page text-theme-primary transition-colors duration-500">
@@ -111,8 +148,8 @@ export const CustomOrderPage: React.FC = () => {
             <Ruler className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="font-semibold text-theme-primary">Any Diameter</h4>
-            <p className="text-theme-muted text-[11px]">From 6 inches up to 48 inches wall rounds or square tiles.</p>
+            <h4 className="font-semibold text-theme-primary">Available Sizes</h4>
+            <p className="text-theme-muted text-[11px]">10, 12, 15, 18, 24, or 30 inches.</p>
           </div>
         </div>
 
@@ -277,23 +314,6 @@ export const CustomOrderPage: React.FC = () => {
                 />
               </div>
             </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-theme-primary mb-1">
-                Preferred Color Palette
-              </label>
-              <select
-                value={formData.preferred_color_scheme}
-                onChange={(e) => setFormData({ ...formData, preferred_color_scheme: e.target.value })}
-                className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary cursor-pointer"
-              >
-                {colorPalettes.map((pal) => (
-                  <option key={pal} value={pal}>
-                    {pal}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
 
           {/* Section 3: Bespoke Details */}
@@ -310,12 +330,56 @@ export const CustomOrderPage: React.FC = () => {
                 type="text"
                 value={formData.central_photo_requirement}
                 onChange={(e) => setFormData({ ...formData, central_photo_requirement: e.target.value })}
-                placeholder="e.g. 3-inch central round family photo, Ganesha silhouette, or Om symbol"
+                placeholder="e.g. Central round family photo, Ganesha silhouette, or Om symbol"
                 className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary"
               />
               <span className="text-[10px] text-theme-muted mt-1 block">
-                Note: Central photo files are shared directly on WhatsApp after initial consultation.
+                Note: Central photo and reference files are sent directly as attachments on WhatsApp.
               </span>
+
+              {/* Attach Reference Photos */}
+              <div className="mt-2.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-theme-accent/10 text-theme-accent text-xs font-semibold hover:bg-theme-accent/20 transition-colors cursor-pointer border border-theme-glass">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Attach Reference / Inspiration Photos ({referenceImages.length})</span>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handlePhotoUpload}
+                      className="hidden"
+                    />
+                  </label>
+                  {referenceImages.length > 0 && (
+                    <span className="text-[10px] text-emerald-600 font-semibold">
+                      {referenceImages.length} {referenceImages.length === 1 ? 'photo' : 'photos'} ready to attach
+                    </span>
+                  )}
+                </div>
+
+                {referenceImages.length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {referenceImages.map((img, idx) => (
+                      <div
+                        key={idx}
+                        className="relative group w-14 h-14 rounded-lg overflow-hidden border border-theme-glass bg-theme-card"
+                        title={img.filename}
+                      >
+                        <img src={img.url} alt={img.filename} className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => handleRemovePhoto(idx)}
+                          className="absolute inset-0 bg-red-600/80 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"
+                          title="Remove photo"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div>
@@ -333,13 +397,13 @@ export const CustomOrderPage: React.FC = () => {
 
             <div>
               <label className="block text-xs font-semibold text-theme-primary mb-1">
-                Additional Instructions / Target Occasion / Deadline
+                Additional Instructions & Preferred Color Palette
               </label>
               <textarea
                 rows={3}
                 value={formData.additional_instructions}
                 onChange={(e) => setFormData({ ...formData, additional_instructions: e.target.value })}
-                placeholder="Tell us about the space where this will hang, any specific delivery deadline, or special aesthetic desires..."
+                placeholder="Specify your preferred colors / color palette, wall interior notes, target occasion, or delivery deadline..."
                 className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary resize-none"
               />
             </div>
@@ -360,6 +424,13 @@ export const CustomOrderPage: React.FC = () => {
           </div>
         </form>
       )}
+      <WhatsAppAttachmentModal
+        isOpen={attachmentModalOpen}
+        onClose={() => setAttachmentModalOpen(false)}
+        messageText={preparedEnquiry.msg}
+        attachments={preparedEnquiry.attachments}
+        title="Custom Commission & Attached Photos"
+      />
     </div>
   );
 };

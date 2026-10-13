@@ -121,16 +121,15 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
       >
         {/* Header Icon */}
         <div className="space-y-3">
-          <div className="w-20 h-20 mx-auto rounded-full p-1 ring-2 ring-theme-glass bg-theme-page shadow-md transition-transform hover:scale-105 overflow-hidden">
+          <div className="w-20 h-20 mx-auto flex items-center justify-center transition-transform hover:scale-105">
             <img
-              src="/logo.png"
-              onError={(e) => { e.currentTarget.src = '/logo.svg'; }}
-              alt="Dot & Art Logo"
-              className="w-full h-full object-cover rounded-full"
+              src="/static/assets/images/DotAndArt_Logo.jpg"
+              alt="Dot And Art Logo"
+              className="w-full h-full object-contain rounded-full select-none"
             />
           </div>
           <h2 className="font-serif text-3xl font-semibold text-theme-primary">
-            Dot & Art CMS
+            Dot And Art CMS
           </h2>
           <p className="text-xs text-theme-muted max-w-xs mx-auto">
             Protected administrative console. Enter your four-digit security PIN using your keyboard or on-screen keypad.

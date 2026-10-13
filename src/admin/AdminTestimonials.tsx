@@ -219,7 +219,7 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
                   type="text"
                   value={artwork}
                   onChange={(e) => setArtwork(e.target.value)}
-                  placeholder="e.g. Surya Mandala (16 inches)"
+                  placeholder="e.g. Surya Mandala (15 inches)"
                   className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
                 />
               </div>

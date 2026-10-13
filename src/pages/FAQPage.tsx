@@ -21,7 +21,7 @@ export const FAQPage: React.FC = () => {
   });
 
   const handleWhatsApp = () => {
-    const url = createWhatsAppUrl('Hello Dot & Art! I have a question about ordering and custom artworks.');
+    const url = createWhatsAppUrl('Hello Dot And Art! I have a question about ordering and custom artworks.');
     openExternalLink(url);
   };
 

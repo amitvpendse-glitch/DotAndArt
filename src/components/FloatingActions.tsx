@@ -24,7 +24,7 @@ export const FloatingActions: React.FC = () => {
 
   const handleWhatsApp = () => {
     const url = createWhatsAppUrl(
-      'Hello Dot & Art! I am visiting your website and would like to enquire about your handmade artwork collections.'
+      'Hello Dot And Art! I am visiting your website and would like to enquire about your handmade artwork collections.'
     );
     openExternalLink(url);
   };

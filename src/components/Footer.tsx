@@ -10,7 +10,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const currentYear = new Date().getFullYear();
 
   const handleWhatsApp = () => {
-    const url = createWhatsAppUrl('Hello Dot & Art! I would like to enquire about your artwork.');
+    const url = createWhatsAppUrl('Hello Dot And Art! I would like to enquire about your artwork.');
     openExternalLink(url);
   };
 
@@ -35,7 +35,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </div>
             <div>
               <h4 className="text-sm font-semibold text-theme-primary">Worldwide Shipping</h4>
-              <p className="text-xs text-theme-muted">Secure shock-proof wooden & bubble crating.</p>
+              <p className="text-xs text-theme-muted">Packed in protective bubble wrap and corrugated box.</p>
             </div>
           </div>
 
@@ -65,22 +65,19 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-3.5 cursor-pointer group" onClick={() => onNavigate('/')}>
-              <div className="w-14 h-14 shrink-0 rounded-full p-0.5 ring-2 ring-theme-glass shadow-lg bg-theme-page group-hover:scale-105 transition-transform overflow-hidden">
+              <div className="w-14 h-14 shrink-0 flex items-center justify-center group-hover:scale-105 transition-transform filter drop-shadow-md">
                 <img
-                  src="/logo.png"
-                  onError={(e) => {
-                    e.currentTarget.src = '/logo.svg';
-                  }}
-                  alt="Dot & Art Logo"
-                  className="w-full h-full object-cover rounded-full"
+                  src="/static/assets/images/DotAndArt_Logo.jpg"
+                  alt="Dot And Art Logo"
+                  className="w-full h-full object-cover rounded-full [clip-path:circle(49%)] select-none"
                 />
               </div>
               <div className="flex flex-col">
                 <span className="font-serif text-2xl font-semibold tracking-wide text-theme-primary group-hover:text-theme-accent transition-colors">
-                  Dot & Art
+                  Dot And Art
                 </span>
                 <span className="text-[10px] uppercase tracking-widest text-theme-accent font-semibold">
-                  Mandala & Lippan Studio
+                  
                 </span>
               </div>
             </div>
@@ -207,7 +204,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-theme-accent shrink-0 mt-0.5" />
-                <span>Dot & Art Studio, Maharashtra, India (Worldwide Shipping)</span>
+                <span>Dot And Art Studio, Maharashtra, India (Worldwide Shipping)</span>
               </li>
             </ul>
           </div>
@@ -215,7 +212,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
         {/* Bottom Sub-bar */}
         <div className="pt-8 border-t border-theme-glass flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-theme-muted">
-          <p>© {currentYear} Dot & Art (dotandart.in). All rights reserved. Handcrafted with reverence in India.</p>
+          <p>© {currentYear} Dot And Art (dotandart.in). All rights reserved. Handcrafted with reverence in India.</p>
 
           <div className="flex items-center gap-4">
             <button

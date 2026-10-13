@@ -2,7 +2,15 @@ import React, { useState } from 'react';
 import { X, Trash2, Plus, Minus, MessageCircle, AlertCircle, ShoppingBag, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { SafeProductImage } from './SafeProductImage';
-import { createWhatsAppUrl, formatMultiProductEnquiry, openExternalLink } from '../utils/whatsapp';
+import {
+  createWhatsAppUrl,
+  formatMultiProductEnquiry,
+  openExternalLink,
+  collectAttachmentsForCart,
+  sendNativeWhatsAppShare,
+  WhatsAppAttachmentItem,
+} from '../utils/whatsapp';
+import { WhatsAppAttachmentModal } from './WhatsAppAttachmentModal';
 
 export const EnquiryDrawer: React.FC = () => {
   const {
@@ -23,6 +31,11 @@ export const EnquiryDrawer: React.FC = () => {
   const [deliveryLocation, setDeliveryLocation] = useState('');
   const [additionalMessage, setAdditionalMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [attachmentModalOpen, setAttachmentModalOpen] = useState(false);
+  const [preparedEnquiry, setPreparedEnquiry] = useState<{
+    msg: string;
+    attachments: WhatsAppAttachmentItem[];
+  }>({ msg: '', attachments: [] });
 
   if (!isDrawerOpen) return null;
 
@@ -46,6 +59,8 @@ export const EnquiryDrawer: React.FC = () => {
       generalCustomization: '',
     });
 
+    const attachments = collectAttachmentsForCart(items);
+
     // Record order enquiry on server safely
     try {
       await fetch('/api/custom-enquiry', {
@@ -62,8 +77,15 @@ export const EnquiryDrawer: React.FC = () => {
       // non-blocking
     }
 
-    const whatsappUrl = createWhatsAppUrl(formattedMessage);
-    openExternalLink(whatsappUrl);
+    // Attempt native share with files (on mobile, directly attaches images in WhatsApp!)
+    const result = await sendNativeWhatsAppShare(formattedMessage, attachments);
+    if (result === 'shared') {
+      return;
+    }
+
+    // Otherwise, open attachment modal for desktop or fallback
+    setPreparedEnquiry({ msg: formattedMessage, attachments });
+    setAttachmentModalOpen(true);
   };
 
   return (
@@ -314,6 +336,16 @@ export const EnquiryDrawer: React.FC = () => {
           </div>
         </div>
       </div>
+      <WhatsAppAttachmentModal
+        isOpen={attachmentModalOpen}
+        onClose={() => {
+          setAttachmentModalOpen(false);
+          closeDrawer();
+        }}
+        messageText={preparedEnquiry.msg}
+        attachments={preparedEnquiry.attachments}
+        title="Order Enquiry & Artwork Attachments"
+      />
     </div>
   );
 };

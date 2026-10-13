@@ -49,12 +49,12 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
   const [shortDesc, setShortDesc] = useState('');
   const [description, setDescription] = useState('');
   const [basePrice, setBasePrice] = useState<number>(2400);
-  const [baseSize, setBaseSize] = useState('12 inches diameter');
-  const [material, setMaterial] = useState('8mm Moisture-resistant MDF board, Artist Acrylics, Varnish');
-  const [framing, setFraming] = useState('Framing not included (Includes mounted hanging hook)');
+  const [baseSize, setBaseSize] = useState('12 inches');
+  const [material, setMaterial] = useState('Moisture-resistant MDF board, Artist Acrylics, Varnish');
+  const [framing, setFraming] = useState('');
   const [customizable, setCustomizable] = useState(true);
   const [creationTime, setCreationTime] = useState('5–7 working days');
-  const [shippingInfo, setShippingInfo] = useState('Worldwide shipping in reinforced shock-proof crating');
+  const [shippingInfo, setShippingInfo] = useState('All over the world (Bubble wrap and corrugated box)');
   const [specialInfo, setSpecialInfo] = useState('Clean gently with a soft dry microfiber cloth.');
   const [featured, setFeatured] = useState(false);
   const [isPublished, setIsPublished] = useState(true);
@@ -97,12 +97,12 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
     setShortDesc('');
     setDescription('');
     setBasePrice(2500);
-    setBaseSize('12 inches diameter');
+    setBaseSize('12 inches');
     setMaterial('Moisture-resistant MDF board, Heavy Artist Acrylics, Clear Varnish');
-    setFraming('Framing not included (Rear hook attached)');
+    setFraming('');
     setCustomizable(true);
     setCreationTime('5–7 working days');
-    setShippingInfo('Worldwide shipping available in protective wooden crating.');
+    setShippingInfo('All over the world (Bubble wrap and corrugated box)');
     setSpecialInfo('Wipe with dry microfiber cloth.');
     setFeatured(false);
     setIsPublished(true);
@@ -204,7 +204,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
     const newV: ProductVariant = {
       id: `v-${Date.now()}`,
       product_id: editingProduct?.id || '',
-      size: '16 inches diameter',
+      size: '18 inches',
       price: basePrice + 1000,
       is_available: true,
       display_order: variants.length + 1,
@@ -610,13 +610,18 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
 
                 <div>
                   <label className="block font-semibold text-[#4A3E36] mb-1">Standard Size</label>
-                  <input
-                    type="text"
+                  <select
                     value={baseSize}
                     onChange={(e) => setBaseSize(e.target.value)}
-                    placeholder="e.g. 12 inches diameter"
                     className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5]"
-                  />
+                  >
+                    <option value="10 inches">10 inches</option>
+                    <option value="12 inches">12 inches</option>
+                    <option value="15 inches">15 inches</option>
+                    <option value="18 inches">18 inches</option>
+                    <option value="24 inches">24 inches</option>
+                    <option value="30 inches">30 inches</option>
+                  </select>
                 </div>
 
                 <div>
@@ -726,12 +731,10 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                   </button>
                 </div>
 
-                <div className="space-y-2">
+                  <div className="space-y-2">
                   {variants.map((v, i) => (
                     <div key={v.id || i} className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        placeholder="Size label (e.g. 16 inches diameter)"
+                      <select
                         value={v.size}
                         onChange={(e) => {
                           const copy = [...variants];
@@ -739,7 +742,14 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                           setVariants(copy);
                         }}
                         className="flex-1 px-3 py-1.5 rounded-lg bg-[#FAF7F2] border border-[#D8C7B5]"
-                      />
+                      >
+                        <option value="10 inches">10 inches</option>
+                        <option value="12 inches">12 inches</option>
+                        <option value="15 inches">15 inches</option>
+                        <option value="18 inches">18 inches</option>
+                        <option value="24 inches">24 inches</option>
+                        <option value="30 inches">30 inches</option>
+                      </select>
                       <input
                         type="number"
                         placeholder="Price"
@@ -763,32 +773,20 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                 </div>
               </div>
 
-              {/* Material, Framing, Shipping */}
+              {/* Material, Creation Time, Shipping */}
               <div className="space-y-4 pt-4 border-t border-[#F0E5D8]">
                 <h4 className="font-semibold text-sm text-[#8C4A28] uppercase tracking-wider">
                   4. Craft Materials & Logistics
                 </h4>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-semibold text-[#4A3E36] mb-1">Materials Used</label>
-                    <input
-                      type="text"
-                      value={material}
-                      onChange={(e) => setMaterial(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block font-semibold text-[#4A3E36] mb-1">Framing Details</label>
-                    <input
-                      type="text"
-                      value={framing}
-                      onChange={(e) => setFraming(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5]"
-                    />
-                  </div>
+                <div>
+                  <label className="block font-semibold text-[#4A3E36] mb-1">Materials Used</label>
+                  <input
+                    type="text"
+                    value={material}
+                    onChange={(e) => setMaterial(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5]"
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

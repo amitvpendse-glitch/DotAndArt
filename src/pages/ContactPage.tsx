@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Mail, Instagram, Facebook, Clock, Send, CheckCircle2 } from 'lucide-react';
+import { MessageCircle, Mail, Instagram, Facebook, Send, CheckCircle2 } from 'lucide-react';
 import { WebsiteSettings } from '../types';
 import { createWhatsAppUrl, DISPLAY_WHATSAPP_NUMBER, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
@@ -20,14 +20,14 @@ export const ContactPage: React.FC = () => {
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    const formatted = `Hello Dot & Art,\n\nI am contacting you from the website:\n\nName: ${name}\nPhone: ${phone}\nMessage: ${message}`;
+    const formatted = `Hello Dot And Art,\n\nI am contacting you from the website:\n\nName: ${name}\nPhone: ${phone}\nMessage: ${message}`;
     const url = createWhatsAppUrl(formatted);
     openExternalLink(url);
     setSent(true);
   };
 
   const handleDirectWhatsApp = () => {
-    const url = createWhatsAppUrl('Hello Dot & Art! I would like to connect regarding your artwork.');
+    const url = createWhatsAppUrl('Hello Dot And Art! I would like to connect regarding your artwork.');
     openExternalLink(url);
   };
 
@@ -38,7 +38,7 @@ export const ContactPage: React.FC = () => {
           Get in Touch
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-theme-primary">
-          Contact Dot & Art Studio
+          Contact Dot And Art Studio
         </h1>
         <p className="text-sm text-theme-muted font-light leading-relaxed">
           We welcome custom commission enquiries, bulk orders, and interior design collaborations.
@@ -63,7 +63,7 @@ export const ContactPage: React.FC = () => {
                   <button onClick={handleDirectWhatsApp} className="text-[#128C7E] hover:underline font-semibold mt-0.5 cursor-pointer">
                     {settings?.whatsapp_display || DISPLAY_WHATSAPP_NUMBER}
                   </button>
-                  <p className="text-[11px] text-theme-muted">Available for design consultations & progress photos</p>
+                  <p className="text-[11px] text-theme-muted">Direct messaging & custom order assistance</p>
                 </div>
               </div>
 
@@ -76,16 +76,6 @@ export const ContactPage: React.FC = () => {
                   <a href={`mailto:${settings?.email || 'shitalthosar@yahoo.com'}`} className="hover:underline text-theme-accent">
                     {settings?.email || 'shitalthosar@yahoo.com'}
                   </a>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-full bg-theme-page text-theme-muted flex items-center justify-center shrink-0 border border-theme-glass">
-                  <Clock className="w-5 h-5" />
-                </div>
-                <div>
-                  <span className="font-bold text-theme-primary block">Consultation Hours</span>
-                  <p className="text-theme-muted">Monday – Saturday: 10:00 AM – 7:30 PM IST</p>
                 </div>
               </div>
             </div>

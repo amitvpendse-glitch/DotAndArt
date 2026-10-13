@@ -22,7 +22,7 @@ export const TestimonialsPage: React.FC = () => {
           Words from Art Collectors
         </h1>
         <p className="text-sm text-theme-muted font-light leading-relaxed">
-          Read verified feedback from art lovers, yoga teachers, and interior designers who have welcomed Dot & Art creations into their homes.
+          Read verified feedback from art lovers, yoga teachers, and interior designers who have welcomed Dot And Art creations into their homes.
         </p>
       </div>
 
@@ -68,7 +68,7 @@ export const TestimonialsPage: React.FC = () => {
         </p>
         <div className="pt-2">
           <button
-            onClick={() => openExternalLink(createWhatsAppUrl('Hello Dot & Art! I would like to enquire about your artwork.'))}
+            onClick={() => openExternalLink(createWhatsAppUrl('Hello Dot And Art! I would like to enquire about your artwork.'))}
             className="px-6 py-3 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-xs cursor-pointer"
           >
             <MessageCircle className="w-4 h-4 fill-white" />

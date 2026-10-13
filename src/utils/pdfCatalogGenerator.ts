@@ -190,7 +190,7 @@ export async function generateProfessionalCatalogPDF(
   pdf.setTextColor(102, 87, 77);
 
   const introText =
-    'Welcome to the official collection catalog of Dot & Art. Each artwork showcased herein is meticulously crafted by hand, utilizing premium acrylic pigments on high-density MDF wood and traditional mirror relief clay work. All designs can be ordered directly or customized to bespoke dimensions, color themes, and space requirements.';
+    'Welcome to the official collection catalog of Dot And Art. Each artwork showcased herein is meticulously crafted by hand, utilizing premium acrylic pigments on high-density MDF wood and traditional mirror relief clay work. All designs can be ordered directly or customized to bespoke dimensions, color themes, and space requirements.';
 
   const splitIntro = pdf.splitTextToSize(introText, 170);
   pdf.text(splitIntro, 20, yPos);
@@ -241,7 +241,7 @@ export async function generateProfessionalCatalogPDF(
   // Cover Footer
   pdf.setFontSize(8);
   pdf.setTextColor(150, 150, 150);
-  pdf.text('© 2026 Dot & Art. All Rights Reserved.', pageWidth / 2, pageHeight - 12, {
+  pdf.text('© 2026 Dot And Art. All Rights Reserved.', pageWidth / 2, pageHeight - 12, {
     align: 'center',
   });
 
@@ -355,36 +355,53 @@ export async function generateProfessionalCatalogPDF(
 
       // Specifications Grid
       pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(8);
+      pdf.setFontSize(7.5);
       pdf.setTextColor(102, 87, 77);
 
-      pdf.text(`Base Size: `, textX, textY);
+      pdf.text(`Description: `, textX, textY);
       pdf.setFont('helvetica', 'bold');
       pdf.setTextColor(44, 39, 36);
-      pdf.text(`${product.base_size || 'Standard Size'}`, textX + 16, textY);
-
-      textY += 5;
+      pdf.text(`${product.description || ''}`, textX + 18, textY);
+      textY += 4.5;
 
       pdf.setFont('helvetica', 'normal');
       pdf.setTextColor(102, 87, 77);
-      pdf.text(`Medium: `, textX, textY);
+      pdf.text(`Size: `, textX, textY);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setTextColor(44, 39, 36);
+      pdf.text(`${product.base_size || ''}`, textX + 18, textY);
+      textY += 4.5;
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(102, 87, 77);
+      pdf.text(`Material: `, textX, textY);
       pdf.setFont('helvetica', 'normal');
       pdf.setTextColor(44, 39, 36);
-      const materialShort = (product.material || 'Acrylic on MDF').split(',')[0];
-      pdf.text(materialShort, textX + 16, textY);
+      const splitMat = pdf.splitTextToSize(product.material || '', 85);
+      pdf.text(splitMat, textX + 18, textY);
+      textY += splitMat.length * 3.8 + 1;
 
-      textY += 6;
-
-      // Description
       pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(7.5);
-      pdf.setTextColor(80, 80, 80);
-      const descSnippet = product.description || product.short_description || '';
-      const splitDesc = pdf.splitTextToSize(descSnippet, 105);
-      const descLinesToShow = splitDesc.slice(0, 3);
-      pdf.text(descLinesToShow, textX, textY);
+      pdf.setTextColor(102, 87, 77);
+      pdf.text(`Customizable: `, textX, textY);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setTextColor(34, 139, 34);
+      pdf.text(`Yes`, textX + 22, textY);
 
-      textY += descLinesToShow.length * 3.8 + 6;
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(102, 87, 77);
+      pdf.text(`Creation Time: `, textX + 50, textY);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setTextColor(44, 39, 36);
+      pdf.text(`${product.creation_time || ''}`, textX + 72, textY);
+      textY += 4.5;
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(102, 87, 77);
+      pdf.text(`Shipping: `, textX, textY);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setTextColor(44, 39, 36);
+      pdf.text(`Bubble wrap & corrugated box (Worldwide)`, textX + 18, textY);
 
       // Price Banner Box
       pdf.setFillColor(250, 247, 242);
@@ -413,7 +430,7 @@ export async function generateProfessionalCatalogPDF(
     pdf.setFontSize(7.5);
     pdf.setTextColor(150, 150, 150);
     pdf.text(
-      'Dot & Art Official Catalog • Order via WhatsApp or Website www.dotandart.com',
+      'Dot And Art Official Catalog • Order via WhatsApp or Website www.dotandart.com',
       15,
       pageHeight - 8
     );

@@ -290,7 +290,7 @@ export const AdminCatalogImport: React.FC<AdminCatalogImportProps> = ({ token })
               Upload CSV or Excel Export
             </h3>
             <p className="text-xs text-[#7D6B5D]">
-              Headers supported: <code className="bg-[#FAF7F2] px-1 py-0.5 rounded">Product Code, Product Name, Price, Sizes, Material, Framing, Creation Time, Shipping, Description</code>
+              Headers supported: <code className="bg-[#FAF7F2] px-1 py-0.5 rounded">Product Code, Product Name, Price, Sizes, Material, Creation Time, Shipping, Description</code>
             </p>
           </div>
         </div>

@@ -56,12 +56,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       <div className="md:hidden bg-theme-dark text-white p-4 flex items-center justify-between border-b border-theme-glass sticky top-0 z-30">
         <div className="flex items-center gap-2.5">
           <img
-            src="/logo.png"
-            onError={(e) => { e.currentTarget.src = '/logo.svg'; }}
-            alt="Dot & Art"
-            className="w-8 h-8 object-cover rounded-full ring-1 ring-theme-glass shrink-0"
+            src="/static/assets/images/DotAndArt_Logo.jpg"
+            alt="Dot And Art"
+            className="w-8 h-8 object-contain rounded-full shrink-0"
           />
-          <span className="font-serif text-lg font-semibold tracking-wide">Dot & Art CMS</span>
+          <span className="font-serif text-lg font-semibold tracking-wide">Dot And Art CMS</span>
         </div>
         <button
           onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
@@ -80,17 +79,16 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         <div className="space-y-6">
           {/* Brand */}
           <div className="flex items-center gap-3 px-2 py-1 select-none">
-            <div className="w-10 h-10 rounded-full p-0.5 ring-1 ring-theme-glass bg-black/20 overflow-hidden shrink-0">
+            <div className="w-10 h-10 flex items-center justify-center shrink-0">
               <img
-                src="/logo.png"
-                onError={(e) => { e.currentTarget.src = '/logo.svg'; }}
-                alt="Dot & Art"
-                className="w-full h-full object-cover rounded-full"
+                src="/static/assets/images/DotAndArt_Logo.jpg"
+                alt="Dot And Art"
+                className="w-full h-full object-contain rounded-full"
               />
             </div>
             <div>
               <h2 className="font-serif text-lg font-bold text-white tracking-wide leading-none">
-                Dot & Art
+                Dot And Art
               </h2>
               <span className="text-[10px] uppercase tracking-widest text-theme-accent">
                 Admin Console

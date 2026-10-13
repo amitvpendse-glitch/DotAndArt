@@ -93,7 +93,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               Bespoke & Custom Artworks
             </h4>
             <p className="text-xs text-theme-muted leading-relaxed">
-              Looking for a custom color palette, specific dimensions, or a personalized photo mandala?
+              Looking for custom colors, specific dimensions, or a personalized photo mandala?
             </p>
             <button
               onClick={() => onNavigate('/custom-order')}

@@ -18,7 +18,15 @@ import { Product, ProductVariant } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { useCart } from '../context/CartContext';
-import { createWhatsAppUrl, formatSingleProductEnquiry, openExternalLink } from '../utils/whatsapp';
+import {
+  createWhatsAppUrl,
+  formatSingleProductEnquiry,
+  openExternalLink,
+  collectAttachmentsForProduct,
+  sendNativeWhatsAppShare,
+  WhatsAppAttachmentItem,
+} from '../utils/whatsapp';
+import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
 
 interface ProductDetailPageProps {
   sku: string;
@@ -42,6 +50,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(undefined);
   const [customizationNotes, setCustomizationNotes] = useState('');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [attachmentModalOpen, setAttachmentModalOpen] = useState(false);
+  const [preparedEnquiry, setPreparedEnquiry] = useState<{
+    msg: string;
+    attachments: WhatsAppAttachmentItem[];
+  }>({ msg: '', attachments: [] });
 
   useEffect(() => {
     async function fetchDetail() {
@@ -103,10 +116,20 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const currentPrice = selectedVariant ? selectedVariant.price : product.base_price;
   const currentSize = selectedVariant ? selectedVariant.size : product.base_size;
 
-  const handleDirectWhatsApp = () => {
+
+
+  const handleDirectWhatsApp = async () => {
     const msg = formatSingleProductEnquiry(product, currentSize, currentPrice, customizationNotes);
-    const url = createWhatsAppUrl(msg);
-    openExternalLink(url);
+    const attachments = collectAttachmentsForProduct(product);
+
+    // Try native share first (on mobile devices this attaches images directly in WhatsApp)
+    const result = await sendNativeWhatsAppShare(msg, attachments);
+    if (result === 'shared') {
+      return;
+    }
+
+    setPreparedEnquiry({ msg, attachments });
+    setAttachmentModalOpen(true);
   };
 
   const handleAddAndEnquire = () => {
@@ -155,15 +178,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           {/* Thumbnail Strip (if multiple photos available) */}
           {imagesList.length > 1 && (
-            <div className="flex gap-3 overflow-x-auto pb-2">
+            <div className="flex gap-3.5 overflow-x-auto pb-2 pt-1">
               {imagesList.map((img, idx) => (
                 <button
                   key={img.id || idx}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer flex items-center justify-center p-1 bg-theme-page ${
+                  className={`w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer flex items-center justify-center p-1.5 bg-theme-page ${
                     activeImageIndex === idx
-                      ? 'border-theme-accent scale-105 shadow-xs'
-                      : 'border-theme-glass opacity-70 hover:opacity-100'
+                      ? 'border-theme-accent scale-105 shadow-md ring-2 ring-theme-accent/20'
+                      : 'border-theme-glass opacity-75 hover:opacity-100 hover:scale-102'
                   }`}
                 >
                   <SafeProductImage
@@ -246,7 +269,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             </p>
           </div>
 
-          {/* Craft Specifications Grid */}
+          {/* Craft Specifications Grid - Complete Official Specifications */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 p-4 rounded-2xl glass-panel border border-theme-glass text-xs">
             <div className="space-y-1">
               <span className="text-[10px] uppercase font-bold text-theme-muted flex items-center gap-1">
@@ -257,9 +280,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             <div className="space-y-1">
               <span className="text-[10px] uppercase font-bold text-theme-muted flex items-center gap-1">
-                <Info className="w-3 h-3 text-theme-accent" /> Framing
+                <Sparkles className="w-3 h-3 text-theme-accent" /> Customizable?
               </span>
-              <p className="font-medium text-theme-primary">{product.framing}</p>
+              <p className="font-medium text-emerald-600">Yes</p>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[10px] uppercase font-bold text-theme-muted flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-theme-accent" /> Photos Available?
+              </span>
+              <p className="font-medium text-theme-primary">{product.photos_available_note || 'Yes'}</p>
             </div>
 
             <div className="space-y-1">
@@ -271,9 +301,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             <div className="space-y-1">
               <span className="text-[10px] uppercase font-bold text-theme-muted flex items-center gap-1">
-                <Truck className="w-3 h-3 text-theme-accent" /> Shipping
+                <Truck className="w-3 h-3 text-theme-accent" /> Shipping Details
               </span>
-              <p className="font-medium text-theme-primary">{product.shipping_info}</p>
+              <p className="font-medium text-theme-primary">
+                {product.shipping_info.toLowerCase().includes('bubble wrap')
+                  ? product.shipping_info
+                  : `${product.shipping_info} • Bubble wrap and corrugated box`}
+              </p>
             </div>
           </div>
 
@@ -413,6 +447,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           </div>
         </div>
       )}
+      <WhatsAppAttachmentModal
+        isOpen={attachmentModalOpen}
+        onClose={() => setAttachmentModalOpen(false)}
+        messageText={preparedEnquiry.msg}
+        attachments={preparedEnquiry.attachments}
+        title={`Enquiry for ${product.name}`}
+      />
     </div>
   );
 };

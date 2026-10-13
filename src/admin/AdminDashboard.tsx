@@ -61,7 +61,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab, t
             <span>Handmade Studio CMS Active</span>
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl font-semibold text-white">
-            Dot & Art Administration
+            Dot And Art Administration
           </h1>
           <p className="text-xs text-theme-muted font-light max-w-xl opacity-90">
             Real-time control over catalog products, pricing, high-resolution media, and editable website pages.
