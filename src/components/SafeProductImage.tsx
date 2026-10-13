@@ -11,6 +11,8 @@ interface SafeProductImageProps {
   size?: 'sm' | 'md' | 'lg';
   priority?: boolean;
   loading?: 'eager' | 'lazy';
+  useThumbnail?: boolean;
+  fit?: 'contain' | 'cover';
 }
 
 export const SafeProductImage: React.FC<SafeProductImageProps> = ({
@@ -23,9 +25,12 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
   size = 'md',
   priority = false,
   loading,
+  useThumbnail = true,
+  fit = 'contain',
 }) => {
   const [hasError, setHasError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [useFallbackFull, setUseFallbackFull] = useState(false);
 
   const isLippan =
     category_slug === 'lippan-wall-hangings' ||
@@ -36,7 +41,16 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     cleanSrc = cleanSrc.replace(/^\/public/, '');
   }
 
-  if (!cleanSrc || hasError) {
+  // Generate lightweight thumbnail path for catalog & grid views (under 40KB vs 8MB original)
+  const thumbnailPath = sku ? `/static/assets/thumbnails/${sku}.jpg` : undefined;
+
+  // Prefer thumbnail for sm & md sizes unless full image is requested or thumbnail failed
+  let activeSrc = cleanSrc;
+  if (useThumbnail && size !== 'lg' && thumbnailPath && !useFallbackFull) {
+    activeSrc = thumbnailPath;
+  }
+
+  if ((!activeSrc && !cleanSrc) || hasError) {
     return (
       <ArtworkPlaceholder
         name={name}
@@ -52,15 +66,24 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
 
   return (
     <img
-      src={cleanSrc}
+      src={activeSrc}
       alt={alt}
       loading={loadingStrategy}
       decoding="async"
       fetchPriority={priority ? 'high' : 'auto'}
       onLoad={() => setIsLoaded(true)}
-      onError={() => setHasError(true)}
-      className={`object-cover transition-opacity duration-300 ${
-        isLoaded ? 'opacity-100' : 'opacity-90'
+      onError={() => {
+        // If thumbnail failed, seamlessly try original untouched full-size image
+        if (activeSrc === thumbnailPath && cleanSrc) {
+          setUseFallbackFull(true);
+        } else {
+          setHasError(true);
+        }
+      }}
+      className={`${
+        fit === 'cover' ? 'object-cover' : 'object-contain max-w-full max-h-full'
+      } transition-opacity duration-300 ${
+        isLoaded ? 'opacity-100' : 'opacity-80'
       } ${className}`}
     />
   );

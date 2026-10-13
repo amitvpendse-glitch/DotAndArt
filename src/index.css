@@ -184,13 +184,13 @@
     transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translate3d(0, -33.3333%, 0);
+    transform: translate3d(0, -50%, 0);
   }
 }
 
 @keyframes waterfallUp {
   0% {
-    transform: translate3d(0, -33.3333%, 0);
+    transform: translate3d(0, -50%, 0);
   }
   100% {
     transform: translate3d(0, 0, 0);
@@ -198,17 +198,17 @@
 }
 
 .animate-waterfall-down {
-  animation: waterfallDown 32s linear infinite;
+  animation: waterfallDown 30s linear infinite;
   will-change: transform;
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   contain: layout paint;
 }
 
 .animate-waterfall-up {
-  animation: waterfallUp 34s linear infinite;
+  animation: waterfallUp 32s linear infinite;
   will-change: transform;
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   contain: layout paint;
 }

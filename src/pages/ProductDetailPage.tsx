@@ -134,7 +134,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         {/* Left: Gallery View */}
         <div className="lg:col-span-7 space-y-4">
           <div className="relative aspect-square w-full rounded-3xl overflow-hidden glass-card p-2 border border-theme-glass shadow-lg">
-            <div className="relative w-full h-full rounded-2xl overflow-hidden bg-theme-page">
+            <div className="relative w-full h-full rounded-2xl overflow-hidden bg-theme-page flex items-center justify-center p-3">
               <SafeProductImage
                 src={currentActiveImage?.storage_path}
                 alt={currentActiveImage?.alt_text || product.name}
@@ -142,7 +142,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 sku={product.sku}
                 category_slug={product.category_slug}
                 size="lg"
-                className="w-full h-full"
+                fit="contain"
+                className="w-full h-full object-contain"
               />
 
               {/* SKU Pill */}
@@ -159,7 +160,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <button
                   key={img.id || idx}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                  className={`w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer flex items-center justify-center p-1 bg-theme-page ${
                     activeImageIndex === idx
                       ? 'border-theme-accent scale-105 shadow-xs'
                       : 'border-theme-glass opacity-70 hover:opacity-100'
@@ -172,7 +173,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     sku={product.sku}
                     category_slug={product.category_slug}
                     size="sm"
-                    className="w-full h-full"
+                    fit="contain"
+                    className="w-full h-full object-contain"
                   />
                 </button>
               ))}
@@ -383,7 +385,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   onClick={() => onSelectProduct(rel.sku)}
                   className="group rounded-2xl glass-card border border-theme-glass overflow-hidden cursor-pointer p-3 space-y-2.5 transition-all hover:scale-105 bg-theme-card"
                 >
-                  <div className="relative aspect-square rounded-xl bg-theme-page overflow-hidden">
+                  <div className="relative aspect-square rounded-xl bg-theme-page overflow-hidden flex items-center justify-center p-2">
                     <SafeProductImage
                       src={relImg?.storage_path}
                       alt={rel.name}
@@ -391,7 +393,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                       sku={rel.sku}
                       category_slug={rel.category_slug}
                       size="sm"
-                      className="w-full h-full group-hover:scale-105 group-hover:brightness-110 transition-all duration-500"
+                      fit="contain"
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                     />
 
                   </div>

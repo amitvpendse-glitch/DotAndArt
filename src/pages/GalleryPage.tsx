@@ -75,14 +75,14 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
 
       {/* Gallery Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filtered.map((item) => {
+        {filtered.map((item, index) => {
           const primaryImg = item.images?.find((i) => i.is_primary) || item.images?.[0];
 
           return (
             <div
               key={item.id}
               onClick={() => setActiveLightbox(item)}
-              className="group relative aspect-square rounded-2xl overflow-hidden glass-card craft-shadow hover:shadow-xl transition-all duration-300 cursor-pointer"
+              className="group relative aspect-square rounded-2xl overflow-hidden glass-card craft-shadow hover:shadow-xl transition-all duration-300 cursor-pointer flex items-center justify-center p-3"
             >
               <SafeProductImage
                 src={primaryImg?.storage_path}
@@ -91,7 +91,9 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
                 sku={item.sku}
                 category_slug={item.category_slug}
                 size="md"
-                className="w-full h-full group-hover:scale-105 group-hover:brightness-110 group-hover:contrast-105 transition-all duration-500"
+                priority={index < 4}
+                fit="contain"
+                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
               />
 
 

@@ -356,7 +356,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {displayedProducts.map((product) => {
+          {displayedProducts.map((product, index) => {
             const isLippan =
               product.category_slug === 'lippan-wall-hangings' ||
               product.name.toLowerCase().includes('lippan');
@@ -370,7 +370,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
                 {/* Visual Artwork Thumbnail */}
                 <div
                   onClick={() => onSelectProduct(product.sku)}
-                  className="relative aspect-square bg-theme-page overflow-hidden cursor-pointer"
+                  className="relative aspect-square bg-theme-page overflow-hidden cursor-pointer flex items-center justify-center p-3"
                 >
                   <SafeProductImage
                     src={primaryImg?.storage_path}
@@ -379,7 +379,9 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
                     sku={product.sku}
                     category_slug={product.category_slug}
                     size="md"
-                    className="w-full h-full group-hover:scale-105 group-hover:brightness-110 group-hover:contrast-105 transition-all duration-500"
+                    priority={index < 4}
+                    fit="contain"
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                   />
 
 

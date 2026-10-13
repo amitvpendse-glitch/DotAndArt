@@ -411,13 +411,14 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Static uploads and public asset serving
-app.use('/uploads', express.static(UPLOADS_DIR));
+// Static uploads and public asset serving with browser cache headers
+const staticCacheOptions = { maxAge: '7d', etag: true };
+app.use('/uploads', express.static(UPLOADS_DIR, staticCacheOptions));
 const PUBLIC_DIR = path.resolve(process.cwd(), 'public');
 if (fs.existsSync(PUBLIC_DIR)) {
-  app.use(express.static(PUBLIC_DIR));
-  app.use('/public', express.static(PUBLIC_DIR));
-  app.use('/public/static', express.static(path.join(PUBLIC_DIR, 'static')));
+  app.use(express.static(PUBLIC_DIR, staticCacheOptions));
+  app.use('/public', express.static(PUBLIC_DIR, staticCacheOptions));
+  app.use('/public/static', express.static(path.join(PUBLIC_DIR, 'static'), staticCacheOptions));
 }
 
 // Simple Cookie Parser helper
