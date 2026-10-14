@@ -51,14 +51,9 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
 
   return (
     <>
-      {/* LEFT SIDE WATERFALL STREAM - Strictly confined to outer margin to prevent overlapping */}
+      {/* LEFT SIDE WATERFALL STREAM */}
       <aside
-        className="fixed top-32 bottom-16 z-20 hidden min-[1480px]:flex flex-col overflow-hidden pointer-events-none select-none"
-        style={{
-          width: 'clamp(136px, calc((100vw - 1320px) / 2), 232px)',
-          left: 'max(0.75rem, calc(((100vw - 1280px) / 2 - clamp(136px, calc((100vw - 1320px) / 2), 232px)) / 2))',
-          contain: 'layout paint',
-        }}
+        className="fixed top-32 bottom-16 z-20 hidden min-[1024px]:flex flex-col overflow-hidden pointer-events-none select-none w-28 lg:w-36 xl:w-44 left-2 lg:left-4 xl:left-8"
         aria-label="Mandala Art Stream"
       >
         <div className="text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-2 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
@@ -107,14 +102,9 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
         </div>
       </aside>
 
-      {/* RIGHT SIDE WATERFALL STREAM - Strictly confined to outer margin and clears floating actions */}
+      {/* RIGHT SIDE WATERFALL STREAM */}
       <aside
-        className="fixed top-32 bottom-32 z-20 hidden min-[1480px]:flex flex-col overflow-hidden pointer-events-none select-none"
-        style={{
-          width: 'clamp(136px, calc((100vw - 1320px) / 2), 232px)',
-          right: 'max(0.75rem, calc(((100vw - 1280px) / 2 - clamp(136px, calc((100vw - 1320px) / 2), 232px)) / 2))',
-          contain: 'layout paint',
-        }}
+        className="fixed top-32 bottom-32 z-20 hidden min-[1024px]:flex flex-col overflow-hidden pointer-events-none select-none w-28 lg:w-36 xl:w-44 right-2 lg:right-4 xl:right-8"
         aria-label="Lippan Art Stream"
       >
         <div className="text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-2 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
