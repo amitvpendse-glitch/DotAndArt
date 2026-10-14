@@ -292,17 +292,29 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             {/* High Demand Positive Notice Box */}
             {isHighDemand && (
-              <div className="mt-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2 text-xs">
-                <div className="flex items-center justify-between text-amber-900 dark:text-amber-200 font-bold">
-                  <div className="flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-amber-600" />
+              <div
+                className="mt-3 p-4 rounded-2xl border space-y-2 text-xs transition-colors shadow-2xs"
+                style={{
+                  backgroundColor: 'var(--high-demand-bg)',
+                  borderColor: 'var(--high-demand-border)',
+                }}
+              >
+                <div className="flex items-center justify-between font-bold">
+                  <div className="flex items-center gap-1.5 font-bold" style={{ color: 'var(--high-demand-title)' }}>
+                    <Sparkles className="w-4 h-4 text-orange-600 shrink-0" />
                     <span>High Demand Artisan Creation</span>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-300 font-semibold font-mono">
+                  <span
+                    className="text-[10px] px-2 py-0.5 rounded-full font-bold font-mono"
+                    style={{
+                      backgroundColor: 'var(--high-demand-pill-bg)',
+                      color: 'var(--high-demand-pill-text)',
+                    }}
+                  >
                     +{extraDays} days crafting
                   </span>
                 </div>
-                <p className="text-amber-950/90 dark:text-amber-100/90 leading-relaxed font-normal">
+                <p className="leading-relaxed font-medium" style={{ color: 'var(--high-demand-text)' }}>
                   {highDemandNotice}
                 </p>
               </div>

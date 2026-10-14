@@ -14,10 +14,33 @@ interface ShopPageProps {
   onNavigate: (path: string) => void;
 }
 
+const DEFAULT_CATEGORIES: Category[] = [
+  {
+    id: 'cat-mandala',
+    name: 'Mandala Wall Hangings',
+    slug: 'mandala-wall-hangings',
+    description: 'Intricately handcrafted sacred dot mandalas',
+    display_order: 1,
+    is_active: true,
+    created_at: new Date('2025-01-01').toISOString(),
+    updated_at: new Date('2025-01-01').toISOString(),
+  },
+  {
+    id: 'cat-lippan',
+    name: 'Lippan Wall Hangings',
+    slug: 'lippan-wall-hangings',
+    description: 'Traditional Gujarati mud and mirror art (Lippan Kaam)',
+    display_order: 2,
+    is_active: true,
+    created_at: new Date('2025-01-01').toISOString(),
+    updated_at: new Date('2025-01-01').toISOString(),
+  },
+];
+
 export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectProduct, onNavigate }) => {
   const { addToCart, getItemQuantity, decrementItem } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [zoomedProduct, setZoomedProduct] = useState<Product | null>(null);
@@ -43,6 +66,12 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   useEffect(() => {
     safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null).then((s) => {
       if (s) setSettings(s);
+    });
+
+    safeFetchJson<Category[]>('/api/categories', undefined, []).then((catRes) => {
+      if (Array.isArray(catRes) && catRes.length > 0) {
+        setCategories(catRes);
+      }
     });
   }, []);
 
@@ -71,13 +100,8 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           queryParams.append('size', selectedSizeFilter);
         }
 
-        const [prodRes, catRes] = await Promise.all([
-          safeFetchJson<{ products: Product[] }>(`/api/products?${queryParams.toString()}`, undefined, { products: [] }),
-          safeFetchJson<Category[]>('/api/categories', undefined, []),
-        ]);
-
+        const prodRes = await safeFetchJson<{ products: Product[] }>(`/api/products?${queryParams.toString()}`, undefined, { products: [] });
         setProducts(prodRes?.products || []);
-        setCategories(Array.isArray(catRes) ? catRes : []);
       } catch (err) {
         console.error('Error fetching shop data', err);
       } finally {
@@ -239,10 +263,8 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
         <div className="pt-2 border-t border-theme-glass flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-theme-muted mr-2">Category:</span>
           <button
-            onClick={() => {
-              setSelectedCategory('all');
-            }}
-            className={`px-3.5 py-1.5 rounded-full text-xs transition-colors cursor-pointer ${
+            onClick={() => setSelectedCategory('all')}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
               selectedCategory === 'all'
                 ? 'bg-theme-accent text-white font-semibold shadow-xs'
                 : 'bg-theme-page text-theme-primary hover:bg-theme-accent/10 border border-theme-glass'
@@ -250,21 +272,27 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           >
             All Collections
           </button>
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => {
-                setSelectedCategory(cat.slug);
-              }}
-              className={`px-3.5 py-1.5 rounded-full text-xs transition-colors cursor-pointer ${
-                selectedCategory === cat.slug
-                  ? 'bg-theme-accent text-white font-semibold shadow-xs'
-                  : 'bg-theme-page text-theme-primary hover:bg-theme-accent/10 border border-theme-glass'
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
+          {(categories && categories.length > 0 ? categories : DEFAULT_CATEGORIES).map((cat) => {
+            const isSelected =
+              selectedCategory === cat.slug ||
+              selectedCategory === cat.id ||
+              (cat.slug.includes('mandala') && selectedCategory === 'mandala') ||
+              (cat.slug.includes('lippan') && selectedCategory === 'lippan');
+
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.slug)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-theme-accent text-white font-semibold shadow-xs'
+                    : 'bg-theme-page text-theme-primary hover:bg-theme-accent/10 border border-theme-glass'
+                }`}
+              >
+                {cat.name}
+              </button>
+            );
+          })}
         </div>
 
         {/* Row 3: Secondary Filters (Size & Price Range) */}
@@ -449,17 +477,29 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
 
                     {/* High Demand Positive Notice Free-Text Box */}
                     {isHighDemand && (
-                      <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[10px] space-y-1 text-amber-900 dark:text-amber-200">
-                        <div className="flex items-center justify-between font-bold text-amber-800 dark:text-amber-300">
-                          <span className="flex items-center gap-1">
-                            <Flame className="w-3 h-3 text-amber-600 fill-amber-500" />
-                            High Demand Artisan Piece
+                      <div
+                        className="p-2.5 rounded-xl border text-[10px] space-y-1 font-medium transition-colors shadow-2xs"
+                        style={{
+                          backgroundColor: 'var(--high-demand-bg)',
+                          borderColor: 'var(--high-demand-border)',
+                        }}
+                      >
+                        <div className="flex items-center justify-between font-bold">
+                          <span className="flex items-center gap-1 font-bold" style={{ color: 'var(--high-demand-title)' }}>
+                            <Flame className="w-3 h-3 text-orange-600 fill-orange-500 shrink-0" />
+                            <span>High Demand Artisan Piece</span>
                           </span>
-                          <span className="text-[9px] font-mono bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-900 dark:text-amber-200">
+                          <span
+                            className="text-[9px] font-mono px-1.5 py-0.5 rounded font-bold"
+                            style={{
+                              backgroundColor: 'var(--high-demand-pill-bg)',
+                              color: 'var(--high-demand-pill-text)',
+                            }}
+                          >
                             +{extraDays} days
                           </span>
                         </div>
-                        <p className="leading-tight text-amber-950/85 dark:text-amber-100/90 font-normal">
+                        <p className="leading-tight font-medium" style={{ color: 'var(--high-demand-text)' }}>
                           {product.high_demand_message ||
                             `✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow ${extraDays} additional days for our master artist to craft and perfect your sacred piece.`}
                         </p>

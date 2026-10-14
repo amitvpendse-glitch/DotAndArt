@@ -173,17 +173,29 @@ export function HomePage({
 
                     {/* High Demand Positive Free-Text Notice Box */}
                     {isHighDemand && (
-                      <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[10px] space-y-1 text-amber-900 dark:text-amber-200">
-                        <div className="flex items-center justify-between font-bold text-amber-800 dark:text-amber-300">
-                          <span className="flex items-center gap-1">
-                            <Flame className="w-3 h-3 text-amber-600 fill-amber-500" />
-                            High Demand Artisan Piece
+                      <div
+                        className="p-2.5 rounded-xl border text-[10px] space-y-1 font-medium transition-colors shadow-2xs"
+                        style={{
+                          backgroundColor: 'var(--high-demand-bg)',
+                          borderColor: 'var(--high-demand-border)',
+                        }}
+                      >
+                        <div className="flex items-center justify-between font-bold">
+                          <span className="flex items-center gap-1 font-bold" style={{ color: 'var(--high-demand-title)' }}>
+                            <Flame className="w-3 h-3 text-orange-600 fill-orange-500 shrink-0" />
+                            <span>High Demand Artisan Piece</span>
                           </span>
-                          <span className="text-[9px] font-mono bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-900 dark:text-amber-200">
+                          <span
+                            className="text-[9px] font-mono px-1.5 py-0.5 rounded font-bold"
+                            style={{
+                              backgroundColor: 'var(--high-demand-pill-bg)',
+                              color: 'var(--high-demand-pill-text)',
+                            }}
+                          >
                             +{extraDays} days
                           </span>
                         </div>
-                        <p className="leading-tight text-amber-950/85 dark:text-amber-100/90 font-normal">
+                        <p className="leading-tight font-medium" style={{ color: 'var(--high-demand-text)' }}>
                           {product.high_demand_message ||
                             `✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow ${extraDays} additional days for our master artist to craft and perfect your sacred piece.`}
                         </p>

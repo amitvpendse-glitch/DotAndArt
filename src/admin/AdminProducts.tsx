@@ -558,8 +558,15 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                           </span>
                         )}
                         {isDemandHigh && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-300 text-[10px] font-bold">
-                            <Flame className="w-3 h-3 text-amber-600 shrink-0" />
+                          <span
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold"
+                            style={{
+                              backgroundColor: 'var(--high-demand-pill-bg)',
+                              color: 'var(--high-demand-pill-text)',
+                              borderColor: 'var(--high-demand-border)',
+                            }}
+                          >
+                            <Flame className="w-3 h-3 text-orange-600 shrink-0" />
                             <span>High Demand (+{p.extra_delivery_days ?? 5}d)</span>
                           </span>
                         )}
