@@ -7,6 +7,7 @@ import { ImageZoomModal } from '../components/ImageZoomModal';
 import { HugeShowcaseBanner } from '../components/HugeShowcaseBanner';
 import { useCart } from '../context/CartContext';
 import { downloadArtworkImage } from '../utils/whatsapp';
+import { usePageSeo } from '../lib/usePageSeo';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -29,9 +30,9 @@ export function HomePage({
   const decrementItem = propsDecrementItem || ((p: Product) => cart.decrementItem(p));
   const getItemQuantity = propsGetItemQuantity || cart.getItemQuantity;
 
+  const { page: cmsPage } = usePageSeo('home', 'Dot And Art — Handcrafted Mandala & Lippan Mud Mirror Art Studio');
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [cmsPage, setCmsPage] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [zoomedProduct, setZoomedProduct] = useState<Product | null>(null);
   const [downloadingSku, setDownloadingSku] = useState<string | null>(null);
@@ -39,14 +40,12 @@ export function HomePage({
   useEffect(() => {
     async function loadData() {
       try {
-        const [prodRes, testRes, pageRes] = await Promise.all([
+        const [prodRes, testRes] = await Promise.all([
           safeFetchJson<{ products: Product[] }>('/api/products?featured=true', undefined, { products: [] }),
           safeFetchJson<Testimonial[]>('/api/testimonials', undefined, []),
-          safeFetchJson<any>('/api/pages/home', undefined, null),
         ]);
         setFeaturedProducts(prodRes?.products ? prodRes.products : []);
         setTestimonials(Array.isArray(testRes) ? testRes : []);
-        setCmsPage(pageRes);
       } catch (err) {
         console.error('Failed to load homepage data', err);
       } finally {

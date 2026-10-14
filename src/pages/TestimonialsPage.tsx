@@ -3,8 +3,10 @@ import { Star, MessageCircle, Sparkles } from 'lucide-react';
 import { Testimonial } from '../types';
 import { createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
+import { usePageSeo } from '../lib/usePageSeo';
 
 export const TestimonialsPage: React.FC = () => {
+  usePageSeo('testimonials', 'Collector Testimonials — Dot And Art');
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
   useEffect(() => {

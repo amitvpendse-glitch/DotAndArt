@@ -1035,8 +1035,10 @@ app.post('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
     variants,
   } = req.body;
 
-  if (!name || !sku || !category_id || base_price === undefined) {
-    res.status(400).json({ error: 'Name, unique SKU, category, and base price are required' });
+  const resolvedCatId = category_id || (req.body.category_slug === 'lippan-wall-hangings' ? 'cat-lippan' : 'cat-mandala');
+
+  if (!name || !sku || !base_price === undefined) {
+    res.status(400).json({ error: 'Name, unique SKU, and base price are required' });
     return;
   }
 
@@ -1046,7 +1048,7 @@ app.post('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
     return;
   }
 
-  const cat = db.categories.find((c) => c.id === category_id);
+  const cat = db.categories.find((c) => c.id === resolvedCatId || c.slug === req.body.category_slug) || db.categories[0];
   const isLippanCategory = cat?.slug === 'lippan-wall-hangings' || name.toLowerCase().includes('lippan');
 
   const newProd: Product = {
@@ -1055,7 +1057,7 @@ app.post('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
     name: name.trim(),
     short_description: short_description || '',
     description: description || '',
-    category_id,
+    category_id: cat?.id || resolvedCatId,
     category_name: cat?.name || '',
     category_slug: cat?.slug || '',
     material: material || 'MDF Wood, Acrylics',
@@ -1480,11 +1482,22 @@ app.post('/api/admin/pages', requireAdmin, (req: Request, res: Response) => {
 
 app.put('/api/admin/pages/:slug', requireAdmin, (req: Request, res: Response) => {
   const { slug } = req.params;
-  const index = db.pages.findIndex((p) => p.slug === slug);
+  let index = db.pages.findIndex((p) => p.slug === slug);
 
   if (index === -1) {
-    res.status(404).json({ error: 'Page not found' });
-    return;
+    const newPage = {
+      id: `page-${Date.now()}`,
+      slug,
+      title: req.body.title || slug,
+      seo_title: req.body.seo_title || req.body.title || slug,
+      meta_description: req.body.meta_description || '',
+      status: req.body.status || 'published',
+      sections: Array.isArray(req.body.sections) ? req.body.sections : [],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    db.pages.push(newPage);
+    index = db.pages.length - 1;
   }
 
   const { title, seo_title, meta_description, og_image_path, status, sections } = req.body;

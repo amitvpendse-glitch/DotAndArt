@@ -3,23 +3,21 @@ import { MessageCircle, Mail, Instagram, Facebook, Send, CheckCircle2, MapPin } 
 import { WebsiteSettings } from '../types';
 import { createWhatsAppUrl, DISPLAY_WHATSAPP_NUMBER, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
+import { usePageSeo } from '../lib/usePageSeo';
 
 export const ContactPage: React.FC = () => {
+  const { page: cmsPage } = usePageSeo('contact', 'Contact Dot And Art Studio — Shital Thosar');
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
-  const [cmsPage, setCmsPage] = useState<any>(null);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null),
-      safeFetchJson<any>('/api/pages/contact', undefined, null),
-    ]).then(([settingsData, pageData]) => {
-      if (settingsData) setSettings(settingsData);
-      if (pageData) setCmsPage(pageData);
-    });
+    safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null)
+      .then((settingsData) => {
+        if (settingsData) setSettings(settingsData);
+      });
   }, []);
 
   const headerSec = cmsPage?.sections?.find(

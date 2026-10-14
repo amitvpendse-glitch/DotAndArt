@@ -336,7 +336,7 @@ export async function handleClientFallbackApi<T = any>(
     return jsonRes(INITIAL_FAQS);
   }
 
-  // 7. GET /api/pages/:slug or /api/admin/pages
+  // 7. GET /api/pages/:slug or /api/admin/pages or PUT /api/admin/pages/:slug
   if (pathname === '/api/admin/pages' && method === 'GET') {
     return jsonRes(getStoredPages());
   }
@@ -345,6 +345,43 @@ export async function handleClientFallbackApi<T = any>(
     const pages = getStoredPages();
     const page = pages.find((p) => p.slug === slug);
     return jsonRes(page || null);
+  }
+  if (pathname.startsWith('/api/admin/pages/') && method === 'PUT') {
+    const slug = pathname.replace('/api/admin/pages/', '');
+    const pages = getStoredPages();
+    let index = pages.findIndex((p) => p.slug === slug);
+    try {
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+      if (index === -1) {
+        const newPage = {
+          id: `page-${Date.now()}`,
+          slug,
+          title: body.title || slug,
+          seo_title: body.seo_title || body.title || slug,
+          meta_description: body.meta_description || '',
+          status: body.status || 'published',
+          sections: Array.isArray(body.sections) ? body.sections : [],
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        pages.push(newPage);
+        index = pages.length - 1;
+      }
+      const { title, seo_title, meta_description, og_image_path, status, sections } = body;
+      if (title !== undefined) pages[index].title = title;
+      if (seo_title !== undefined) pages[index].seo_title = seo_title;
+      if (meta_description !== undefined) pages[index].meta_description = meta_description;
+      if (og_image_path !== undefined) pages[index].og_image_path = og_image_path;
+      if (status) pages[index].status = status;
+      if (Array.isArray(sections)) pages[index].sections = sections;
+      pages[index].updated_at = new Date().toISOString();
+      try {
+        localStorage.setItem('app_custom_pages', JSON.stringify(pages));
+      } catch {}
+      return jsonRes(pages[index]);
+    } catch (err) {
+      return jsonRes({ error: 'Failed to parse request body' });
+    }
   }
 
   // 8. Auth checks & login & change PIN

@@ -9,8 +9,10 @@ import {
 } from '../utils/whatsapp';
 import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
 import { CustomMandalaInquiry } from '../types';
+import { usePageSeo } from '../lib/usePageSeo';
 
 export const CustomOrderPage: React.FC = () => {
+  usePageSeo('custom-order', 'Commission a Custom Mandala or Lippan Artwork — Dot And Art');
   const [formData, setFormData] = useState<CustomMandalaInquiry>({
     customer_name: '',
     whatsapp_number: '',

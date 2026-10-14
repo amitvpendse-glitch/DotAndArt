@@ -83,13 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
                 <span className="font-serif text-2xl sm:text-3xl md:text-3xl lg:text-4xl tracking-wide font-bold text-theme-primary group-hover:text-theme-accent transition-colors leading-tight">
                   Dot And Art
                 </span>
-                <span className="hidden sm:inline-block text-[10px] sm:text-[11px] tracking-widest uppercase font-bold px-2.5 py-0.5 rounded-full bg-[var(--accent-primary)]/10 text-theme-accent border border-[var(--accent-primary)]/25">
-                  Studio
-                </span>
               </div>
-              <span className="text-[11px] sm:text-[12px] uppercase tracking-widest text-theme-muted font-medium mt-0.5">
-                Handcrafted Mandalas & Lippan
-              </span>
             </div>
           </div>
 

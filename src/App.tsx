@@ -29,6 +29,7 @@ import { AdminTestimonials } from './admin/AdminTestimonials';
 import { AdminFAQs } from './admin/AdminFAQs';
 import { AdminSettings } from './admin/AdminSettings';
 import { AdminSecurity } from './admin/AdminSecurity';
+import { AdminTestRunner } from './admin/AdminTestRunner';
 
 import { WebsiteSettings, Product } from './types';
 import { safeFetchJson } from './lib/safeFetch';
@@ -182,6 +183,7 @@ export default function App() {
           />
         )}
         {adminTab === 'pages' && <AdminPagesCMS token={adminToken} />}
+        {adminTab === 'tests' && <AdminTestRunner token={adminToken} />}
         {adminTab === 'testimonials' && <AdminTestimonials token={adminToken} />}
         {adminTab === 'faqs' && <AdminFAQs token={adminToken} />}
         {adminTab === 'settings' && <AdminSettings token={adminToken} />}

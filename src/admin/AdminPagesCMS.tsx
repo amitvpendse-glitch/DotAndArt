@@ -145,25 +145,28 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
       }
 
       // 2. Save page CMS
-      const res = await fetch(`/api/admin/pages/${activePage.slug}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+      const data = await safeFetchJson<any>(
+        `/api/admin/pages/${activePage.slug}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: activePage.title,
+            seo_title: activePage.seo_title,
+            meta_description: activePage.meta_description,
+            status,
+            sections: pageSectionsToSave,
+            settings: activePage.slug === 'contact' ? settings : undefined,
+          }),
         },
-        body: JSON.stringify({
-          title: activePage.title,
-          seo_title: activePage.seo_title,
-          meta_description: activePage.meta_description,
-          status,
-          sections: pageSectionsToSave,
-          settings: activePage.slug === 'contact' ? settings : undefined,
-        }),
-      });
+        null
+      );
 
-      const data = await safeResponseJson(res, {});
-      if (!res.ok) {
-        setErrorMsg(data?.error || 'Failed to update page CMS.');
+      if (!data) {
+        setErrorMsg('Failed to update page CMS.');
         return;
       }
 

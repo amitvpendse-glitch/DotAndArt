@@ -1,10 +1,12 @@
 import { Heart, Sparkles, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { usePageSeo } from '../lib/usePageSeo';
 
 interface AboutPageProps {
   onNavigate: (path: string) => void;
 }
 
 export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
+  usePageSeo('about', 'About Shital Thosar — Artist & Founder, DotAndArt');
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-16 bg-theme-page text-theme-primary transition-colors duration-500">
       {/* Intro Hero */}

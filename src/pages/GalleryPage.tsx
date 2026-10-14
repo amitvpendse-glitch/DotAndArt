@@ -5,12 +5,14 @@ import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { ImageZoomModal } from '../components/ImageZoomModal';
 import { safeFetchJson } from '../lib/safeFetch';
+import { usePageSeo } from '../lib/usePageSeo';
 
 interface GalleryPageProps {
   onSelectProduct: (sku: string) => void;
 }
 
 export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => {
+  usePageSeo('gallery', 'High-Definition Artwork Gallery — Dot And Art');
   const [products, setProducts] = useState<Product[]>([]);
   const [filter, setFilter] = useState<'all' | 'mandala' | 'lippan'>('all');
   const [activeLightbox, setActiveLightbox] = useState<Product | null>(null);

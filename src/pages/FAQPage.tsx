@@ -3,27 +3,25 @@ import { ChevronDown, MessageCircle, Sparkles, HelpCircle } from 'lucide-react';
 import { FAQ } from '../types';
 import { createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
+import { usePageSeo } from '../lib/usePageSeo';
 
 import { INITIAL_FAQS } from '../data/initialCatalog';
 
 export const FAQPage: React.FC = () => {
+  const { page: cmsPage } = usePageSeo('faqs', 'Frequently Asked Questions — Dot And Art');
   const [faqs, setFaqs] = useState<FAQ[]>(INITIAL_FAQS);
-  const [cmsPage, setCmsPage] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   useEffect(() => {
-    Promise.all([
-      safeFetchJson<FAQ[]>('/api/faqs', undefined, []),
-      safeFetchJson<any>('/api/pages/faqs', undefined, null),
-    ]).then(([faqData, pageData]) => {
-      const list = Array.isArray(faqData) ? faqData : ((faqData as any)?.faqs || []);
-      if (Array.isArray(list) && list.length > 0) {
-        setFaqs(list);
-      } else {
-        setFaqs(INITIAL_FAQS);
-      }
-      setCmsPage(pageData);
-    });
+    safeFetchJson<FAQ[]>('/api/faqs', undefined, [])
+      .then((faqData) => {
+        const list = Array.isArray(faqData) ? faqData : ((faqData as any)?.faqs || []);
+        if (Array.isArray(list) && list.length > 0) {
+          setFaqs(list);
+        } else {
+          setFaqs(INITIAL_FAQS);
+        }
+      });
   }, []);
 
   const headerSec = cmsPage?.sections?.find(

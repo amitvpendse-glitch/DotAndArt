@@ -7,6 +7,7 @@ import { useCart } from '../context/CartContext';
 import { safeFetchJson } from '../lib/safeFetch';
 import { generateProfessionalCatalogPDF } from '../utils/pdfCatalogGenerator';
 import { downloadArtworkImage } from '../utils/whatsapp';
+import { usePageSeo } from '../lib/usePageSeo';
 
 interface ShopPageProps {
   initialCategory?: string;
@@ -38,6 +39,7 @@ const DEFAULT_CATEGORIES: Category[] = [
 ];
 
 export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectProduct, onNavigate }) => {
+  usePageSeo('shop', 'Shop Handcrafted Mandalas & Lippan Wall Hangings — Dot And Art');
   const { addToCart, getItemQuantity, decrementItem } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);

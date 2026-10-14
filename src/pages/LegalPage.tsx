@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { WebsitePage } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
+import { usePageSeo } from '../lib/usePageSeo';
 
 interface LegalPageProps {
   slug: string;
 }
 
 export const LegalPage: React.FC<LegalPageProps> = ({ slug }) => {
-  const [page, setPage] = useState<WebsitePage | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    safeFetchJson<WebsitePage | null>(`/api/pages/${slug}`, undefined, null)
-      .then((data) => setPage(data))
-      .finally(() => setLoading(false));
-  }, [slug]);
+  const { page, loading } = usePageSeo(slug, `${slug.replace(/-/g, ' ')} — Dot And Art`);
 
   if (loading) {
     return (

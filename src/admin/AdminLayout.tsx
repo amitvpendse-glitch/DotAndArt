@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   Sparkles,
+  CheckSquare,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -40,6 +41,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'products', label: 'Product Catalog', icon: Package },
     { id: 'pages', label: 'Website Pages CMS', icon: FileText },
+    { id: 'tests', label: 'CMS Test Suite', icon: CheckSquare },
     { id: 'testimonials', label: 'Testimonials', icon: MessageSquareQuote },
     { id: 'faqs', label: 'FAQs', icon: HelpCircle },
     { id: 'settings', label: 'Website Settings', icon: Settings },
