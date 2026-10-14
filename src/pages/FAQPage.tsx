@@ -4,8 +4,10 @@ import { FAQ } from '../types';
 import { createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
 
+import { INITIAL_FAQS } from '../data/initialCatalog';
+
 export const FAQPage: React.FC = () => {
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [faqs, setFaqs] = useState<FAQ[]>(INITIAL_FAQS);
   const [cmsPage, setCmsPage] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
@@ -14,7 +16,12 @@ export const FAQPage: React.FC = () => {
       safeFetchJson<FAQ[]>('/api/faqs', undefined, []),
       safeFetchJson<any>('/api/pages/faqs', undefined, null),
     ]).then(([faqData, pageData]) => {
-      setFaqs(Array.isArray(faqData) ? faqData : []);
+      const list = Array.isArray(faqData) ? faqData : ((faqData as any)?.faqs || []);
+      if (Array.isArray(list) && list.length > 0) {
+        setFaqs(list);
+      } else {
+        setFaqs(INITIAL_FAQS);
+      }
       setCmsPage(pageData);
     });
   }, []);

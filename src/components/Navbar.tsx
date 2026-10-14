@@ -27,6 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
     { label: 'Bespoke Orders', path: '/custom-order' },
     { label: 'Gallery', path: '/gallery' },
     { label: 'About Artist', path: '/about' },
+    { label: 'FAQs', path: '/faq' },
     { label: 'Contact', path: '/contact' },
   ];
 
