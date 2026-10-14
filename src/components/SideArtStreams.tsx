@@ -55,19 +55,19 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
       <aside
         className="fixed top-32 bottom-16 z-20 hidden min-[1480px]:flex flex-col overflow-hidden pointer-events-none select-none"
         style={{
-          width: 'clamp(68px, calc((100vw - 1320px) / 2), 116px)',
-          left: 'max(0.75rem, calc(((100vw - 1280px) / 2 - clamp(68px, calc((100vw - 1320px) / 2), 116px)) / 2))',
+          width: 'clamp(136px, calc((100vw - 1320px) / 2), 232px)',
+          left: 'max(0.75rem, calc(((100vw - 1280px) / 2 - clamp(136px, calc((100vw - 1320px) / 2), 232px)) / 2))',
           contain: 'layout paint',
         }}
         aria-label="Mandala Art Stream"
       >
-        <div className="text-[9px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-1 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
+        <div className="text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-2 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
           Mandalas
         </div>
 
-        <div className="relative flex-1 overflow-hidden rounded-2xl border border-theme-glass/60 bg-theme-page/40 p-1" style={{ contain: 'strict' }}>
+        <div className="relative flex-1 overflow-hidden rounded-2xl border border-theme-glass/60 bg-theme-page/40 p-2" style={{ contain: 'strict' }}>
           <div
-            className="flex flex-col gap-2.5 animate-waterfall-down pointer-events-auto"
+            className="flex flex-col gap-4 animate-waterfall-down pointer-events-auto"
             style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)' }}
           >
             {leftLoop.map((item, index) => {
@@ -78,7 +78,7 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
                 <div
                   key={`left-${item.id}-${index}`}
                   onClick={() => handleCardClick(item.sku)}
-                  className="group relative aspect-square rounded-xl overflow-hidden border border-theme-glass bg-theme-card shadow-xs cursor-pointer hover:scale-105 transition-transform duration-200 flex items-center justify-center p-1"
+                  className="group relative aspect-square rounded-2xl overflow-hidden border border-theme-glass bg-theme-card shadow-sm cursor-pointer hover:scale-105 transition-transform duration-200 flex items-center justify-center p-1.5"
                   title={`${item.name} — ₹${item.base_price.toLocaleString('en-IN')}`}
                 >
                   <img
@@ -96,9 +96,9 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
                   />
 
                   {/* Hover Overlay Tag */}
-                  <div className="absolute inset-x-0 bottom-0 p-1 bg-gradient-to-t from-black/90 via-black/50 to-transparent text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-end pointer-events-none">
-                    <p className="text-[8px] font-bold line-clamp-1">{item.name}</p>
-                    <p className="text-[9px] font-serif font-semibold text-amber-300">₹{item.base_price.toLocaleString('en-IN')}</p>
+                  <div className="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-end pointer-events-none">
+                    <p className="text-[10px] font-bold line-clamp-1">{item.name}</p>
+                    <p className="text-[11px] font-serif font-semibold text-amber-300">₹{item.base_price.toLocaleString('en-IN')}</p>
                   </div>
                 </div>
               );
@@ -111,19 +111,19 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
       <aside
         className="fixed top-32 bottom-32 z-20 hidden min-[1480px]:flex flex-col overflow-hidden pointer-events-none select-none"
         style={{
-          width: 'clamp(68px, calc((100vw - 1320px) / 2), 116px)',
-          right: 'max(0.75rem, calc(((100vw - 1280px) / 2 - clamp(68px, calc((100vw - 1320px) / 2), 116px)) / 2))',
+          width: 'clamp(136px, calc((100vw - 1320px) / 2), 232px)',
+          right: 'max(0.75rem, calc(((100vw - 1280px) / 2 - clamp(136px, calc((100vw - 1320px) / 2), 232px)) / 2))',
           contain: 'layout paint',
         }}
         aria-label="Lippan Art Stream"
       >
-        <div className="text-[9px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-1 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
+        <div className="text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-2 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
           Lippan
         </div>
 
-        <div className="relative flex-1 overflow-hidden rounded-2xl border border-theme-glass/60 bg-theme-page/40 p-1" style={{ contain: 'strict' }}>
+        <div className="relative flex-1 overflow-hidden rounded-2xl border border-theme-glass/60 bg-theme-page/40 p-2" style={{ contain: 'strict' }}>
           <div
-            className="flex flex-col gap-2.5 animate-waterfall-up pointer-events-auto"
+            className="flex flex-col gap-4 animate-waterfall-up pointer-events-auto"
             style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)' }}
           >
             {rightLoop.map((item, index) => {
@@ -134,7 +134,7 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
                 <div
                   key={`right-${item.id}-${index}`}
                   onClick={() => handleCardClick(item.sku)}
-                  className="group relative aspect-square rounded-xl overflow-hidden border border-theme-glass bg-theme-card shadow-xs cursor-pointer hover:scale-105 transition-transform duration-200 flex items-center justify-center p-1"
+                  className="group relative aspect-square rounded-2xl overflow-hidden border border-theme-glass bg-theme-card shadow-sm cursor-pointer hover:scale-105 transition-transform duration-200 flex items-center justify-center p-1.5"
                   title={`${item.name} — ₹${item.base_price.toLocaleString('en-IN')}`}
                 >
                   <img
@@ -152,9 +152,9 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ onSelectProduct 
                   />
 
                   {/* Hover Overlay Tag */}
-                  <div className="absolute inset-x-0 bottom-0 p-1 bg-gradient-to-t from-black/90 via-black/50 to-transparent text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-end pointer-events-none">
-                    <p className="text-[8px] font-bold line-clamp-1">{item.name}</p>
-                    <p className="text-[9px] font-serif font-semibold text-amber-300">₹{item.base_price.toLocaleString('en-IN')}</p>
+                  <div className="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-end pointer-events-none">
+                    <p className="text-[10px] font-bold line-clamp-1">{item.name}</p>
+                    <p className="text-[11px] font-serif font-semibold text-amber-300">₹{item.base_price.toLocaleString('en-IN')}</p>
                   </div>
                 </div>
               );

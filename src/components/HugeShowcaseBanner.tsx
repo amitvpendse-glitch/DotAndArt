@@ -21,6 +21,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Settings,
+  Download,
 } from 'lucide-react';
 import { Product, WebsiteSettings } from '../types';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
@@ -928,6 +929,17 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
                 alt={bannerTitle}
                 className="w-full h-full object-contain"
               />
+            </div>
+
+            {/* Enquiry Suggestion Notice */}
+            <div className="p-3.5 rounded-xl bg-amber-500/25 border border-amber-500/50 text-xs space-y-1 shadow-xs">
+              <div className="flex items-center gap-2 font-bold text-amber-300 text-xs">
+                <Download className="w-4 h-4 shrink-0 text-amber-300" />
+                <span>Enquiry Suggestion</span>
+              </div>
+              <p className="text-[11.5px] text-white/90 leading-relaxed font-medium">
+                After placing enquiry please download the images from the catalog and send to Shital
+              </p>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-white/10 text-xs text-white/70">
