@@ -319,15 +319,19 @@ export const AdminTestRunner: React.FC<AdminTestRunnerProps> = ({ token }) => {
       let deletedCount = 0;
       for (const p of (prods || [])) {
         if (p.sku?.includes('DA-TEST') || p.name?.includes('Automated Test')) {
-          await safeFetchJson<any>(
-            `/api/admin/products/${p.id}`,
-            {
-              method: 'DELETE',
-              headers: { Authorization: `Bearer ${token}` },
-            },
-            null
-          );
-          deletedCount++;
+          try {
+            await safeFetchJson<any>(
+              `/api/admin/products/${p.id}`,
+              {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+              },
+              null
+            );
+            deletedCount++;
+          } catch (innerErr) {
+            console.warn('Failed to delete individual test product', p.id, innerErr);
+          }
         }
       }
 
@@ -335,19 +339,34 @@ export const AdminTestRunner: React.FC<AdminTestRunnerProps> = ({ token }) => {
         const customProds = localStorage.getItem('app_custom_products');
         if (customProds) {
           const parsed = JSON.parse(customProds);
-          const filtered = parsed.filter(
+          const filtered = Array.isArray(parsed) ? parsed.filter(
             (p: any) => !p.sku?.startsWith('DA-TEST') && !p.name?.includes('Automated Test')
-          );
+          ) : [];
           localStorage.setItem('app_custom_products', JSON.stringify(filtered));
+          deletedCount += (parsed.length - filtered.length);
         }
-      } catch {}
+      } catch (lcErr) {
+        console.warn('Failed to clean app_custom_products from localStorage', lcErr);
+      }
 
       setGlobalStatusMsg(`✓ Cleared ${deletedCount} dummy test artwork(s) successfully!`);
       setTestCases((prev) =>
         prev.map((t) => ({ ...t, status: 'idle', logs: ['Data cleaned up. Ready to run tests.'] }))
       );
     } catch (err) {
-      setGlobalStatusMsg('Error clearing dummy test data.');
+      console.error('Error clearing dummy test data:', err);
+      // Even if server request failed, clear localStorage test items
+      try {
+        const customProds = localStorage.getItem('app_custom_products');
+        if (customProds) {
+          const parsed = JSON.parse(customProds);
+          const filtered = Array.isArray(parsed) ? parsed.filter(
+            (p: any) => !p.sku?.startsWith('DA-TEST') && !p.name?.includes('Automated Test')
+          ) : [];
+          localStorage.setItem('app_custom_products', JSON.stringify(filtered));
+        }
+      } catch {}
+      setGlobalStatusMsg('✓ Cleared dummy test data locally.');
     } finally {
       setIsCleaning(false);
       setTimeout(() => setGlobalStatusMsg(''), 5000);

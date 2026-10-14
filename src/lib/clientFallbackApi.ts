@@ -27,14 +27,24 @@ function normalizeCategory(c: Category): Category {
 }
 
 function getStoredProducts(): Product[] {
+  let customList: Product[] = [];
   try {
     const custom = localStorage.getItem('app_custom_products');
     if (custom) {
       const parsed = JSON.parse(custom);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed.map(normalizeProduct);
+      if (Array.isArray(parsed)) customList = parsed.map(normalizeProduct);
     }
   } catch {}
-  return INITIAL_PRODUCTS.map(normalizeProduct);
+
+  const initial = INITIAL_PRODUCTS.map(normalizeProduct);
+  const customIds = new Set(customList.map(p => p.id));
+  const customSkus = new Set(customList.map(p => p.sku));
+
+  const merged = [
+    ...customList,
+    ...initial.filter(p => !customIds.has(p.id) && !customSkus.has(p.sku))
+  ];
+  return merged;
 }
 
 function getStoredCategories(): Category[] {

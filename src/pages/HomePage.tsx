@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Star, Eye, ShoppingBag, Plus, Minus, Download, Check, Flame } from 'lucide-react';
-import { Category, Product, Testimonial } from '../types';
+import { Category, Product, Testimonial, WebsiteSettings } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { ImageZoomModal } from '../components/ImageZoomModal';
