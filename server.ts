@@ -1008,6 +1008,10 @@ app.post('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
     special_information,
     featured,
     is_published,
+    is_available,
+    is_high_demand,
+    extra_delivery_days,
+    high_demand_message,
     base_price,
     base_size,
     images,
@@ -1026,6 +1030,7 @@ app.post('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
   }
 
   const cat = db.categories.find((c) => c.id === category_id);
+  const isLippanCategory = cat?.slug === 'lippan-wall-hangings' || name.toLowerCase().includes('lippan');
 
   const newProd: Product = {
     id: `prod-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
@@ -1044,6 +1049,10 @@ app.post('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
     special_information: special_information || 'Wipe with dry microfiber cloth.',
     featured: Boolean(featured),
     is_published: is_published ?? true,
+    is_available: is_available !== undefined ? Boolean(is_available) : true,
+    is_high_demand: is_high_demand !== undefined ? Boolean(is_high_demand) : isLippanCategory,
+    extra_delivery_days: extra_delivery_days !== undefined ? Number(extra_delivery_days) : (isLippanCategory ? 5 : 0),
+    high_demand_message: high_demand_message || (isLippanCategory ? '✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece.' : ''),
     base_price: Number(base_price),
     base_size: base_size || '12 inches diameter',
     images: Array.isArray(images) ? images : [],
@@ -1098,6 +1107,10 @@ app.put('/api/admin/products/:id', requireAdmin, (req: Request, res: Response) =
   if (p.special_information !== undefined) db.products[index].special_information = p.special_information;
   if (p.featured !== undefined) db.products[index].featured = Boolean(p.featured);
   if (p.is_published !== undefined) db.products[index].is_published = Boolean(p.is_published);
+  if (p.is_available !== undefined) db.products[index].is_available = Boolean(p.is_available);
+  if (p.is_high_demand !== undefined) db.products[index].is_high_demand = Boolean(p.is_high_demand);
+  if (p.extra_delivery_days !== undefined) db.products[index].extra_delivery_days = Number(p.extra_delivery_days);
+  if (p.high_demand_message !== undefined) db.products[index].high_demand_message = p.high_demand_message;
   if (p.base_price !== undefined) db.products[index].base_price = Number(p.base_price);
   if (p.base_size !== undefined) db.products[index].base_size = p.base_size;
   if (p.images !== undefined) db.products[index].images = p.images;
@@ -1464,7 +1477,35 @@ app.put('/api/admin/pages/:slug', requireAdmin, (req: Request, res: Response) =>
   if (meta_description !== undefined) db.pages[index].meta_description = meta_description;
   if (og_image_path !== undefined) db.pages[index].og_image_path = og_image_path;
   if (status && ['published', 'draft'].includes(status)) db.pages[index].status = status;
-  if (Array.isArray(sections)) db.pages[index].sections = sections;
+  if (Array.isArray(sections)) {
+    db.pages[index].sections = sections;
+    if (slug === 'home') {
+      const bannerSec = sections.find((s: any) => s.section_type === 'banner' || s.section_key === 'banner');
+      if (bannerSec?.content_json) {
+        db.settings.showcase_banner = {
+          ...(db.settings.showcase_banner || {}),
+          ...bannerSec.content_json,
+        };
+      }
+    }
+    if (slug === 'contact') {
+      if (req.body.settings && typeof req.body.settings === 'object') {
+        db.settings = {
+          ...db.settings,
+          ...req.body.settings,
+        };
+      }
+      const contactSettingsSec = sections.find(
+        (s: any) => s.section_key === 'contact_settings' || s.section_key === 'brand_identity'
+      );
+      if (contactSettingsSec?.content_json) {
+        db.settings = {
+          ...db.settings,
+          ...contactSettingsSec.content_json,
+        };
+      }
+    }
+  }
 
   db.pages[index].updated_at = new Date().toISOString();
   saveDB(db);

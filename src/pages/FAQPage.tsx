@@ -6,12 +6,37 @@ import { safeFetchJson } from '../lib/safeFetch';
 
 export const FAQPage: React.FC = () => {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [cmsPage, setCmsPage] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   useEffect(() => {
-    safeFetchJson<FAQ[]>('/api/faqs', undefined, [])
-      .then((data) => setFaqs(Array.isArray(data) ? data : []));
+    Promise.all([
+      safeFetchJson<FAQ[]>('/api/faqs', undefined, []),
+      safeFetchJson<any>('/api/pages/faqs', undefined, null),
+    ]).then(([faqData, pageData]) => {
+      setFaqs(Array.isArray(faqData) ? faqData : []);
+      setCmsPage(pageData);
+    });
   }, []);
+
+  const headerSec = cmsPage?.sections?.find(
+    (s: any) => s.section_type === 'header' || s.section_key === 'faqs_header'
+  );
+  const helpSec = cmsPage?.sections?.find(
+    (s: any) => s.section_type === 'help_card' || s.section_key === 'faqs_help_card'
+  );
+
+  const headerBadge = headerSec?.content_json?.badge || 'Common Inquiries';
+  const headerTitle = headerSec?.content_json?.title || 'Frequently Asked Questions';
+  const headerDesc =
+    headerSec?.content_json?.description ||
+    'Everything you need to know about our sizes, customization process, pricing policy, creation timelines, advance payments, and worldwide shipping.';
+
+  const helpTitle = helpSec?.content_json?.title || 'Still have a question?';
+  const helpDesc =
+    helpSec?.content_json?.description ||
+    'We are just a message away. Reach out to the artist on WhatsApp for immediate answers regarding your bespoke requirements.';
+  const helpBtnText = helpSec?.content_json?.button_text || 'Chat on WhatsApp (+91 86521 62647)';
 
   const categories = ['All', ...Array.from(new Set(faqs.map((f) => f.category)))];
 
@@ -29,13 +54,13 @@ export const FAQPage: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12">
       <div className="text-center space-y-3">
         <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
-          Common Inquiries
+          {headerBadge}
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-theme-primary">
-          Frequently Asked Questions
+          {headerTitle}
         </h1>
         <p className="text-sm text-theme-muted font-light max-w-xl mx-auto leading-relaxed">
-          Everything you need to know about our sizes, customization process, pricing policy, creation timelines, advance payments, and worldwide shipping.
+          {headerDesc}
         </p>
 
         {/* Category Pills */}
@@ -83,10 +108,10 @@ export const FAQPage: React.FC = () => {
       <div className="p-8 rounded-3xl glass-panel border border-theme-glass text-center space-y-3">
         <HelpCircle className="w-8 h-8 text-theme-accent mx-auto" />
         <h3 className="font-serif text-xl font-semibold text-theme-primary">
-          Still have a question?
+          {helpTitle}
         </h3>
         <p className="text-xs text-theme-muted max-w-md mx-auto">
-          We are just a message away. Reach out to the artist on WhatsApp for immediate answers regarding your bespoke requirements.
+          {helpDesc}
         </p>
         <div className="pt-2">
           <button
@@ -94,7 +119,7 @@ export const FAQPage: React.FC = () => {
             className="px-6 py-3 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white text-xs font-bold uppercase tracking-wider shadow-xs inline-flex items-center gap-2 cursor-pointer"
           >
             <MessageCircle className="w-4 h-4 fill-white" />
-            <span>Chat on WhatsApp (+91 86521 62647)</span>
+            <span>{helpBtnText}</span>
           </button>
         </div>
       </div>

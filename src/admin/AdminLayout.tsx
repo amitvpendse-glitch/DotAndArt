@@ -39,9 +39,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'products', label: 'Product Catalog', icon: Package },
-    { id: 'importer', label: 'Excel/CSV Importer', icon: UploadCloud },
     { id: 'pages', label: 'Website Pages CMS', icon: FileText },
-    { id: 'media', label: 'Media Library', icon: ImageIcon },
     { id: 'testimonials', label: 'Testimonials', icon: MessageSquareQuote },
     { id: 'faqs', label: 'FAQs', icon: HelpCircle },
     { id: 'settings', label: 'Website Settings', icon: Settings },

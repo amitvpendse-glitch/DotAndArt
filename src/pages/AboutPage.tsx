@@ -1,5 +1,4 @@
-import React from 'react';
-import { Heart, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Heart, Sparkles, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
 
 interface AboutPageProps {
   onNavigate: (path: string) => void;
@@ -101,6 +100,66 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
             >
               Commission Custom Piece
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* THE MEDITATIVE DISCIPLINE (Moved from Home Page) */}
+      <div className="py-10 px-6 sm:px-10 rounded-3xl border border-theme-glass bg-gradient-to-b from-theme-card via-theme-page to-theme-card space-y-8">
+        <div className="text-center max-w-2xl mx-auto space-y-3">
+          <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
+            The Meditative Discipline
+          </span>
+          <h2 className="font-serif text-2xl sm:text-3xl font-medium text-theme-primary">
+            Every Dot Placed with Breath, Patience & Devotion
+          </h2>
+          <p className="text-sm text-theme-muted font-light leading-relaxed">
+            At DotAndArt, art is not merely decoration; it is a sacred meditation. Each dot mandala begins at the central Bindu — the spark of primordial consciousness — and blossoms outward in thousands of concentric, hand-dropped acrylic droplets.
+          </p>
+          <p className="text-sm text-theme-muted font-light leading-relaxed">
+            Our Lippan Kaam honors the pastoral tribes of Kutch, where hand-kneaded organic clay relief lines cradle gleaming hand-cut mirrors that reflect light and ward off negativity. No molds, no mass production — only singular handmade devotion.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="p-5 rounded-2xl glass-card space-y-2">
+            <div className="w-9 h-9 rounded-full bg-theme-accent/10 text-theme-accent flex items-center justify-center">
+              <Heart className="w-4 h-4" />
+            </div>
+            <h3 className="font-serif text-base font-semibold text-theme-primary">No Mechanization</h3>
+            <p className="text-xs text-theme-muted leading-relaxed">
+              Every circle, arc, and mirror placement is created manually using traditional dotting tools.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl glass-card space-y-2">
+            <div className="w-9 h-9 rounded-full bg-theme-accent/10 text-theme-accent flex items-center justify-center">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <h3 className="font-serif text-base font-semibold text-theme-primary">Sacred Geometry</h3>
+            <p className="text-xs text-theme-muted leading-relaxed">
+              Designs rooted in ancient Vedic proportions that balance energy and harmony in living spaces.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl glass-card space-y-2">
+            <div className="w-9 h-9 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+            <h3 className="font-serif text-base font-semibold text-theme-primary">Weather Protective Seal</h3>
+            <p className="text-xs text-theme-muted leading-relaxed">
+              Coated with professional artist varnish to safeguard colors and mirrors against dust and humidity.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl glass-card space-y-2">
+            <div className="w-9 h-9 rounded-full bg-theme-accent/10 text-theme-accent flex items-center justify-center">
+              <ShieldCheck className="w-4 h-4" />
+            </div>
+            <h3 className="font-serif text-base font-semibold text-theme-primary">Transit Safe Crate</h3>
+            <p className="text-xs text-theme-muted leading-relaxed">
+              Custom shock-absorbent multi-ply packaging ensures your delicate artwork arrives flawless.
+            </p>
           </div>
         </div>
       </div>

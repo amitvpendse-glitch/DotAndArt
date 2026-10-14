@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Trash2, Plus, Minus, MessageCircle, AlertCircle, ShoppingBag, Check, FileArchive } from 'lucide-react';
+import { X, Trash2, Plus, Minus, MessageCircle, AlertCircle, ShoppingBag, Check, Download } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { SafeProductImage } from './SafeProductImage';
 import {
@@ -313,14 +313,14 @@ export const EnquiryDrawer: React.FC = () => {
                     />
                   </div>
 
-                  {/* Order Attachment Suggestion Notice */}
+                  {/* Order Suggestion Notice */}
                   <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1.5 shadow-xs">
                     <div className="flex items-center gap-2 font-bold text-amber-700 dark:text-amber-400 text-xs">
-                      <FileArchive className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                      <Download className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
                       <span>Order Suggestion</span>
                     </div>
                     <p className="text-[11.5px] text-theme-muted leading-relaxed font-medium">
-                      Please attach the downloaded images zip file along with the order message before submitting the order.
+                      After placing order please download the images from the catalog and send to Shital
                     </p>
                   </div>
 

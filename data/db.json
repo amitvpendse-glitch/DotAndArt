@@ -3,9 +3,17 @@
     "username": "admin",
     "pin_hash": "9c82a5e26b9ec4902f21e17a82761691b0eba9fbf5677cb4d0101413459ddd3a342756f5da74a394063d6482492dbf5fccefbe16e5041d8ebdb03f47e6714d56",
     "salt": "e3e4e2d3b316cd7756be024a0dfe6bb7",
-    "updated_at": "2026-10-10T01:34:56.072Z"
+    "updated_at": "2026-10-10T01:34:56.072Z",
+    "last_login_at": "2026-10-14T14:08:51.518Z"
   },
-  "sessions": [],
+  "sessions": [
+    {
+      "token_hash": "05eadebc9c54cc28b19477b3934cf90476798ccf439e164b1ea65e22b02ed290",
+      "admin_username": "admin",
+      "expires_at": 1791994136329,
+      "created_at": "2026-10-14T14:08:51.518Z"
+    }
+  ],
   "categories": [
     {
       "id": "cat-mandala",
@@ -73,7 +81,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-10-0002",
@@ -117,7 +129,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-10-0003",
@@ -161,7 +177,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-10-0004",
@@ -205,7 +225,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-10-0005",
@@ -249,7 +273,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-10-0006",
@@ -293,7 +321,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-10-0007",
@@ -337,7 +369,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-10-0008",
@@ -381,7 +417,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-10-0009",
@@ -425,7 +465,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0001",
@@ -469,7 +513,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0002",
@@ -513,7 +561,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0003",
@@ -557,7 +609,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0004",
@@ -601,7 +657,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0005",
@@ -645,7 +705,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0006",
@@ -689,7 +753,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0007",
@@ -733,7 +801,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0008",
@@ -777,7 +849,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0009",
@@ -821,7 +897,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0010",
@@ -865,7 +945,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0011",
@@ -909,7 +993,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0012",
@@ -953,7 +1041,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0013",
@@ -997,7 +1089,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0014",
@@ -1041,7 +1137,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0015",
@@ -1085,7 +1185,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0016",
@@ -1129,7 +1233,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0017",
@@ -1173,7 +1281,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0018",
@@ -1217,7 +1329,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-12-0019",
@@ -1261,7 +1377,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-15-0001",
@@ -1305,7 +1425,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-15-0002",
@@ -1349,7 +1473,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-15-0003",
@@ -1393,7 +1521,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-15-0004",
@@ -1437,7 +1569,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-15-0005",
@@ -1481,7 +1617,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-15-0006",
@@ -1525,7 +1665,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-15-0007",
@@ -1569,7 +1713,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-15-0008",
@@ -1613,7 +1761,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-15-0009",
@@ -1657,7 +1809,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-15-0010",
@@ -1701,7 +1857,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-18-0001",
@@ -1745,7 +1905,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-18-0002",
@@ -1789,7 +1953,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-18-0003",
@@ -1833,7 +2001,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-18-0004",
@@ -1877,7 +2049,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-18-0005",
@@ -1921,7 +2097,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-18-0006",
@@ -1965,7 +2145,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-18-0007",
@@ -2009,7 +2193,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-18-0008",
@@ -2053,7 +2241,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-18-0009",
@@ -2097,7 +2289,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-18-0010",
@@ -2141,7 +2337,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-24-0001",
@@ -2185,7 +2385,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-24-0002",
@@ -2229,7 +2433,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-md-30-0001",
@@ -2273,7 +2481,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": ""
     },
     {
       "id": "prod-da-lp-lg-0001",
@@ -2293,7 +2505,7 @@
       "is_published": true,
       "photos_available_note": "Yes",
       "base_price": 25000,
-      "base_size": "24 inches",
+      "base_size": "48 inches X 24 inches",
       "images": [
         {
           "id": "img-prod-da-lp-lg-0001-1",
@@ -2309,15 +2521,19 @@
         {
           "id": "var-DA-LP-LG-0001-1",
           "product_id": "prod-da-lp-lg-0001",
-          "size": "24 inches",
+          "size": "48 inches X 24 inches",
           "price": 25000,
-          "variant_label": "Standard (24 inches)",
+          "variant_label": "Standard (48 inches X 24 inches)",
           "is_available": true,
           "display_order": 1
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece."
     },
     {
       "id": "prod-da-lp-lg-0002",
@@ -2337,7 +2553,7 @@
       "is_published": true,
       "photos_available_note": "Yes",
       "base_price": 3500,
-      "base_size": "18 inches",
+      "base_size": "18 inches X 18 inches",
       "images": [
         {
           "id": "img-prod-da-lp-lg-0002-1",
@@ -2353,15 +2569,19 @@
         {
           "id": "var-DA-LP-LG-0002-1",
           "product_id": "prod-da-lp-lg-0002",
-          "size": "18 inches",
+          "size": "18 inches X 18 inches",
           "price": 3500,
-          "variant_label": "Standard (18 inches)",
+          "variant_label": "Standard (18 inches X 18 inches)",
           "is_available": true,
           "display_order": 1
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece."
     },
     {
       "id": "prod-da-lp-lg-0003",
@@ -2381,7 +2601,7 @@
       "is_published": true,
       "photos_available_note": "Yes",
       "base_price": 25000,
-      "base_size": "30 inches",
+      "base_size": "36 inches X 36 inches",
       "images": [
         {
           "id": "img-prod-da-lp-lg-0003-1",
@@ -2397,15 +2617,19 @@
         {
           "id": "var-DA-LP-LG-0003-1",
           "product_id": "prod-da-lp-lg-0003",
-          "size": "30 inches",
+          "size": "36 inches X 36 inches",
           "price": 25000,
-          "variant_label": "Standard (30 inches)",
+          "variant_label": "Standard (36 inches X 36 inches)",
           "is_available": true,
           "display_order": 1
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece."
     },
     {
       "id": "prod-da-lp-md-0001",
@@ -2449,7 +2673,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece."
     },
     {
       "id": "prod-da-lp-md-0002",
@@ -2493,7 +2721,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece."
     },
     {
       "id": "prod-da-lp-md-0003",
@@ -2537,7 +2769,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece."
     },
     {
       "id": "prod-da-lp-sm-0001",
@@ -2581,7 +2817,11 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece."
     },
     {
       "id": "prod-da-lp-sm-0002",
@@ -2601,7 +2841,7 @@
       "is_published": true,
       "photos_available_note": "Yes",
       "base_price": 1100,
-      "base_size": "12 inches",
+      "base_size": "12 inches X 10 inches",
       "images": [
         {
           "id": "img-prod-da-lp-sm-0002-1",
@@ -2617,18 +2857,30 @@
         {
           "id": "var-DA-LP-SM-0002-1",
           "product_id": "prod-da-lp-sm-0002",
-          "size": "12 inches",
+          "size": "12 inches X 10 inches",
           "price": 1100,
-          "variant_label": "Standard (12 inches)",
+          "variant_label": "Standard (12 inches X 10 inches)",
           "is_available": true,
           "display_order": 1
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2025-01-01T00:00:00.000Z"
+      "updated_at": "2025-01-01T00:00:00.000Z",
+      "is_available": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece."
     }
   ],
   "media": [
+    {
+      "id": "img-sync-0-art-artist",
+      "storage_path": "/public/static/assets/images/Art_artist.jpg",
+      "media_type": "image",
+      "filename": "Art_artist.jpg",
+      "title": "Artwork ART_ARTIST",
+      "created_at": "2026-10-14T14:05:31.872Z"
+    },
     {
       "id": "img-auto-0-da-lp-lg-0001",
       "storage_path": "/public/static/assets/images/DA-LP-LG-0001.jpg",
@@ -3163,16 +3415,23 @@
       "status": "published",
       "sections": [
         {
-          "id": "sec-home-hero",
+          "id": "sec-home-banner",
           "page_id": "page-home",
-          "section_type": "hero",
-          "section_key": "hero_main",
+          "section_type": "banner",
+          "section_key": "banner",
           "content_json": {
-            "badge_text": "HANDMADE SACRED MANDALAS & LIPPAN ART",
-            "headline": "Harmonious Geometry & Handcrafted Devotion for Your Sacred Space",
-            "subtitle": "Every dot is painted by hand with reverence, patience, and meditative precision. Explore bespoke mandalas, Lippan mud-mirror art, and personalized photo creations.",
-            "cta_primary_text": "Explore Art Collection",
-            "cta_secondary_text": "Commission Custom Piece"
+            "eyebrow": "MEET THE ARTIST & MASTER CRAFTSWOMAN",
+            "title": "Shital Thosar — Sacred Geometry & Handmade Mandala Art",
+            "short_description": "Crafting serene dot mandalas and traditional Lippan Kaam mirror art with deep devotion and precision.",
+            "description": "Shital Thosar is a visionary Indian artisan specializing in sacred Dot Mandalas and traditional Gujarati Lippan Kaam mirror art. Handcrafted on moisture-resistant MDF board with heavy-body acrylics, light-reflecting mirrors, and protective varnish, her creations bring spiritual harmony, positive energy, and radiant warmth into modern homes across the globe.",
+            "product_sku": "ARTIST-SHITAL",
+            "size": "Custom Sizes Available",
+            "price": 0,
+            "material": "MDF Board, Lippan Clay Relief, Acrylics, Mirrors, Varnish",
+            "creation_time": "Handmade on Order",
+            "shipping_info": "Worldwide Insured Express Delivery",
+            "badge_text": "Handmade with Devotion",
+            "image_url": "/static/assets/images/Art_artist.jpg"
           },
           "display_order": 1,
           "is_visible": true,
@@ -3180,17 +3439,15 @@
           "updated_at": "2025-01-01T00:00:00.000Z"
         },
         {
-          "id": "sec-home-philosophy",
+          "id": "sec-home-featured",
           "page_id": "page-home",
-          "section_type": "feature",
-          "section_key": "craft_philosophy",
+          "section_type": "featured_artworks",
+          "section_key": "featured_sacred_artworks",
           "content_json": {
-            "title": "The Art of Patience & Meditation",
-            "subtitle": "A Sacred Practice in Every Circle",
-            "body": "Mandala art is more than visual beauty—it is a spiritual sanctuary. From individual acrylic dots to traditional clay mirrorwork, each creation radiates serenity, balance, and positive energy into your home.",
-            "feature_1": "100% Handcrafted by Artist Shital Thosar",
-            "feature_2": "Vibrant Premium Pigments & Protective Varnish",
-            "feature_3": "Worldwide Shockproof Wooden Packaging"
+            "badge_text": "Handcrafted Collection",
+            "heading": "Featured Sacred Artworks",
+            "catalog_link_text": "View Full Catalog",
+            "subtitle": "Handcrafted dot mandalas and traditional Lippan mirror wall hangings available for immediate order or bespoke customization."
           },
           "display_order": 2,
           "is_visible": true,
@@ -3198,16 +3455,58 @@
           "updated_at": "2025-01-01T00:00:00.000Z"
         },
         {
-          "id": "sec-home-custom-cta",
+          "id": "sec-home-testimonials",
           "page_id": "page-home",
-          "section_type": "cta",
-          "section_key": "custom_banner",
+          "section_type": "testimonials",
+          "section_key": "testimonials",
           "content_json": {
-            "title": "Desire a Custom Diameter or Color Palette?",
-            "subtitle": "We collaborate directly with art collectors, interior designers, and home owners to paint bespoke mandalas tailored to your wall dimensions and sacred intentions.",
-            "button_text": "Request Custom Commission"
+            "badge_text": "Collector Words",
+            "heading": "Cherished in Homes Worldwide",
+            "subtitle": "Every creation is received with love and appreciation from homes across the globe."
           },
           "display_order": 3,
+          "is_visible": true,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z"
+        }
+      ],
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "page-faqs",
+      "slug": "faqs",
+      "title": "FAQs",
+      "seo_title": "Frequently Asked Questions — Dot And Art",
+      "meta_description": "Everything you need to know about our sizes, customization process, pricing policy, creation timelines, advance payments, and worldwide shipping.",
+      "status": "published",
+      "sections": [
+        {
+          "id": "sec-faqs-header",
+          "page_id": "page-faqs",
+          "section_type": "header",
+          "section_key": "faqs_header",
+          "content_json": {
+            "badge": "Common Inquiries",
+            "title": "Frequently Asked Questions",
+            "description": "Everything you need to know about our sizes, customization process, pricing policy, creation timelines, advance payments, and worldwide shipping."
+          },
+          "display_order": 1,
+          "is_visible": true,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z"
+        },
+        {
+          "id": "sec-faqs-help",
+          "page_id": "page-faqs",
+          "section_type": "help_card",
+          "section_key": "faqs_help_card",
+          "content_json": {
+            "title": "Still have a question?",
+            "description": "We are just a message away. Reach out to the artist on WhatsApp for immediate answers regarding your bespoke requirements.",
+            "button_text": "Chat on WhatsApp (+91 86521 62647)"
+          },
+          "display_order": 2,
           "is_visible": true,
           "created_at": "2025-01-01T00:00:00.000Z",
           "updated_at": "2025-01-01T00:00:00.000Z"
@@ -3561,9 +3860,128 @@
       "title": "Dot And Art — Handcrafted Sacred Mandalas & Lippan Mirror Art",
       "description": "Discover exquisite handcrafted dot mandalas and traditional Lippan mirror wall hangings created with devotion and precision.",
       "keywords": "dot mandala, lippan art, wall hangings, spiritual art, handmade home decor"
+    },
+    "showcase_banner": {
+      "eyebrow": "MEET THE ARTIST & MASTER CRAFTSWOMAN",
+      "title": "Shital Thosar — Sacred Geometry & Handmade Mandala Art",
+      "short_description": "Crafting serene dot mandalas and traditional Lippan Kaam mirror art with deep devotion and precision.",
+      "description": "Shital Thosar is a visionary Indian artisan specializing in sacred Dot Mandalas and traditional Gujarati Lippan Kaam mirror art. Handcrafted on moisture-resistant MDF board with heavy-body acrylics, light-reflecting mirrors, and protective varnish, her creations bring spiritual harmony, positive energy, and radiant warmth into modern homes across the globe.",
+      "product_sku": "ARTIST-SHITAL",
+      "size": "Custom Sizes Available",
+      "price": 0,
+      "material": "MDF Board, Lippan Clay Relief, Acrylics, Mirrors, Varnish",
+      "creation_time": "Handmade on Order",
+      "shipping_info": "Worldwide Insured Express Delivery",
+      "badge_text": "Handmade with Devotion",
+      "image_url": "/static/assets/images/Art_artist.jpg"
     }
   },
   "audit_logs": [
+    {
+      "id": "log-1791986931520-e51ff63d",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "2401:4900:8fcb:139b:a805:e424:fb7e:9b4f"
+      },
+      "created_at": "2026-10-14T14:08:51.520Z"
+    },
+    {
+      "id": "log-1791986731881-9f86fe8f",
+      "admin_user_id": "admin",
+      "action": "smart_image_auto_sync",
+      "entity_type": "catalog",
+      "entity_id": "file_event",
+      "safe_metadata_json": {
+        "event_type": "change",
+        "filename": "Art_artist.jpg",
+        "media_count": 63,
+        "updated_products": 59
+      },
+      "created_at": "2026-10-14T14:05:31.882Z"
+    },
+    {
+      "id": "log-1791985556239-06ee5b85",
+      "admin_user_id": "admin",
+      "action": "admin_logout",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-14T13:45:56.239Z"
+    },
+    {
+      "id": "log-1791985503901-c12d168d",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "2401:4900:8fcb:139b:a805:e424:fb7e:9b4f"
+      },
+      "created_at": "2026-10-14T13:45:03.901Z"
+    },
+    {
+      "id": "log-1791985463463-7f446944",
+      "admin_user_id": "admin",
+      "action": "admin_logout",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-14T13:44:23.463Z"
+    },
+    {
+      "id": "log-1791984423934-1e52e0d0",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "2401:4900:8fcb:139b:a805:e424:fb7e:9b4f"
+      },
+      "created_at": "2026-10-14T13:27:03.934Z"
+    },
+    {
+      "id": "log-1791984303316-9ec6d4d4",
+      "admin_user_id": "admin",
+      "action": "admin_logout",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-14T13:25:03.316Z"
+    },
+    {
+      "id": "log-1791981922093-dcba5e74",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "2401:4900:8fcb:139b:a805:e424:fb7e:9b4f"
+      },
+      "created_at": "2026-10-14T12:45:22.093Z"
+    },
+    {
+      "id": "log-1791981452533-fc3f9b3c",
+      "admin_user_id": "admin",
+      "action": "admin_logout",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-14T12:37:32.534Z"
+    },
+    {
+      "id": "log-1791981427087-f89166e9",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "2401:4900:8fcb:139b:a805:e424:fb7e:9b4f"
+      },
+      "created_at": "2026-10-14T12:37:07.087Z"
+    },
     {
       "id": "log-1791904227503-29174c87",
       "admin_user_id": "admin",

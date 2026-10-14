@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, SlidersHorizontal, Eye, ShoppingBag, X, Sparkles, ChevronDown, Plus, Minus, Download } from 'lucide-react';
+import { Search, Filter, SlidersHorizontal, Eye, ShoppingBag, X, Sparkles, ChevronDown, Plus, Minus, Download, Flame, FileText, Loader2, Check } from 'lucide-react';
 import { Product, Category, WebsiteSettings } from '../types';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { ImageZoomModal } from '../components/ImageZoomModal';
 import { useCart } from '../context/CartContext';
 import { safeFetchJson } from '../lib/safeFetch';
 import { generateProfessionalCatalogPDF } from '../utils/pdfCatalogGenerator';
-import { FileText, Loader2 } from 'lucide-react';
+import { downloadArtworkImage } from '../utils/whatsapp';
 
 interface ShopPageProps {
   initialCategory?: string;
@@ -21,6 +21,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [zoomedProduct, setZoomedProduct] = useState<Product | null>(null);
+  const [downloadingSku, setDownloadingSku] = useState<string | null>(null);
 
   // PDF Generation State
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -165,7 +166,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           Dot And Art Collection
         </h1>
         <p className="text-sm text-theme-muted font-light leading-relaxed">
-          Original handcrafted pieces available in authentic dimensions: 10, 12, 15, 18, 24, and 30 inches.
+          Original handcrafted pieces available in authentic dimensions: circular diameters and custom rectangular formats (e.g. 48" X 24", 36" X 36", 18" X 18", 12" X 10", 10", 12", 15", 18", 24", 30").
         </p>
 
         <div className="pt-2 flex flex-wrap justify-center gap-3">
@@ -363,7 +364,10 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           {displayedProducts.map((product, index) => {
             const isLippan =
               product.category_slug === 'lippan-wall-hangings' ||
-              product.name.toLowerCase().includes('lippan');
+              product.name.toLowerCase().includes('lippan') ||
+              product.sku.startsWith('DA-LP');
+            const isHighDemand = product.is_high_demand !== undefined ? product.is_high_demand : isLippan;
+            const extraDays = product.extra_delivery_days !== undefined ? product.extra_delivery_days : 5;
             const primaryImg = product.images?.find((img) => img.is_primary) || product.images?.[0];
 
             return (
@@ -388,12 +392,20 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
                     className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                   />
 
-
-
                   {/* SKU Badge */}
-                  <div className="absolute top-3 left-3 z-30 px-2 py-0.5 rounded bg-theme-card/90 backdrop-blur-xs text-[10px] font-mono font-semibold text-theme-primary border border-theme-glass">
-                    {product.sku}
+                  <div className="absolute top-3 left-3 z-30">
+                    <span className="px-2 py-0.5 rounded bg-theme-card/90 backdrop-blur-xs text-[10px] font-mono font-semibold text-theme-primary border border-theme-glass">
+                      {product.sku}
+                    </span>
                   </div>
+
+                  {/* High Demand Badge on Thumbnail */}
+                  {isHighDemand && (
+                    <div className="absolute bottom-3 right-3 z-30 px-2.5 py-0.5 rounded-full bg-linear-to-r from-amber-500 to-orange-500 text-white text-[9px] font-bold shadow-xs flex items-center gap-1 backdrop-blur-xs">
+                      <Flame className="w-3 h-3 fill-white text-white" />
+                      <span>High Demand</span>
+                    </div>
+                  )}
 
                   {/* Zoom Badge Button on Hover */}
                   <button
@@ -435,6 +447,25 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
                       {product.description}
                     </p>
 
+                    {/* High Demand Positive Notice Free-Text Box */}
+                    {isHighDemand && (
+                      <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[10px] space-y-1 text-amber-900 dark:text-amber-200">
+                        <div className="flex items-center justify-between font-bold text-amber-800 dark:text-amber-300">
+                          <span className="flex items-center gap-1">
+                            <Flame className="w-3 h-3 text-amber-600 fill-amber-500" />
+                            High Demand Artisan Piece
+                          </span>
+                          <span className="text-[9px] font-mono bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-900 dark:text-amber-200">
+                            +{extraDays} days
+                          </span>
+                        </div>
+                        <p className="leading-tight text-amber-950/85 dark:text-amber-100/90 font-normal">
+                          {product.high_demand_message ||
+                            `✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow ${extraDays} additional days for our master artist to craft and perfect your sacred piece.`}
+                        </p>
+                      </div>
+                    )}
+
                     {/* Detailed Specifications Box */}
                     <div className="pt-2 border-t border-theme-glass space-y-1.5 text-[11px]">
                       <div className="flex justify-between items-center">
@@ -449,7 +480,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
                       </div>
                       <div className="flex justify-between items-center text-[10px] text-theme-muted pt-0.5">
                         <div>Creation: <strong className="text-theme-primary">{product.creation_time}</strong></div>
-                        <div>Customizable: <strong className="text-emerald-600">Yes</strong></div>
+                        <div>Customizable: <strong className="text-emerald-600 font-bold">Yes</strong></div>
                       </div>
                       <div className="text-[10px] text-theme-muted truncate" title="Worldwide shipping in bubble wrap and corrugated box">
                         Shipping: <strong className="text-theme-primary">Bubble wrap & corrugated box</strong>
@@ -470,6 +501,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
                         </div>
 
                         <div className="flex items-center gap-1.5">
+                          {/* Zoom Image Button */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -479,6 +511,36 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
                             title="Zoom & inspect artwork image"
                           >
                             <Eye className="w-4 h-4" />
+                          </button>
+
+                          {/* Download Artwork Image Button */}
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              if (!primaryImg?.storage_path) return;
+                              setDownloadingSku(product.sku);
+                              try {
+                                await downloadArtworkImage(
+                                  primaryImg.storage_path,
+                                  `${product.sku}_${product.name.replace(/\s+/g, '_')}.jpg`
+                                );
+                              } finally {
+                                setTimeout(() => setDownloadingSku(null), 1200);
+                              }
+                            }}
+                            disabled={downloadingSku === product.sku}
+                            className={`p-2 rounded-full border border-theme-glass transition-all cursor-pointer ${
+                              downloadingSku === product.sku
+                                ? 'bg-emerald-600 text-white'
+                                : 'text-theme-primary hover:bg-theme-glass hover:text-theme-accent'
+                            }`}
+                            title="Download artwork image (.jpg)"
+                          >
+                            {downloadingSku === product.sku ? (
+                              <Check className="w-4 h-4 animate-scale-in" />
+                            ) : (
+                              <Download className="w-4 h-4" />
+                            )}
                           </button>
 
                           {itemQty > 0 ? (

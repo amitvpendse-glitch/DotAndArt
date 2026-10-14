@@ -13,9 +13,10 @@ import {
   Info,
   Plus,
   Minus,
-  FileArchive,
+  Download,
   Eye,
   ZoomIn,
+  Flame,
 } from 'lucide-react';
 import { Product, ProductVariant } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
@@ -26,6 +27,7 @@ import {
   dispatchDirectWhatsAppOrder,
   formatSingleProductEnquiry,
   collectAttachmentsForProduct,
+  downloadArtworkImage,
   WhatsAppAttachmentItem,
 } from '../utils/whatsapp';
 import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
@@ -53,6 +55,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [customizationNotes, setCustomizationNotes] = useState('');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [attachmentModalOpen, setAttachmentModalOpen] = useState(false);
   const [preparedEnquiry, setPreparedEnquiry] = useState<{
     msg: string;
@@ -115,7 +118,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   }
 
   const isLippan =
-    product.category_slug === 'lippan-wall-hangings' || product.name.toLowerCase().includes('lippan');
+    product.category_slug === 'lippan-wall-hangings' ||
+    product.name.toLowerCase().includes('lippan') ||
+    product.sku.startsWith('DA-LP');
+  const isHighDemand = product.is_high_demand !== undefined ? product.is_high_demand : isLippan;
+  const extraDays = product.extra_delivery_days !== undefined ? product.extra_delivery_days : 5;
+  const highDemandNotice =
+    product.high_demand_message ||
+    '✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece.';
   const currentPrice = selectedVariant ? selectedVariant.price : product.base_price;
   const currentSize = selectedVariant ? selectedVariant.size : product.base_size;
 
@@ -172,18 +182,46 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 Code: {product.sku}
               </div>
 
-              {/* High Definition Zoom Button Overlay */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsZoomOpen(true);
-                }}
-                className="absolute top-4 right-4 z-30 px-3 py-1.5 rounded-full bg-slate-950/80 hover:bg-slate-900 text-amber-400 border border-amber-500/30 backdrop-blur-md text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-lg hover:scale-105"
-                title="Click to zoom image"
-              >
-                <Eye className="w-4 h-4" />
-                <span>Zoom Image</span>
-              </button>
+              {/* Top Action Buttons Overlay */}
+              <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
+                {/* Download Artwork Image Button */}
+                <button
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    if (!currentActiveImage?.storage_path) return;
+                    setIsDownloading(true);
+                    try {
+                      const filename = `${product.sku}_photo_${activeImageIndex + 1}.jpg`;
+                      await downloadArtworkImage(currentActiveImage.storage_path, filename);
+                    } finally {
+                      setTimeout(() => setIsDownloading(false), 1200);
+                    }
+                  }}
+                  disabled={isDownloading || !currentActiveImage?.storage_path}
+                  className={`px-3 py-1.5 rounded-full border backdrop-blur-md text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-lg ${
+                    isDownloading
+                      ? 'bg-emerald-600 text-white border-emerald-500'
+                      : 'bg-slate-950/80 hover:bg-slate-900 text-white border-white/20 hover:scale-105'
+                  }`}
+                  title="Download artwork image (.jpg)"
+                >
+                  <Download className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{isDownloading ? 'Downloaded' : 'Download Image'}</span>
+                </button>
+
+                {/* High Definition Zoom Button Overlay */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsZoomOpen(true);
+                  }}
+                  className="px-3 py-1.5 rounded-full bg-slate-950/80 hover:bg-slate-900 text-amber-400 border border-amber-500/30 backdrop-blur-md text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-lg hover:scale-105"
+                  title="Click to zoom image"
+                >
+                  <Eye className="w-4 h-4" />
+                  <span>Zoom</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -241,6 +279,34 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 (Standard catalog size: {currentSize})
               </span>
             </div>
+
+            {/* High Demand Status Badge */}
+            {isHighDemand && (
+              <div className="pt-2 flex flex-wrap items-center gap-2.5">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-linear-to-r from-amber-500 to-orange-500 text-white text-xs font-bold shadow-xs">
+                  <Flame className="w-3.5 h-3.5 fill-white text-white" />
+                  <span>🔥 High Demand</span>
+                </span>
+              </div>
+            )}
+
+            {/* High Demand Positive Notice Box */}
+            {isHighDemand && (
+              <div className="mt-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2 text-xs">
+                <div className="flex items-center justify-between text-amber-900 dark:text-amber-200 font-bold">
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-600" />
+                    <span>High Demand Artisan Creation</span>
+                  </div>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-300 font-semibold font-mono">
+                    +{extraDays} days crafting
+                  </span>
+                </div>
+                <p className="text-amber-950/90 dark:text-amber-100/90 leading-relaxed font-normal">
+                  {highDemandNotice}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Size / Variant Selector */}
@@ -346,14 +412,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             />
           </div>
 
-          {/* Order Attachment Suggestion Notice */}
+          {/* Order Suggestion Notice */}
           <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1 shadow-xs">
             <div className="flex items-center gap-2 font-bold text-amber-700 dark:text-amber-400 text-xs">
-              <FileArchive className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
+              <Download className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
               <span>Order Suggestion</span>
             </div>
             <p className="text-[11.5px] text-theme-muted leading-relaxed font-medium">
-              Please attach the downloaded images zip file along with the order message before submitting the order.
+              After placing order please download the images from the catalog and send to Shital
             </p>
           </div>
 

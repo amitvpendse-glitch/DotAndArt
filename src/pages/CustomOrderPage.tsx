@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, MessageCircle, AlertCircle, CheckCircle2, ChevronRight, Palette, Compass, Ruler, Camera, Upload, Image as ImageIcon, Trash2, FileArchive } from 'lucide-react';
+import { Sparkles, MessageCircle, AlertCircle, CheckCircle2, ChevronRight, Palette, Compass, Ruler, Camera, Upload, Image as ImageIcon, Trash2, Download } from 'lucide-react';
 import {
   dispatchDirectWhatsAppOrder,
   formatCustomMandalaEnquiry,
@@ -397,14 +397,14 @@ export const CustomOrderPage: React.FC = () => {
 
           {/* Form Action */}
           <div className="pt-4 border-t border-theme-glass space-y-3">
-            {/* Order Attachment Suggestion Notice */}
+            {/* Order Suggestion Notice */}
             <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1 shadow-xs">
               <div className="flex items-center gap-2 font-bold text-amber-700 dark:text-amber-400 text-xs">
-                <FileArchive className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                <Download className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
                 <span>Order Suggestion</span>
               </div>
               <p className="text-[11.5px] text-theme-muted leading-relaxed font-medium">
-                Please attach the downloaded images zip file along with the order message before submitting the order.
+                After placing order please download the images from the catalog and send to Shital
               </p>
             </div>
 

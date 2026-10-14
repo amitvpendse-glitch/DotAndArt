@@ -16,6 +16,8 @@ import {
   AlertTriangle,
   MoveUp,
   MoveDown,
+  Flame,
+  Clock,
 } from 'lucide-react';
 import { Product, Category, ProductVariant, ProductImage } from '../types';
 import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
@@ -58,13 +60,20 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
   const [specialInfo, setSpecialInfo] = useState('Clean gently with a soft dry microfiber cloth.');
   const [featured, setFeatured] = useState(false);
   const [isPublished, setIsPublished] = useState(true);
+  const [isAvailable, setIsAvailable] = useState(true);
+  const [isHighDemand, setIsHighDemand] = useState(false);
+  const [extraDeliveryDays, setExtraDeliveryDays] = useState<number>(5);
+  const [highDemandMessage, setHighDemandMessage] = useState(
+    '✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece.'
+  );
 
   // Images & Variants
   const [images, setImages] = useState<ProductImage[]>([]);
   const [variants, setVariants] = useState<ProductVariant[]>([]);
 
-  // Image Uploading State
+  // Image Uploading & Drag-and-Drop State
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<Product | null>(null);
 
@@ -106,6 +115,14 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
     setSpecialInfo('Wipe with dry microfiber cloth.');
     setFeatured(false);
     setIsPublished(true);
+    setIsAvailable(true);
+    const initialCategory = categories[0];
+    const isLippanDefault = initialCategory?.slug === 'lippan-wall-hangings';
+    setIsHighDemand(isLippanDefault);
+    setExtraDeliveryDays(5);
+    setHighDemandMessage(
+      '✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece.'
+    );
     setImages([]);
     setVariants([
       { id: `v-${Date.now()}-1`, product_id: '', size: '12 inches diameter', price: 2500, is_available: true, display_order: 1 },
@@ -116,37 +133,54 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
 
   const handleOpenEdit = (p: Product) => {
     setEditingProduct(p);
-    setName(p.name);
-    setSku(p.sku);
-    setCategoryId(p.category_id);
+    setName(p.name || '');
+    setSku(p.sku || '');
+    setCategoryId(p.category_id || '');
     setShortDesc(p.short_description || '');
-    setDescription(p.description);
-    setBasePrice(p.base_price);
-    setBaseSize(p.base_size);
-    setMaterial(p.material);
-    setFraming(p.framing);
-    setCustomizable(p.customizable);
-    setCreationTime(p.creation_time);
-    setShippingInfo(p.shipping_info);
+    setDescription(p.description || '');
+    setBasePrice(p.base_price || 0);
+    setBaseSize(p.base_size || '');
+    setMaterial(p.material || '');
+    setFraming(p.framing || '');
+    setCustomizable(p.customizable !== false);
+    setCreationTime(p.creation_time || '');
+    setShippingInfo(p.shipping_info || '');
     setSpecialInfo(p.special_information || '');
-    setFeatured(p.featured);
-    setIsPublished(p.is_published);
+    setFeatured(Boolean(p.featured));
+    setIsPublished(Boolean(p.is_published));
+    setIsAvailable(p.is_available !== false);
+    const isLippanArt =
+      p.category_slug === 'lippan-wall-hangings' ||
+      (p.name || '').toLowerCase().includes('lippan') ||
+      (p.sku || '').startsWith('DA-LP');
+    setIsHighDemand(p.is_high_demand !== undefined ? p.is_high_demand : isLippanArt);
+    setExtraDeliveryDays(p.extra_delivery_days !== undefined ? p.extra_delivery_days : 5);
+    setHighDemandMessage(
+      p.high_demand_message ||
+        '✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece.'
+    );
     setImages(p.images ? [...p.images] : []);
     setVariants(p.variants ? [...p.variants] : []);
     setErrorMessage('');
     setDrawerOpen(true);
   };
 
-  // Image upload handler
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  // Upload multiple files (supports file input and drag-and-drop)
+  const processFiles = async (filesList: FileList | File[]) => {
+    if (!filesList || filesList.length === 0) return;
 
     setUploadingImage(true);
     setErrorMessage('');
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+    const filesArray = Array.from(filesList).filter((f) => f.type.startsWith('image/'));
+    if (filesArray.length === 0) {
+      setErrorMessage('Please provide image files (JPG, PNG, WebP).');
+      setUploadingImage(false);
+      return;
+    }
+
+    for (let i = 0; i < filesArray.length; i++) {
+      const file = filesArray[i];
       const formData = new FormData();
       formData.append('file', file);
       formData.append('alt_text', `${name || 'Artwork'} photo`);
@@ -160,18 +194,20 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
 
         const data = await safeResponseJson(res, {});
         if (res.ok && data?.file_path) {
-          const isFirst = images.length === 0;
-          const newImg: ProductImage = {
-            id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-            product_id: editingProduct?.id || '',
-            storage_path: data.file_path,
-            alt_text: file.name,
-            display_order: images.length + 1,
-            is_primary: isFirst,
-          };
-          setImages((prev) => [...prev, newImg]);
+          setImages((prev) => {
+            const isFirst = prev.length === 0;
+            const newImg: ProductImage = {
+              id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+              product_id: editingProduct?.id || '',
+              storage_path: data.file_path,
+              alt_text: file.name,
+              display_order: prev.length + 1,
+              is_primary: isFirst,
+            };
+            return [...prev, newImg];
+          });
         } else {
-          setErrorMessage(data.error || 'Upload failed');
+          setErrorMessage(data?.error || 'Upload failed');
         }
       } catch {
         setErrorMessage('Failed to upload file.');
@@ -179,6 +215,33 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
     }
 
     setUploadingImage(false);
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      processFiles(e.target.files);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(false);
+    if (e.dataTransfer && e.dataTransfer.files) {
+      processFiles(e.dataTransfer.files);
+    }
   };
 
   const handleSetPrimaryImage = (index: number) => {
@@ -218,27 +281,36 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
 
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !sku.trim()) {
+    const safeTrim = (str?: string | null) => (str ? str.trim() : '');
+
+    const nameVal = safeTrim(name);
+    const skuVal = safeTrim(sku);
+
+    if (!nameVal || !skuVal) {
       setErrorMessage('Product name and unique SKU are required.');
       return;
     }
 
     const payload = {
-      sku: sku.trim().toUpperCase(),
-      name: name.trim(),
-      short_description: shortDesc.trim(),
-      description: description.trim(),
+      sku: skuVal.toUpperCase(),
+      name: nameVal,
+      short_description: safeTrim(shortDesc),
+      description: safeTrim(description),
       category_id: categoryId,
-      base_price: Number(basePrice),
-      base_size: baseSize.trim(),
-      material: material.trim(),
-      framing: framing.trim(),
+      base_price: Number(basePrice) || 0,
+      base_size: safeTrim(baseSize),
+      material: safeTrim(material),
+      framing: safeTrim(framing),
       customizable,
-      creation_time: creationTime.trim(),
-      shipping_info: shippingInfo.trim(),
-      special_information: specialInfo.trim(),
+      creation_time: safeTrim(creationTime),
+      shipping_info: safeTrim(shippingInfo),
+      special_information: safeTrim(specialInfo),
       featured,
       is_published: isPublished,
+      is_available: isAvailable,
+      is_high_demand: isHighDemand,
+      extra_delivery_days: Number(extraDeliveryDays) || 0,
+      high_demand_message: safeTrim(highDemandMessage),
       images,
       variants,
     };
@@ -309,10 +381,10 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
     if (statusFilter === 'published' && !p.is_published) return false;
     if (statusFilter === 'draft' && p.is_published) return false;
     if (missingImagesOnly && p.images && p.images.length > 0) return false;
-    if (search.trim()) {
+    if (search && search.trim()) {
       const q = search.toLowerCase();
-      const matchName = p.name.toLowerCase().includes(q);
-      const matchSku = p.sku.toLowerCase().includes(q);
+      const matchName = (p.name || '').toLowerCase().includes(q);
+      const matchSku = (p.sku || '').toLowerCase().includes(q);
       if (!matchName && !matchSku) return false;
     }
     return true;
@@ -409,6 +481,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                 <th className="px-4 py-3">Category</th>
                 <th className="px-4 py-3">Price</th>
                 <th className="px-4 py-3">Size</th>
+                <th className="px-4 py-3">Availability & Demand</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
@@ -416,7 +489,10 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
             <tbody className="divide-y divide-[#F2EAE0]">
               {filteredProducts.map((p) => {
                 const isLippan =
-                  p.category_slug === 'lippan-wall-hangings' || p.name.toLowerCase().includes('lippan');
+                  p.category_slug === 'lippan-wall-hangings' ||
+                  (p.name || '').toLowerCase().includes('lippan') ||
+                  (p.sku || '').startsWith('DA-LP');
+                const isDemandHigh = p.is_high_demand !== undefined ? p.is_high_demand : isLippan;
                 const primaryImg = p.images?.find((img) => img.is_primary) || p.images?.[0];
 
                 return (
@@ -466,6 +542,28 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                     {/* Size */}
                     <td className="px-4 py-3 text-[#7D6B5D]">
                       {p.base_size}
+                    </td>
+
+                    {/* Availability & Demand */}
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col gap-1 items-start">
+                        {p.is_available !== false ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-semibold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Available
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200 text-[10px] font-semibold">
+                            Unavailable
+                          </span>
+                        )}
+                        {isDemandHigh && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-300 text-[10px] font-bold">
+                            <Flame className="w-3 h-3 text-amber-600 shrink-0" />
+                            <span>High Demand (+{p.extra_delivery_days ?? 5}d)</span>
+                          </span>
+                        )}
+                      </div>
                     </td>
 
                     {/* Status */}
@@ -609,19 +707,17 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#4A3E36] mb-1">Standard Size</label>
-                  <select
+                  <label className="block font-semibold text-[#4A3E36] mb-1">
+                    Standard Size / Dimensions (e.g. 48 inches X 24 inches or 18 inches) *
+                  </label>
+                  <input
+                    type="text"
+                    required
                     value={baseSize}
                     onChange={(e) => setBaseSize(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5]"
-                  >
-                    <option value="10 inches">10 inches</option>
-                    <option value="12 inches">12 inches</option>
-                    <option value="15 inches">15 inches</option>
-                    <option value="18 inches">18 inches</option>
-                    <option value="24 inches">24 inches</option>
-                    <option value="30 inches">30 inches</option>
-                  </select>
+                    placeholder="e.g. 48 inches X 24 inches, 18 inches, 12 inches X 10 inches..."
+                    className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5] focus:outline-none focus:border-[#C85A32]"
+                  />
                 </div>
 
                 <div>
@@ -636,15 +732,15 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                 </div>
               </div>
 
-              {/* Photos & Media Upload */}
+              {/* Photos & Media Upload with Drag and Drop */}
               <div className="space-y-4 pt-4 border-t border-[#F0E5D8]">
                 <div className="flex items-center justify-between">
                   <h4 className="font-semibold text-sm text-[#8C4A28] uppercase tracking-wider">
                     2. Artwork Images
                   </h4>
-                  <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-[#FAF0E6] text-[#A03E1B] font-semibold hover:bg-[#F3ECE2] flex items-center gap-1.5">
+                  <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-[#FAF0E6] text-[#A03E1B] font-semibold hover:bg-[#F3ECE2] flex items-center gap-1.5 transition-colors">
                     <Upload className="w-3.5 h-3.5" />
-                    <span>Upload Image</span>
+                    <span>Browse Files</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -656,19 +752,59 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                 </div>
 
                 {uploadingImage && (
-                  <p className="text-xs text-[#C85A32] animate-pulse">Uploading photo to server storage...</p>
+                  <p className="text-xs text-[#C85A32] animate-pulse font-medium">Uploading photo to server storage...</p>
                 )}
 
+                {/* Drag and Drop Zone */}
+                <div
+                  onDragOver={handleDragOver}
+                  onDragEnter={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  className={`p-6 rounded-2xl border-2 border-dashed transition-all text-center space-y-2 cursor-pointer ${
+                    isDraggingOver
+                      ? 'border-[#C85A32] bg-[#FAF0E6] scale-[1.01]'
+                      : 'border-[#D8C7B5] bg-[#FAF7F2] hover:border-[#C85A32]/70 hover:bg-[#FAF2E8]'
+                  }`}
+                  onClick={() => {
+                    const input = document.getElementById('artwork-drag-drop-input') as HTMLInputElement;
+                    if (input) input.click();
+                  }}
+                >
+                  <input
+                    id="artwork-drag-drop-input"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                  <div className="w-10 h-10 mx-auto rounded-full bg-[#FAF0E6] text-[#A03E1B] flex items-center justify-center">
+                    <Upload className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm text-[#2C2724]">
+                      {isDraggingOver ? 'Drop images here now!' : 'Drag & drop artwork images here'}
+                    </p>
+                    <p className="text-xs text-[#8C7667] mt-0.5">
+                      or click to select JPG, PNG, or WebP photos from your device
+                    </p>
+                  </div>
+                </div>
+
                 {images.length === 0 ? (
-                  <div className="p-6 rounded-2xl bg-[#FAF7F2] border-2 border-dashed border-[#D8C7B5] text-center space-y-2">
-                    <ImageIcon className="w-8 h-8 text-[#8C7667] mx-auto" />
-                    <p className="text-[#66574D]">No images uploaded yet</p>
+                  <div className="p-4 rounded-xl bg-[#FAF7F2] border border-[#E0D2C2] text-center">
                     <p className="text-[11px] text-[#8C7667]">
                       A graceful handcrafted SVG placeholder will be shown until real photos are uploaded.
                     </p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                  <div className="space-y-2">
+                    <div className="text-xs font-semibold text-[#8C4A28] flex items-center justify-between">
+                      <span>Uploaded Artwork Photos ({images.length})</span>
+                      <span className="text-[11px] text-[#8C7667] font-normal">Click ★ on any photo to set as Cover</span>
+                    </div>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                     {images.map((img, idx) => (
                       <div
                         key={img.id || idx}
@@ -704,7 +840,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                           <button
                             type="button"
                             onClick={() => handleRemoveImage(idx)}
-                            className="p-1 rounded bg-red-600 text-white"
+                            className="p-1 rounded bg-red-600 text-white cursor-pointer"
                             title="Remove Image"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -712,6 +848,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                         </div>
                       </div>
                     ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -734,22 +871,17 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                   <div className="space-y-2">
                   {variants.map((v, i) => (
                     <div key={v.id || i} className="flex items-center gap-2">
-                      <select
+                      <input
+                        type="text"
                         value={v.size}
                         onChange={(e) => {
                           const copy = [...variants];
                           copy[i].size = e.target.value;
                           setVariants(copy);
                         }}
-                        className="flex-1 px-3 py-1.5 rounded-lg bg-[#FAF7F2] border border-[#D8C7B5]"
-                      >
-                        <option value="10 inches">10 inches</option>
-                        <option value="12 inches">12 inches</option>
-                        <option value="15 inches">15 inches</option>
-                        <option value="18 inches">18 inches</option>
-                        <option value="24 inches">24 inches</option>
-                        <option value="30 inches">30 inches</option>
-                      </select>
+                        placeholder="e.g. 48 inches X 24 inches"
+                        className="flex-1 px-3 py-1.5 rounded-lg bg-[#FAF7F2] border border-[#D8C7B5] text-xs text-[#2C2724] focus:outline-none focus:border-[#C85A32]"
+                      />
                       <input
                         type="number"
                         placeholder="Price"
@@ -764,7 +896,8 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                       <button
                         type="button"
                         onClick={() => handleRemoveVariant(i)}
-                        className="p-1.5 text-red-500 hover:bg-red-50 rounded"
+                        className="p-1.5 text-red-500 hover:bg-red-50 rounded cursor-pointer"
+                        title="Remove Variant"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -820,6 +953,122 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                     className="w-full px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5]"
                   />
                 </div>
+              </div>
+
+              {/* 5. Availability & High Demand Delivery Settings */}
+              <div className="space-y-4 pt-4 border-t border-[#F0E5D8]">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-semibold text-sm text-[#8C4A28] uppercase tracking-wider flex items-center gap-2">
+                    <Flame className="w-4 h-4 text-amber-600" />
+                    <span>5. Availability & High Demand Lead Time</span>
+                  </h4>
+                  <span className="text-[10px] font-mono text-[#8C7667] bg-[#FAF0E6] px-2 py-0.5 rounded border border-[#E0D2C2]">
+                    Customer Notice Settings
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Availability Toggle */}
+                  <div className="p-4 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5] space-y-2">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isAvailable}
+                        onChange={(e) => setIsAvailable(e.target.checked)}
+                        className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500"
+                      />
+                      <span className="font-semibold text-sm text-[#2C2724]">Item Available to Order</span>
+                    </label>
+                    <p className="text-[11px] text-[#8C7667] pl-6">
+                      Displayed on the catalog and details page with an active &quot;Available to Order&quot; status indicator.
+                    </p>
+                  </div>
+
+                  {/* High Demand Toggle */}
+                  <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 space-y-2">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isHighDemand}
+                        onChange={(e) => setIsHighDemand(e.target.checked)}
+                        className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500"
+                      />
+                      <span className="font-semibold text-sm text-amber-950 flex items-center gap-1.5">
+                        <Flame className="w-4 h-4 text-amber-600 fill-amber-500" />
+                        <span>Show as High Demand (Lippan Art / Popular)</span>
+                      </span>
+                    </label>
+                    <p className="text-[11px] text-amber-800/80 pl-6">
+                      Highlights this item with a &quot;High Demand&quot; badge and displays the positive crafting lead time message.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Extra Delivery Days & Free Text Box (Shown when High Demand is active) */}
+                {isHighDemand && (
+                  <div className="p-4 rounded-2xl bg-[#FFFBF5] border-2 border-amber-300/80 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between border-b border-amber-200/70 pb-2">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-amber-600" />
+                        <span className="font-semibold text-xs text-[#5B331A]">
+                          High Demand Delivery Notice Configuration
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-emerald-700 font-medium bg-emerald-100/60 px-2 py-0.5 rounded">
+                        Positive phrasing (no negative delays)
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block font-semibold text-[#4A3E36] mb-1">
+                          Extra Days Needed to Deliver *
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="number"
+                            min={1}
+                            max={60}
+                            value={extraDeliveryDays}
+                            onChange={(e) => {
+                              const val = Number(e.target.value);
+                              setExtraDeliveryDays(val);
+                              if (highDemandMessage.includes('additional days') || highDemandMessage.includes('more days')) {
+                                setHighDemandMessage((prev) =>
+                                  prev.replace(/\d+ (additional|more) days/g, `${val} $1 days`)
+                                );
+                              }
+                            }}
+                            className="w-full px-3 py-2 rounded-xl bg-white text-[#2C2724] border border-amber-300 focus:outline-none focus:border-[#C85A32] font-semibold"
+                          />
+                          <span className="absolute right-3 top-2 text-xs text-[#8C7667]">days</span>
+                        </div>
+                        <p className="text-[10px] text-[#8C7667] mt-1">
+                          Default is 5 extra days for intricate mirror work &amp; curing.
+                        </p>
+                      </div>
+
+                      <div className="sm:col-span-2">
+                        <label className="block font-semibold text-[#4A3E36] mb-1 flex items-center justify-between">
+                          <span>Customer Notice Message (Free Text Box) *</span>
+                          <span className="text-[10px] text-[#8C7667] font-normal">
+                            Fully customizable text
+                          </span>
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={highDemandMessage}
+                          onChange={(e) => setHighDemandMessage(e.target.value)}
+                          placeholder="e.g. ✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece."
+                          className="w-full px-3 py-2 rounded-xl bg-white text-[#2C2724] border border-amber-300 focus:outline-none focus:border-[#C85A32] text-xs resize-none"
+                        />
+                        <p className="text-[10px] text-[#8C7667] mt-1">
+                          This free text message will be prominently shown to customers on the catalog and product details page.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Toggles */}

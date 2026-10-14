@@ -74,13 +74,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab, t
             className="px-4 py-2.5 rounded-xl bg-theme-accent hover:opacity-90 text-white text-xs font-semibold transition-opacity flex items-center gap-1.5 shadow-xs cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Add New Product</span>
+            <span>Add New Artwork</span>
           </button>
           <button
-            onClick={() => onNavigateTab('media')}
+            onClick={() => onNavigateTab('pages')}
             className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors border border-white/20 cursor-pointer"
           >
-            <span>Upload Artwork Media</span>
+            <span>Edit Website Pages</span>
           </button>
         </div>
       </div>
@@ -166,20 +166,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab, t
       {/* Quick Action Hub */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div
-          onClick={() => onNavigateTab('importer')}
+          onClick={() => onNavigateTab('products')}
           className="p-6 rounded-2xl glass-card border border-theme-glass craft-shadow hover:border-theme-accent cursor-pointer transition-all space-y-2 group"
         >
           <div className="w-10 h-10 rounded-xl bg-theme-accent/15 text-theme-accent flex items-center justify-center group-hover:scale-105 transition-transform">
-            <Sparkles className="w-5 h-5" />
+            <Package className="w-5 h-5" />
           </div>
           <h3 className="font-serif text-lg font-semibold text-theme-primary">
-            Catalog Importer & Sync
+            Artwork Catalog & Pricing
           </h3>
           <p className="text-xs text-theme-muted leading-relaxed">
-            Re-synchronize original workbook products or upload updated CSV/Excel spreadsheets with duplicate-safe idempotent checks.
+            Manage artworks, upload high-definition photography with drag-and-drop, update free-text dimensions, and publish.
           </p>
           <span className="text-xs font-bold text-theme-accent flex items-center gap-1 pt-1">
-            Open Importer <ArrowRight className="w-3.5 h-3.5" />
+            Open Catalog <ArrowRight className="w-3.5 h-3.5" />
           </span>
         </div>
 

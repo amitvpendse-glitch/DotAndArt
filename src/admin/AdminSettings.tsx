@@ -435,7 +435,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
             <div>
               <label className="block font-semibold text-theme-primary mb-1">Full Detailed Story / Description</label>
               <textarea
-                rows={3}
+                rows={4}
                 value={settings.showcase_banner?.description || ''}
                 onChange={(e) =>
                   setSettings({

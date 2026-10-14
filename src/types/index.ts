@@ -49,6 +49,10 @@ export interface Product {
   special_information?: string;
   featured: boolean;
   is_published: boolean;
+  is_available?: boolean; // Shown as available in catalog (editable by admin)
+  is_high_demand?: boolean; // Lippan art items shown as high demand (editable by admin)
+  extra_delivery_days?: number; // e.g. 5 extra days (editable by admin)
+  high_demand_message?: string; // Free text box saying it will take 5 more days than usual, positively phrased (editable by admin)
   photos_available_note?: string;
   base_price: number;
   base_size: string;

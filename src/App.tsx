@@ -4,6 +4,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { EnquiryDrawer } from './components/EnquiryDrawer';
+import { setActiveWhatsAppNumber } from './utils/whatsapp';
 
 // Customer Pages
 import { HomePage } from './pages/HomePage';
@@ -23,9 +24,7 @@ import { AdminLayout } from './admin/AdminLayout';
 import { AdminDashboard } from './admin/AdminDashboard';
 import { AdminCategories } from './admin/AdminCategories';
 import { AdminProducts } from './admin/AdminProducts';
-import { AdminCatalogImport } from './admin/AdminCatalogImport';
 import { AdminPagesCMS } from './admin/AdminPagesCMS';
-import { AdminMediaLibrary } from './admin/AdminMediaLibrary';
 import { AdminTestimonials } from './admin/AdminTestimonials';
 import { AdminFAQs } from './admin/AdminFAQs';
 import { AdminSettings } from './admin/AdminSettings';
@@ -93,7 +92,12 @@ export default function App() {
   useEffect(() => {
     safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null)
       .then((data) => {
-        if (data) setSettings(data);
+        if (data) {
+          setSettings(data);
+          if (data.whatsapp_number) {
+            setActiveWhatsAppNumber(data.whatsapp_number);
+          }
+        }
       });
   }, []);
 
@@ -177,9 +181,7 @@ export default function App() {
             }}
           />
         )}
-        {adminTab === 'importer' && <AdminCatalogImport token={adminToken} />}
         {adminTab === 'pages' && <AdminPagesCMS token={adminToken} />}
-        {adminTab === 'media' && <AdminMediaLibrary token={adminToken} />}
         {adminTab === 'testimonials' && <AdminTestimonials token={adminToken} />}
         {adminTab === 'faqs' && <AdminFAQs token={adminToken} />}
         {adminTab === 'settings' && <AdminSettings token={adminToken} />}
@@ -235,7 +237,7 @@ export default function App() {
       return <TestimonialsPage />;
     }
 
-    if (currentPath === '/faq') {
+    if (currentPath === '/faq' || currentPath === '/faqs') {
       return <FAQPage />;
     }
 
@@ -268,7 +270,7 @@ export default function App() {
           />
           <main className="flex-1 bg-theme-page text-theme-primary">{renderCurrentPage()}</main>
           <SideArtStreams onSelectProduct={handleSelectProduct} />
-          <Footer onNavigate={navigate} />
+          <Footer onNavigate={navigate} settings={settings} />
           <EnquiryDrawer />
           <ThemeSelector />
           <FloatingActions />

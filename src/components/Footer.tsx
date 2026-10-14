@@ -2,15 +2,21 @@ import React from 'react';
 import { MessageCircle, Instagram, Facebook, Mail, MapPin, Heart, ShieldCheck, Truck, RefreshCw } from 'lucide-react';
 import { DISPLAY_WHATSAPP_NUMBER, createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
 
+import { WebsiteSettings } from '../types';
+
 interface FooterProps {
   onNavigate: (path: string) => void;
+  settings?: WebsiteSettings | null;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate, settings }) => {
   const currentYear = new Date().getFullYear();
 
   const handleWhatsApp = () => {
-    const url = createWhatsAppUrl('Hello Dot And Art! I would like to enquire about your artwork.');
+    const url = createWhatsAppUrl(
+      'Hello Dot And Art! I would like to enquire about your artwork.',
+      settings?.whatsapp_number
+    );
     openExternalLink(url);
   };
 
@@ -87,17 +93,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             {/* Social Links */}
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="https://www.instagram.com/sathosar"
+                href={settings?.instagram_url || 'https://www.instagram.com/sathosar'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full glass-button hover:bg-[#E1306C] text-theme-primary flex items-center justify-center transition-colors"
-                title="Follow on Instagram (@sathosar)"
+                title="Follow on Instagram"
                 aria-label="Instagram"
               >
                 <Instagram className="w-4 h-4" />
               </a>
               <a
-                href="https://www.facebook.com/people/Dot-And-Art/61570301135652/"
+                href={settings?.facebook_url || 'https://www.facebook.com/people/Dot-And-Art/61570301135652/'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full glass-button hover:bg-[#1877F2] text-theme-primary flex items-center justify-center transition-colors"
@@ -193,18 +199,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li className="flex items-start gap-2">
                 <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0 mt-0.5" />
                 <button onClick={handleWhatsApp} className="text-left hover:text-theme-primary cursor-pointer">
-                  WhatsApp: <span className="font-semibold text-theme-primary">{DISPLAY_WHATSAPP_NUMBER}</span>
+                  WhatsApp: <span className="font-semibold text-theme-primary">{settings?.whatsapp_display || DISPLAY_WHATSAPP_NUMBER}</span>
                 </button>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-theme-accent shrink-0" />
-                <a href="mailto:shitalthosar@yahoo.com" className="hover:text-theme-primary">
-                  shitalthosar@yahoo.com
+                <a href={`mailto:${settings?.email || 'shitalthosar@yahoo.com'}`} className="hover:text-theme-primary">
+                  {settings?.email || 'shitalthosar@yahoo.com'}
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-theme-accent shrink-0 mt-0.5" />
-                <span>Dot And Art Studio, Maharashtra, India (Worldwide Shipping)</span>
+                <span>{settings?.studio_address || 'Dot And Art Studio, Maharashtra, India (Worldwide Shipping)'}</span>
               </li>
             </ul>
           </div>
@@ -212,7 +218,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
         {/* Bottom Sub-bar */}
         <div className="pt-8 border-t border-theme-glass flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-theme-muted">
-          <p>© {currentYear} Dot And Art (dotandart.in). All rights reserved. Handcrafted with reverence in India.</p>
+          <p>© {currentYear} {settings?.business_name || 'Dot And Art'} ({settings?.domain || 'dotandart.in'}). All rights reserved. Handcrafted with reverence in India.</p>
 
           <div className="flex items-center gap-4">
             <button

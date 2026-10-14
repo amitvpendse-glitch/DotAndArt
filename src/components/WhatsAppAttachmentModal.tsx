@@ -125,10 +125,10 @@ export const WhatsAppAttachmentModal: React.FC<WhatsAppAttachmentModalProps> = (
           <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-theme-primary space-y-2">
             <div className="font-bold flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-sm">
               <Sparkles className="w-4 h-4" />
-              <span>Easy 1-Step Photo Attachment:</span>
+              <span>Direct WhatsApp Order:</span>
             </div>
             <p className="text-theme-primary text-xs leading-relaxed">
-              The primary artwork image is <strong>copied to your clipboard</strong> and the artwork images ZIP file is automatically downloaded. Please attach the downloaded images zip file along with the order message before submitting or sending the order on WhatsApp!
+              Your order details will be sent directly as a text message on WhatsApp. <strong>Order Suggestion:</strong> After placing order please download the images from the catalog and send to Shital once your communication channel is established.
             </p>
           </div>
 

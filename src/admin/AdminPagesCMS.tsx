@@ -3,21 +3,28 @@ import {
   Save,
   AlertCircle,
   CheckCircle2,
-  Plus,
-  Trash2,
-  ArrowUp,
-  ArrowDown,
-  Layers,
-  Sparkles,
   ExternalLink,
   ChevronDown,
-  ImageIcon,
-  UploadCloud,
-  X,
+  Upload,
+  Image as ImageIcon,
+  Sparkles,
+  Layers,
+  HelpCircle,
+  MessageSquareQuote,
+  Eye,
+  Check,
+  MessageCircle,
+  Mail,
+  Instagram,
+  Facebook,
+  MapPin,
+  Globe,
+  Phone,
 } from 'lucide-react';
-import { WebsitePage, PageSection } from '../types';
+import { WebsitePage, PageSection, WebsiteSettings } from '../types';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
 import { INITIAL_PAGES } from '../data/initialCatalog';
+import { setActiveWhatsAppNumber, createWhatsAppUrl } from '../utils/whatsapp';
 
 interface AdminPagesCMSProps {
   token: string;
@@ -27,36 +34,44 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
   const [pages, setPages] = useState<WebsitePage[]>(INITIAL_PAGES);
   const [selectedSlug, setSelectedSlug] = useState<string>('home');
   const [activePage, setActivePage] = useState<WebsitePage | null>(null);
+  const [settings, setSettings] = useState<WebsiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [uploadingKey, setUploadingKey] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [isDraggingBanner, setIsDraggingBanner] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  // New Section Modal State
-  const [newSecModalOpen, setNewSecModalOpen] = useState(false);
-  const [newSecKey, setNewSecKey] = useState('');
-  const [newSecType, setNewSecType] = useState('text');
-
-  // New Field Modal State
-  const [newFieldSecIdx, setNewFieldSecIdx] = useState<number | null>(null);
-  const [newFieldKey, setNewFieldKey] = useState('');
-  const [newFieldIsImage, setNewFieldIsImage] = useState(false);
-
-  const fetchPages = () => {
+  const fetchPagesAndSettings = () => {
     setLoading(true);
-    safeFetchJson<WebsitePage[]>('/api/admin/pages', {
-      headers: { Authorization: `Bearer ${token}` },
-    }, INITIAL_PAGES)
-      .then((data) => {
-        let list = Array.isArray(data) && data.length > 0 ? [...data] : [...INITIAL_PAGES];
-        // Ensure all default INITIAL_PAGES exist in list
+    Promise.all([
+      safeFetchJson<WebsitePage[]>(
+        '/api/admin/pages',
+        { headers: { Authorization: `Bearer ${token}` } },
+        INITIAL_PAGES
+      ),
+      safeFetchJson<WebsiteSettings | null>(
+        '/api/admin/settings',
+        { headers: { Authorization: `Bearer ${token}` } },
+        null
+      ),
+    ])
+      .then(([pagesData, settingsData]) => {
+        const list = Array.isArray(pagesData) && pagesData.length > 0 ? [...pagesData] : [...INITIAL_PAGES];
+        // Ensure all default pages exist
         INITIAL_PAGES.forEach((initP) => {
           if (!list.some((p) => p.slug === initP.slug)) {
             list.push(initP);
           }
         });
         setPages(list);
+        if (settingsData) {
+          setSettings(settingsData);
+          if (settingsData.whatsapp_number) {
+            setActiveWhatsAppNumber(settingsData.whatsapp_number);
+          }
+        }
+
         const currentSlug = selectedSlug || 'home';
         const found = list.find((p) => p.slug === currentSlug) || list[0];
         setSelectedSlug(found.slug);
@@ -71,7 +86,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
   };
 
   useEffect(() => {
-    fetchPages();
+    fetchPagesAndSettings();
   }, []);
 
   const handleSelectPage = (slug: string) => {
@@ -84,13 +99,52 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
     }
   };
 
-  const handleSave = async (status: 'draft' | 'published') => {
+  const handleSave = async (status: 'draft' | 'published' = 'published') => {
     if (!activePage) return;
     setSaving(true);
     setSuccessMsg('');
     setErrorMsg('');
 
     try {
+      // 1. If Contact page is active, ensure contact_header and brand_identity sections in activePage reflect current values
+      let pageSectionsToSave = activePage.sections ? [...activePage.sections] : [];
+      if (activePage.slug === 'contact' && settings) {
+        const brandSecIdx = pageSectionsToSave.findIndex(
+          (s) => s.section_key === 'brand_identity' || s.section_type === 'brand_identity'
+        );
+        const brandContent = {
+          business_name: settings.business_name,
+          tagline: settings.tagline,
+          whatsapp_number: settings.whatsapp_number,
+          whatsapp_display: settings.whatsapp_display,
+          email: settings.email,
+          studio_address: settings.studio_address,
+          instagram_url: settings.instagram_url,
+          facebook_url: settings.facebook_url,
+          domain: settings.domain,
+        };
+
+        if (brandSecIdx >= 0) {
+          pageSectionsToSave[brandSecIdx] = {
+            ...pageSectionsToSave[brandSecIdx],
+            content_json: brandContent,
+          };
+        } else {
+          pageSectionsToSave.push({
+            id: 'sec-contact-brand',
+            page_id: activePage.id,
+            section_type: 'brand_identity',
+            section_key: 'brand_identity',
+            content_json: brandContent,
+            display_order: pageSectionsToSave.length + 1,
+            is_visible: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          });
+        }
+      }
+
+      // 2. Save page CMS
       const res = await fetch(`/api/admin/pages/${activePage.slug}`, {
         method: 'PUT',
         headers: {
@@ -102,7 +156,8 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
           seo_title: activePage.seo_title,
           meta_description: activePage.meta_description,
           status,
-          sections: activePage.sections,
+          sections: pageSectionsToSave,
+          settings: activePage.slug === 'contact' ? settings : undefined,
         }),
       });
 
@@ -112,8 +167,32 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
         return;
       }
 
-      setSuccessMsg(`Successfully saved and published changes for "${activePage.title}".`);
-      fetchPages();
+      // 3. If contact page or home page with banner, also save to settings API
+      if (activePage.slug === 'contact' && settings) {
+        await fetch('/api/admin/settings', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(settings),
+        });
+
+        if (settings.whatsapp_number) {
+          setActiveWhatsAppNumber(settings.whatsapp_number);
+          try {
+            localStorage.setItem('dot_whatsapp_number', settings.whatsapp_number);
+          } catch {}
+        }
+      }
+
+      setSuccessMsg(
+        activePage.slug === 'contact'
+          ? `✓ Contact details, WhatsApp number, email, and social profiles saved & published live!`
+          : `✓ Saved and published changes for "${activePage.title}". Live website is updated!`
+      );
+      setTimeout(() => setSuccessMsg(''), 4500);
+      fetchPagesAndSettings();
     } catch (err) {
       setErrorMsg('Server error saving page CMS.');
     } finally {
@@ -121,176 +200,127 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
     }
   };
 
-  const handleImageUpload = async (sIdx: number, fieldKey: string, file: File) => {
+  // Helper to update a section's content field cleanly
+  const updateSectionField = (sectionKeyOrType: string, fieldKey: string, value: any) => {
     if (!activePage) return;
-    const uploadId = `${sIdx}-${fieldKey}`;
-    setUploadingKey(uploadId);
+    const copy = [...(activePage.sections || [])];
+    const secIdx = copy.findIndex(
+      (s) => s.section_key === sectionKeyOrType || s.section_type === sectionKeyOrType
+    );
+
+    if (secIdx >= 0) {
+      copy[secIdx] = {
+        ...copy[secIdx],
+        content_json: {
+          ...(copy[secIdx].content_json || {}),
+          [fieldKey]: value,
+        },
+      };
+      setActivePage({ ...activePage, sections: copy });
+    }
+  };
+
+  // Upload an image file for a section field (e.g. banner image)
+  const handleFileUpload = async (sectionKeyOrType: string, fieldKey: string, file: File) => {
+    if (!file || !activePage) return;
+    setUploadingImage(true);
     setErrorMsg('');
-    setSuccessMsg('');
 
     try {
       const formData = new FormData();
       formData.append('file', file);
       const res = await fetch('/api/uploads', {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
       const data = await safeResponseJson(res, {});
-      if (!res.ok || !data.url) {
-        setErrorMsg(data?.error || 'Failed to upload image file.');
-        return;
+      if (res.ok && data.url) {
+        updateSectionField(sectionKeyOrType, fieldKey, data.url);
+        setSuccessMsg(`Image uploaded successfully! Click "Save & Publish Changes" to apply.`);
+      } else {
+        setErrorMsg(data?.error || 'Failed to upload image.');
       }
-
-      const copy = [...activePage.sections];
-      copy[sIdx].content_json = {
-        ...copy[sIdx].content_json,
-        [fieldKey]: data.url,
-      };
-
-      setActivePage({ ...activePage, sections: copy });
-      setSuccessMsg(`Image uploaded and updated for field "${fieldKey}". Click "Publish Changes" to save.`);
-    } catch (err) {
-      setErrorMsg('Error uploading section image.');
+    } catch {
+      setErrorMsg('Error uploading image file.');
     } finally {
-      setUploadingKey(null);
+      setUploadingImage(false);
     }
-  };
-
-  const handleAddSection = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!activePage || !newSecKey) return;
-
-    const newSec: PageSection = {
-      id: `sec-${Date.now()}`,
-      page_id: activePage.id,
-      section_type: newSecType,
-      section_key: newSecKey.toLowerCase().replace(/[^a-z0-9_]/g, '_'),
-      content_json: {
-        title: 'New Section Title',
-        subtitle: 'Enter section description here...',
-        image_url: '/logo.png',
-      },
-      display_order: (activePage.sections?.length || 0) + 1,
-      is_visible: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-
-    setActivePage({
-      ...activePage,
-      sections: [...(activePage.sections || []), newSec],
-    });
-
-    setNewSecModalOpen(false);
-    setNewSecKey('');
-  };
-
-  const handleDeleteSection = (sIdx: number) => {
-    if (!activePage) return;
-    if (!window.confirm('Delete this section from the page?')) return;
-
-    const copy = [...activePage.sections];
-    copy.splice(sIdx, 1);
-    setActivePage({ ...activePage, sections: copy });
-  };
-
-  const handleMoveSection = (sIdx: number, direction: 'up' | 'down') => {
-    if (!activePage) return;
-    const sections = [...activePage.sections];
-    const targetIdx = direction === 'up' ? sIdx - 1 : sIdx + 1;
-    if (targetIdx < 0 || targetIdx >= sections.length) return;
-
-    const temp = sections[sIdx];
-    sections[sIdx] = sections[targetIdx];
-    sections[targetIdx] = temp;
-
-    // re-assign display orders
-    sections.forEach((s, i) => {
-      s.display_order = i + 1;
-    });
-
-    setActivePage({ ...activePage, sections });
-  };
-
-  const handleAddField = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!activePage || newFieldSecIdx === null || !newFieldKey) return;
-
-    const copy = [...activePage.sections];
-    let key = newFieldKey.toLowerCase().replace(/[^a-z0-9_]/g, '_');
-    if (newFieldIsImage && !key.includes('image') && !key.includes('img') && !key.includes('photo')) {
-      key = `${key}_image`;
-    }
-
-    copy[newFieldSecIdx].content_json = {
-      ...copy[newFieldSecIdx].content_json,
-      [key]: newFieldIsImage ? '/logo.png' : 'New Field Text Value',
-    };
-
-    setActivePage({ ...activePage, sections: copy });
-    setNewFieldSecIdx(null);
-    setNewFieldKey('');
-    setNewFieldIsImage(false);
-  };
-
-  const handleDeleteField = (sIdx: number, fieldKey: string) => {
-    if (!activePage) return;
-    const copy = [...activePage.sections];
-    delete copy[sIdx].content_json[fieldKey];
-    setActivePage({ ...activePage, sections: copy });
   };
 
   if (loading) {
     return (
       <div className="py-20 text-center">
         <div className="w-8 h-8 border-4 border-theme-accent border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-        <p className="text-xs text-theme-muted">Loading website pages & section content...</p>
+        <p className="text-xs text-theme-muted">Loading website pages and contact settings...</p>
       </div>
     );
   }
 
+  // Find home sections
+  const bannerSection = activePage?.sections?.find(
+    (s) => s.section_type === 'banner' || s.section_key === 'banner'
+  );
+  const bannerContent = bannerSection?.content_json || {};
+
+  const featuredSection = activePage?.sections?.find(
+    (s) => s.section_type === 'featured_artworks' || s.section_key === 'featured_sacred_artworks'
+  );
+  const featuredContent = featuredSection?.content_json || {};
+
+  const testimonialsSection = activePage?.sections?.find(
+    (s) => s.section_type === 'testimonials' || s.section_key === 'testimonials'
+  );
+  const testimonialsContent = testimonialsSection?.content_json || {};
+
+  // Find FAQ sections if FAQs page is selected
+  const faqHeaderSection = activePage?.sections?.find(
+    (s) => s.section_type === 'header' || s.section_key === 'faqs_header'
+  );
+  const faqHeaderContent = faqHeaderSection?.content_json || {};
+
+  const faqHelpSection = activePage?.sections?.find(
+    (s) => s.section_type === 'help_card' || s.section_key === 'faqs_help_card'
+  );
+  const faqHelpContent = faqHelpSection?.content_json || {};
+
+  // Find Contact header section
+  const contactHeaderSection = activePage?.sections?.find(
+    (s) => s.section_type === 'header' || s.section_key === 'contact_header'
+  );
+  const contactHeaderContent = contactHeaderSection?.content_json || {};
+
   return (
     <div className="space-y-6 text-theme-primary">
-      {/* CMS Header */}
+      {/* CMS Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-serif text-2xl font-bold text-theme-primary">Website Pages CMS</h2>
+          <h2 className="font-serif text-2xl font-bold text-theme-primary">
+            Website Pages CMS
+          </h2>
           <p className="text-xs text-theme-muted">
-            Full content & media management system for all website pages: Home, Catalog, Bespoke Orders, Gallery, About Artist, Contact & Policies.
+            Easily view and edit the exact text, media, contact channels, and brand details for every page.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           {activePage && (
-            <>
-              <button
-                type="button"
-                disabled={saving}
-                onClick={() => handleSave('draft')}
-                className="px-4 py-2 rounded-xl glass-button text-theme-primary text-xs font-semibold hover:bg-theme-accent/10 cursor-pointer"
-              >
-                Save Draft
-              </button>
-              <button
-                type="button"
-                disabled={saving}
-                onClick={() => handleSave('published')}
-                className="px-5 py-2 rounded-xl bg-theme-accent hover:opacity-90 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer"
-              >
-                <Save className="w-4 h-4" />
-                <span>Publish Changes</span>
-              </button>
-            </>
+            <button
+              type="button"
+              disabled={saving}
+              onClick={() => handleSave('published')}
+              className="px-5 py-2.5 rounded-xl bg-theme-accent hover:opacity-90 text-white text-xs font-semibold shadow-xs flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+            >
+              <Save className="w-4 h-4" />
+              <span>{saving ? 'Saving...' : 'Save & Publish Changes'}</span>
+            </button>
           )}
         </div>
       </div>
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-green-500/10 border border-green-500/30 text-green-700 dark:text-green-300 text-xs flex items-center gap-2">
+        <div className="p-3.5 rounded-xl bg-green-500/10 border border-green-500/30 text-green-700 dark:text-green-300 text-xs flex items-center gap-2 animate-fadeIn">
           <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
           <span>{successMsg}</span>
         </div>
@@ -303,103 +333,980 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
         </div>
       )}
 
-      {/* Dropdown List Page Selector */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-theme-page border border-theme-glass space-y-3 craft-shadow">
+      {/* Clean Page Navigation Selector Tabs */}
+      <div className="p-4 rounded-2xl glass-card border border-theme-glass space-y-3">
         <label className="block text-xs font-bold uppercase tracking-wider text-theme-accent flex items-center gap-1.5">
           <Layers className="w-4 h-4" />
-          <span>Select Webpage to Edit ({pages.length} Pages Available):</span>
+          <span>Select Webpage to Edit:</span>
         </label>
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div className="relative flex-1">
-            <select
-              value={selectedSlug}
-              onChange={(e) => handleSelectPage(e.target.value)}
-              className="w-full pl-4 pr-10 py-3 rounded-xl bg-theme-card border-2 border-theme-accent/40 focus:border-theme-accent text-theme-primary text-sm font-bold shadow-xs cursor-pointer appearance-none transition-all"
-            >
-              {pages.map((p) => (
-                <option key={p.slug} value={p.slug} className="bg-theme-page text-theme-primary font-sans py-1">
-                  {p.title} (/{p.slug === 'home' ? '' : p.slug}) — {p.status.toUpperCase()}
-                </option>
-              ))}
-            </select>
-            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-theme-accent">
-              <ChevronDown className="w-5 h-5" />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 text-xs text-theme-muted shrink-0">
-            <span className="px-3 py-2 rounded-xl bg-theme-card border border-theme-glass font-mono font-medium">
-              URL Path: /{selectedSlug === 'home' ? '' : selectedSlug}
-            </span>
-          </div>
-        </div>
-
-        {/* Quick select pill shortcuts */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-theme-glass/60">
-          <span className="text-[10px] uppercase font-bold text-theme-muted mr-1">Quick Select:</span>
+        <div className="flex flex-wrap items-center gap-2">
           {pages.map((p) => {
             const isSelected = selectedSlug === p.slug;
             return (
               <button
                 key={p.slug}
                 onClick={() => handleSelectPage(p.slug)}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                   isSelected
-                    ? 'bg-theme-accent text-white shadow-2xs font-bold'
-                    : 'bg-theme-card text-theme-primary hover:bg-theme-accent/20 border border-theme-glass'
+                    ? 'bg-theme-accent text-white shadow-xs font-bold'
+                    : 'bg-theme-page text-theme-primary hover:bg-theme-accent/15 border border-theme-glass'
                 }`}
               >
-                {p.title}
+                {p.slug === 'home' && <span>🏠</span>}
+                {p.slug === 'contact' && <span>📬</span>}
+                {p.slug === 'faqs' && <span>❓</span>}
+                {p.slug === 'shop' && <span>🎨</span>}
+                {p.slug === 'custom-order' && <span>✨</span>}
+                {p.slug === 'gallery' && <span>🖼️</span>}
+                {p.slug === 'about' && <span>👤</span>}
+                <span>{p.title}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Active Page CMS Panel */}
+      {/* Active Page Editor */}
       {activePage && (
         <div className="glass-card p-6 sm:p-8 rounded-3xl border border-theme-glass craft-shadow space-y-8 text-xs text-theme-primary">
-          {/* Top Bar Info & Live Link */}
+          {/* Page Top Details */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-theme-glass">
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-serif text-xl font-bold text-theme-primary">
-                  Editing Webpage: {activePage.title}
+                  Editing: {activePage.title}
                 </h3>
-                <span
-                  className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                    activePage.status === 'published'
-                      ? 'bg-green-500/10 text-green-700 dark:text-green-300 border border-green-500/20'
-                      : 'bg-amber-500/10 text-amber-700 border border-amber-500/20'
-                  }`}
-                >
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-green-500/10 text-green-700 dark:text-green-300 border border-green-500/20">
                   {activePage.status}
                 </span>
               </div>
               <p className="text-xs text-theme-muted font-mono mt-0.5">
-                URL Path: /{activePage.slug === 'home' ? '' : activePage.slug}
+                Path: /{activePage.slug === 'home' ? '' : activePage.slug}
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <a
-                href={activePage.slug === 'home' ? '/' : `/${activePage.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3.5 py-1.5 rounded-xl glass-button text-xs text-theme-primary hover:bg-theme-accent/15 flex items-center gap-1.5 cursor-pointer"
-              >
-                <ExternalLink className="w-3.5 h-3.5 text-theme-accent" />
-                <span>View Live Webpage</span>
-              </a>
-            </div>
+            <a
+              href={activePage.slug === 'home' ? '/' : `/${activePage.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3.5 py-1.5 rounded-xl glass-button text-xs text-theme-primary hover:bg-theme-accent/15 flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-theme-accent" />
+              <span>View Live Webpage</span>
+            </a>
           </div>
 
-          {/* Page Metadata & SEO */}
-          <div className="space-y-4">
-            <h4 className="font-serif text-lg font-bold text-theme-primary flex items-center gap-2">
+          {/* ========================================================= */}
+          {/* 1. HOME PAGE: THE 3 EXACT EXISTING SECTIONS               */}
+          {/* ========================================================= */}
+          {activePage.slug === 'home' && (
+            <div className="space-y-8">
+              <div className="p-4 rounded-xl bg-theme-accent/10 border border-theme-accent/20 text-xs text-theme-primary space-y-1">
+                <p className="font-bold text-theme-accent flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Editable Sections of Home Page</span>
+                </p>
+                <p className="text-theme-muted text-[11px]">
+                  The Home page consists of exactly 3 editable sections: <strong>1. Banner</strong>, <strong>2. Featured Sacred Artworks</strong>, and <strong>3. Testimonials</strong>. Below is the exact text present on the live site. Edit any field and click &quot;Save &amp; Publish Changes&quot;.
+                </p>
+              </div>
+
+              {/* ---------------- SECTION 1: BANNER ---------------- */}
+              <div className="p-6 rounded-2xl bg-theme-page border-2 border-theme-accent/30 space-y-5">
+                <div className="flex items-center justify-between border-b border-theme-glass pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-theme-accent text-white flex items-center justify-center font-bold text-xs">
+                      1
+                    </span>
+                    <h4 className="font-serif text-lg font-bold text-theme-primary">
+                      Section 1: Hero Showcase Banner
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-accent/10 text-theme-accent border border-theme-glass">
+                    Huge Showcase Banner
+                  </span>
+                </div>
+
+                {/* Banner Image Drag & Drop / Upload */}
+                <div className="space-y-2">
+                  <label className="block font-bold text-theme-primary text-xs flex items-center justify-between">
+                    <span>Banner Artwork Image</span>
+                    <span className="text-[10px] text-theme-muted font-normal">
+                      Drag &amp; drop or click to upload new photo
+                    </span>
+                  </label>
+
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDraggingBanner(true);
+                    }}
+                    onDragLeave={() => setIsDraggingBanner(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsDraggingBanner(false);
+                      const file = e.dataTransfer.files?.[0];
+                      if (file) handleFileUpload('banner', 'image_url', file);
+                    }}
+                    onClick={() => {
+                      const input = document.getElementById('cms-banner-file-input') as HTMLInputElement;
+                      if (input) input.click();
+                    }}
+                    className={`p-4 rounded-xl border-2 border-dashed transition-all flex flex-col sm:flex-row items-center gap-4 cursor-pointer ${
+                      isDraggingBanner
+                        ? 'border-theme-accent bg-theme-accent/10 scale-[1.01]'
+                        : 'border-theme-glass bg-theme-card hover:border-theme-accent/70'
+                    }`}
+                  >
+                    <input
+                      id="cms-banner-file-input"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleFileUpload('banner', 'image_url', file);
+                      }}
+                    />
+
+                    {bannerContent.image_url ? (
+                      <img
+                        src={bannerContent.image_url}
+                        alt="Banner Preview"
+                        className="w-24 h-24 object-cover rounded-xl border border-theme-glass shadow-xs shrink-0"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-xl bg-theme-page flex items-center justify-center text-theme-muted border border-theme-glass shrink-0">
+                        <ImageIcon className="w-8 h-8" />
+                      </div>
+                    )}
+
+                    <div className="text-center sm:text-left space-y-1 flex-1">
+                      <p className="font-semibold text-xs text-theme-primary">
+                        {uploadingImage
+                          ? 'Uploading image...'
+                          : isDraggingBanner
+                          ? 'Drop banner photo here!'
+                          : 'Drag & drop banner image here, or click to browse'}
+                      </p>
+                      <p className="text-[11px] text-theme-muted">
+                        Current image path: <span className="font-mono text-theme-accent">{bannerContent.image_url || '/static/assets/images/DA-MD-24-0002.jpg'}</span>
+                      </p>
+                    </div>
+
+                    <div className="px-3 py-1.5 rounded-lg bg-theme-accent/15 text-theme-accent font-semibold text-xs flex items-center gap-1 shrink-0">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>Upload Photo</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Banner Text Fields */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Top Badge / Eyebrow Text
+                    </label>
+                    <input
+                      type="text"
+                      value={bannerContent.eyebrow ?? 'MEET THE ARTIST & MASTER CRAFTSWOMAN'}
+                      onChange={(e) => updateSectionField('banner', 'eyebrow', e.target.value)}
+                      placeholder="e.g. MEET THE ARTIST & MASTER CRAFTSWOMAN"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary font-medium"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Artwork SKU / Code Reference
+                    </label>
+                    <input
+                      type="text"
+                      value={bannerContent.product_sku ?? 'ARTIST-SHITAL'}
+                      onChange={(e) => updateSectionField('banner', 'product_sku', e.target.value)}
+                      placeholder="e.g. ARTIST-SHITAL"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-theme-primary mb-1">
+                    Main Banner Title / Headline
+                  </label>
+                  <input
+                    type="text"
+                    value={bannerContent.title ?? 'Shital Thosar — Sacred Geometry & Handmade Mandala Art'}
+                    onChange={(e) => updateSectionField('banner', 'title', e.target.value)}
+                    placeholder="e.g. Shital Thosar — Sacred Geometry & Handmade Mandala Art"
+                    className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary font-serif font-semibold text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-theme-primary mb-1">
+                    Short Tagline / Intro Sentence
+                  </label>
+                  <input
+                    type="text"
+                    value={bannerContent.short_description ?? 'Crafting serene dot mandalas and traditional Lippan Kaam mirror art with deep devotion and precision.'}
+                    onChange={(e) => updateSectionField('banner', 'short_description', e.target.value)}
+                    placeholder="e.g. Crafting serene dot mandalas..."
+                    className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                  />
+                </div>
+
+                {/* Description Narrative */}
+                <div>
+                  <label className="block font-semibold text-theme-primary mb-1">
+                    Full Artist Story / Description Narrative
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={bannerContent.description ?? 'Shital Thosar is a visionary Indian artisan specializing in sacred Dot Mandalas and traditional Gujarati Lippan Kaam mirror art. Handcrafted on moisture-resistant MDF board with heavy-body acrylics, light-reflecting mirrors, and protective varnish, her creations bring spiritual harmony, positive energy, and radiant warmth into modern homes across the globe.'}
+                    onChange={(e) => updateSectionField('banner', 'description', e.target.value)}
+                    placeholder="Detailed artist narrative..."
+                    className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary leading-relaxed"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Dimensions / Availability Note
+                    </label>
+                    <input
+                      type="text"
+                      value={bannerContent.size ?? 'Custom Sizes Available'}
+                      onChange={(e) => updateSectionField('banner', 'size', e.target.value)}
+                      placeholder="e.g. Custom Sizes Available"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Starting Price / Price Note (₹)
+                    </label>
+                    <input
+                      type="number"
+                      value={bannerContent.price ?? 0}
+                      onChange={(e) => updateSectionField('banner', 'price', Number(e.target.value))}
+                      placeholder="0 for custom, or price in ₹"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Floating Badge Note
+                    </label>
+                    <input
+                      type="text"
+                      value={bannerContent.badge_text ?? 'Handmade with Devotion'}
+                      onChange={(e) => updateSectionField('banner', 'badge_text', e.target.value)}
+                      placeholder="e.g. Handmade with Devotion"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Material Specification
+                    </label>
+                    <input
+                      type="text"
+                      value={bannerContent.material ?? 'MDF Board, Acrylic Colors, Mirrors, Varnish'}
+                      onChange={(e) => updateSectionField('banner', 'material', e.target.value)}
+                      placeholder="e.g. MDF Board, Acrylic Colors, Mirrors, Varnish"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Creation Lead Time
+                    </label>
+                    <input
+                      type="text"
+                      value={bannerContent.creation_time ?? '8 Days'}
+                      onChange={(e) => updateSectionField('banner', 'creation_time', e.target.value)}
+                      placeholder="e.g. 8 Days"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Shipping Information
+                    </label>
+                    <input
+                      type="text"
+                      value={bannerContent.shipping_info ?? 'All over the world (Bubble wrap and corrugated box)'}
+                      onChange={(e) => updateSectionField('banner', 'shipping_info', e.target.value)}
+                      placeholder="e.g. All over the world"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* ---------------- SECTION 2: FEATURED SACRED ARTWORKS ---------------- */}
+              <div className="p-6 rounded-2xl bg-theme-page border-2 border-theme-glass space-y-4">
+                <div className="flex items-center justify-between border-b border-theme-glass pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-theme-accent text-white flex items-center justify-center font-bold text-xs">
+                      2
+                    </span>
+                    <h4 className="font-serif text-lg font-bold text-theme-primary">
+                      Section 2: Featured Sacred Artworks
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-accent/10 text-theme-accent border border-theme-glass">
+                    Catalog Showcase Grid
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Eyebrow / Small Header Badge
+                    </label>
+                    <input
+                      type="text"
+                      value={featuredContent.badge_text ?? 'Handcrafted Collection'}
+                      onChange={(e) => updateSectionField('featured_sacred_artworks', 'badge_text', e.target.value)}
+                      placeholder="e.g. Handcrafted Collection"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Section Heading
+                    </label>
+                    <input
+                      type="text"
+                      value={featuredContent.heading ?? 'Featured Sacred Artworks'}
+                      onChange={(e) => updateSectionField('featured_sacred_artworks', 'heading', e.target.value)}
+                      placeholder="e.g. Featured Sacred Artworks"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary font-serif font-semibold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Catalog Link Button Text
+                    </label>
+                    <input
+                      type="text"
+                      value={featuredContent.catalog_link_text ?? 'View Full Catalog'}
+                      onChange={(e) => updateSectionField('featured_sacred_artworks', 'catalog_link_text', e.target.value)}
+                      placeholder="e.g. View Full Catalog"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-theme-card border border-theme-glass text-[11px] text-theme-muted flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-theme-accent shrink-0" />
+                  <span>
+                    <strong>Which artworks appear here?</strong> The products displayed in this section are managed under the <strong>Product Catalog</strong> tab. Simply toggle the &quot;Featured&quot; star switch on any product to display it here.
+                  </span>
+                </div>
+              </div>
+
+              {/* ---------------- SECTION 3: TESTIMONIALS ---------------- */}
+              <div className="p-6 rounded-2xl bg-theme-page border-2 border-theme-glass space-y-4">
+                <div className="flex items-center justify-between border-b border-theme-glass pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-theme-accent text-white flex items-center justify-center font-bold text-xs">
+                      3
+                    </span>
+                    <h4 className="font-serif text-lg font-bold text-theme-primary">
+                      Section 3: Testimonials
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-accent/10 text-theme-accent border border-theme-glass">
+                    Customer Reviews
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Eyebrow / Small Header Badge
+                    </label>
+                    <input
+                      type="text"
+                      value={testimonialsContent.badge_text ?? 'Collector Words'}
+                      onChange={(e) => updateSectionField('testimonials', 'badge_text', e.target.value)}
+                      placeholder="e.g. Collector Words"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Section Main Heading
+                    </label>
+                    <input
+                      type="text"
+                      value={testimonialsContent.heading ?? 'Cherished in Homes Worldwide'}
+                      onChange={(e) => updateSectionField('testimonials', 'heading', e.target.value)}
+                      placeholder="e.g. Cherished in Homes Worldwide"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary font-serif font-semibold"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-theme-card border border-theme-glass text-[11px] text-theme-muted flex items-center gap-2">
+                  <MessageSquareQuote className="w-4 h-4 text-theme-accent shrink-0" />
+                  <span>
+                    <strong>How to manage customer reviews?</strong> Individual collector testimonials (customer names, 5-star ratings, quotes, artwork purchased) are managed in the dedicated <strong>Testimonials</strong> admin tab.
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* 2. CONTACT PAGE CMS: BRAND IDENTITY & WHATSAPP CHANNELS    */}
+          {/* ========================================================= */}
+          {activePage.slug === 'contact' && (
+            <div className="space-y-6">
+              <div className="p-4 rounded-xl bg-theme-accent/10 border border-theme-accent/20 text-xs text-theme-primary space-y-1">
+                <p className="font-bold text-theme-accent flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Brand Identity, Studio Information &amp; Primary Ordering WhatsApp</span>
+                </p>
+                <p className="text-theme-muted text-[11px]">
+                  Directly change your phone number, email, social media handles, studio address, and brand tagline. Changes apply immediately across the Contact page, site footer, and WhatsApp ordering system.
+                </p>
+              </div>
+
+              {/* Section 1: Contact Page Header & Intro */}
+              <div className="p-6 rounded-2xl bg-theme-page border-2 border-theme-glass space-y-4">
+                <div className="flex items-center justify-between border-b border-theme-glass pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-theme-accent text-white flex items-center justify-center font-bold text-xs">
+                      1
+                    </span>
+                    <h4 className="font-serif text-lg font-bold text-theme-primary">
+                      1. Contact Page Header &amp; Subtitle
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-accent/10 text-theme-accent">
+                    Header Banner
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Top Eyebrow Badge
+                    </label>
+                    <input
+                      type="text"
+                      value={contactHeaderContent.badge ?? 'GET IN TOUCH'}
+                      onChange={(e) => updateSectionField('contact_header', 'badge', e.target.value)}
+                      placeholder="e.g. GET IN TOUCH"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Main Page Heading
+                    </label>
+                    <input
+                      type="text"
+                      value={contactHeaderContent.title ?? 'Contact Dot And Art Studio'}
+                      onChange={(e) => updateSectionField('contact_header', 'title', e.target.value)}
+                      placeholder="e.g. Contact Dot And Art Studio"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary font-serif font-semibold"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-theme-primary mb-1">
+                    Introductory Subtitle / Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={contactHeaderContent.description ?? 'We welcome custom commission enquiries, bulk orders, and interior design collaborations.'}
+                    onChange={(e) => updateSectionField('contact_header', 'description', e.target.value)}
+                    placeholder="Intro description..."
+                    className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* Section 2: Brand Identity & Primary Ordering WhatsApp */}
+              <div className="p-6 rounded-2xl bg-theme-page border-2 border-theme-accent/30 space-y-5">
+                <div className="flex items-center justify-between border-b border-theme-glass pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-theme-accent text-white flex items-center justify-center font-bold text-xs">
+                      2
+                    </span>
+                    <h4 className="font-serif text-lg font-bold text-theme-primary">
+                      2. Brand Identity &amp; Primary Ordering WhatsApp
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
+                    Live Routing Channels
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Studio / Business Name
+                    </label>
+                    <input
+                      type="text"
+                      value={settings?.business_name ?? 'Dot And Art Studio'}
+                      onChange={(e) => setSettings((prev) => prev ? ({ ...prev, business_name: e.target.value }) : null)}
+                      placeholder="e.g. Dot And Art Studio"
+                      className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary font-medium"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Brand Tagline / Slogan
+                    </label>
+                    <input
+                      type="text"
+                      value={settings?.tagline ?? 'Handcrafted Sacred Mandalas & Lippan Mirror Art'}
+                      onChange={(e) => setSettings((prev) => prev ? ({ ...prev, tagline: e.target.value }) : null)}
+                      placeholder="e.g. Handcrafted Sacred Mandalas & Lippan Mirror Art"
+                      className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+                </div>
+
+                {/* Primary WhatsApp Ordering Number Box */}
+                <div className="p-4 rounded-xl bg-[#25D366]/10 border border-[#25D366]/30 space-y-3">
+                  <div className="flex items-center gap-2 text-[#128C7E] font-bold text-xs">
+                    <MessageCircle className="w-4 h-4 fill-[#128C7E] text-white" />
+                    <span>Primary Ordering WhatsApp Phone Number (Direct Route)</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-semibold text-theme-primary mb-1">
+                        WhatsApp Number (International format with country code) *
+                      </label>
+                      <input
+                        type="text"
+                        value={settings?.whatsapp_number ?? '+918652162647'}
+                        onChange={(e) => setSettings((prev) => prev ? ({ ...prev, whatsapp_number: e.target.value }) : null)}
+                        placeholder="e.g. +91 8652162647 or 918652162647"
+                        className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass font-mono font-bold text-emerald-700 dark:text-emerald-400"
+                      />
+                      <p className="text-[10px] text-theme-muted mt-1">
+                        All customer order inquiries from catalog, cart, and bespoke requests automatically route directly to this WhatsApp number.
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block font-semibold text-theme-primary mb-1">
+                        Display Phone Label (shown to customers)
+                      </label>
+                      <input
+                        type="text"
+                        value={settings?.whatsapp_display ?? '+91 86521 62647'}
+                        onChange={(e) => setSettings((prev) => prev ? ({ ...prev, whatsapp_display: e.target.value }) : null)}
+                        placeholder="e.g. +91 86521 62647"
+                        className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary font-semibold"
+                      />
+                      <p className="text-[10px] text-theme-muted mt-1">
+                        Formatted phone number visible on the contact card and site footer.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Official Contact Email *
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-lg bg-theme-accent/15 text-theme-accent shrink-0">
+                        <Mail className="w-4 h-4" />
+                      </div>
+                      <input
+                        type="email"
+                        value={settings?.email ?? 'shitalthosar@yahoo.com'}
+                        onChange={(e) => setSettings((prev) => prev ? ({ ...prev, email: e.target.value }) : null)}
+                        placeholder="shitalthosar@yahoo.com"
+                        className="flex-1 px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Website Domain
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-lg bg-theme-accent/15 text-theme-accent shrink-0">
+                        <Globe className="w-4 h-4" />
+                      </div>
+                      <input
+                        type="text"
+                        value={settings?.domain ?? 'dotandart.in'}
+                        onChange={(e) => setSettings((prev) => prev ? ({ ...prev, domain: e.target.value }) : null)}
+                        placeholder="dotandart.in"
+                        className="flex-1 px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-theme-primary mb-1">
+                    Physical Studio Address / Location
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-lg bg-theme-accent/15 text-theme-accent shrink-0">
+                      <MapPin className="w-4 h-4" />
+                    </div>
+                    <input
+                      type="text"
+                      value={settings?.studio_address ?? 'Mumbai, Maharashtra, India'}
+                      onChange={(e) => setSettings((prev) => prev ? ({ ...prev, studio_address: e.target.value }) : null)}
+                      placeholder="e.g. Mumbai, Maharashtra, India"
+                      className="flex-1 px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 3: Social Profiles & Media Handles */}
+              <div className="p-6 rounded-2xl bg-theme-page border-2 border-theme-glass space-y-4">
+                <div className="flex items-center justify-between border-b border-theme-glass pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-theme-accent text-white flex items-center justify-center font-bold text-xs">
+                      3
+                    </span>
+                    <h4 className="font-serif text-lg font-bold text-theme-primary">
+                      3. Social Media Profiles &amp; Handles
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-accent/10 text-theme-accent">
+                    Social Links
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1 flex items-center gap-1.5">
+                      <Instagram className="w-4 h-4 text-[#E1306C]" />
+                      <span>Instagram Profile URL / Handle</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={settings?.instagram_url ?? 'https://www.instagram.com/sathosar'}
+                      onChange={(e) => setSettings((prev) => prev ? ({ ...prev, instagram_url: e.target.value }) : null)}
+                      placeholder="https://www.instagram.com/sathosar"
+                      className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                    <span className="text-[10px] text-theme-muted mt-1 block">
+                      e.g. https://www.instagram.com/sathosar
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1 flex items-center gap-1.5">
+                      <Facebook className="w-4 h-4 text-[#1877F2]" />
+                      <span>Facebook Page URL</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={settings?.facebook_url ?? 'https://www.facebook.com/people/Dot-And-Art/61570301135652/'}
+                      onChange={(e) => setSettings((prev) => prev ? ({ ...prev, facebook_url: e.target.value }) : null)}
+                      placeholder="https://www.facebook.com/people/Dot-And-Art/61570301135652/"
+                      className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                    <span className="text-[10px] text-theme-muted mt-1 block">
+                      e.g. https://www.facebook.com/people/Dot-And-Art/61570301135652/
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 4: Live Channel Verification & Instant Test Box */}
+              <div className="p-5 rounded-2xl glass-panel border border-theme-glass space-y-3">
+                <h5 className="font-bold text-xs uppercase tracking-wider text-theme-accent flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <span>Live Channel Verification &amp; Instant Click-to-Test</span>
+                </h5>
+                <p className="text-[11px] text-theme-muted">
+                  Verify that your contact channels open correctly before or after saving:
+                </p>
+
+                <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                  <a
+                    href={createWhatsAppUrl('Hello Dot And Art! This is a test message from the Admin CMS.', settings?.whatsapp_number)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white text-xs font-bold inline-flex items-center gap-2 shadow-xs transition-all cursor-pointer"
+                  >
+                    <MessageCircle className="w-4 h-4 fill-white" />
+                    <span>Test WhatsApp ({settings?.whatsapp_display || settings?.whatsapp_number || '+91 86521 62647'})</span>
+                  </a>
+
+                  <a
+                    href={`mailto:${settings?.email || 'shitalthosar@yahoo.com'}`}
+                    className="px-3.5 py-2 rounded-xl glass-button text-xs font-semibold text-theme-primary border border-theme-glass hover:bg-theme-accent/15 inline-flex items-center gap-2 transition-all cursor-pointer"
+                  >
+                    <Mail className="w-4 h-4 text-theme-accent" />
+                    <span>Test Email ({settings?.email || 'shitalthosar@yahoo.com'})</span>
+                  </a>
+
+                  {settings?.instagram_url && (
+                    <a
+                      href={settings.instagram_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3.5 py-2 rounded-xl glass-button text-xs font-semibold text-theme-primary border border-theme-glass hover:bg-[#E1306C] hover:text-white inline-flex items-center gap-2 transition-all cursor-pointer"
+                    >
+                      <Instagram className="w-4 h-4" />
+                      <span>Test Instagram</span>
+                    </a>
+                  )}
+
+                  {settings?.facebook_url && (
+                    <a
+                      href={settings.facebook_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3.5 py-2 rounded-xl glass-button text-xs font-semibold text-theme-primary border border-theme-glass hover:bg-[#1877F2] hover:text-white inline-flex items-center gap-2 transition-all cursor-pointer"
+                    >
+                      <Facebook className="w-4 h-4" />
+                      <span>Test Facebook</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* 3. FAQS PAGE CMS                                          */}
+          {/* ========================================================= */}
+          {activePage.slug === 'faqs' && (
+            <div className="space-y-6">
+              <div className="p-4 rounded-xl bg-theme-accent/10 border border-theme-accent/20 text-xs text-theme-primary space-y-1">
+                <p className="font-bold text-theme-accent flex items-center gap-1.5">
+                  <HelpCircle className="w-4 h-4" />
+                  <span>FAQs Page Content &amp; WhatsApp Assistance</span>
+                </p>
+                <p className="text-theme-muted text-[11px]">
+                  Edit the header title, description, and the bottom WhatsApp assistance banner for the dedicated FAQs page. Individual questions &amp; answers are managed in the <strong>FAQs</strong> tab in the sidebar.
+                </p>
+              </div>
+
+              {/* Section 1: Page Header */}
+              <div className="p-6 rounded-2xl bg-theme-page border-2 border-theme-glass space-y-4">
+                <div className="flex items-center justify-between border-b border-theme-glass pb-3">
+                  <h4 className="font-serif text-lg font-bold text-theme-primary">
+                    1. FAQs Page Header
+                  </h4>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-accent/10 text-theme-accent">
+                    Header Banner
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Top Eyebrow Badge
+                    </label>
+                    <input
+                      type="text"
+                      value={faqHeaderContent.badge ?? 'Common Inquiries'}
+                      onChange={(e) => updateSectionField('faqs_header', 'badge', e.target.value)}
+                      placeholder="e.g. Common Inquiries"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Main Page Heading
+                    </label>
+                    <input
+                      type="text"
+                      value={faqHeaderContent.title ?? 'Frequently Asked Questions'}
+                      onChange={(e) => updateSectionField('faqs_header', 'title', e.target.value)}
+                      placeholder="e.g. Frequently Asked Questions"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary font-serif font-semibold"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-theme-primary mb-1">
+                    Introductory Subtitle / Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={faqHeaderContent.description ?? 'Everything you need to know about our sizes, customization process, pricing policy, creation timelines, advance payments, and worldwide shipping.'}
+                    onChange={(e) => updateSectionField('faqs_header', 'description', e.target.value)}
+                    placeholder="Description text..."
+                    className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* Section 2: WhatsApp Help Banner */}
+              <div className="p-6 rounded-2xl bg-theme-page border-2 border-theme-glass space-y-4">
+                <div className="flex items-center justify-between border-b border-theme-glass pb-3">
+                  <h4 className="font-serif text-lg font-bold text-theme-primary">
+                    2. Bottom WhatsApp Help Card
+                  </h4>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-accent/10 text-theme-accent">
+                    Direct Contact Box
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      Card Heading
+                    </label>
+                    <input
+                      type="text"
+                      value={faqHelpContent.title ?? 'Still have a question?'}
+                      onChange={(e) => updateSectionField('faqs_help_card', 'title', e.target.value)}
+                      placeholder="e.g. Still have a question?"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary font-serif font-semibold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-theme-primary mb-1">
+                      WhatsApp Button Text
+                    </label>
+                    <input
+                      type="text"
+                      value={faqHelpContent.button_text ?? 'Chat on WhatsApp (+91 86521 62647)'}
+                      onChange={(e) => updateSectionField('faqs_help_card', 'button_text', e.target.value)}
+                      placeholder="e.g. Chat on WhatsApp (+91 86521 62647)"
+                      className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-theme-primary mb-1">
+                    Card Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={faqHelpContent.description ?? 'We are just a message away. Reach out to the artist on WhatsApp for immediate answers regarding your bespoke requirements.'}
+                    onChange={(e) => updateSectionField('faqs_help_card', 'description', e.target.value)}
+                    placeholder="Description text..."
+                    className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary resize-none"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* 4. OTHER PAGES (About, Bespoke, Catalog, Gallery, etc.)   */}
+          {/* ========================================================= */}
+          {activePage.slug !== 'home' && activePage.slug !== 'contact' && activePage.slug !== 'faqs' && (
+            <div className="space-y-6">
+              {activePage.sections?.map((section, sIdx) => {
+                const content = section.content_json || {};
+                return (
+                  <div
+                    key={section.id || sIdx}
+                    className="p-6 rounded-2xl bg-theme-page border-2 border-theme-glass space-y-4"
+                  >
+                    <div className="flex items-center justify-between border-b border-theme-glass pb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-theme-accent text-white flex items-center justify-center font-bold text-xs">
+                          {sIdx + 1}
+                        </span>
+                        <h4 className="font-serif text-lg font-bold text-theme-primary capitalize">
+                          {section.section_key.replace(/_/g, ' ')}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-accent/10 text-theme-accent">
+                        {section.section_type}
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      {Object.entries(content).map(([fKey, fVal]) => {
+                        const isLong = typeof fVal === 'string' && (fVal.length > 70 || fVal.includes('\n'));
+                        const isImage = typeof fVal === 'string' && (fKey.includes('image') || fKey.includes('img') || fVal.startsWith('/'));
+
+                        return (
+                          <div key={fKey} className="space-y-1">
+                            <label className="block font-semibold text-theme-primary capitalize text-xs">
+                              {fKey.replace(/_/g, ' ')}
+                            </label>
+
+                            {isImage ? (
+                              <div className="flex items-center gap-3">
+                                {typeof fVal === 'string' && (
+                                  <img
+                                    src={fVal}
+                                    alt={fKey}
+                                    className="w-16 h-16 object-cover rounded-xl border border-theme-glass shrink-0"
+                                  />
+                                )}
+                                <input
+                                  type="text"
+                                  value={String(fVal ?? '')}
+                                  onChange={(e) => updateSectionField(section.section_key, fKey, e.target.value)}
+                                  className="flex-1 px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary text-xs"
+                                />
+                              </div>
+                            ) : isLong ? (
+                              <textarea
+                                rows={3}
+                                value={String(fVal ?? '')}
+                                onChange={(e) => updateSectionField(section.section_key, fKey, e.target.value)}
+                                className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary text-xs resize-none"
+                              />
+                            ) : (
+                              <input
+                                type="text"
+                                value={String(fVal ?? '')}
+                                onChange={(e) => updateSectionField(section.section_key, fKey, e.target.value)}
+                                className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary text-xs"
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* SEO & Search Meta Settings (Standard across all pages)    */}
+          {/* ========================================================= */}
+          <div className="p-6 rounded-2xl bg-theme-page border border-theme-glass space-y-4">
+            <h4 className="font-serif text-base font-bold text-theme-primary flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-theme-accent" />
-              <span>Page Title & Search Engine Optimization (SEO)</span>
+              <span>Page Title &amp; SEO Meta Tags</span>
             </h4>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -425,7 +1332,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
             </div>
 
             <div>
-              <label className="block font-semibold text-theme-primary mb-1">Meta Description (&lt;meta name="description"&gt;)</label>
+              <label className="block font-semibold text-theme-primary mb-1">Meta Description</label>
               <textarea
                 rows={2}
                 value={activePage.meta_description || ''}
@@ -435,356 +1342,20 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
             </div>
           </div>
 
-          {/* Page Sections Editor */}
-          <div className="space-y-6 pt-6 border-t border-theme-glass">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h4 className="font-serif text-lg font-bold text-theme-primary">
-                  Page Content & Image Sections ({activePage.sections?.length || 0})
-                </h4>
-                <p className="text-xs text-theme-muted">
-                  Modify headlines, copy text, images, and section visibility for this page.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setNewSecModalOpen(true)}
-                className="px-3.5 py-1.5 rounded-xl bg-theme-accent/15 text-theme-accent hover:bg-theme-accent/20 border border-theme-glass font-semibold text-xs flex items-center gap-1.5 cursor-pointer self-start sm:self-auto"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add New Content Section</span>
-              </button>
-            </div>
-
-            {activePage.sections && activePage.sections.length > 0 ? (
-              <div className="space-y-6">
-                {activePage.sections.map((section, sIdx) => (
-                  <div
-                    key={section.id || sIdx}
-                    className="p-5 sm:p-6 rounded-2xl bg-theme-page border border-theme-glass space-y-4 shadow-2xs"
-                  >
-                    {/* Section Header Controls */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-theme-glass">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-theme-accent uppercase bg-theme-accent/10 px-2 py-0.5 rounded border border-theme-glass">
-                          Section #{sIdx + 1}: {section.section_key}
-                        </span>
-                        <span className="text-[10px] text-theme-muted font-mono">
-                          Type: {section.section_type}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        {/* Order adjustment */}
-                        <button
-                          type="button"
-                          disabled={sIdx === 0}
-                          onClick={() => handleMoveSection(sIdx, 'up')}
-                          className="p-1 rounded glass-button text-theme-primary disabled:opacity-30 cursor-pointer"
-                          title="Move Up"
-                        >
-                          <ArrowUp className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          disabled={sIdx === activePage.sections.length - 1}
-                          onClick={() => handleMoveSection(sIdx, 'down')}
-                          className="p-1 rounded glass-button text-theme-primary disabled:opacity-30 cursor-pointer"
-                          title="Move Down"
-                        >
-                          <ArrowDown className="w-3.5 h-3.5" />
-                        </button>
-
-                        {/* Visibility check */}
-                        <label className="flex items-center gap-1.5 text-xs text-theme-primary cursor-pointer px-2 py-1 rounded bg-theme-card border border-theme-glass">
-                          <input
-                            type="checkbox"
-                            checked={section.is_visible}
-                            onChange={(e) => {
-                              const copy = [...activePage.sections];
-                              copy[sIdx].is_visible = e.target.checked;
-                              setActivePage({ ...activePage, sections: copy });
-                            }}
-                            className="rounded text-theme-accent cursor-pointer"
-                          />
-                          <span>Visible</span>
-                        </label>
-
-                        {/* Delete Section */}
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteSection(sIdx)}
-                          className="p-1 rounded text-red-500 hover:bg-red-500/20 cursor-pointer"
-                          title="Delete Section"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Section Content Json Fields */}
-                    {section.content_json && (
-                      <div className="space-y-4 pt-2">
-                        {Object.entries(section.content_json).map(([key, val]) => {
-                          const isLong = typeof val === 'string' && (val.length > 80 || val.includes('\n'));
-                          const isImageField =
-                            key.includes('image') ||
-                            key.includes('img') ||
-                            key.includes('photo') ||
-                            key.includes('banner') ||
-                            key.includes('bg') ||
-                            key.includes('logo') ||
-                            key.includes('avatar') ||
-                            key.includes('src') ||
-                            (typeof val === 'string' && (val.startsWith('/') || val.startsWith('http')));
-
-                          const uploadId = `${sIdx}-${key}`;
-                          const isUploading = uploadingKey === uploadId;
-
-                          return (
-                            <div key={key} className="space-y-1.5 p-3 rounded-xl bg-theme-card/60 border border-theme-glass">
-                              <div className="flex items-center justify-between">
-                                <label className="block font-mono text-[10px] text-theme-accent uppercase font-bold flex items-center gap-1">
-                                  {isImageField && <ImageIcon className="w-3.5 h-3.5" />}
-                                  <span>{key.replace(/_/g, ' ')}</span>
-                                </label>
-                                <button
-                                  type="button"
-                                  onClick={() => handleDeleteField(sIdx, key)}
-                                  className="text-[10px] text-red-400 hover:underline cursor-pointer"
-                                >
-                                  remove field
-                                </button>
-                              </div>
-
-                              {isImageField ? (
-                                <div className="space-y-2.5 pt-1">
-                                  {/* Image Live Preview */}
-                                  {typeof val === 'string' && val.trim() !== '' && (
-                                    <div className="relative group w-32 h-24 rounded-xl border border-theme-glass overflow-hidden bg-black/20">
-                                      <img
-                                        src={val}
-                                        alt={key}
-                                        className="w-full h-full object-cover"
-                                        onError={(e) => { e.currentTarget.src = '/logo.png'; }}
-                                      />
-                                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-[10px] text-white font-medium">
-                                        Preview
-                                      </div>
-                                    </div>
-                                  )}
-
-                                  {/* Image URL text input & Direct Upload Button */}
-                                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                                    <input
-                                      type="text"
-                                      value={String(val)}
-                                      placeholder="https://... or /uploads/filename.jpg"
-                                      onChange={(e) => {
-                                        const copy = [...activePage.sections];
-                                        copy[sIdx].content_json = {
-                                          ...copy[sIdx].content_json,
-                                          [key]: e.target.value,
-                                        };
-                                        setActivePage({ ...activePage, sections: copy });
-                                      }}
-                                      className="flex-1 px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary font-mono text-xs"
-                                    />
-
-                                    <label className="px-3.5 py-2 rounded-xl bg-theme-accent/20 hover:bg-theme-accent/30 border border-theme-glass text-theme-accent text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer shrink-0 transition-colors">
-                                      {isUploading ? (
-                                        <div className="w-4 h-4 border-2 border-theme-accent border-t-transparent rounded-full animate-spin" />
-                                      ) : (
-                                        <UploadCloud className="w-4 h-4" />
-                                      )}
-                                      <span>{isUploading ? 'Uploading...' : 'Upload Image'}</span>
-                                      <input
-                                        type="file"
-                                        accept="image/*"
-                                        disabled={isUploading}
-                                        onChange={(e) => {
-                                          if (e.target.files?.[0]) {
-                                            handleImageUpload(sIdx, key, e.target.files[0]);
-                                          }
-                                        }}
-                                        className="hidden"
-                                      />
-                                    </label>
-                                  </div>
-                                </div>
-                              ) : isLong ? (
-                                <textarea
-                                  rows={Math.min(8, Math.max(3, String(val).split('\n').length + 1))}
-                                  value={String(val)}
-                                  onChange={(e) => {
-                                    const copy = [...activePage.sections];
-                                    copy[sIdx].content_json = {
-                                      ...copy[sIdx].content_json,
-                                      [key]: e.target.value,
-                                    };
-                                    setActivePage({ ...activePage, sections: copy });
-                                  }}
-                                  className="w-full px-3.5 py-2.5 rounded-xl bg-theme-card border border-theme-glass text-theme-primary font-sans text-xs leading-relaxed"
-                                />
-                              ) : (
-                                <input
-                                  type="text"
-                                  value={String(val)}
-                                  onChange={(e) => {
-                                    const copy = [...activePage.sections];
-                                    copy[sIdx].content_json = {
-                                      ...copy[sIdx].content_json,
-                                      [key]: e.target.value,
-                                    };
-                                    setActivePage({ ...activePage, sections: copy });
-                                  }}
-                                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary font-sans text-xs"
-                                />
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-
-                    {/* Add Field Button */}
-                    <div className="pt-2 flex flex-wrap gap-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setNewFieldSecIdx(sIdx);
-                          setNewFieldIsImage(false);
-                        }}
-                        className="text-[11px] font-semibold text-theme-accent hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <Plus className="w-3 h-3" />
-                        <span>Add Text Field</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setNewFieldSecIdx(sIdx);
-                          setNewFieldIsImage(true);
-                        }}
-                        className="text-[11px] font-semibold text-theme-accent hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <ImageIcon className="w-3 h-3" />
-                        <span>Add Image Field</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-theme-muted py-4 text-center">No content sections defined for this page yet.</p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* New Section Modal */}
-      {newSecModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="max-w-md w-full glass-panel rounded-3xl border border-theme-glass craft-shadow p-6 space-y-4 text-xs text-theme-primary">
-            <div className="flex items-center justify-between border-b border-theme-glass pb-3">
-              <h3 className="font-serif text-lg font-bold text-theme-primary">Add Section to Webpage</h3>
-              <button onClick={() => setNewSecModalOpen(false)} className="text-theme-muted cursor-pointer">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddSection} className="space-y-3">
-              <div>
-                <label className="block font-semibold mb-1">Section Identifier *</label>
-                <input
-                  type="text"
-                  required
-                  value={newSecKey}
-                  onChange={(e) => setNewSecKey(e.target.value)}
-                  placeholder="e.g. hero_banner, gallery_grid, artist_bio"
-                  className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold mb-1">Section Layout Type</label>
-                <select
-                  value={newSecType}
-                  onChange={(e) => setNewSecType(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
-                >
-                  <option value="hero">Hero Banner with Image</option>
-                  <option value="feature">Feature Highlights Grid</option>
-                  <option value="cta">Call to Action Banner</option>
-                  <option value="text">Text Narrative / Bio</option>
-                  <option value="custom">Custom Block</option>
-                </select>
-              </div>
-
-              <div className="pt-3 flex justify-end gap-3 border-t border-theme-glass">
-                <button
-                  type="button"
-                  onClick={() => setNewSecModalOpen(false)}
-                  className="px-4 py-2 rounded-xl glass-button text-theme-primary cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-xl bg-theme-accent text-white font-semibold cursor-pointer"
-                >
-                  Add Section
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* New Field Modal */}
-      {newFieldSecIdx !== null && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="max-w-md w-full glass-panel rounded-3xl border border-theme-glass craft-shadow p-6 space-y-4 text-xs text-theme-primary">
-            <div className="flex items-center justify-between border-b border-theme-glass pb-3">
-              <h3 className="font-serif text-lg font-bold text-theme-primary">
-                Add {newFieldIsImage ? 'Image' : 'Text'} Field to Section
-              </h3>
-              <button onClick={() => setNewFieldSecIdx(null)} className="text-theme-muted cursor-pointer">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddField} className="space-y-3">
-              <div>
-                <label className="block font-semibold mb-1">Field Name Identifier *</label>
-                <input
-                  type="text"
-                  required
-                  value={newFieldKey}
-                  onChange={(e) => setNewFieldKey(e.target.value)}
-                  placeholder={newFieldIsImage ? "e.g. hero_image, banner_photo" : "e.g. headline_text, subtitle"}
-                  className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary font-mono"
-                />
-              </div>
-
-              <div className="pt-3 flex justify-end gap-3 border-t border-theme-glass">
-                <button
-                  type="button"
-                  onClick={() => setNewFieldSecIdx(null)}
-                  className="px-4 py-2 rounded-xl glass-button text-theme-primary cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-xl bg-theme-accent text-white font-semibold cursor-pointer"
-                >
-                  Add Field
-                </button>
-              </div>
-            </form>
+          {/* Bottom Save & Publish Button */}
+          <div className="pt-4 border-t border-theme-glass flex items-center justify-between">
+            <p className="text-xs text-theme-muted">
+              Click &quot;Save &amp; Publish Changes&quot; to apply all edits directly to the live website.
+            </p>
+            <button
+              type="button"
+              disabled={saving}
+              onClick={() => handleSave('published')}
+              className="px-6 py-2.5 rounded-xl bg-theme-accent hover:opacity-90 text-white text-xs font-semibold shadow-xs flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+            >
+              <Save className="w-4 h-4" />
+              <span>{saving ? 'Saving...' : 'Save & Publish Changes'}</span>
+            </button>
           </div>
         </div>
       )}

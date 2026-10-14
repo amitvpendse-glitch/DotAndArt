@@ -4,6 +4,38 @@ import { CartItem, CustomMandalaInquiry, Product } from '../types';
 export const BUSINESS_WHATSAPP_NUMBER = '918652162647';
 export const DISPLAY_WHATSAPP_NUMBER = '+91 86521 62647';
 
+let _activeNumber = BUSINESS_WHATSAPP_NUMBER;
+
+export function setActiveWhatsAppNumber(num: string): void {
+  if (num && num.trim()) {
+    const clean = num.replace(/[^0-9]/g, '');
+    if (clean.length >= 10) {
+      _activeNumber = clean;
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('dot_whatsapp_number', clean);
+        } catch {
+          // ignore
+        }
+      }
+    }
+  }
+}
+
+export function getActiveWhatsAppNumber(): string {
+  if (typeof window !== 'undefined') {
+    try {
+      const stored = localStorage.getItem('dot_whatsapp_number');
+      if (stored && stored.replace(/[^0-9]/g, '').length >= 10) {
+        return stored.replace(/[^0-9]/g, '');
+      }
+    } catch {
+      // ignore
+    }
+  }
+  return _activeNumber || BUSINESS_WHATSAPP_NUMBER;
+}
+
 export interface WhatsAppAttachmentItem {
   url: string;
   filename: string;
@@ -12,10 +44,11 @@ export interface WhatsAppAttachmentItem {
 }
 
 /**
- * Creates a WhatsApp click-to-chat URL with properly encoded message text directly for artist +91 86521 62647
+ * Creates a WhatsApp click-to-chat URL with properly encoded message text directly for the artist
  */
-export function createWhatsAppUrl(message: string, phone: string = BUSINESS_WHATSAPP_NUMBER): string {
-  const cleanNumber = (phone || BUSINESS_WHATSAPP_NUMBER).replace(/[^0-9]/g, '');
+export function createWhatsAppUrl(message: string, phone?: string): string {
+  const target = (phone && phone.trim()) ? phone : getActiveWhatsAppNumber();
+  const cleanNumber = target.replace(/[^0-9]/g, '');
   return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
 }
 
@@ -335,28 +368,61 @@ export async function downloadOrderAsZip(
 }
 
 /**
- * Instantly dispatches order directly to +91 86521 62647 on WhatsApp with zero delay.
- * Automatically copies primary image to clipboard, downloads a ZIP archive of all order JPG photos, and downloads individual JPG files.
+ * Downloads a single artwork image directly as a high-definition .jpg file.
+ * Perfect for users who wish to download individual items from the catalog.
+ */
+export async function downloadArtworkImage(
+  imageUrl: string,
+  filename?: string
+): Promise<boolean> {
+  if (!imageUrl) return false;
+  const rawFilename = filename || 'dotandart_artwork.jpg';
+  const baseName = rawFilename.replace(/\.(jpg|jpeg|png|webp|gif|svg)$/i, '');
+  const finalJpgFilename = `${baseName}.jpg`;
+
+  try {
+    const jpgBlob = await fetchImageAsJpgBlob(imageUrl);
+    const blobUrl = URL.createObjectURL(jpgBlob);
+
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = finalJpgFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 10000);
+
+    return true;
+  } catch (e) {
+    console.warn('Fallback direct download for image:', imageUrl, e);
+    try {
+      const a = document.createElement('a');
+      a.href = imageUrl;
+      a.download = finalJpgFilename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      return true;
+    } catch (err) {
+      console.error('Failed to download artwork image:', imageUrl, err);
+      return false;
+    }
+  }
+}
+
+/**
+ * Instantly dispatches order directly to +91 86521 62647 on WhatsApp as a clean text message.
+ * No ZIP file is downloaded. The text message includes the full artwork details, codes, sizes, and pricing.
  */
 export function dispatchDirectWhatsAppOrder(
   messageText: string,
-  attachments: WhatsAppAttachmentItem[] = []
+  _attachments: WhatsAppAttachmentItem[] = []
 ): void {
-  if (attachments && attachments.length > 0) {
-    // 1. Copy primary image to clipboard so Ctrl+V / Cmd+V in WhatsApp Web pastes main artwork photo
-    if (attachments[0].url) {
-      copyImageToClipboard(attachments[0].url).catch(() => {});
-    }
-
-    // 2. Automatically download ZIP archive containing ALL artwork photos in the order as .jpg files
-    downloadOrderAsZip(attachments, 'DotAndArt_Order_Artworks.zip').catch(() => {});
-
-    // 3. Automatically download individual .jpg files for easy dragging/preview
-    downloadAllAttachments(attachments).catch(() => {});
-  }
-
-  // 4. Open WhatsApp directly to +91 86521 62647
-  const url = createWhatsAppUrl(messageText, BUSINESS_WHATSAPP_NUMBER);
+  // Open WhatsApp directly with order details as a text message
+  const url = createWhatsAppUrl(messageText);
   openExternalLink(url);
 }
 
@@ -386,7 +452,6 @@ Displayed price: ₹${priceToDisplay.toLocaleString('en-IN')}`;
     msg += `\nCustomization requirements: ${customizationNotes.trim()}`;
   }
 
-  msg += `\n\n[Attached: ${imageCount > 1 ? `${imageCount} artwork photos` : 'Artwork photo'}]`;
   msg += `\n\nPlease confirm availability, final pricing, delivery charges, and estimated dispatch time. Thank you!`;
   return msg;
 }
@@ -404,18 +469,14 @@ export function formatMultiProductEnquiry(
     generalCustomization?: string;
   }
 ): string {
-  let msg = `Hello Dot And Art,\n\nI would like to enquire about the following artwork:\n\n`;
+  let msg = `Hello Dot And Art,\n\nI would like to enquire about the following artwork order:\n\n`;
 
-  let totalImagesCount = 0;
   items.forEach((item, index) => {
     msg += `${index + 1}. Product: ${item.product.name}\n`;
     msg += `   Code: ${item.product.sku}\n`;
     msg += `   Size: ${item.size}\n`;
     msg += `   Quantity: ${item.quantity}\n`;
     msg += `   Displayed price: ₹${(item.price * item.quantity).toLocaleString('en-IN')}\n`;
-
-    const imgCount = (item.product.images && item.product.images.length > 0) ? item.product.images.length : 1;
-    totalImagesCount += imgCount;
 
     if (item.customization_notes && item.customization_notes.trim()) {
       msg += `   Item Note: ${item.customization_notes.trim()}\n`;
@@ -443,8 +504,7 @@ export function formatMultiProductEnquiry(
     msg += `Additional message: ${customer.additionalMessage.trim()}\n`;
   }
 
-  msg += `\n[Attached: ${totalImagesCount} artwork photos for the items above]`;
-  msg += `\n\nPlease confirm availability, final pricing, delivery charges, and estimated dispatch time.`;
+  msg += `\nPlease confirm availability, final pricing, delivery charges, and estimated dispatch time. Thank you!`;
 
   return msg;
 }
@@ -454,7 +514,7 @@ export function formatMultiProductEnquiry(
  */
 export function formatCustomMandalaEnquiry(
   data: CustomMandalaInquiry,
-  hasAttachments?: boolean
+  _hasAttachments?: boolean
 ): string {
   let msg = `Hello Dot And Art,
 
@@ -488,10 +548,6 @@ Customer WhatsApp: ${data.whatsapp_number}`;
 
   if (data.additional_instructions) {
     msg += `\nAdditional instructions: ${data.additional_instructions}`;
-  }
-
-  if (hasAttachments || data.reference_product_code) {
-    msg += `\n\n[Reference photos attached to this WhatsApp message]`;
   }
 
   msg += `\n\nPlease share design details, estimated timeline, and advance payment instructions. Thank you!`;

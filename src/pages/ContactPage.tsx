@@ -1,33 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Mail, Instagram, Facebook, Send, CheckCircle2 } from 'lucide-react';
+import { MessageCircle, Mail, Instagram, Facebook, Send, CheckCircle2, MapPin } from 'lucide-react';
 import { WebsiteSettings } from '../types';
 import { createWhatsAppUrl, DISPLAY_WHATSAPP_NUMBER, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
 
 export const ContactPage: React.FC = () => {
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
+  const [cmsPage, setCmsPage] = useState<any>(null);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
-    safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null)
-      .then((data) => {
-        if (data) setSettings(data);
-      });
+    Promise.all([
+      safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null),
+      safeFetchJson<any>('/api/pages/contact', undefined, null),
+    ]).then(([settingsData, pageData]) => {
+      if (settingsData) setSettings(settingsData);
+      if (pageData) setCmsPage(pageData);
+    });
   }, []);
+
+  const headerSec = cmsPage?.sections?.find(
+    (s: any) => s.section_type === 'header' || s.section_key === 'contact_header'
+  );
+  const headerBadge = headerSec?.content_json?.badge || 'Get in Touch';
+  const headerTitle = headerSec?.content_json?.title || 'Contact Dot And Art Studio';
+  const headerDesc =
+    headerSec?.content_json?.description ||
+    'We welcome custom commission enquiries, bulk orders, and interior design collaborations.';
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     const formatted = `Hello Dot And Art,\n\nI am contacting you from the website:\n\nName: ${name}\nPhone: ${phone}\nMessage: ${message}`;
-    const url = createWhatsAppUrl(formatted);
+    const url = createWhatsAppUrl(formatted, settings?.whatsapp_number);
     openExternalLink(url);
     setSent(true);
   };
 
   const handleDirectWhatsApp = () => {
-    const url = createWhatsAppUrl('Hello Dot And Art! I would like to connect regarding your artwork.');
+    const url = createWhatsAppUrl(
+      'Hello Dot And Art! I would like to connect regarding your artwork.',
+      settings?.whatsapp_number
+    );
     openExternalLink(url);
   };
 
@@ -35,13 +51,13 @@ export const ContactPage: React.FC = () => {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12">
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
-          Get in Touch
+          {headerBadge}
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-theme-primary">
-          Contact Dot And Art Studio
+          {headerTitle}
         </h1>
         <p className="text-sm text-theme-muted font-light leading-relaxed">
-          We welcome custom commission enquiries, bulk orders, and interior design collaborations.
+          {headerDesc}
         </p>
       </div>
 
@@ -61,7 +77,7 @@ export const ContactPage: React.FC = () => {
                 <div>
                   <span className="font-bold text-theme-primary block">WhatsApp (Primary Channel)</span>
                   <button onClick={handleDirectWhatsApp} className="text-[#128C7E] hover:underline font-semibold mt-0.5 cursor-pointer">
-                    {settings?.whatsapp_display || DISPLAY_WHATSAPP_NUMBER}
+                    {settings?.whatsapp_display || settings?.whatsapp_number || DISPLAY_WHATSAPP_NUMBER}
                   </button>
                   <p className="text-[11px] text-theme-muted">Direct messaging & custom order assistance</p>
                 </div>
@@ -78,6 +94,18 @@ export const ContactPage: React.FC = () => {
                   </a>
                 </div>
               </div>
+
+              {settings?.studio_address && (
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
+                    <MapPin className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-theme-primary block">Studio Address</span>
+                    <p className="text-theme-muted mt-0.5">{settings.studio_address}</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Social Links */}

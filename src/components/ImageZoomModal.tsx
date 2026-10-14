@@ -9,10 +9,13 @@ import {
   Eye,
   ArrowRight,
   Maximize2,
-  Sparkles
+  Sparkles,
+  Download,
+  Check,
 } from 'lucide-react';
 import { Product } from '../types';
 import { SafeProductImage } from './SafeProductImage';
+import { downloadArtworkImage } from '../utils/whatsapp';
 
 interface ImageZoomModalProps {
   product: Product | null;
@@ -33,6 +36,7 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [panPosition, setPanPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const dragStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const panStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
@@ -179,6 +183,39 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {/* Download Artwork Image Button */}
+            <button
+              onClick={async () => {
+                if (!currentImage.storage_path) return;
+                setIsDownloading(true);
+                try {
+                  const filename = `${product.sku}_photo_${activeImageIndex + 1}.jpg`;
+                  await downloadArtworkImage(currentImage.storage_path, filename);
+                } finally {
+                  setTimeout(() => setIsDownloading(false), 1200);
+                }
+              }}
+              disabled={isDownloading || !currentImage.storage_path}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer border ${
+                isDownloading
+                  ? 'bg-emerald-600 text-white border-emerald-500'
+                  : 'bg-white/10 hover:bg-white/20 text-white border-white/15'
+              }`}
+              title="Download this artwork image (.jpg)"
+            >
+              {isDownloading ? (
+                <>
+                  <Check className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Downloaded</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="hidden sm:inline">Download Image</span>
+                </>
+              )}
+            </button>
+
             {onSelectProduct && (
               <button
                 onClick={() => {

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ArrowRight, MessageCircle, Heart, Star, ShieldCheck, CheckCircle2, ChevronRight, Eye, ShoppingBag, Plus, Minus } from 'lucide-react';
-import { Category, Product, Testimonial, FAQ, WebsitePage } from '../types';
+import { ArrowRight, Star, Eye, ShoppingBag, Plus, Minus, Download, Check, Flame } from 'lucide-react';
+import { Category, Product, Testimonial } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { ImageZoomModal } from '../components/ImageZoomModal';
 import { HugeShowcaseBanner } from '../components/HugeShowcaseBanner';
-import { createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
 import { useCart } from '../context/CartContext';
+import { downloadArtworkImage } from '../utils/whatsapp';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -23,36 +23,30 @@ export function HomePage({
   addToCart: propsAddToCart,
   decrementItem: propsDecrementItem,
   getItemQuantity: propsGetItemQuantity,
-  cartItemsCount = 0,
 }: HomePageProps) {
   const cart = useCart();
   const addToCart = propsAddToCart || cart.addToCart;
   const decrementItem = propsDecrementItem || ((p: Product) => cart.decrementItem(p));
   const getItemQuantity = propsGetItemQuantity || cart.getItemQuantity;
 
-  const [categories, setCategories] = useState<Category[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [pageData, setPageData] = useState<WebsitePage | null>(null);
+  const [cmsPage, setCmsPage] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [zoomedProduct, setZoomedProduct] = useState<Product | null>(null);
+  const [downloadingSku, setDownloadingSku] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
       try {
-        const [catRes, prodRes, testRes, faqRes, pageRes] = await Promise.all([
-          safeFetchJson<Category[]>('/api/categories', undefined, []),
+        const [prodRes, testRes, pageRes] = await Promise.all([
           safeFetchJson<{ products: Product[] }>('/api/products?featured=true', undefined, { products: [] }),
           safeFetchJson<Testimonial[]>('/api/testimonials', undefined, []),
-          safeFetchJson<FAQ[]>('/api/faqs', undefined, []),
-          safeFetchJson<WebsitePage | null>('/api/pages/home', undefined, null),
+          safeFetchJson<any>('/api/pages/home', undefined, null),
         ]);
-        setCategories(Array.isArray(catRes) ? catRes : []);
         setFeaturedProducts(prodRes?.products ? prodRes.products : []);
         setTestimonials(Array.isArray(testRes) ? testRes : []);
-        setFaqs(Array.isArray(faqRes) ? faqRes.slice(0, 5) : []);
-        setPageData(pageRes);
+        setCmsPage(pageRes);
       } catch (err) {
         console.error('Failed to load homepage data', err);
       } finally {
@@ -62,14 +56,18 @@ export function HomePage({
     loadData();
   }, []);
 
-  const handleHeroWhatsApp = () => {
-    const url = createWhatsAppUrl('Hello Dot And Art! I would like to enquire about your mandalas & Lippan art.');
-    openExternalLink(url);
-  };
+  const featuredSec = cmsPage?.sections?.find(
+    (s: any) => s.section_type === 'featured_artworks' || s.section_key === 'featured_sacred_artworks'
+  );
+  const testimonialsSec = cmsPage?.sections?.find(
+    (s: any) => s.section_type === 'testimonials' || s.section_key === 'testimonials'
+  );
 
-  const sectionsList = pageData?.sections || [];
-  const introSection = (pageData as any)?.content_json?.sections?.intro || sectionsList.find((s: any) => s.section_type === 'intro');
-  const bulkSection = (pageData as any)?.content_json?.sections?.bulk || sectionsList.find((s: any) => s.section_type === 'bulk');
+  const featuredBadge = featuredSec?.content_json?.badge_text || 'Handcrafted Collection';
+  const featuredHeading = featuredSec?.content_json?.heading || 'Featured Sacred Artworks';
+  const catalogLinkText = featuredSec?.content_json?.catalog_link_text || 'View Full Catalog';
+  const testimonialsBadge = testimonialsSec?.content_json?.badge_text || 'Collector Words';
+  const testimonialsHeading = testimonialsSec?.content_json?.heading || 'Cherished in Homes Worldwide';
 
   return (
     <div className="min-h-screen">
@@ -83,17 +81,17 @@ export function HomePage({
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-4 border-b border-theme-glass gap-4">
           <div>
             <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
-              Handcrafted Collection
+              {featuredBadge}
             </span>
             <h2 className="font-serif text-2xl sm:text-3xl font-medium text-theme-primary mt-1">
-              Featured Sacred Artworks
+              {featuredHeading}
             </h2>
           </div>
           <button
             onClick={() => onNavigate('/shop')}
             className="text-xs font-bold text-theme-accent hover:opacity-80 flex items-center gap-1 transition-colors cursor-pointer"
           >
-            <span>View Full Catalog</span>
+            <span>{catalogLinkText}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -102,7 +100,10 @@ export function HomePage({
           {featuredProducts.map((product, index) => {
             const isLippan =
               product.category_slug === 'lippan-wall-hangings' ||
-              product.name.toLowerCase().includes('lippan');
+              product.name.toLowerCase().includes('lippan') ||
+              product.sku.startsWith('DA-LP');
+            const isHighDemand = product.is_high_demand !== undefined ? product.is_high_demand : isLippan;
+            const extraDays = product.extra_delivery_days !== undefined ? product.extra_delivery_days : 5;
             const primaryImg = product.images?.find((img) => img.is_primary) || product.images?.[0];
 
             return (
@@ -127,9 +128,20 @@ export function HomePage({
                     className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                   />
 
-                  <div className="absolute top-3 left-3 z-30 px-2 py-0.5 rounded bg-theme-card/90 backdrop-blur-xs text-[10px] font-mono font-semibold text-theme-primary border border-theme-glass">
-                    {product.sku}
+                  {/* SKU Badge */}
+                  <div className="absolute top-3 left-3 z-30">
+                    <span className="px-2 py-0.5 rounded bg-theme-card/90 backdrop-blur-xs text-[10px] font-mono font-semibold text-theme-primary border border-theme-glass">
+                      {product.sku}
+                    </span>
                   </div>
+
+                  {/* High Demand Badge on Thumbnail */}
+                  {isHighDemand && (
+                    <div className="absolute bottom-3 right-3 z-30 px-2.5 py-0.5 rounded-full bg-linear-to-r from-amber-500 to-orange-500 text-white text-[9px] font-bold shadow-xs flex items-center gap-1 backdrop-blur-xs">
+                      <Flame className="w-3 h-3 fill-white text-white" />
+                      <span>High Demand</span>
+                    </div>
+                  )}
 
                   {product.featured && (
                     <div className="absolute top-3 right-3 z-30 px-2 py-0.5 rounded-full bg-theme-accent text-white text-[9px] font-bold uppercase tracking-wider shadow-xs">
@@ -159,6 +171,25 @@ export function HomePage({
                       {product.description}
                     </p>
 
+                    {/* High Demand Positive Free-Text Notice Box */}
+                    {isHighDemand && (
+                      <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[10px] space-y-1 text-amber-900 dark:text-amber-200">
+                        <div className="flex items-center justify-between font-bold text-amber-800 dark:text-amber-300">
+                          <span className="flex items-center gap-1">
+                            <Flame className="w-3 h-3 text-amber-600 fill-amber-500" />
+                            High Demand Artisan Piece
+                          </span>
+                          <span className="text-[9px] font-mono bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-900 dark:text-amber-200">
+                            +{extraDays} days
+                          </span>
+                        </div>
+                        <p className="leading-tight text-amber-950/85 dark:text-amber-100/90 font-normal">
+                          {product.high_demand_message ||
+                            `✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow ${extraDays} additional days for our master artist to craft and perfect your sacred piece.`}
+                        </p>
+                      </div>
+                    )}
+
                     {/* Detailed Specifications Box */}
                     <div className="pt-2 border-t border-theme-glass space-y-1 text-[11px]">
                       <div className="flex justify-between items-center">
@@ -173,7 +204,7 @@ export function HomePage({
                       </div>
                       <div className="flex justify-between items-center text-[10px] text-theme-muted pt-0.5">
                         <div>Creation: <strong className="text-theme-primary">{product.creation_time}</strong></div>
-                        <div>Customizable: <strong className="text-emerald-600">Yes</strong></div>
+                        <div>Customizable: <strong className="text-emerald-600 font-bold">Yes</strong></div>
                       </div>
                       <div className="text-[10px] text-theme-muted truncate" title="Worldwide shipping in bubble wrap and corrugated box">
                         Shipping: <strong className="text-theme-primary">Bubble wrap & corrugated box</strong>
@@ -194,6 +225,7 @@ export function HomePage({
                         </div>
 
                         <div className="flex items-center gap-1.5">
+                          {/* Zoom Image Button */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -203,6 +235,36 @@ export function HomePage({
                             title="Zoom and inspect artwork image"
                           >
                             <Eye className="w-4 h-4" />
+                          </button>
+
+                          {/* Download Artwork Image Button */}
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              if (!primaryImg?.storage_path) return;
+                              setDownloadingSku(product.sku);
+                              try {
+                                await downloadArtworkImage(
+                                  primaryImg.storage_path,
+                                  `${product.sku}_${product.name.replace(/\s+/g, '_')}.jpg`
+                                );
+                              } finally {
+                                setTimeout(() => setDownloadingSku(null), 1200);
+                              }
+                            }}
+                            disabled={downloadingSku === product.sku}
+                            className={`p-2 rounded-full border border-theme-glass transition-all cursor-pointer ${
+                              downloadingSku === product.sku
+                                ? 'bg-emerald-600 text-white'
+                                : 'text-theme-primary hover:bg-theme-glass hover:text-theme-accent'
+                            }`}
+                            title="Download artwork image (.jpg)"
+                          >
+                            {downloadingSku === product.sku ? (
+                              <Check className="w-4 h-4 animate-scale-in" />
+                            ) : (
+                              <Download className="w-4 h-4" />
+                            )}
                           </button>
 
                           {itemQty > 0 ? (
@@ -252,172 +314,15 @@ export function HomePage({
         </div>
       </section>
 
-      {/* 4. THE MEDITATIVE DISCIPLINE (CRAFT STORY INTRO) */}
-      <section className="py-16 sm:py-24 border-y border-theme-glass relative overflow-hidden bg-gradient-to-b from-[var(--bg-page)] via-[var(--hero-bg-from)] to-[var(--bg-page)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-6 space-y-6">
-              <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
-                {introSection?.tagline || 'The Meditative Discipline'}
-              </span>
-              <h2 className="font-serif text-3xl sm:text-4xl font-medium text-theme-primary leading-snug">
-                {introSection?.title || 'Every Dot Placed with Breath, Patience & Devotion'}
-              </h2>
-              <p className="text-sm sm:text-base text-theme-muted font-light leading-relaxed">
-                {introSection?.paragraph_1 ||
-                  'At Dot And Art, art is not merely decoration; it is a sacred meditation. Each dot mandala begins at the central Bindu — the spark of primordial consciousness — and blossoms outward in thousands of concentric, hand-dropped acrylic droplets.'}
-              </p>
-              <p className="text-sm sm:text-base text-theme-muted font-light leading-relaxed">
-                {introSection?.paragraph_2 ||
-                  'Our Lippan Kaam honors the pastoral tribes of Kutch, where hand-kneaded organic clay relief lines cradle gleaming hand-cut mirrors that reflect light and ward off negativity. No molds, no mass production — only singular handmade devotion.'}
-              </p>
-
-              <div className="pt-2">
-                <button
-                  onClick={() => onNavigate('/about')}
-                  className="px-6 py-3 rounded-full glass-button text-theme-primary text-xs font-semibold tracking-wide transition-colors inline-flex items-center gap-2 cursor-pointer"
-                >
-                  <span>Read The Full Artist Story</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Visual Craft Features */}
-            <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-6 rounded-2xl glass-card space-y-2.5">
-                <div className="w-10 h-10 rounded-full bg-[var(--accent-primary)]/10 text-theme-accent flex items-center justify-center">
-                  <Heart className="w-5 h-5" />
-                </div>
-                <h3 className="font-serif text-lg font-semibold text-theme-primary">No Mechanization</h3>
-                <p className="text-xs text-theme-muted leading-relaxed">
-                  Every circle, arc, and mirror placement is created manually using traditional dotting tools and clay kneading.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-2xl glass-card space-y-2.5">
-                <div className="w-10 h-10 rounded-full bg-[var(--accent-primary)]/10 text-theme-accent flex items-center justify-center">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <h3 className="font-serif text-lg font-semibold text-theme-primary">Sacred Geometry</h3>
-                <p className="text-xs text-theme-muted leading-relaxed">
-                  Designs rooted in ancient Vedic and Tibetan proportions that balance prana and harmony in living spaces.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-2xl glass-card space-y-2.5">
-                <div className="w-10 h-10 rounded-full bg-[#25D366]/10 text-[#128C7E] flex items-center justify-center">
-                  <CheckCircle2 className="w-5 h-5" />
-                </div>
-                <h3 className="font-serif text-lg font-semibold text-theme-primary">Weather Protective Seal</h3>
-                <p className="text-xs text-theme-muted leading-relaxed">
-                  Coated with professional non-yellowing artist varnish to safeguard colors and mirrors against dust and humidity.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-2xl glass-card space-y-2.5">
-                <div className="w-10 h-10 rounded-full bg-[var(--accent-primary)]/10 text-theme-accent flex items-center justify-center">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <h3 className="font-serif text-lg font-semibold text-theme-primary">Transit Safe Crate</h3>
-                <p className="text-xs text-theme-muted leading-relaxed">
-                  Custom shock-absorbent multi-ply packaging ensures your delicate mirrors and artwork arrive flawless worldwide.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. BESPOKE MANDALA COMMISSIONS CALLOUT */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="rounded-3xl bg-theme-dark text-white p-8 sm:p-14 overflow-hidden relative shadow-xl border border-theme-glass">
-          <div className="relative z-10 max-w-2xl space-y-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-gold)]">
-              Personalized Art Commissions
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium leading-tight text-white">
-              Have a Specific Space, Diameter or Energy in Mind?
-            </h2>
-            <p className="text-sm sm:text-base text-slate-300 font-light leading-relaxed">
-              From 10-inch sacred meditation wall hangings to grand 30-inch feature wall centerpieces, we craft bespoke pieces tailored to your exact color preferences, deity symbols, or central photos.
-            </p>
-
-            <div className="pt-2 flex flex-col sm:flex-row items-center gap-4">
-              <button
-                onClick={() => onNavigate('/custom-order')}
-                className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-theme-accent hover:opacity-90 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer"
-              >
-                Create Custom Commission
-              </button>
-
-              <button
-                onClick={handleHeroWhatsApp}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium text-xs transition-colors flex items-center justify-center gap-2 border border-white/20 cursor-pointer"
-              >
-                <MessageCircle className="w-4 h-4 fill-white text-[#2C2724]" />
-                <span>Discuss with Artist on WhatsApp</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. BULK & CORPORATE GIFTING */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="rounded-2xl glass-card p-8 sm:p-12 craft-shadow border border-theme-glass">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8 space-y-4">
-              <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
-                {bulkSection?.tagline || 'Corporate, Festive & Wedding Favors'}
-              </span>
-              <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-theme-primary">
-                {bulkSection?.title || 'Artisanal Bulk Gifting That Leaves a Lasting Impression'}
-              </h2>
-              <p className="text-sm text-theme-muted font-light leading-relaxed">
-                {bulkSection?.description ||
-                  'Looking for distinctive, culturally rich return gifts for a wedding, milestone anniversary, or corporate festive celebration? We handcraft coordinated sets of mini mandalas and Lippan plaques with custom gift packaging.'}
-              </p>
-              <div className="flex flex-wrap gap-4 pt-2 text-xs text-theme-primary">
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-theme-accent" /> Tiered Bulk Pricing (10+ Units)
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-theme-accent" /> Custom Gift Packaging
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-theme-accent" /> Worldwide Dispatch
-                </span>
-              </div>
-            </div>
-
-            <div className="lg:col-span-4 flex justify-start lg:justify-end">
-              <button
-                onClick={() => {
-                  const url = createWhatsAppUrl(
-                    'Hello Dot And Art! I would like to enquire about bulk/corporate/wedding gifting orders.'
-                  );
-                  openExternalLink(url);
-                }}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-theme-dark text-white text-xs font-semibold tracking-wide transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
-              >
-                <MessageCircle className="w-4 h-4 text-[#25D366]" />
-                <span>Enquire for Bulk Gifting</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. TESTIMONIALS */}
+      {/* 3. TESTIMONIALS SECTION */}
       {testimonials.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-theme-glass">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
             <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
-              Collector Words
+              {testimonialsBadge}
             </span>
             <h2 className="font-serif text-3xl font-medium text-theme-primary">
-              Cherished in Homes Worldwide
+              {testimonialsHeading}
             </h2>
           </div>
 
@@ -448,70 +353,6 @@ export function HomePage({
           </div>
         </section>
       )}
-
-      {/* 8. FAQ PREVIEW */}
-      {faqs.length > 0 && (
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center mb-10 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
-              Common Queries
-            </span>
-            <h2 className="font-serif text-3xl font-medium text-theme-primary">
-              Frequently Asked Questions
-            </h2>
-          </div>
-
-          <div className="space-y-3">
-            {faqs.map((faq) => (
-              <details
-                key={faq.id}
-                className="group p-4 rounded-xl glass-card border border-theme-glass transition-all"
-              >
-                <summary className="font-serif text-base font-semibold text-theme-primary cursor-pointer list-none flex items-center justify-between">
-                  <span>{faq.question}</span>
-                  <ChevronRight className="w-4 h-4 text-theme-muted group-open:rotate-90 transition-transform" />
-                </summary>
-                <p className="mt-3 text-xs sm:text-sm text-theme-muted font-light leading-relaxed pt-2 border-t border-theme-glass">
-                  {faq.answer}
-                </p>
-              </details>
-            ))}
-          </div>
-
-          <div className="text-center pt-8">
-            <button
-              onClick={() => onNavigate('/faq')}
-              className="text-xs font-bold text-theme-accent hover:opacity-80 transition-colors cursor-pointer"
-            >
-              View All Frequently Asked Questions →
-            </button>
-          </div>
-        </section>
-      )}
-
-      {/* 9. WHATSAPP BOTTOM CALLOUT */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="p-8 sm:p-12 rounded-3xl glass-panel border-2 border-theme-glass text-center space-y-4">
-          <div className="w-12 h-12 mx-auto rounded-full bg-[#25D366]/20 text-[#128C7E] flex items-center justify-center">
-            <MessageCircle className="w-6 h-6 fill-[#128C7E] text-white" />
-          </div>
-          <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-theme-primary">
-            Ready to Connect with the Artist?
-          </h2>
-          <p className="text-xs sm:text-sm text-theme-muted max-w-lg mx-auto font-light">
-            Whether you want to confirm dimensions, request customized colors, or check delivery schedules to your city, we are happy to chat directly on WhatsApp.
-          </p>
-          <div className="pt-2">
-            <button
-              onClick={handleHeroWhatsApp}
-              className="px-8 py-3.5 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md inline-flex items-center gap-2 cursor-pointer"
-            >
-              <MessageCircle className="w-4 h-4 fill-white" />
-              <span>Chat on WhatsApp (+91 86521 62647)</span>
-            </button>
-          </div>
-        </div>
-      </section>
 
       {/* Image Zoom Modal for Catalog Items */}
       <ImageZoomModal

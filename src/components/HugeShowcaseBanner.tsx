@@ -100,50 +100,40 @@ const LIVING_SPACES = [
 ];
 
 const FALLBACK_PRODUCT: Product = {
-  id: 'prod-da-md-24-0002',
-  sku: 'DA-MD-24-0002',
-  name: 'Sacred Harmony — 24-Inch Dot Mandala Wall Hanging',
+  id: 'prod-artist-shital',
+  sku: 'ARTIST-SHITAL',
+  name: 'Shital Thosar — Sacred Geometry & Handmade Mandala Art',
   short_description:
-    'Monumental 24-inch handcrafted sacred dot mandala with shimmering mirrors and protective varnish.',
+    'Crafting serene dot mandalas and traditional Lippan Kaam mirror art with deep devotion and precision.',
   description:
-    'An awe-inspiring 24-inch handcrafted sacred dot mandala wall hanging. Painted dot by concentric dot with meditative precision on moisture-resistant MDF board, featuring deep jewel-toned acrylics, concentric light-reflecting mirrors, and a durable crystal-clear protective varnish finish.',
+    'Shital Thosar is a visionary Indian artisan specializing in sacred Dot Mandalas and traditional Gujarati Lippan Kaam mirror art. Handcrafted on moisture-resistant MDF board with heavy-body acrylics, light-reflecting mirrors, and protective varnish, her creations bring spiritual harmony, positive energy, and radiant warmth into modern homes across the globe.',
   category_id: 'cat-mandala',
-  category_name: 'Mandala Wall Hangings',
+  category_name: 'Handcrafted Sacred Art',
   category_slug: 'mandala-wall-hangings',
-  material: 'MDF Board, Acrylic Colors, Mirrors, Varnish',
+  material: 'MDF Board, Lippan Clay Relief, Acrylics, Mirrors, Varnish',
   framing: '',
   customizable: true,
-  creation_time: '8 Days',
-  shipping_info: 'All over the world (Bubble wrap and corrugated box)',
+  creation_time: 'Handmade on Order',
+  shipping_info: 'Worldwide Insured Express Delivery',
   special_information:
-    'Photos Available: Yes • Material: MDF Board, Acrylic Colors, Mirrors, Varnish • Creation Time: 8 Days • Shipping: All over the world',
+    'Clean gently with a soft dry microfiber cloth.',
   featured: true,
   is_published: true,
   photos_available_note: 'Yes',
-  base_price: 5200,
-  base_size: '24 inches',
+  base_price: 0,
+  base_size: 'Custom Sizes Available',
   images: [
     {
-      id: 'img-prod-da-md-24-0002-1',
-      product_id: 'prod-da-md-24-0002',
-      storage_path: '/static/assets/images/DA-MD-24-0002.jpg',
-      alt_text: 'Sacred Harmony 24-Inch Dot Mandala (DA-MD-24-0002)',
-      caption: 'Sacred Harmony 24-Inch Dot Mandala',
+      id: 'img-artist-shital-1',
+      product_id: 'prod-artist-shital',
+      storage_path: '/static/assets/images/Art_artist.jpg',
+      alt_text: 'Artist Shital Thosar with Sacred Mandala Art',
+      caption: 'Artist Shital Thosar with Sacred Mandala Art',
       display_order: 1,
       is_primary: true,
     },
   ],
-  variants: [
-    {
-      id: 'var-DA-MD-24-0002-1',
-      product_id: 'prod-da-md-24-0002',
-      size: '24 inches',
-      price: 5200,
-      variant_label: 'Standard (24 inches)',
-      is_available: true,
-      display_order: 1,
-    },
-  ],
+  variants: [],
   created_at: new Date('2025-01-01').toISOString(),
   updated_at: new Date('2025-01-01').toISOString(),
 };
@@ -412,9 +402,6 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>{bannerEyebrow}</span>
             </span>
-            <span className="text-xs font-mono text-amber-200/70 hidden sm:inline">
-              Code: {bannerSku}
-            </span>
 
             {/* Admin Quick Edit Button */}
             {isAdmin && (
@@ -433,7 +420,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block mr-1" />
             <span className="font-medium text-emerald-300">{bannerBadgeText}</span>
             <span className="text-white/30">•</span>
-            <span>{bannerShippingInfo}</span>
+            <span>Handcrafted Sacred Art Collection</span>
           </div>
         </div>
 
@@ -552,12 +539,12 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
           {/* RIGHT: SMART DESCRIPTION SHOWCASE DOCK */}
           <div className="lg:col-span-5 space-y-6">
             
-            {/* Title & Dimension Summary */}
+            {/* Title & Artist Focus Header */}
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs font-mono text-amber-300">
                 <span>Artisan Shital Thosar</span>
                 <span>•</span>
-                <span>{bannerSize}</span>
+                <span>Sacred Dot Mandala & Lippan Art</span>
               </div>
               <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-white tracking-tight leading-[1.15]">
                 {bannerTitle}
@@ -673,62 +660,21 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
               )}
             </div>
 
-            {/* PRICING & QUICK ACTIONS */}
-            <div className="space-y-3.5 pt-1">
-              <div className="flex items-baseline justify-between">
-                <div>
-                  <span className="text-[10px] uppercase tracking-wider text-white/60 block">
-                    Original Artwork Price
+            {/* ART & ARTIST DISCOVERY FOOTER (NO PRICING OR SELLING) */}
+            <div className="space-y-3 pt-2">
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-amber-200/90">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-300 shrink-0" />
+                  <span className="font-serif italic text-white/85 text-xs sm:text-sm">
+                    “Handcrafted Dot Mandalas & Lippan Kaam mirror art by Shital Thosar.”
                   </span>
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-serif text-3xl font-bold text-amber-400">
-                      ₹{bannerPrice.toLocaleString('en-IN')}
-                    </span>
-                    <span className="text-xs text-white/60">
-                      ({bannerSize} standard size)
-                    </span>
-                  </div>
                 </div>
-
                 <button
-                  onClick={() => onSelectProduct(bannerSku)}
-                  className="text-xs text-amber-300 hover:underline flex items-center gap-1 font-semibold cursor-pointer"
+                  onClick={() => onNavigate('/shop')}
+                  className="px-5 py-2.5 rounded-full bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/30 font-semibold text-xs flex items-center gap-2 transition-all cursor-pointer shrink-0 shadow-sm"
                 >
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>Full Specifications</span>
-                </button>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <button
-                  onClick={handleWhatsAppEnquiry}
-                  className="py-3.5 px-5 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <MessageCircle className="w-4 h-4 fill-white" />
-                  <span>Enquire on WhatsApp</span>
-                </button>
-
-                <button
-                  onClick={handleAddToCart}
-                  className="py-3.5 px-5 rounded-full bg-white text-black hover:bg-amber-100 font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <ShoppingBag className="w-4 h-4" />
-                  <span>
-                    {inCartQty > 0 ? `In Cart (${inCartQty}) — Add Another` : 'Add to Cart'}
-                  </span>
-                </button>
-              </div>
-
-              {/* Custom Request link */}
-              <div className="flex items-center justify-center gap-4 text-xs text-white/60 pt-1">
-                <span>Also available in custom sizes: 10, 12, 15, 18, 24, 30 inches</span>
-                <span>•</span>
-                <button
-                  onClick={() => onNavigate('/custom-order')}
-                  className="text-amber-300 hover:underline cursor-pointer font-medium"
-                >
-                  Custom Request →
+                  <span>Explore Art Catalog</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -919,9 +865,11 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
               </div>
 
               <div>
-                <label className="block text-white/80 font-semibold mb-1">Full Detailed Story / Description</label>
+                <label className="block text-white/90 font-semibold mb-1">
+                  Full Detailed Story / Description
+                </label>
                 <textarea
-                  rows={3}
+                  rows={4}
                   value={editingBanner.description}
                   onChange={(e) => setEditingBanner({ ...editingBanner, description: e.target.value })}
                   className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white leading-relaxed"
