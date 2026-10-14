@@ -666,16 +666,16 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
 
             {/* ART & ARTIST DISCOVERY FOOTER (NO PRICING OR SELLING) */}
             <div className="space-y-3 pt-2">
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-amber-200/90">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-300 shrink-0" />
-                  <span className="font-serif italic text-white/85 text-xs sm:text-sm">
+              <div className="p-4 rounded-2xl bg-black/85 border border-white/30 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white shadow-xl">
+                <div className="flex items-center gap-2.5">
+                  <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span className="font-serif italic text-white text-xs sm:text-sm font-semibold">
                     “Handcrafted Dot Mandalas & Lippan Kaam mirror art by Shital Thosar.”
                   </span>
                 </div>
                 <button
                   onClick={() => onNavigate('/shop')}
-                  className="px-5 py-2.5 rounded-full bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/30 font-semibold text-xs flex items-center gap-2 transition-all cursor-pointer shrink-0 shadow-sm"
+                  className="px-5 py-2.5 rounded-full bg-amber-400 hover:bg-amber-500 text-black font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer shrink-0 shadow-lg border border-amber-200"
                 >
                   <span>Explore Art Catalog</span>
                   <ArrowRight className="w-3.5 h-3.5" />
