@@ -121,11 +121,11 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
       >
         {/* Header Icon */}
         <div className="space-y-3">
-          <div className="w-20 h-20 mx-auto flex items-center justify-center transition-transform hover:scale-105">
+          <div className="w-40 h-40 mx-auto flex items-center justify-center transition-transform hover:scale-105 filter drop-shadow-xl">
             <img
               src="/static/assets/images/DotAndArt_Logo.jpg"
               alt="Dot And Art Logo"
-              className="w-full h-full object-contain rounded-full select-none"
+              className="w-full h-full object-cover rounded-full [clip-path:circle(49%)] select-none ring-4 ring-theme-accent/20 shadow-lg"
             />
           </div>
           <h2 className="font-serif text-3xl font-semibold text-theme-primary">

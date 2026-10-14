@@ -1,3 +1,4 @@
+import JSZip from 'jszip';
 import { CartItem, CustomMandalaInquiry, Product } from '../types';
 
 export const BUSINESS_WHATSAPP_NUMBER = '918652162647';
@@ -11,11 +12,160 @@ export interface WhatsAppAttachmentItem {
 }
 
 /**
- * Creates a WhatsApp click-to-chat URL with properly encoded message text
+ * Creates a WhatsApp click-to-chat URL with properly encoded message text directly for artist +91 86521 62647
  */
-export function createWhatsAppUrl(message: string): string {
-  const cleanNumber = BUSINESS_WHATSAPP_NUMBER.replace(/[^0-9]/g, '');
+export function createWhatsAppUrl(message: string, phone: string = BUSINESS_WHATSAPP_NUMBER): string {
+  const cleanNumber = (phone || BUSINESS_WHATSAPP_NUMBER).replace(/[^0-9]/g, '');
   return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
+}
+
+/**
+ * Collects ALL image attachments for a product (primary + gallery photos)
+ */
+export function collectAttachmentsForProduct(product: Product): WhatsAppAttachmentItem[] {
+  if (!product) return [];
+  const items: WhatsAppAttachmentItem[] = [];
+  const images = product.images && product.images.length > 0 ? product.images : [];
+  images.forEach((img, idx) => {
+    if (img.storage_path) {
+      items.push({
+        url: img.storage_path,
+        filename: `${product.sku}_${idx + 1}.jpg`,
+        title: `${product.name} (Image ${idx + 1})`,
+        sku: product.sku,
+      });
+    }
+  });
+  return items;
+}
+
+/**
+ * Collects ALL image attachments for all products in a cart
+ */
+export function collectAttachmentsForCart(cartItems: CartItem[]): WhatsAppAttachmentItem[] {
+  if (!cartItems || cartItems.length === 0) return [];
+  const items: WhatsAppAttachmentItem[] = [];
+  cartItems.forEach((ci) => {
+    const images = ci.product.images && ci.product.images.length > 0 ? ci.product.images : [];
+    images.forEach((img, idx) => {
+      if (img.storage_path) {
+        items.push({
+          url: img.storage_path,
+          filename: `${ci.product.sku}_${idx + 1}.jpg`,
+          title: `${ci.product.name} (Image ${idx + 1})`,
+          sku: ci.product.sku,
+        });
+      }
+    });
+  });
+  return items;
+}
+
+/**
+ * Helper to fetch and convert any image URL into a high-quality JPG Blob
+ */
+export async function fetchImageAsJpgBlob(imageUrl: string): Promise<Blob> {
+  let fullUrl = imageUrl;
+  if (
+    typeof window !== 'undefined' &&
+    fullUrl &&
+    !fullUrl.startsWith('http') &&
+    !fullUrl.startsWith('data:') &&
+    !fullUrl.startsWith('blob:')
+  ) {
+    if (!fullUrl.startsWith('/')) fullUrl = '/' + fullUrl;
+    fullUrl = window.location.origin + fullUrl;
+  }
+
+  return new Promise<Blob>((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth || img.width || 800;
+        canvas.height = img.naturalHeight || img.height || 800;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve(blob);
+              } else {
+                reject(new Error('Canvas toBlob failed'));
+              }
+            },
+            'image/jpeg',
+            0.92
+          );
+        } else {
+          reject(new Error('Canvas context unavailable'));
+        }
+      } catch (err) {
+        reject(err);
+      }
+    };
+
+    img.onerror = () => {
+      fetch(fullUrl)
+        .then((res) => res.blob())
+        .then((blob) => resolve(blob))
+        .catch((err) => reject(err));
+    };
+
+    img.src = fullUrl;
+  });
+}
+
+/**
+ * Downloads ALL artwork images in the order as downloadable .jpg files to user's device
+ */
+export async function downloadAllAttachments(attachments: WhatsAppAttachmentItem[]): Promise<void> {
+  if (!attachments || attachments.length === 0) return;
+
+  for (let idx = 0; idx < attachments.length; idx++) {
+    const att = attachments[idx];
+    if (!att.url) continue;
+
+    const rawFilename = att.filename || `artwork_${idx + 1}`;
+    const baseName = rawFilename.replace(/\.(jpg|jpeg|png|webp|gif|svg)$/i, '');
+    const finalJpgFilename = `${baseName}.jpg`;
+
+    try {
+      const jpgBlob = await fetchImageAsJpgBlob(att.url);
+      const blobUrl = URL.createObjectURL(jpgBlob);
+
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = finalJpgFilename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      setTimeout(() => {
+        URL.revokeObjectURL(blobUrl);
+      }, 10000);
+    } catch (e) {
+      console.warn('Fallback direct download for attachment:', att.url, e);
+      try {
+        const a = document.createElement('a');
+        a.href = att.url;
+        a.download = finalJpgFilename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch (err) {
+        console.error('Failed to trigger download:', att.url, err);
+      }
+    }
+
+    if (idx < attachments.length - 1) {
+      await new Promise((res) => setTimeout(res, 220));
+    }
+  }
 }
 
 /**
@@ -36,157 +186,47 @@ export function openExternalLink(url: string): void {
 }
 
 /**
- * Helper to resolve all valid direct URLs for a product's images
+ * Helper to fetch and convert an image URL into a PNG Blob suitable for ClipboardItem
  */
-export function getAbsoluteImageUrls(product: Product): string[] {
-  const origin = typeof window !== 'undefined' && window.location.origin
-    ? window.location.origin
-    : 'https://dotandart.in';
+async function fetchImageAsPngBlob(imageUrl: string): Promise<Blob> {
+  let fullUrl = imageUrl;
+  if (
+    typeof window !== 'undefined' &&
+    fullUrl &&
+    !fullUrl.startsWith('http') &&
+    !fullUrl.startsWith('data:') &&
+    !fullUrl.startsWith('blob:')
+  ) {
+    if (!fullUrl.startsWith('/')) fullUrl = '/' + fullUrl;
+    fullUrl = window.location.origin + fullUrl;
+  }
 
-  const urls: string[] = [];
+  const res = await fetch(fullUrl);
+  const blob = await res.blob();
+  if (blob.type === 'image/png') return blob;
 
-  if (product.images && product.images.length > 0) {
-    product.images.forEach((img) => {
-      let path = img.storage_path;
-      if (path) {
-        if (!path.startsWith('http')) {
-          if (!path.startsWith('/')) path = '/' + path;
-          path = `${origin}${path}`;
-        }
-        if (!urls.includes(path)) urls.push(path);
+  return new Promise<Blob>((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || img.width || 800;
+      canvas.height = img.naturalHeight || img.height || 800;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob((b) => resolve(b || blob), 'image/png');
+      } else {
+        resolve(blob);
       }
-    });
-  }
-
-  // Fallback to standard SKU image path if no image list found
-  if (urls.length === 0 && product.sku) {
-    urls.push(`${origin}/static/assets/images/${product.sku}.jpg`);
-  }
-
-  return urls;
-}
-
-/**
- * Collects all attachment items for a single product (multiple images if present)
- */
-export function collectAttachmentsForProduct(product: Product): WhatsAppAttachmentItem[] {
-  const urls = getAbsoluteImageUrls(product);
-  return urls.map((url, i) => {
-    const suffix = urls.length > 1 ? `_${i + 1}` : '';
-    return {
-      url,
-      filename: `${product.sku}${suffix}.jpg`,
-      title: product.name,
-      sku: product.sku,
     };
+    img.onerror = () => resolve(blob);
+    img.src = URL.createObjectURL(blob);
   });
 }
 
 /**
- * Collects all attachment items across all products in a cart
- */
-export function collectAttachmentsForCart(items: CartItem[]): WhatsAppAttachmentItem[] {
-  const all: WhatsAppAttachmentItem[] = [];
-  const seenUrls = new Set<string>();
-
-  items.forEach((item) => {
-    const productAttachments = collectAttachmentsForProduct(item.product);
-    productAttachments.forEach((att) => {
-      if (!seenUrls.has(att.url)) {
-        seenUrls.add(att.url);
-        all.push(att);
-      }
-    });
-  });
-
-  return all;
-}
-
-/**
- * Fetches image blobs and converts them to File objects for native sharing or downloading
- */
-export async function fetchImageFiles(attachments: WhatsAppAttachmentItem[]): Promise<File[]> {
-  const files: File[] = [];
-  for (let i = 0; i < attachments.length; i++) {
-    const item = attachments[i];
-    try {
-      const res = await fetch(item.url);
-      if (!res.ok) continue;
-      const blob = await res.blob();
-      const ext = blob.type.includes('png') ? 'png' : 'jpg';
-      const cleanName = item.filename ? item.filename.replace(/\.[^/.]+$/, '') : `artwork_${i + 1}`;
-      const file = new File([blob], `${cleanName}.${ext}`, { type: blob.type || 'image/jpeg' });
-      files.push(file);
-    } catch (e) {
-      console.warn('Could not load image file:', item.url, e);
-    }
-  }
-  return files;
-}
-
-/**
- * Attempts native WhatsApp Web Share with file attachments
- */
-export async function sendNativeWhatsAppShare(
-  message: string,
-  attachments: WhatsAppAttachmentItem[]
-): Promise<'shared' | 'cancelled' | 'unsupported'> {
-  if (typeof navigator === 'undefined' || !navigator.share || !attachments || attachments.length === 0) {
-    return 'unsupported';
-  }
-
-  try {
-    const files = await fetchImageFiles(attachments);
-    if (files.length === 0) return 'unsupported';
-
-    if (navigator.canShare && navigator.canShare({ files })) {
-      await navigator.share({
-        files,
-        title: 'Dot And Art Order Enquiry',
-        text: message,
-      });
-      return 'shared';
-    }
-  } catch (err: any) {
-    if (err.name === 'AbortError') {
-      return 'cancelled';
-    }
-    console.warn('Native share error:', err);
-  }
-
-  return 'unsupported';
-}
-
-/**
- * Initiates automatic download of all attachments so the user can easily attach them in WhatsApp Web
- */
-export async function downloadAllAttachments(attachments: WhatsAppAttachmentItem[]): Promise<void> {
-  for (let i = 0; i < attachments.length; i++) {
-    const item = attachments[i];
-    try {
-      const res = await fetch(item.url);
-      const blob = await res.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = item.filename || `artwork_${i + 1}.jpg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
-    } catch {
-      const a = document.createElement('a');
-      a.href = item.url;
-      a.download = item.filename || `artwork_${i + 1}.jpg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-  }
-}
-
-/**
- * Copies an image directly to the system clipboard so the user can press Ctrl+V / Cmd+V in WhatsApp Web
+ * Copies a single image directly to the system clipboard
  */
 export async function copyImageToClipboard(imageUrl: string): Promise<boolean> {
   if (typeof navigator === 'undefined' || !navigator.clipboard || !navigator.clipboard.write) {
@@ -194,45 +234,134 @@ export async function copyImageToClipboard(imageUrl: string): Promise<boolean> {
   }
 
   try {
-    const res = await fetch(imageUrl);
-    const blob = await res.blob();
-
-    // The Clipboard API generally requires image/png format
-    let pngBlob = blob;
-    if (blob.type !== 'image/png') {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      const loaded = new Promise<HTMLImageElement>((resolve, reject) => {
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-      });
-      img.src = URL.createObjectURL(blob);
-      const loadedImg = await loaded;
-      const canvas = document.createElement('canvas');
-      canvas.width = loadedImg.naturalWidth;
-      canvas.height = loadedImg.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.drawImage(loadedImg, 0, 0);
-        pngBlob = await new Promise<Blob>((resolve) =>
-          canvas.toBlob((b) => resolve(b || blob), 'image/png')
-        );
-      }
-    }
-
+    const pngBlob = await fetchImageAsPngBlob(imageUrl);
     await navigator.clipboard.write([
       new ClipboardItem({ 'image/png': pngBlob }),
     ]);
     return true;
   } catch (err) {
-    console.warn('Clipboard write failed:', err);
+    console.warn('Clipboard write single image warning:', err);
     return false;
   }
 }
 
 /**
+ * Copies multiple images directly to the system clipboard
+ */
+export async function copyMultipleImagesToClipboard(imageUrls: string[]): Promise<boolean> {
+  if (typeof navigator === 'undefined' || !navigator.clipboard || !navigator.clipboard.write) {
+    return false;
+  }
+
+  const validUrls = imageUrls.filter((url) => url && typeof url === 'string');
+  if (validUrls.length === 0) return false;
+
+  try {
+    const items: ClipboardItem[] = await Promise.all(
+      validUrls.map(async (url) => {
+        const pngBlob = await fetchImageAsPngBlob(url);
+        return new ClipboardItem({ 'image/png': pngBlob });
+      })
+    );
+
+    await navigator.clipboard.write(items);
+    return true;
+  } catch (err) {
+    console.warn('Clipboard write multiple images warning:', err);
+    if (validUrls.length > 0) {
+      return copyImageToClipboard(validUrls[0]);
+    }
+    return false;
+  }
+}
+
+/**
+ * Copies ALL artwork images for the order to system clipboard
+ */
+export async function copyAllImagesToClipboard(attachments: WhatsAppAttachmentItem[]): Promise<boolean> {
+  if (!attachments || attachments.length === 0) return false;
+  const urls = attachments.map((att) => att.url).filter(Boolean);
+  return copyMultipleImagesToClipboard(urls);
+}
+
+/**
+ * Packs all artwork images in the order into a ZIP archive (.zip) and triggers auto download
+ */
+export async function downloadOrderAsZip(
+  attachments: WhatsAppAttachmentItem[],
+  zipFilename: string = 'DotAndArt_Order_Artworks.zip'
+): Promise<boolean> {
+  if (!attachments || attachments.length === 0) return false;
+
+  try {
+    const zip = new JSZip();
+    const folder = zip.folder('DotAndArt_Order_Photos') || zip;
+
+    for (let idx = 0; idx < attachments.length; idx++) {
+      const att = attachments[idx];
+      if (!att.url) continue;
+
+      const rawFilename = att.filename || `artwork_${idx + 1}`;
+      const baseName = rawFilename.replace(/\.(jpg|jpeg|png|webp|gif|svg)$/i, '');
+      const finalJpgFilename = `${baseName}.jpg`;
+
+      try {
+        const jpgBlob = await fetchImageAsJpgBlob(att.url);
+        folder.file(finalJpgFilename, jpgBlob);
+      } catch (e) {
+        console.warn('Could not add image to zip:', att.url, e);
+      }
+    }
+
+    const content = await zip.generateAsync({ type: 'blob' });
+    const blobUrl = URL.createObjectURL(content);
+
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = zipFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 10000);
+
+    return true;
+  } catch (err) {
+    console.error('Failed to create ZIP file:', err);
+    return false;
+  }
+}
+
+/**
+ * Instantly dispatches order directly to +91 86521 62647 on WhatsApp with zero delay.
+ * Automatically copies primary image to clipboard, downloads a ZIP archive of all order JPG photos, and downloads individual JPG files.
+ */
+export function dispatchDirectWhatsAppOrder(
+  messageText: string,
+  attachments: WhatsAppAttachmentItem[] = []
+): void {
+  if (attachments && attachments.length > 0) {
+    // 1. Copy primary image to clipboard so Ctrl+V / Cmd+V in WhatsApp Web pastes main artwork photo
+    if (attachments[0].url) {
+      copyImageToClipboard(attachments[0].url).catch(() => {});
+    }
+
+    // 2. Automatically download ZIP archive containing ALL artwork photos in the order as .jpg files
+    downloadOrderAsZip(attachments, 'DotAndArt_Order_Artworks.zip').catch(() => {});
+
+    // 3. Automatically download individual .jpg files for easy dragging/preview
+    downloadAllAttachments(attachments).catch(() => {});
+  }
+
+  // 4. Open WhatsApp directly to +91 86521 62647
+  const url = createWhatsAppUrl(messageText, BUSINESS_WHATSAPP_NUMBER);
+  openExternalLink(url);
+}
+
+/**
  * Formats a single product enquiry message.
- * IMPORTANT: No image links are printed in the text; images go as media attachments!
  */
 export function formatSingleProductEnquiry(
   product: Product,
@@ -264,7 +393,6 @@ Displayed price: ₹${priceToDisplay.toLocaleString('en-IN')}`;
 
 /**
  * Formats multi-product enquiry list message.
- * IMPORTANT: No image links are printed in the text; images go as media attachments!
  */
 export function formatMultiProductEnquiry(
   items: CartItem[],
@@ -323,7 +451,6 @@ export function formatMultiProductEnquiry(
 
 /**
  * Formats dedicated custom mandala commission enquiry.
- * IMPORTANT: No image links are printed in the text; images go as media attachments!
  */
 export function formatCustomMandalaEnquiry(
   data: CustomMandalaInquiry,

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { X, Trash2, Plus, Minus, MessageCircle, AlertCircle, ShoppingBag, Check } from 'lucide-react';
+import { X, Trash2, Plus, Minus, MessageCircle, AlertCircle, ShoppingBag, Check, FileArchive } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { SafeProductImage } from './SafeProductImage';
 import {
-  createWhatsAppUrl,
+  dispatchDirectWhatsAppOrder,
   formatMultiProductEnquiry,
-  openExternalLink,
   collectAttachmentsForCart,
-  sendNativeWhatsAppShare,
   WhatsAppAttachmentItem,
 } from '../utils/whatsapp';
 import { WhatsAppAttachmentModal } from './WhatsAppAttachmentModal';
@@ -61,31 +59,24 @@ export const EnquiryDrawer: React.FC = () => {
 
     const attachments = collectAttachmentsForCart(items);
 
-    // Record order enquiry on server safely
-    try {
-      await fetch('/api/custom-enquiry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customer_name: customerName,
-          whatsapp_number: customerWhatsApp,
-          desired_size: items.map((i) => `${i.product.sku} (${i.size})`).join(', '),
-          preferred_color_scheme: 'Catalog selection',
-        }),
-      });
-    } catch {
-      // non-blocking
-    }
+    // Record order enquiry on server safely in background
+    fetch('/api/custom-enquiry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customer_name: customerName,
+        whatsapp_number: customerWhatsApp,
+        desired_size: items.map((i) => `${i.product.sku} (${i.size})`).join(', '),
+        preferred_color_scheme: 'Catalog selection',
+      }),
+    }).catch(() => {});
 
-    // Attempt native share with files (on mobile, directly attaches images in WhatsApp!)
-    const result = await sendNativeWhatsAppShare(formattedMessage, attachments);
-    if (result === 'shared') {
-      return;
-    }
+    // Dispatch order directly to +91 86521 62647, copy main image to clipboard and download all artwork photos
+    dispatchDirectWhatsAppOrder(formattedMessage, attachments);
 
-    // Otherwise, open attachment modal for desktop or fallback
-    setPreparedEnquiry({ msg: formattedMessage, attachments });
-    setAttachmentModalOpen(true);
+    // Clear cart and close drawer
+    clearCart();
+    closeDrawer();
   };
 
   return (
@@ -320,6 +311,17 @@ export const EnquiryDrawer: React.FC = () => {
                       placeholder="Delivery deadline or gift note..."
                       className="w-full px-3 py-2 text-xs rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary resize-none"
                     />
+                  </div>
+
+                  {/* Order Attachment Suggestion Notice */}
+                  <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1.5 shadow-xs">
+                    <div className="flex items-center gap-2 font-bold text-amber-700 dark:text-amber-400 text-xs">
+                      <FileArchive className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                      <span>Order Suggestion</span>
+                    </div>
+                    <p className="text-[11.5px] text-theme-muted leading-relaxed font-medium">
+                      Please attach the downloaded images zip file along with the order message before submitting the order.
+                    </p>
                   </div>
 
                   {/* Direct Submit Button - Simple and clear */}

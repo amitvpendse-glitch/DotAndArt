@@ -1,27 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ArrowRight, MessageCircle, Heart, Star, ShieldCheck, CheckCircle2, ChevronRight, Eye, Palette, Droplets, Flame, ShoppingBag, Plus, Minus } from 'lucide-react';
+import { Sparkles, ArrowRight, MessageCircle, Heart, Star, ShieldCheck, CheckCircle2, ChevronRight, Eye, ShoppingBag, Plus, Minus } from 'lucide-react';
 import { Category, Product, Testimonial, FAQ, WebsitePage } from '../types';
-import { SafeProductImage } from '../components/SafeProductImage';
-import { HugeShowcaseBanner } from '../components/HugeShowcaseBanner';
-import { useCart } from '../context/CartContext';
-import { useTheme, ThemeMode } from '../context/ThemeContext';
-import { createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
+import { SafeProductImage } from '../components/SafeProductImage';
+import { ImageZoomModal } from '../components/ImageZoomModal';
+import { HugeShowcaseBanner } from '../components/HugeShowcaseBanner';
+import { createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
+import { useCart } from '../context/CartContext';
 
 interface HomePageProps {
-  onNavigate: (path: string) => void;
+  onNavigate: (page: string) => void;
   onSelectProduct: (sku: string) => void;
+  addToCart?: (product: Product) => void;
+  decrementItem?: (product: Product) => void;
+  getItemQuantity?: (productId: string) => number;
+  cartItemsCount?: number;
 }
 
-export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct }) => {
-  const { addToCart, getItemQuantity, decrementItem } = useCart();
-  const { theme, setTheme, openThemeModal } = useTheme();
+export function HomePage({
+  onNavigate,
+  onSelectProduct,
+  addToCart: propsAddToCart,
+  decrementItem: propsDecrementItem,
+  getItemQuantity: propsGetItemQuantity,
+  cartItemsCount = 0,
+}: HomePageProps) {
+  const cart = useCart();
+  const addToCart = propsAddToCart || cart.addToCart;
+  const decrementItem = propsDecrementItem || ((p: Product) => cart.decrementItem(p));
+  const getItemQuantity = propsGetItemQuantity || cart.getItemQuantity;
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [pageData, setPageData] = useState<WebsitePage | null>(null);
   const [loading, setLoading] = useState(true);
+  const [zoomedProduct, setZoomedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -33,7 +48,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
           safeFetchJson<FAQ[]>('/api/faqs', undefined, []),
           safeFetchJson<WebsitePage | null>('/api/pages/home', undefined, null),
         ]);
-
         setCategories(Array.isArray(catRes) ? catRes : []);
         setFeaturedProducts(prodRes?.products ? prodRes.products : []);
         setTestimonials(Array.isArray(testRes) ? testRes : []);
@@ -48,90 +62,31 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
     loadData();
   }, []);
 
-  // Extract editable hero section or sensible fallbacks
-  const heroSection = pageData?.sections?.find((s) => s.section_type === 'hero')?.content_json || {
-    headline: 'Sacred Dots. Reflective Mirrors. Timeless Soul.',
-    subtitle: 'Immerse your space in the meditative tranquility of authentic handmade dot mandalas and centuries-old Gujarati Lippan mud-mirror art.',
-    cta_primary_text: 'Explore Catalog',
-    cta_secondary_text: 'Order Bespoke Mandala',
-    badge: '100% Handcrafted in India • Worldwide Shipping',
-  };
-
-  const introSection = pageData?.sections?.find((s) => s.section_type === 'craft_intro')?.content_json;
-  const bulkSection = pageData?.sections?.find((s) => s.section_type === 'bulk_gifting')?.content_json;
-
   const handleHeroWhatsApp = () => {
-    const url = createWhatsAppUrl('Hello Dot And Art! I would like to enquire about bespoke handmade mandala and Lippan commissions.');
+    const url = createWhatsAppUrl('Hello Dot And Art! I would like to enquire about your mandalas & Lippan art.');
     openExternalLink(url);
   };
 
+  const sectionsList = pageData?.sections || [];
+  const introSection = (pageData as any)?.content_json?.sections?.intro || sectionsList.find((s: any) => s.section_type === 'intro');
+  const bulkSection = (pageData as any)?.content_json?.sections?.bulk || sectionsList.find((s: any) => s.section_type === 'bulk');
+
   return (
-    <div className="space-y-16 sm:space-y-24 pb-16 bg-theme-page text-theme-primary transition-colors duration-500">
-      {/* 1. HUGE SHOWCASE BANNER (DA-MD-24-0002.jpg) WITH SMART DESCRIPTION SHOWCASE */}
-      <HugeShowcaseBanner onSelectProduct={onSelectProduct} onNavigate={onNavigate} />
+    <div className="min-h-screen">
+      <HugeShowcaseBanner
+        onNavigate={onNavigate}
+        onSelectProduct={onSelectProduct}
+      />
 
-      {/* 2. HERO INTRO & BRAND STORY */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[var(--hero-bg-from)] via-[var(--bg-page)] to-[var(--bg-page)] pt-10 pb-16 sm:pt-16 sm:pb-20 border-b border-theme-glass">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--accent-primary)]/10 border border-[var(--accent-primary)]/20 text-theme-accent text-xs font-semibold uppercase tracking-wider backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-theme-accent" />
-            <span>{heroSection.badge || '100% Handcrafted in India • Worldwide Shipping'}</span>
-          </div>
-
-          <h2 className="font-serif text-3xl sm:text-5xl lg:text-5xl font-medium tracking-tight text-theme-primary leading-[1.15]">
-            {heroSection.headline}
-          </h2>
-
-          <p className="text-base sm:text-lg text-theme-muted max-w-2xl mx-auto leading-relaxed font-light">
-            {heroSection.subtitle}
-          </p>
-
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={() => onNavigate('/shop')}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-theme-accent hover:opacity-90 text-white font-medium text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2.5 cursor-pointer"
-            >
-              <span>{heroSection.cta_primary_text || 'Explore Catalog'}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={() => onNavigate('/custom-order')}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full glass-button text-theme-primary font-medium text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <span>{heroSection.cta_secondary_text || 'Order Bespoke Mandala'}</span>
-            </button>
-          </div>
-
-
-
-          {/* Trust Indicators */}
-          <div className="pt-6 grid grid-cols-3 gap-6 border-t border-theme-glass max-w-lg mx-auto text-center">
-            <div>
-              <span className="font-serif text-2xl sm:text-3xl font-bold text-theme-accent">Authentic</span>
-              <p className="text-xs text-theme-muted mt-0.5">Catalog Artworks</p>
-            </div>
-            <div>
-              <span className="font-serif text-2xl sm:text-3xl font-bold text-theme-accent">50/50</span>
-              <p className="text-xs text-theme-muted mt-0.5">Advance Policy</p>
-            </div>
-            <div>
-              <span className="font-serif text-2xl sm:text-3xl font-bold text-theme-accent">Worldwide</span>
-              <p className="text-xs text-theme-muted mt-0.5">Air Shipping</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. CURATED SHOWCASE (FEATURED ARTWORKS - Immediately after Explore catalog) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+      {/* Featured Products Section Header */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-4 border-b border-theme-glass gap-4">
           <div>
             <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
-              Curated Showcase
+              Handcrafted Collection
             </span>
-            <h2 className="font-serif text-3xl font-medium text-theme-primary mt-1">
-              Featured Artworks
+            <h2 className="font-serif text-2xl sm:text-3xl font-medium text-theme-primary mt-1">
+              Featured Sacred Artworks
             </h2>
           </div>
           <button
@@ -171,8 +126,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
                     fit="contain"
                     className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                   />
-
-
 
                   <div className="absolute top-3 left-3 z-30 px-2 py-0.5 rounded bg-theme-card/90 backdrop-blur-xs text-[10px] font-mono font-semibold text-theme-primary border border-theme-glass">
                     {product.sku}
@@ -242,9 +195,12 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
 
                         <div className="flex items-center gap-1.5">
                           <button
-                            onClick={() => onSelectProduct(product.sku)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setZoomedProduct(product);
+                            }}
                             className="p-2 rounded-full border border-theme-glass text-theme-primary hover:bg-theme-accent hover:text-white transition-colors cursor-pointer"
-                            title="View details"
+                            title="Zoom and inspect artwork image"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
@@ -374,7 +330,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
       </section>
 
       {/* 5. BESPOKE MANDALA COMMISSIONS CALLOUT */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="rounded-3xl bg-theme-dark text-white p-8 sm:p-14 overflow-hidden relative shadow-xl border border-theme-glass">
           <div className="relative z-10 max-w-2xl space-y-5">
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-gold)]">
@@ -408,7 +364,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
       </section>
 
       {/* 6. BULK & CORPORATE GIFTING */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <div className="rounded-2xl glass-card p-8 sm:p-12 craft-shadow border border-theme-glass">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8 space-y-4">
@@ -455,7 +411,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
 
       {/* 7. TESTIMONIALS */}
       {testimonials.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
             <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
               Collector Words
@@ -495,7 +451,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
 
       {/* 8. FAQ PREVIEW */}
       {faqs.length > 0 && (
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-10 space-y-2">
             <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
               Common Queries
@@ -534,7 +490,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
       )}
 
       {/* 9. WHATSAPP BOTTOM CALLOUT */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="p-8 sm:p-12 rounded-3xl glass-panel border-2 border-theme-glass text-center space-y-4">
           <div className="w-12 h-12 mx-auto rounded-full bg-[#25D366]/20 text-[#128C7E] flex items-center justify-center">
             <MessageCircle className="w-6 h-6 fill-[#128C7E] text-white" />
@@ -556,6 +512,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectProduct 
           </div>
         </div>
       </section>
+
+      {/* Image Zoom Modal for Catalog Items */}
+      <ImageZoomModal
+        product={zoomedProduct}
+        isOpen={!!zoomedProduct}
+        onClose={() => setZoomedProduct(null)}
+        onSelectProduct={onSelectProduct}
+      />
     </div>
   );
-};
+}

@@ -13,17 +13,19 @@ import {
   Info,
   Plus,
   Minus,
+  FileArchive,
+  Eye,
+  ZoomIn,
 } from 'lucide-react';
 import { Product, ProductVariant } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
 import { SafeProductImage } from '../components/SafeProductImage';
+import { ImageZoomModal } from '../components/ImageZoomModal';
 import { useCart } from '../context/CartContext';
 import {
-  createWhatsAppUrl,
+  dispatchDirectWhatsAppOrder,
   formatSingleProductEnquiry,
-  openExternalLink,
   collectAttachmentsForProduct,
-  sendNativeWhatsAppShare,
   WhatsAppAttachmentItem,
 } from '../utils/whatsapp';
 import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
@@ -50,6 +52,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(undefined);
   const [customizationNotes, setCustomizationNotes] = useState('');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [attachmentModalOpen, setAttachmentModalOpen] = useState(false);
   const [preparedEnquiry, setPreparedEnquiry] = useState<{
     msg: string;
@@ -118,18 +121,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
 
 
-  const handleDirectWhatsApp = async () => {
+  const handleDirectWhatsApp = () => {
     const msg = formatSingleProductEnquiry(product, currentSize, currentPrice, customizationNotes);
     const attachments = collectAttachmentsForProduct(product);
-
-    // Try native share first (on mobile devices this attaches images directly in WhatsApp)
-    const result = await sendNativeWhatsAppShare(msg, attachments);
-    if (result === 'shared') {
-      return;
-    }
-
-    setPreparedEnquiry({ msg, attachments });
-    setAttachmentModalOpen(true);
+    dispatchDirectWhatsAppOrder(msg, attachments);
   };
 
   const handleAddAndEnquire = () => {
@@ -156,8 +151,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         {/* Left: Gallery View */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="relative aspect-square w-full rounded-3xl overflow-hidden glass-card p-2 border border-theme-glass shadow-lg">
-            <div className="relative w-full h-full rounded-2xl overflow-hidden bg-theme-page flex items-center justify-center p-3">
+          <div className="relative aspect-square w-full rounded-3xl overflow-hidden glass-card p-2 border border-theme-glass shadow-lg group">
+            <div
+              onClick={() => setIsZoomOpen(true)}
+              className="relative w-full h-full rounded-2xl overflow-hidden bg-theme-page flex items-center justify-center p-3 cursor-zoom-in"
+            >
               <SafeProductImage
                 src={currentActiveImage?.storage_path}
                 alt={currentActiveImage?.alt_text || product.name}
@@ -166,13 +164,26 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 category_slug={product.category_slug}
                 size="lg"
                 fit="contain"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-102"
               />
 
               {/* SKU Pill */}
               <div className="absolute top-4 left-4 px-3 py-1 rounded-md bg-theme-card/95 backdrop-blur-xs text-xs font-mono font-semibold text-theme-primary border border-theme-glass">
                 Code: {product.sku}
               </div>
+
+              {/* High Definition Zoom Button Overlay */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsZoomOpen(true);
+                }}
+                className="absolute top-4 right-4 z-30 px-3 py-1.5 rounded-full bg-slate-950/80 hover:bg-slate-900 text-amber-400 border border-amber-500/30 backdrop-blur-md text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-lg hover:scale-105"
+                title="Click to zoom image"
+              >
+                <Eye className="w-4 h-4" />
+                <span>Zoom Image</span>
+              </button>
             </div>
           </div>
 
@@ -335,8 +346,19 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             />
           </div>
 
+          {/* Order Attachment Suggestion Notice */}
+          <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1 shadow-xs">
+            <div className="flex items-center gap-2 font-bold text-amber-700 dark:text-amber-400 text-xs">
+              <FileArchive className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
+              <span>Order Suggestion</span>
+            </div>
+            <p className="text-[11.5px] text-theme-muted leading-relaxed font-medium">
+              Please attach the downloaded images zip file along with the order message before submitting the order.
+            </p>
+          </div>
+
           {/* Action CTAs */}
-          <div className="space-y-3 pt-2">
+          <div className="space-y-3 pt-1">
             <button
               onClick={handleDirectWhatsApp}
               className="w-full py-3.5 px-6 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2.5 cursor-pointer"
@@ -453,6 +475,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         messageText={preparedEnquiry.msg}
         attachments={preparedEnquiry.attachments}
         title={`Enquiry for ${product.name}`}
+      />
+      <ImageZoomModal
+        product={product}
+        isOpen={isZoomOpen}
+        onClose={() => setIsZoomOpen(false)}
+        initialImageIndex={activeImageIndex}
       />
     </div>
   );

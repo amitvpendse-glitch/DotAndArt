@@ -64,20 +64,20 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 py-12">
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-3.5 cursor-pointer group" onClick={() => onNavigate('/')}>
-              <div className="w-14 h-14 shrink-0 flex items-center justify-center group-hover:scale-105 transition-transform filter drop-shadow-md">
+            <div className="flex items-center gap-4 cursor-pointer group" onClick={() => onNavigate('/')}>
+              <div className="w-28 h-28 shrink-0 flex items-center justify-center group-hover:scale-105 transition-transform filter drop-shadow-lg">
                 <img
                   src="/static/assets/images/DotAndArt_Logo.jpg"
                   alt="Dot And Art Logo"
-                  className="w-full h-full object-cover rounded-full [clip-path:circle(49%)] select-none"
+                  className="w-full h-full object-cover rounded-full [clip-path:circle(49%)] select-none ring-2 ring-[var(--accent-primary)]/20 shadow-md"
                 />
               </div>
               <div className="flex flex-col">
-                <span className="font-serif text-2xl font-semibold tracking-wide text-theme-primary group-hover:text-theme-accent transition-colors">
+                <span className="font-serif text-3xl font-semibold tracking-wide text-theme-primary group-hover:text-theme-accent transition-colors">
                   Dot And Art
                 </span>
-                <span className="text-[10px] uppercase tracking-widest text-theme-accent font-semibold">
-                  
+                <span className="text-xs uppercase tracking-widest text-theme-accent font-semibold mt-0.5">
+                  Handcrafted Studio
                 </span>
               </div>
             </div>

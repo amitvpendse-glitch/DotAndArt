@@ -121,6 +121,31 @@ export interface FAQ {
   updated_at: string;
 }
 
+export interface ShowcaseBannerHotspot {
+  id: string;
+  x: number;
+  y: number;
+  title: string;
+  tag: string;
+  description: string;
+}
+
+export interface ShowcaseBannerConfig {
+  title?: string;
+  eyebrow?: string;
+  description?: string;
+  short_description?: string;
+  image_url?: string;
+  product_sku?: string;
+  price?: number;
+  size?: string;
+  material?: string;
+  creation_time?: string;
+  shipping_info?: string;
+  badge_text?: string;
+  hotspots?: ShowcaseBannerHotspot[];
+}
+
 export interface WebsiteSettings {
   business_name: string;
   tagline: string;
@@ -135,6 +160,7 @@ export interface WebsiteSettings {
   shipping_policy_summary: string;
   featured_3d_sku?: string;
   featured_3d_image?: string;
+  showcase_banner?: ShowcaseBannerConfig;
   announcement_banner: {
     enabled: boolean;
     text: string;

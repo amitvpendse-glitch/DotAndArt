@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   MessageCircle,
   Download,
   Copy,
   Check,
   X,
-  Share2,
   Image as ImageIcon,
   ExternalLink,
   Sparkles,
@@ -15,8 +14,10 @@ import {
   createWhatsAppUrl,
   openExternalLink,
   downloadAllAttachments,
+  downloadOrderAsZip,
   copyImageToClipboard,
-  sendNativeWhatsAppShare,
+  DISPLAY_WHATSAPP_NUMBER,
+  BUSINESS_WHATSAPP_NUMBER,
 } from '../utils/whatsapp';
 
 interface WhatsAppAttachmentModalProps {
@@ -32,33 +33,31 @@ export const WhatsAppAttachmentModal: React.FC<WhatsAppAttachmentModalProps> = (
   onClose,
   messageText,
   attachments,
-  title = 'Enquiry & Attached Artwork',
+  title = 'Order Enquiry Prepared',
 }) => {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [shareStatus, setShareStatus] = useState<string>('');
+  const [statusNote, setStatusNote] = useState<string>('');
+
+  useEffect(() => {
+    if (isOpen && attachments && attachments.length > 0 && attachments[0].url) {
+      // Auto-copy primary artwork image to clipboard instantly on modal mount
+      copyImageToClipboard(attachments[0].url)
+        .then((success) => {
+          if (success) {
+            setCopiedIndex(0);
+            setStatusNote('Artwork image copied to clipboard! Just press Ctrl + V in WhatsApp to attach photo.');
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const handleOpenWhatsAppChat = () => {
-    const url = createWhatsAppUrl(messageText);
+    const url = createWhatsAppUrl(messageText, BUSINESS_WHATSAPP_NUMBER);
     openExternalLink(url);
-  };
-
-  const handleNativeShare = async () => {
-    setShareStatus('Preparing attachments...');
-    const result = await sendNativeWhatsAppShare(messageText, attachments);
-    if (result === 'shared') {
-      setShareStatus('Opened in WhatsApp with attachments!');
-      setTimeout(() => {
-        onClose();
-      }, 1500);
-    } else if (result === 'cancelled') {
-      setShareStatus('');
-    } else {
-      setShareStatus('Opening WhatsApp Web...');
-      handleOpenWhatsAppChat();
-    }
   };
 
   const handleDownloadAll = async () => {
@@ -67,21 +66,23 @@ export const WhatsAppAttachmentModal: React.FC<WhatsAppAttachmentModalProps> = (
     setTimeout(() => setIsDownloading(false), 1200);
   };
 
+  const handleDownloadZip = async () => {
+    setIsDownloading(true);
+    await downloadOrderAsZip(attachments, 'DotAndArt_Order_Artworks.zip');
+    setTimeout(() => setIsDownloading(false), 1200);
+  };
+
   const handleCopyImage = async (url: string, index: number) => {
     const success = await copyImageToClipboard(url);
     if (success) {
       setCopiedIndex(index);
-      setTimeout(() => setCopiedIndex(null), 2500);
+      setStatusNote(`Photo #${index + 1} copied! Press Ctrl+V in WhatsApp chat.`);
+      setTimeout(() => setCopiedIndex(null), 3000);
     } else {
-      // Fallback: download that image
       await downloadAllAttachments([attachments[index]]);
+      setStatusNote(`Downloaded photo #${index + 1}.`);
     }
   };
-
-  const hasNativeShare =
-    typeof navigator !== 'undefined' &&
-    typeof navigator.share === 'function' &&
-    typeof navigator.canShare === 'function';
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto select-none">
@@ -109,14 +110,25 @@ export const WhatsAppAttachmentModal: React.FC<WhatsAppAttachmentModalProps> = (
                 <MessageCircle className="w-4 h-4 fill-[#128C7E] text-white" />
               </div>
               <span className="text-[11px] font-bold uppercase tracking-wider text-theme-accent">
-                WhatsApp Attachment Dispatch
+                Direct WhatsApp Order
               </span>
             </div>
             <h3 className="font-serif text-2xl font-bold text-theme-primary">
               {title}
             </h3>
             <p className="text-xs text-theme-muted leading-relaxed">
-              Images will go as direct attachments to the artist (+91 86521 62647) instead of links.
+              Order messaging directly connected to artist Shital Thosar ({DISPLAY_WHATSAPP_NUMBER}).
+            </p>
+          </div>
+
+          {/* How to Send Instructions */}
+          <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-theme-primary space-y-2">
+            <div className="font-bold flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-sm">
+              <Sparkles className="w-4 h-4" />
+              <span>Easy 1-Step Photo Attachment:</span>
+            </div>
+            <p className="text-theme-primary text-xs leading-relaxed">
+              The primary artwork image is <strong>copied to your clipboard</strong> and the artwork images ZIP file is automatically downloaded. Please attach the downloaded images zip file along with the order message before submitting or sending the order on WhatsApp!
             </p>
           </div>
 
@@ -126,16 +138,26 @@ export const WhatsAppAttachmentModal: React.FC<WhatsAppAttachmentModalProps> = (
               <div className="flex items-center justify-between text-xs">
                 <span className="font-semibold text-theme-primary flex items-center gap-1.5">
                   <ImageIcon className="w-3.5 h-3.5 text-theme-accent" />
-                  Attached Artwork ({attachments.length} {attachments.length === 1 ? 'image' : 'images'}):
+                  Order Artworks ({attachments.length} {attachments.length === 1 ? 'photo' : 'photos'}):
                 </span>
-                <button
-                  onClick={handleDownloadAll}
-                  disabled={isDownloading}
-                  className="text-[11px] text-theme-accent hover:underline flex items-center gap-1 font-medium cursor-pointer"
-                >
-                  <Download className="w-3 h-3" />
-                  <span>{isDownloading ? 'Downloading...' : 'Download all files'}</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleDownloadZip}
+                    disabled={isDownloading}
+                    className="text-[11px] bg-theme-accent/15 text-theme-accent hover:bg-theme-accent/25 px-2 py-0.5 rounded-md flex items-center gap-1 font-medium cursor-pointer border border-theme-glass transition-colors"
+                  >
+                    <Download className="w-3 h-3" />
+                    <span>Download ZIP (.zip)</span>
+                  </button>
+                  <button
+                    onClick={handleDownloadAll}
+                    disabled={isDownloading}
+                    className="text-[11px] text-theme-accent hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                  >
+                    <Download className="w-3 h-3" />
+                    <span>{isDownloading ? 'Downloading...' : 'Download JPGs'}</span>
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-52 overflow-y-auto p-1">
@@ -156,73 +178,44 @@ export const WhatsAppAttachmentModal: React.FC<WhatsAppAttachmentModalProps> = (
                       #{idx + 1}
                     </div>
 
-                    {/* Hover copy overlay */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-2 text-center">
-                      <button
-                        onClick={() => handleCopyImage(item.url, idx)}
-                        className="p-1.5 rounded-full bg-white text-black hover:bg-slate-100 transition-transform active:scale-95 shadow cursor-pointer"
-                        title="Copy image to paste into WhatsApp Web"
-                      >
-                        {copiedIndex === idx ? (
-                          <Check className="w-4 h-4 text-emerald-600" />
-                        ) : (
-                          <Copy className="w-4 h-4" />
-                        )}
-                      </button>
-                      <span className="text-[10px] text-white font-medium">
-                        {copiedIndex === idx ? 'Copied to clipboard!' : 'Copy image (Ctrl+V)'}
-                      </span>
-                    </div>
+                    {/* Copy button */}
+                    <button
+                      onClick={() => handleCopyImage(item.url, idx)}
+                      className="absolute bottom-2 right-2 px-2 py-1 rounded-lg bg-black/75 hover:bg-black text-white text-[10px] font-bold flex items-center gap-1 backdrop-blur-xs transition-transform active:scale-95 shadow cursor-pointer"
+                      title="Copy image to paste into WhatsApp (Ctrl+V)"
+                    >
+                      {copiedIndex === idx ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy (Ctrl+V)</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Quick Step Guide */}
-          <div className="p-3.5 rounded-2xl bg-theme-accent/10 border border-theme-accent/20 text-xs text-theme-primary space-y-1.5">
-            <div className="font-semibold flex items-center gap-1.5 text-theme-accent">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>How your images are attached:</span>
-            </div>
-            <ul className="text-[11px] text-theme-muted space-y-1 list-disc list-inside">
-              <li>
-                <strong>Mobile devices:</strong> Tap the green button to attach images directly in WhatsApp.
-              </li>
-              <li>
-                <strong>Desktop / WhatsApp Web:</strong> Download images or click Copy, then press <code className="bg-white/60 dark:bg-black/40 px-1 py-0.5 rounded text-[10px] font-mono">Ctrl+V</code> in the chat to paste the photos as attachments!
-              </li>
-            </ul>
-          </div>
-
-          {shareStatus && (
-            <p className="text-xs text-center font-medium text-emerald-600 animate-pulse">
-              {shareStatus}
+          {statusNote && (
+            <p className="text-xs text-center font-semibold text-emerald-600 dark:text-emerald-400">
+              {statusNote}
             </p>
           )}
 
-          {/* Action CTAs */}
+          {/* Primary Action Buttons */}
           <div className="space-y-2.5 pt-2">
-            {hasNativeShare ? (
-              <button
-                onClick={handleNativeShare}
-                className="w-full py-3.5 px-6 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Share2 className="w-4 h-4 fill-white" />
-                <span>Send with Attachments to WhatsApp</span>
-              </button>
-            ) : null}
-
             <button
               onClick={handleOpenWhatsAppChat}
-              className={`w-full py-3.5 px-6 rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer ${
-                hasNativeShare
-                  ? 'bg-theme-card border border-theme-glass hover:bg-theme-page text-theme-primary'
-                  : 'bg-[#25D366] hover:bg-[#1EBE5D] text-white'
-              }`}
+              className="w-full py-3.5 px-6 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
             >
-              <MessageCircle className="w-4 h-4 fill-current" />
-              <span>Open WhatsApp Chat (+91 86521 62647)</span>
+              <MessageCircle className="w-4 h-4 fill-white" />
+              <span>Open WhatsApp Chat ({DISPLAY_WHATSAPP_NUMBER})</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
 
@@ -233,7 +226,11 @@ export const WhatsAppAttachmentModal: React.FC<WhatsAppAttachmentModalProps> = (
                 className="w-full py-2.5 px-4 rounded-full glass-button text-theme-primary text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer hover:border-theme-accent transition-colors"
               >
                 <Download className="w-3.5 h-3.5 text-theme-accent" />
-                <span>{isDownloading ? 'Downloading artwork files...' : `Download ${attachments.length} Artwork Attachment${attachments.length > 1 ? 's' : ''}`}</span>
+                <span>
+                  {isDownloading
+                    ? 'Downloading artwork files...'
+                    : `Download ${attachments.length} Artwork File${attachments.length > 1 ? 's' : ''}`}
+                </span>
               </button>
             )}
           </div>

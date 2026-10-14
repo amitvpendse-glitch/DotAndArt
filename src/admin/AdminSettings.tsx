@@ -148,53 +148,70 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
       )}
 
       <form onSubmit={handleSave} className="glass-card p-6 sm:p-8 rounded-3xl border border-theme-glass craft-shadow space-y-8 text-xs text-theme-primary">
-        {/* 1. Featured 3D Masterpiece Banner Artwork Configuration */}
-        <div className="space-y-4 p-5 rounded-2xl bg-theme-page border border-theme-glass">
+        {/* 1. Homepage Showcase Banner Artwork & Details Configuration */}
+        <div className="space-y-6 p-5 sm:p-6 rounded-2xl bg-theme-page border border-theme-glass">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-theme-accent shrink-0" />
             <h3 className="font-serif text-base font-bold text-theme-primary uppercase tracking-wider">
-              1. Featured 3D Masterpiece Banner Artwork
+              1. Homepage Hero Showcase Banner Artwork & Details
             </h3>
           </div>
           <p className="text-xs text-theme-muted">
-            Configure which artwork piece or custom image is rendered inside the interactive 3D Showcase Banner on the Home Page.
+            Customize the primary artwork banner image, headline, eyebrow badge, specifications, and pricing displayed at the very top of your store home page.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start pt-2">
             {/* Image Preview Box */}
             <div className="md:col-span-4 space-y-2 text-center">
               <span className="block text-[11px] font-bold uppercase tracking-wider text-theme-accent">
-                Current 3D Banner Preview
+                Active Hero Banner Image
               </span>
-              <div className="relative w-40 h-40 mx-auto rounded-full p-1 bg-gradient-to-tr from-theme-accent/60 to-amber-200/40 shadow-md overflow-hidden">
+              <div className="relative w-48 h-48 mx-auto rounded-2xl p-1 bg-gradient-to-tr from-amber-500/40 to-theme-accent/60 shadow-lg overflow-hidden border border-theme-glass">
                 <img
-                  src={currentBannerImage}
-                  alt="3D Banner Artwork"
-                  className="w-full h-full object-cover rounded-full"
+                  src={
+                    settings.showcase_banner?.image_url ||
+                    settings.featured_3d_image ||
+                    '/static/assets/images/DA-MD-24-0002.jpg'
+                  }
+                  alt="Showcase Banner Artwork"
+                  className="w-full h-full object-cover rounded-xl"
                   onError={(e) => { e.currentTarget.src = '/logo.png'; }}
                 />
               </div>
               <p className="text-[10px] text-theme-muted font-mono">
-                Active SKU: {settings.featured_3d_sku || 'DA-MD-24-0001'}
+                Linked SKU: {settings.showcase_banner?.product_sku || 'DA-MD-24-0002'}
               </p>
             </div>
 
-            {/* Selector & Upload Form */}
+            {/* Banner Image & SKU Link Controls */}
             <div className="md:col-span-8 space-y-4">
               <div>
                 <label className="block font-semibold text-theme-primary mb-1">
-                  Select Featured Artwork Product from Catalog:
+                  Connect Catalog Product SKU:
                 </label>
                 <select
-                  value={settings.featured_3d_sku || 'DA-MD-24-0001'}
+                  value={settings.showcase_banner?.product_sku || 'DA-MD-24-0002'}
                   onChange={(e) => {
                     const newSku = e.target.value;
                     const prod = products.find((p) => p.sku === newSku);
                     const prodImg = prod?.images?.[0]?.storage_path || `/static/assets/images/${newSku}.jpg`;
                     setSettings({
                       ...settings,
-                      featured_3d_sku: newSku,
-                      featured_3d_image: prodImg,
+                      showcase_banner: {
+                        title: settings.showcase_banner?.title || prod?.name || 'Sacred Harmony',
+                        eyebrow: settings.showcase_banner?.eyebrow || 'Monumental 24-Inch Showcase',
+                        description: settings.showcase_banner?.description || prod?.description || '',
+                        short_description: settings.showcase_banner?.short_description || prod?.short_description || '',
+                        image_url: prodImg,
+                        product_sku: newSku,
+                        price: prod?.base_price || 5200,
+                        size: prod?.base_size || '24 inches',
+                        material: prod?.material || 'MDF Board, Acrylic Colors, Mirrors, Varnish',
+                        creation_time: prod?.creation_time || '8 Days',
+                        shipping_info: prod?.shipping_info || 'All over the world',
+                        badge_text: '100% Handcrafted Original',
+                        hotspots: settings.showcase_banner?.hotspots,
+                      },
                     });
                   }}
                   className="w-full px-3.5 py-2.5 rounded-xl bg-theme-card border border-theme-glass text-theme-primary font-semibold text-xs cursor-pointer"
@@ -209,14 +226,22 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
 
               <div>
                 <label className="block font-semibold text-theme-primary mb-1">
-                  Or Upload Custom 3D Banner Artwork Image File:
+                  Custom Banner Image File or URL:
                 </label>
                 <div className="flex items-center gap-3">
                   <input
                     type="text"
-                    value={settings.featured_3d_image || ''}
-                    placeholder="/uploads/my-3d-banner.jpg or https://..."
-                    onChange={(e) => setSettings({ ...settings, featured_3d_image: e.target.value })}
+                    value={settings.showcase_banner?.image_url || ''}
+                    placeholder="/uploads/hero-banner.jpg or https://..."
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        showcase_banner: {
+                          ...settings.showcase_banner,
+                          image_url: e.target.value,
+                        },
+                      })
+                    }
                     className="flex-1 px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass font-mono text-xs text-theme-primary"
                   />
 
@@ -241,6 +266,188 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
                   </label>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Banner Text Details Form */}
+          <div className="space-y-4 pt-4 border-t border-theme-glass">
+            <h4 className="font-bold text-xs uppercase tracking-wider text-theme-accent">
+              Hero Banner Headline & Content Details
+            </h4>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block font-semibold text-theme-primary mb-1">Banner Headline / Title</label>
+                <input
+                  type="text"
+                  value={settings.showcase_banner?.title || ''}
+                  placeholder="Sacred Harmony — 24-Inch Dot Mandala Wall Hanging"
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      showcase_banner: {
+                        ...settings.showcase_banner,
+                        title: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary font-serif font-bold text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-theme-primary mb-1">Eyebrow Badge Text</label>
+                <input
+                  type="text"
+                  value={settings.showcase_banner?.eyebrow || ''}
+                  placeholder="Monumental 24-Inch Showcase"
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      showcase_banner: {
+                        ...settings.showcase_banner,
+                        eyebrow: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary font-semibold"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block font-semibold text-theme-primary mb-1">Price (₹)</label>
+                <input
+                  type="number"
+                  value={settings.showcase_banner?.price || 5200}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      showcase_banner: {
+                        ...settings.showcase_banner,
+                        price: parseFloat(e.target.value) || 0,
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass font-bold text-theme-accent"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-theme-primary mb-1">Size Label</label>
+                <input
+                  type="text"
+                  value={settings.showcase_banner?.size || ''}
+                  placeholder="24 inches"
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      showcase_banner: {
+                        ...settings.showcase_banner,
+                        size: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-theme-primary mb-1">Creation Lead Time</label>
+                <input
+                  type="text"
+                  value={settings.showcase_banner?.creation_time || ''}
+                  placeholder="8 Days"
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      showcase_banner: {
+                        ...settings.showcase_banner,
+                        creation_time: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block font-semibold text-theme-primary mb-1">Materials Specification</label>
+                <input
+                  type="text"
+                  value={settings.showcase_banner?.material || ''}
+                  placeholder="MDF Board, Acrylic Colors, Mirrors, Varnish"
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      showcase_banner: {
+                        ...settings.showcase_banner,
+                        material: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-theme-primary mb-1">Shipping Note</label>
+                <input
+                  type="text"
+                  value={settings.showcase_banner?.shipping_info || ''}
+                  placeholder="All over the world (Bubble wrap and corrugated box)"
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      showcase_banner: {
+                        ...settings.showcase_banner,
+                        shipping_info: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block font-semibold text-theme-primary mb-1">Short Tagline</label>
+              <input
+                type="text"
+                value={settings.showcase_banner?.short_description || ''}
+                placeholder="Monumental 24-inch handcrafted sacred dot mandala with shimmering mirrors..."
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    showcase_banner: {
+                      ...settings.showcase_banner,
+                      short_description: e.target.value,
+                    },
+                  })
+                }
+                className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold text-theme-primary mb-1">Full Detailed Story / Description</label>
+              <textarea
+                rows={3}
+                value={settings.showcase_banner?.description || ''}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    showcase_banner: {
+                      ...settings.showcase_banner,
+                      description: e.target.value,
+                    },
+                  })
+                }
+                className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary leading-relaxed"
+              />
             </div>
           </div>
         </div>

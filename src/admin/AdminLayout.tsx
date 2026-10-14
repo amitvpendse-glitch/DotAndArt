@@ -54,13 +54,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     <div className="min-h-screen bg-theme-page text-theme-primary flex flex-col md:flex-row">
       {/* Mobile Header Bar */}
       <div className="md:hidden bg-theme-dark text-white p-4 flex items-center justify-between border-b border-theme-glass sticky top-0 z-30">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           <img
             src="/static/assets/images/DotAndArt_Logo.jpg"
             alt="Dot And Art"
-            className="w-8 h-8 object-contain rounded-full shrink-0"
+            className="w-16 h-16 object-cover rounded-full shrink-0 [clip-path:circle(49%)] ring-2 ring-theme-accent/30"
           />
-          <span className="font-serif text-lg font-semibold tracking-wide">Dot And Art CMS</span>
+          <span className="font-serif text-xl font-semibold tracking-wide">Dot And Art CMS</span>
         </div>
         <button
           onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
@@ -79,11 +79,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         <div className="space-y-6">
           {/* Brand */}
           <div className="flex items-center gap-3 px-2 py-1 select-none">
-            <div className="w-10 h-10 flex items-center justify-center shrink-0">
+            <div className="w-20 h-20 flex items-center justify-center shrink-0">
               <img
                 src="/static/assets/images/DotAndArt_Logo.jpg"
                 alt="Dot And Art"
-                className="w-full h-full object-contain rounded-full"
+                className="w-full h-full object-cover rounded-full [clip-path:circle(49%)] ring-2 ring-theme-accent/30"
               />
             </div>
             <div>

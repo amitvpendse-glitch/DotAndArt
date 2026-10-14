@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Filter, SlidersHorizontal, Eye, ShoppingBag, X, Sparkles, ChevronDown, Plus, Minus, Download } from 'lucide-react';
 import { Product, Category, WebsiteSettings } from '../types';
 import { SafeProductImage } from '../components/SafeProductImage';
+import { ImageZoomModal } from '../components/ImageZoomModal';
 import { useCart } from '../context/CartContext';
 import { safeFetchJson } from '../lib/safeFetch';
 import { generateProfessionalCatalogPDF } from '../utils/pdfCatalogGenerator';
@@ -19,6 +20,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   const [categories, setCategories] = useState<Category[]>([]);
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
+  const [zoomedProduct, setZoomedProduct] = useState<Product | null>(null);
 
   // PDF Generation State
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -393,6 +395,18 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
                     {product.sku}
                   </div>
 
+                  {/* Zoom Badge Button on Hover */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setZoomedProduct(product);
+                    }}
+                    className="absolute top-3 right-3 z-30 p-2 rounded-full bg-slate-950/75 hover:bg-slate-900 text-amber-400 backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-all cursor-pointer hover:scale-110 shadow-lg border border-amber-500/30"
+                    title="Zoom artwork image"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                  </button>
+
                   {product.customizable && (
                     <div className="absolute bottom-3 left-3 z-30 px-2 py-0.5 rounded bg-theme-dark/80 text-white text-[9px] font-medium backdrop-blur-xs">
                       Customizable
@@ -457,9 +471,12 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
 
                         <div className="flex items-center gap-1.5">
                           <button
-                            onClick={() => onSelectProduct(product.sku)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setZoomedProduct(product);
+                            }}
                             className="p-2 rounded-full border border-theme-glass text-theme-primary hover:bg-theme-accent hover:text-white transition-colors cursor-pointer"
-                            title="View artwork details"
+                            title="Zoom & inspect artwork image"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
@@ -510,6 +527,14 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           })}
         </div>
       )}
+
+      {/* Image Zoom Modal for Catalog Items */}
+      <ImageZoomModal
+        product={zoomedProduct}
+        isOpen={!!zoomedProduct}
+        onClose={() => setZoomedProduct(null)}
+        onSelectProduct={onSelectProduct}
+      />
     </div>
   );
 };

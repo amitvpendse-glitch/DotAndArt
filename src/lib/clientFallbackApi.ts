@@ -149,8 +149,18 @@ export async function handleClientFallbackApi<T = any>(
     return jsonRes(categories);
   }
 
-  // 4. GET /api/settings or /api/admin/settings
+  // 4. GET & PUT /api/settings or /api/admin/settings
   if ((pathname === '/api/settings' || pathname === '/api/admin/settings') && method === 'GET') {
+    return jsonRes(getStoredSettings());
+  }
+  if (pathname === '/api/admin/settings' && method === 'PUT') {
+    try {
+      const current = getStoredSettings();
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+      const updated = { ...current, ...body };
+      localStorage.setItem('app_custom_settings', JSON.stringify(updated));
+      return jsonRes(updated);
+    } catch {}
     return jsonRes(getStoredSettings());
   }
 

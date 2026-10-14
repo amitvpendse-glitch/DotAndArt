@@ -3,6 +3,7 @@ import { X, ZoomIn, Eye, Sparkles } from 'lucide-react';
 import { Product } from '../types';
 import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
 import { SafeProductImage } from '../components/SafeProductImage';
+import { ImageZoomModal } from '../components/ImageZoomModal';
 import { safeFetchJson } from '../lib/safeFetch';
 
 interface GalleryPageProps {
@@ -13,6 +14,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
   const [products, setProducts] = useState<Product[]>([]);
   const [filter, setFilter] = useState<'all' | 'mandala' | 'lippan'>('all');
   const [activeLightbox, setActiveLightbox] = useState<Product | null>(null);
+  const [zoomedProduct, setZoomedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     safeFetchJson<{ products: Product[] }>('/api/products', undefined, { products: [] })
@@ -135,7 +137,10 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
 
             <div className="grid grid-cols-1 md:grid-cols-2">
               {/* Image side */}
-              <div className="relative aspect-square bg-theme-page flex items-center justify-center">
+              <div
+                onClick={() => setZoomedProduct(activeLightbox)}
+                className="relative aspect-square bg-theme-page flex items-center justify-center cursor-zoom-in group"
+              >
                 <SafeProductImage
                   src={activeLightbox.images?.[0]?.storage_path}
                   alt={activeLightbox.name}
@@ -145,6 +150,17 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
                   size="lg"
                   className="w-full h-full"
                 />
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoomedProduct(activeLightbox);
+                  }}
+                  className="absolute bottom-4 right-4 z-20 px-3 py-1.5 rounded-full bg-slate-950/80 hover:bg-slate-900 text-amber-400 border border-amber-500/30 backdrop-blur-md text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-lg hover:scale-105"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                  <span>Zoom High-Res</span>
+                </button>
               </div>
 
               {/* Info side */}
@@ -215,6 +231,13 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
           </div>
         </div>
       )}
+      {/* Image Zoom Modal */}
+      <ImageZoomModal
+        product={zoomedProduct}
+        isOpen={!!zoomedProduct}
+        onClose={() => setZoomedProduct(null)}
+        onSelectProduct={onSelectProduct}
+      />
     </div>
   );
 };

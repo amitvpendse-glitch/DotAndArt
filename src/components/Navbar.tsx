@@ -61,33 +61,33 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
 
       {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-2 sm:py-3 min-h-[5rem] sm:min-h-[5.5rem]">
+        <div className="flex items-center justify-between py-2.5 sm:py-3 min-h-[6.5rem] sm:min-h-[7.5rem] md:min-h-[8.5rem]">
           {/* Logo & Brand Identity */}
           <div
             onClick={() => handleLinkClick('/')}
-            className="flex items-center gap-3 cursor-pointer group select-none py-1"
-            title="Dot And Art — Handcrafted "
+            className="flex items-center gap-3.5 sm:gap-4 cursor-pointer group select-none py-1"
+            title="Dot And Art — Handcrafted Artwork Studio"
           >
-            {/* Handcrafted Mandala Logo — As is, floating in air without white box */}
-            <div className="relative shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 filter drop-shadow-md">
+            {/* Handcrafted Mandala Logo — Increased 2x size for maximum clarity and presence */}
+            <div className="relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 filter drop-shadow-lg">
               <img
                 src="/static/assets/images/DotAndArt_Logo.jpg"
                 alt="Dot And Art Studio Logo"
-                className="w-full h-full object-cover rounded-full [clip-path:circle(49%)] select-none"
+                className="w-full h-full object-cover rounded-full [clip-path:circle(49%)] select-none ring-2 ring-[var(--accent-primary)]/20 shadow-md"
                 loading="eager"
               />
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <span className="font-serif text-xl sm:text-2xl md:text-2xl tracking-wide font-bold text-theme-primary group-hover:text-theme-accent transition-colors leading-tight">
+                <span className="font-serif text-2xl sm:text-3xl md:text-3xl lg:text-4xl tracking-wide font-bold text-theme-primary group-hover:text-theme-accent transition-colors leading-tight">
                   Dot And Art
                 </span>
-                <span className="hidden sm:inline-block text-[9px] tracking-widest uppercase font-semibold px-2 py-0.5 rounded-full bg-[var(--accent-primary)]/10 text-theme-accent border border-[var(--accent-primary)]/20">
+                <span className="hidden sm:inline-block text-[10px] sm:text-[11px] tracking-widest uppercase font-bold px-2.5 py-0.5 rounded-full bg-[var(--accent-primary)]/10 text-theme-accent border border-[var(--accent-primary)]/25">
                   Studio
                 </span>
               </div>
-              <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-theme-muted font-medium">
-                
+              <span className="text-[11px] sm:text-[12px] uppercase tracking-widest text-theme-muted font-medium mt-0.5">
+                Handcrafted Mandalas & Lippan
               </span>
             </div>
           </div>
@@ -185,18 +185,20 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
             {/* Mobile Drawer Brand Header */}
             <div
               onClick={() => handleLinkClick('/')}
-              className="flex items-center gap-3.5 pb-3 mb-1 border-b border-theme-glass cursor-pointer"
+              className="flex items-center gap-4 pb-4 mb-2 border-b border-theme-glass cursor-pointer"
             >
-              <div className="w-12 h-12 shrink-0 flex items-center justify-center filter drop-shadow-md">
+              <div className="w-24 h-24 shrink-0 flex items-center justify-center filter drop-shadow-md">
                 <img
                   src="/static/assets/images/DotAndArt_Logo.jpg"
                   alt="Dot And Art Logo"
-                  className="w-full h-full object-cover rounded-full [clip-path:circle(49%)] select-none"
+                  className="w-full h-full object-cover rounded-full [clip-path:circle(49%)] select-none ring-2 ring-[var(--accent-primary)]/20"
                 />
               </div>
               <div className="flex flex-col">
-                <span className="font-serif text-xl font-bold text-theme-primary">Dot And Art</span>
-                
+                <span className="font-serif text-2xl font-bold text-theme-primary">Dot And Art</span>
+                <span className="text-xs uppercase tracking-widest text-theme-accent font-semibold mt-0.5">
+                  Handcrafted Studio
+                </span>
               </div>
             </div>
 
