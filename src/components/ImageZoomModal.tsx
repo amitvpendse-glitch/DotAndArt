@@ -268,6 +268,8 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
               sku={product.sku}
               category_slug={product.category_slug}
               size="lg"
+              priority={true}
+              useThumbnail={false}
               fit="contain"
               className="max-w-full max-h-full object-contain pointer-events-none drop-shadow-2xl"
             />
