@@ -47,16 +47,20 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
     setErrorMsg('');
 
     try {
-      const res = await fetch('/api/admin/settings', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+      const data = await safeFetchJson<any>(
+        '/api/admin/settings',
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(settings),
         },
-        body: JSON.stringify(settings),
-      });
+        null
+      );
 
-      if (res.ok) {
+      if (data) {
         setSuccessMsg('Website settings and 3D Banner configuration updated successfully.');
       } else {
         setErrorMsg('Failed to update website settings.');

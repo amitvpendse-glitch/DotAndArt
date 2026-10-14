@@ -42,12 +42,12 @@
     --hero-bg-from: #DCEBFF;
     --hero-bg-to: #EBF3FE;
 
-    --high-demand-bg: #FFF7ED;
-    --high-demand-border: #FDBA74;
-    --high-demand-title: #9A3412;
-    --high-demand-text: #7C2D12;
-    --high-demand-pill-bg: #FFEDD5;
-    --high-demand-pill-text: #9A3412;
+    --high-demand-bg: #EFF6FF;
+    --high-demand-border: #60A5FA;
+    --high-demand-title: #1E3A8A;
+    --high-demand-text: #0F172A;
+    --high-demand-pill-bg: #DBEAFE;
+    --high-demand-pill-text: #1D4ED8;
   }
 
   [data-theme="blackgold"] {
@@ -65,12 +65,12 @@
     --hero-bg-from: #1E1A16;
     --hero-bg-to: #12100E;
 
-    --high-demand-bg: rgba(245, 158, 11, 0.18);
-    --high-demand-border: rgba(245, 158, 11, 0.50);
+    --high-demand-bg: rgba(245, 158, 11, 0.22);
+    --high-demand-border: rgba(245, 158, 11, 0.65);
     --high-demand-title: #FDE68A;
-    --high-demand-text: #FEF3C7;
-    --high-demand-pill-bg: rgba(245, 158, 11, 0.30);
-    --high-demand-pill-text: #FDE68A;
+    --high-demand-text: #FFFBEB;
+    --high-demand-pill-bg: rgba(245, 158, 11, 0.35);
+    --high-demand-pill-text: #FEF08A;
   }
 
   [data-theme="smaragdine"] {
@@ -88,12 +88,12 @@
     --hero-bg-from: #CCFBF1;
     --hero-bg-to: #F0FDF4;
 
-    --high-demand-bg: #FFF7ED;
-    --high-demand-border: #FDBA74;
-    --high-demand-title: #9A3412;
-    --high-demand-text: #7C2D12;
-    --high-demand-pill-bg: #FFEDD5;
-    --high-demand-pill-text: #9A3412;
+    --high-demand-bg: #ECFDF5;
+    --high-demand-border: #34D399;
+    --high-demand-title: #065F46;
+    --high-demand-text: #022C22;
+    --high-demand-pill-bg: #D1FAE5;
+    --high-demand-pill-text: #047857;
   }
 
   [data-theme="sage"] {
@@ -111,12 +111,12 @@
     --hero-bg-from: #EFECE4;
     --hero-bg-to: #FAF7F0;
 
-    --high-demand-bg: #FFF7ED;
-    --high-demand-border: #FDBA74;
-    --high-demand-title: #9A3412;
-    --high-demand-text: #7C2D12;
-    --high-demand-pill-bg: #FFEDD5;
-    --high-demand-pill-text: #9A3412;
+    --high-demand-bg: #F0FDF4;
+    --high-demand-border: #86EFAC;
+    --high-demand-title: #14532D;
+    --high-demand-text: #1C1917;
+    --high-demand-pill-bg: #DCFCE7;
+    --high-demand-pill-text: #15803D;
   }
 
   body {

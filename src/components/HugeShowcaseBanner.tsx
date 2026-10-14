@@ -333,16 +333,20 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
         },
       };
 
-      const res = await fetch('/api/admin/settings', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
+      const resData = await safeFetchJson<WebsiteSettings | null>(
+        '/api/admin/settings',
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
+          },
+          body: JSON.stringify(updatedSettings),
         },
-        body: JSON.stringify(updatedSettings),
-      });
+        null
+      );
 
-      if (res.ok) {
+      if (resData) {
         setSettings(updatedSettings);
         setBannerSaveSuccess('Hero Banner image & details updated successfully!');
         setTimeout(() => {

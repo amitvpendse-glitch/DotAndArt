@@ -21,11 +21,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
 
   const navLinks = [
     { label: 'Home', path: '/' },
-    { label: 'Catalog', path: '/shop' },
+    { label: 'All Collections', path: '/shop?category=all' },
+    { label: 'Mandala Art', path: '/shop?category=mandala' },
+    { label: 'Lippan Art', path: '/shop?category=lippan' },
     { label: 'Bespoke Orders', path: '/custom-order' },
     { label: 'Gallery', path: '/gallery' },
     { label: 'About Artist', path: '/about' },
-    { label: 'FAQs', path: '/faq' },
     { label: 'Contact', path: '/contact' },
   ];
 

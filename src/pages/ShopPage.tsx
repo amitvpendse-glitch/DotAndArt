@@ -68,9 +68,10 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
       if (s) setSettings(s);
     });
 
-    safeFetchJson<Category[]>('/api/categories', undefined, []).then((catRes) => {
-      if (Array.isArray(catRes) && catRes.length > 0) {
-        setCategories(catRes);
+    safeFetchJson<any>('/api/categories', undefined, null).then((catRes) => {
+      const catList = Array.isArray(catRes) ? catRes : (catRes?.categories || []);
+      if (Array.isArray(catList) && catList.length > 0) {
+        setCategories(catList);
       }
     });
   }, []);

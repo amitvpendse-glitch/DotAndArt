@@ -321,17 +321,20 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
         : '/api/admin/products';
       const method = editingProduct ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+      const data = await safeFetchJson<any>(
+        url,
+        {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      });
+        null
+      );
 
-      const data = await safeResponseJson(res, {});
-      if (!res.ok) {
+      if (!data || data.error) {
         setErrorMessage(data?.error || 'Failed to save product');
         return;
       }

@@ -218,24 +218,17 @@ function syncImagesWithDB(): SyncResult {
         return a.localeCompare(b);
       });
 
-      prod.images = matchedFiles.map((matchedFile, i) => ({
-        id: `img-${prod.id}-${i + 1}`,
-        product_id: prod.id,
-        storage_path: `/public/static/assets/images/${matchedFile}`,
-        alt_text: `${prod.name} (${sku})`,
-        caption: prod.name,
-        display_order: i + 1,
-        is_primary: i === 0,
-      }));
-      updatedCount++;
-    } else {
-      // If no matching image on disk for this SKU, preserve any existing images that exist on disk
-      if (Array.isArray(prod.images)) {
-        prod.images = prod.images.filter((img) => {
-          if (!img.storage_path) return false;
-          const imgBase = path.basename(img.storage_path);
-          return files.includes(imgBase);
-        });
+      if (!Array.isArray(prod.images) || prod.images.length === 0) {
+        prod.images = matchedFiles.map((matchedFile, i) => ({
+          id: `img-${prod.id}-${i + 1}`,
+          product_id: prod.id,
+          storage_path: `/public/static/assets/images/${matchedFile}`,
+          alt_text: `${prod.name} (${sku})`,
+          caption: prod.name,
+          display_order: i + 1,
+          is_primary: i === 0,
+        }));
+        updatedCount++;
       }
     }
   });
@@ -678,7 +671,19 @@ app.get('/api/products', (req: Request, res: Response) => {
   const { category, search, minPrice, maxPrice, size, sort, featured } = req.query;
 
   if (category && typeof category === 'string' && category !== 'all') {
-    list = list.filter((p) => p.category_slug === category || p.category_id === category);
+    const catLower = category.toLowerCase();
+    list = list.filter((p) => {
+      const pSlug = (p.category_slug || '').toLowerCase();
+      const pId = (p.category_id || '').toLowerCase();
+      return (
+        pSlug === catLower ||
+        pId === catLower ||
+        pSlug.includes(catLower) ||
+        pId.includes(catLower) ||
+        (catLower.includes('mandala') && pSlug.includes('mandala')) ||
+        (catLower.includes('lippan') && pSlug.includes('lippan'))
+      );
+    });
   }
 
   if (featured === 'true') {
@@ -968,7 +973,19 @@ app.get('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
   const { search, category, published, missing_images } = req.query;
 
   if (category && typeof category === 'string' && category !== 'all') {
-    list = list.filter((p) => p.category_id === category || p.category_slug === category);
+    const catLower = category.toLowerCase();
+    list = list.filter((p) => {
+      const pSlug = (p.category_slug || '').toLowerCase();
+      const pId = (p.category_id || '').toLowerCase();
+      return (
+        pSlug === catLower ||
+        pId === catLower ||
+        pSlug.includes(catLower) ||
+        pId.includes(catLower) ||
+        (catLower.includes('mandala') && pSlug.includes('mandala')) ||
+        (catLower.includes('lippan') && pSlug.includes('lippan'))
+      );
+    });
   }
 
   if (published !== undefined && published !== 'all') {

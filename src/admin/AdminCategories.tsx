@@ -70,23 +70,26 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ token }) => {
     const method = editingCategory ? 'PUT' : 'POST';
 
     try {
-      const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+      const data = await safeFetchJson<any>(
+        url,
+        {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name,
+            slug,
+            description,
+            display_order: Number(displayOrder),
+            is_active: isActive,
+          }),
         },
-        body: JSON.stringify({
-          name,
-          slug,
-          description,
-          display_order: Number(displayOrder),
-          is_active: isActive,
-        }),
-      });
+        null
+      );
 
-      const data = await safeResponseJson(res, {});
-      if (!res.ok) {
+      if (!data || data.error) {
         setErrorMessage(data?.error || 'Failed to save category.');
         return;
       }
@@ -103,13 +106,16 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ token }) => {
 
     try {
       const query = reassignTargetId ? `?reassignToId=${reassignTargetId}` : '';
-      const res = await fetch(`/api/admin/categories/${deleteTarget.id}${query}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const data = await safeFetchJson<any>(
+        `/api/admin/categories/${deleteTarget.id}${query}`,
+        {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
+        },
+        null
+      );
 
-      const data = await safeResponseJson(res, {});
-      if (!res.ok) {
+      if (!data || data.error) {
         setDeleteError(data?.error || 'Failed to delete category.');
         return;
       }

@@ -77,12 +77,25 @@ export async function handleClientFallbackApi<T = any>(
   const jsonRes = (data: any) => JSON.parse(JSON.stringify(data)) as T;
 
   // 1. GET /api/products or /api/admin/products
+  // 1. GET /api/products or /api/admin/products
   if ((pathname === '/api/products' || pathname === '/api/admin/products') && method === 'GET') {
     let list = getStoredProducts();
 
     const category = searchParams.get('category');
     if (category && category !== 'all') {
-      list = list.filter((p) => p.category_slug === category || p.category_id === category);
+      const catLower = category.toLowerCase();
+      list = list.filter((p) => {
+        const pCatSlug = (p.category_slug || '').toLowerCase();
+        const pCatId = (p.category_id || '').toLowerCase();
+        return (
+          pCatSlug === catLower ||
+          pCatId === catLower ||
+          pCatSlug.includes(catLower) ||
+          pCatId.includes(catLower) ||
+          (catLower.includes('mandala') && pCatSlug.includes('mandala')) ||
+          (catLower.includes('lippan') && pCatSlug.includes('lippan'))
+        );
+      });
     }
 
     const featured = searchParams.get('featured');
@@ -128,6 +141,109 @@ export async function handleClientFallbackApi<T = any>(
     return jsonRes({ products: list });
   }
 
+  // 1b. POST /api/admin/products (Create Artwork/Product)
+  if (pathname === '/api/admin/products' && method === 'POST') {
+    try {
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+      const products = getStoredProducts();
+      const categories = getStoredCategories();
+
+      const sku = (body.sku || '').trim().toUpperCase();
+      const cat = categories.find((c) => c.id === body.category_id);
+      const isLippan = cat?.slug === 'lippan-wall-hangings' || (body.name || '').toLowerCase().includes('lippan');
+
+      const newProd: Product = {
+        id: `prod-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        sku: sku || `SKU-${Date.now()}`,
+        name: (body.name || 'Untitled Art').trim(),
+        short_description: body.short_description || '',
+        description: body.description || '',
+        category_id: body.category_id || categories[0]?.id || 'cat-mandala',
+        category_name: cat?.name || 'Mandala Wall Hangings',
+        category_slug: cat?.slug || 'mandala-wall-hangings',
+        material: body.material || 'MDF Wood, Acrylics',
+        framing: body.framing || 'Ready to hang',
+        customizable: body.customizable ?? true,
+        creation_time: body.creation_time || '5–7 working days',
+        shipping_info: body.shipping_info || 'Worldwide shipping available',
+        special_information: body.special_information || 'Wipe with dry microfiber cloth.',
+        featured: Boolean(body.featured),
+        is_published: body.is_published ?? true,
+        is_available: body.is_available !== undefined ? Boolean(body.is_available) : true,
+        is_high_demand: body.is_high_demand !== undefined ? Boolean(body.is_high_demand) : isLippan,
+        extra_delivery_days: body.extra_delivery_days !== undefined ? Number(body.extra_delivery_days) : (isLippan ? 5 : 0),
+        high_demand_message: body.high_demand_message || '',
+        base_price: Number(body.base_price) || 0,
+        base_size: body.base_size || '12 inches diameter',
+        images: Array.isArray(body.images) ? body.images : [],
+        variants: Array.isArray(body.variants) ? body.variants : [],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      const updatedList = [newProd, ...products];
+      localStorage.setItem('app_custom_products', JSON.stringify(updatedList));
+      return jsonRes(newProd);
+    } catch (err) {
+      console.error('[clientFallbackApi] Failed to create product', err);
+    }
+  }
+
+  // 1c. PUT /api/admin/products/:id (Update Artwork/Product)
+  if (pathname.startsWith('/api/admin/products/') && method === 'PUT') {
+    const id = pathname.replace('/api/admin/products/', '');
+    try {
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+      const products = getStoredProducts();
+      const categories = getStoredCategories();
+
+      const index = products.findIndex((p) => p.id === id);
+      if (index !== -1) {
+        const cat = body.category_id ? categories.find((c) => c.id === body.category_id) : undefined;
+        const updatedProd: Product = {
+          ...products[index],
+          ...body,
+          ...(cat ? { category_name: cat.name, category_slug: cat.slug } : {}),
+          updated_at: new Date().toISOString(),
+        };
+        products[index] = updatedProd;
+        localStorage.setItem('app_custom_products', JSON.stringify(products));
+        return jsonRes(updatedProd);
+      }
+    } catch (err) {
+      console.error('[clientFallbackApi] Failed to update product', err);
+    }
+  }
+
+  // 1d. DELETE /api/admin/products/:id
+  if (pathname.startsWith('/api/admin/products/') && method === 'DELETE') {
+    const id = pathname.replace('/api/admin/products/', '');
+    const products = getStoredProducts();
+    const filtered = products.filter((p) => p.id !== id);
+    localStorage.setItem('app_custom_products', JSON.stringify(filtered));
+    return jsonRes({ success: true, message: 'Product deleted successfully' });
+  }
+
+  // 1e. POST /api/admin/products/:id/duplicate
+  if (pathname.includes('/duplicate') && method === 'POST') {
+    const id = pathname.replace('/api/admin/products/', '').replace('/duplicate', '');
+    const products = getStoredProducts();
+    const original = products.find((p) => p.id === id);
+    if (original) {
+      const copy: Product = {
+        ...original,
+        id: `prod-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        sku: `${original.sku}-COPY-${Math.floor(100 + Math.random() * 900)}`,
+        name: `${original.name} (Copy)`,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      const updatedList = [copy, ...products];
+      localStorage.setItem('app_custom_products', JSON.stringify(updatedList));
+      return jsonRes(copy);
+    }
+  }
+
   // 2. GET /api/products/:sku or /api/products/:id
   if (pathname.startsWith('/api/products/') && method === 'GET') {
     const skuOrId = pathname.replace('/api/products/', '');
@@ -147,6 +263,52 @@ export async function handleClientFallbackApi<T = any>(
       return jsonRes({ categories });
     }
     return jsonRes(categories);
+  }
+
+  // 3b. POST /api/admin/categories
+  if (pathname === '/api/admin/categories' && method === 'POST') {
+    try {
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+      const categories = getStoredCategories();
+      const newCat: Category = {
+        id: `cat-${Date.now()}`,
+        name: (body.name || 'New Category').trim(),
+        slug: (body.slug || body.name || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-'),
+        description: body.description || '',
+        image_path: body.image_path || '',
+        display_order: categories.length + 1,
+        is_active: body.is_active ?? true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      const updated = [...categories, newCat];
+      localStorage.setItem('app_custom_categories', JSON.stringify(updated));
+      return jsonRes(newCat);
+    } catch {}
+  }
+
+  // 3c. PUT /api/admin/categories/:id
+  if (pathname.startsWith('/api/admin/categories/') && method === 'PUT') {
+    const id = pathname.replace('/api/admin/categories/', '');
+    try {
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+      const categories = getStoredCategories();
+      const index = categories.findIndex((c) => c.id === id);
+      if (index !== -1) {
+        categories[index] = { ...categories[index], ...body, updated_at: new Date().toISOString() };
+        localStorage.setItem('app_custom_categories', JSON.stringify(categories));
+        return jsonRes(categories[index]);
+      }
+    } catch {}
+  }
+
+  // 3d. DELETE /api/admin/categories/:id
+  if (pathname.startsWith('/api/admin/categories/') && method === 'DELETE') {
+    const id = pathname.replace('/api/admin/categories/', '');
+    const categories = getStoredCategories();
+    const filtered = categories.filter((c) => c.id !== id);
+    localStorage.setItem('app_custom_categories', JSON.stringify(filtered));
+    return jsonRes({ success: true, message: 'Category deleted' });
   }
 
   // 4. GET & PUT /api/settings or /api/admin/settings
