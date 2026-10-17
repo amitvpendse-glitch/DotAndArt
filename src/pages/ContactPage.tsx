@@ -44,6 +44,17 @@ export const ContactPage: React.FC = () => {
     headerSec?.content_json?.description ||
     'We welcome custom commission enquiries, bulk orders, and interior design collaborations.';
 
+  const brandSec = cmsPage?.sections?.find(
+    (s: any) => s.section_type === 'brand_identity' || s.section_key === 'brand_identity'
+  );
+
+  const instagramUrl = settings?.instagram_url || brandSec?.content_json?.instagram_url || 'https://www.instagram.com/sathosar';
+  const facebookUrl = settings?.facebook_url || brandSec?.content_json?.facebook_url || 'https://www.facebook.com/people/Dot-And-Art/61570301135652/';
+  const rawHandle = instagramUrl.includes('instagram.com/')
+    ? instagramUrl.split('instagram.com/')[1].split('/')[0].split('?')[0]
+    : 'sathosar';
+  const instagramHandle = rawHandle ? `@${rawHandle}` : '@sathosar';
+
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     const formatted = `Hello Dot And Art,\n\nI am contacting you from the website:\n\nName: ${name}\nPhone: ${phone}\nMessage: ${message}`;
@@ -108,14 +119,14 @@ export const ContactPage: React.FC = () => {
                 </div>
               </div>
 
-              {settings?.studio_address && (
+              {(settings?.studio_address || brandSec?.content_json?.studio_address) && (
                 <div className="flex items-start gap-3">
                   <div className="w-9 h-9 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
                     <span className="font-bold text-theme-primary block">Studio Address</span>
-                    <p className="text-theme-muted mt-0.5">{settings.studio_address}</p>
+                    <p className="text-theme-muted mt-0.5">{settings?.studio_address || brandSec?.content_json?.studio_address}</p>
                   </div>
                 </div>
               )}
@@ -126,20 +137,20 @@ export const ContactPage: React.FC = () => {
               <span className="text-[11px] font-semibold text-theme-muted block mb-2">Connect on Social Media</span>
               <div className="flex items-center gap-3">
                 <a
-                  href={settings?.instagram_url || 'https://www.instagram.com/sathosar'}
+                  href={instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-1.5 rounded-full glass-button hover:bg-[#E1306C] hover:text-white border border-theme-glass text-xs font-semibold text-theme-primary transition-colors flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 rounded-full glass-button hover:bg-[#E1306C] hover:text-white border border-theme-glass text-xs font-semibold text-theme-primary transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   <Instagram className="w-3.5 h-3.5" />
-                  <span>Instagram (@sathosar)</span>
+                  <span>Instagram ({instagramHandle})</span>
                 </a>
 
                 <a
-                  href={settings?.facebook_url || 'https://www.facebook.com/people/Dot-And-Art/61570301135652/'}
+                  href={facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-1.5 rounded-full glass-button hover:bg-[#1877F2] hover:text-white border border-theme-glass text-xs font-semibold text-theme-primary transition-colors flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 rounded-full glass-button hover:bg-[#1877F2] hover:text-white border border-theme-glass text-xs font-semibold text-theme-primary transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   <Facebook className="w-3.5 h-3.5" />
                   <span>Facebook</span>

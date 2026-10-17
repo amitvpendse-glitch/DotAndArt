@@ -1026,7 +1026,11 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                     <input
                       type="text"
                       value={settings?.instagram_url ?? 'https://www.instagram.com/sathosar'}
-                      onChange={(e) => setSettings((prev) => prev ? ({ ...prev, instagram_url: e.target.value }) : null)}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setSettings((prev) => prev ? ({ ...prev, instagram_url: val }) : null);
+                        updateSectionField('brand_identity', 'instagram_url', val);
+                      }}
                       placeholder="https://www.instagram.com/sathosar"
                       className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
                     />
@@ -1043,7 +1047,11 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                     <input
                       type="text"
                       value={settings?.facebook_url ?? 'https://www.facebook.com/people/Dot-And-Art/61570301135652/'}
-                      onChange={(e) => setSettings((prev) => prev ? ({ ...prev, facebook_url: e.target.value }) : null)}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setSettings((prev) => prev ? ({ ...prev, facebook_url: val }) : null);
+                        updateSectionField('brand_identity', 'facebook_url', val);
+                      }}
                       placeholder="https://www.facebook.com/people/Dot-And-Art/61570301135652/"
                       className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
                     />
