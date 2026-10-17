@@ -4,7 +4,7 @@
     "pin_hash": "9c82a5e26b9ec4902f21e17a82761691b0eba9fbf5677cb4d0101413459ddd3a342756f5da74a394063d6482492dbf5fccefbe16e5041d8ebdb03f47e6714d56",
     "salt": "e3e4e2d3b316cd7756be024a0dfe6bb7",
     "updated_at": "2026-10-10T01:34:56.072Z",
-    "last_login_at": "2026-10-14T14:08:51.518Z"
+    "last_login_at": "2026-10-17T01:36:46.783Z"
   },
   "sessions": [
     {
@@ -12,6 +12,12 @@
       "admin_username": "admin",
       "expires_at": 1791994136329,
       "created_at": "2026-10-14T14:08:51.518Z"
+    },
+    {
+      "token_hash": "25d220829d9dba615387f910d152eaeeb006f61322b6da01397b5a5b1143c4fd",
+      "admin_username": "admin",
+      "expires_at": 1792212143124,
+      "created_at": "2026-10-17T01:36:46.783Z"
     }
   ],
   "categories": [
@@ -3845,10 +3851,10 @@
     "domain": "dotandart.in",
     "whatsapp_number": "+918652162647",
     "whatsapp_display": "+91 86521 62647",
-    "instagram_url": "https://instagram.com",
-    "facebook_url": "https://facebook.com",
+    "instagram_url": "https://www.instagram.com/sathosar",
+    "facebook_url": "https://www.facebook.com/people/Dot-And-Art/61570301135652/?rdid=pVSv1qBdjZtMtY9r&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1LuTQvNiMU%2F",
     "email": "shitalthosar@yahoo.com",
-    "studio_address": "Mumbai, Maharashtra, India",
+    "studio_address": "Pune, Maharashtra, India",
     "payment_terms": "50% advance for custom commissions, balance upon photo approval prior to dispatch.",
     "shipping_policy_summary": "Worldwide shipping available with protective bubble wrap and corrugated box packaging.",
     "announcement_banner": {
@@ -3877,6 +3883,35 @@
     }
   },
   "audit_logs": [
+    {
+      "id": "log-1792204096974-a96f0276",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-17T02:28:16.974Z"
+    },
+    {
+      "id": "log-1792203982708-b6eb1a3f",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-17T02:26:22.708Z"
+    },
+    {
+      "id": "log-1792201006785-26f6ca92",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "2401:4900:8fcb:139b:9022:d797:dac:d047"
+      },
+      "created_at": "2026-10-17T01:36:46.785Z"
+    },
     {
       "id": "log-1791986931520-e51ff63d",
       "admin_user_id": "admin",

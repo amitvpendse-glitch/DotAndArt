@@ -992,9 +992,9 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                     </div>
                     <input
                       type="text"
-                      value={settings?.studio_address ?? 'Mumbai, Maharashtra, India'}
+                      value={settings?.studio_address ?? 'Pune, Maharashtra, India'}
                       onChange={(e) => setSettings((prev) => prev ? ({ ...prev, studio_address: e.target.value }) : null)}
-                      placeholder="e.g. Mumbai, Maharashtra, India"
+                      placeholder="e.g. Pune, Maharashtra, India"
                       className="flex-1 px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
                     />
                   </div>
