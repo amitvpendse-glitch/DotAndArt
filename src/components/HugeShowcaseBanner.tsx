@@ -391,12 +391,62 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
 
   const inCartQty = getItemQuantity(product.id, bannerSize);
 
+  // Dedicated background theme color configurations for Saga Green and Sapphire Gold (preserving existing style for others)
+  const isSage = theme === 'sage';
+  const isSapphire = theme === 'sapphire';
+
+  const bannerTheme = isSage
+    ? {
+        sectionBg: 'bg-gradient-to-b from-[#13251A] via-[#1E3626] to-[#0F1D14] border-b border-[#3D5A44]/50',
+        orbTop: 'bg-[#406847]/30',
+        orbSide: 'bg-[#7D9D82]/20',
+        frameBorder: 'border-4 border-[#406847]/60 bg-[#0A140D]',
+        eyebrowBadge: 'bg-[#213B29]/80 text-[#B8E2BE] border-[#406847]/50',
+        sparkleIcon: 'text-[#B8E2BE]',
+        artistSubheader: 'text-[#B8E2BE]',
+        shortDesc: 'text-[#D5EBD7]/95',
+        tabActive: 'bg-[#406847] text-white shadow-md',
+        accentText: 'text-[#B8E2BE]',
+        fullViewBtn: 'bg-[#406847]/30 hover:bg-[#406847]/50 text-[#B8E2BE] border-[#406847]/50',
+        cardBorder: 'border-[#3D5A44]/40 bg-[#16271C]/60',
+      }
+    : isSapphire
+    ? {
+        sectionBg: 'bg-gradient-to-b from-[#051329] via-[#0C244A] to-[#06142B] border-b border-[#244A85]/50',
+        orbTop: 'bg-[#1D529E]/35',
+        orbSide: 'bg-[#D4AF37]/25',
+        frameBorder: 'border-4 border-[#1D529E]/60 bg-[#040C1A]',
+        eyebrowBadge: 'bg-[#0E274E]/80 text-[#85C1E9] border-[#244A85]/50',
+        sparkleIcon: 'text-[#F3E5AB]',
+        artistSubheader: 'text-[#E5C158]',
+        shortDesc: 'text-[#F3E5AB]/95',
+        tabActive: 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-slate-950 shadow-md font-bold',
+        accentText: 'text-[#F3E5AB]',
+        fullViewBtn: 'bg-[#1D529E]/30 hover:bg-[#1D529E]/50 text-[#85C1E9] border-[#2E68B8]/50',
+        cardBorder: 'border-[#244A85]/40 bg-[#0A1A33]/60',
+      }
+    : {
+        // Original default for Black & Antique Gold / other styles
+        sectionBg: 'bg-gradient-to-b from-[#181512] via-[#211B17] to-theme-page border-b border-white/10',
+        orbTop: 'bg-amber-600/15',
+        orbSide: 'bg-[#128C7E]/10',
+        frameBorder: 'border-4 border-amber-500/30 bg-[#0F0D0B]',
+        eyebrowBadge: 'bg-amber-500/20 text-amber-300 border-amber-400/30',
+        sparkleIcon: 'text-amber-300',
+        artistSubheader: 'text-amber-300',
+        shortDesc: 'text-amber-200/90',
+        tabActive: 'bg-amber-500 text-black shadow-md',
+        accentText: 'text-amber-300',
+        fullViewBtn: 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border-amber-400/40',
+        cardBorder: 'border-white/10 bg-white/5',
+      };
+
   return (
-    <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#181512] via-[#211B17] to-theme-page text-white border-b border-white/10 transition-colors duration-500">
+    <section className={`relative w-full overflow-hidden ${bannerTheme.sectionBg} text-white transition-colors duration-500`}>
       {/* Decorative background ambiance */}
       <div className="absolute inset-0 pointer-events-none opacity-25 overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full bg-amber-600/15 blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 -right-32 w-[700px] h-[700px] rounded-full bg-[#128C7E]/10 blur-3xl" />
+        <div className={`absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full ${bannerTheme.orbTop} blur-3xl animate-pulse`} />
+        <div className={`absolute top-1/2 -right-32 w-[700px] h-[700px] rounded-full ${bannerTheme.orbSide} blur-3xl`} />
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px]" />
       </div>
 
@@ -404,8 +454,8 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
         {/* Top Header Eyebrow & Badge */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold uppercase tracking-widest backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full ${bannerTheme.eyebrowBadge} text-xs font-bold uppercase tracking-widest backdrop-blur-md`}>
+              <Sparkles className={`w-3.5 h-3.5 ${bannerTheme.sparkleIcon}`} />
               <span>{bannerEyebrow}</span>
             </span>
 
@@ -435,7 +485,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
           
           {/* LEFT: HUGE IMAGE BANNER CONTAINER */}
           <div className="lg:col-span-7 flex flex-col items-center">
-            <div className="relative w-full max-w-[580px] aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-500/30 bg-[#0F0D0B] group select-none transition-transform duration-500 hover:scale-[1.01]">
+            <div className={`relative w-full max-w-[580px] aspect-square rounded-3xl overflow-hidden shadow-2xl ${bannerTheme.frameBorder} group select-none transition-transform duration-500 hover:scale-[1.01]`}>
               {/* Main Artwork Image */}
               <img
                 src={imageSrc}
@@ -526,7 +576,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
 
                 <button
                   onClick={() => setIsZoomModalOpen(true)}
-                  className="px-3 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/40 text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+                  className={`px-3 py-1 rounded-lg ${bannerTheme.fullViewBtn} text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer`}
                 >
                   <Maximize2 className="w-3 h-3" />
                   <span>Full View</span>
@@ -560,7 +610,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
             
             {/* Title & Artist Focus Header */}
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs font-mono text-amber-300">
+              <div className={`flex items-center gap-2 text-xs font-mono ${bannerTheme.artistSubheader}`}>
                 <span>Artisan Shital Thosar</span>
                 <span>•</span>
                 <span>Sacred Dot Mandala & Lippan Art</span>
@@ -568,7 +618,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
               <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-white tracking-tight leading-[1.15]">
                 {bannerTitle}
               </h1>
-              <p className="font-serif text-base text-amber-200/90 font-normal italic">
+              <p className={`font-serif text-base ${bannerTheme.shortDesc} font-normal italic`}>
                 {bannerShortDesc}
               </p>
             </div>
@@ -579,7 +629,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
                 onClick={() => setActiveTab('story')}
                 className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   activeTab === 'story'
-                    ? 'bg-amber-500 text-black shadow-md'
+                    ? bannerTheme.tabActive
                     : 'text-white/80 hover:text-white hover:bg-white/5'
                 }`}
               >
@@ -591,7 +641,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
                 onClick={() => setActiveTab('craft')}
                 className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   activeTab === 'craft'
-                    ? 'bg-amber-500 text-black shadow-md'
+                    ? bannerTheme.tabActive
                     : 'text-white/80 hover:text-white hover:bg-white/5'
                 }`}
               >
@@ -603,7 +653,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
                 onClick={() => setActiveTab('space')}
                 className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   activeTab === 'space'
-                    ? 'bg-amber-500 text-black shadow-md'
+                    ? bannerTheme.tabActive
                     : 'text-white/80 hover:text-white hover:bg-white/5'
                 }`}
               >
@@ -613,11 +663,11 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
             </div>
 
             {/* TAB CONTENT CARD */}
-            <div className="p-5 sm:p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md space-y-4 shadow-xl">
+            <div className={`p-5 sm:p-6 rounded-3xl ${bannerTheme.cardBorder} backdrop-blur-md space-y-4 shadow-xl`}>
               {activeTab === 'story' && (
                 <div className="space-y-3.5 text-xs sm:text-sm text-white/85 leading-relaxed font-light">
                   <p className="whitespace-pre-line">{bannerFullDesc}</p>
-                  <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs text-amber-200">
+                  <div className={`pt-2 border-t border-white/10 flex items-center justify-between text-xs ${bannerTheme.accentText}`}>
                     <span>✨ Meditative Sacred Geometry</span>
                     <span>🕉️ Aura of Peace & Focus</span>
                   </div>
@@ -629,12 +679,12 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
                   <div className="grid grid-cols-2 gap-3">
                     <div className="p-3 rounded-xl bg-black/40 border border-white/5">
                       <span className="text-[10px] text-white/50 uppercase font-mono block">Exact Diameter</span>
-                      <strong className="text-sm text-amber-300 font-serif">{bannerSize}</strong>
+                      <strong className={`text-sm ${bannerTheme.accentText} font-serif`}>{bannerSize}</strong>
                     </div>
 
                     <div className="p-3 rounded-xl bg-black/40 border border-white/5">
                       <span className="text-[10px] text-white/50 uppercase font-mono block">Creation Lead Time</span>
-                      <strong className="text-sm text-amber-300 font-serif">{bannerCreationTime}</strong>
+                      <strong className={`text-sm ${bannerTheme.accentText} font-serif`}>{bannerCreationTime}</strong>
                     </div>
                   </div>
 
@@ -647,7 +697,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
 
                   <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between text-[11px] text-white/80">
                     <span className="flex items-center gap-1.5">
-                      <Truck className="w-3.5 h-3.5 text-amber-300" />
+                      <Truck className={`w-3.5 h-3.5 ${bannerTheme.accentText}`} />
                       <span>{bannerShippingInfo}</span>
                     </span>
                     <span className="text-emerald-400 font-semibold">Worldwide Dispatch</span>
@@ -669,7 +719,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
                       <div className="space-y-0.5">
                         <strong className="text-white block font-medium">{space.title}</strong>
                         <p className="text-[11px] text-white/70">{space.description}</p>
-                        <span className="text-[10px] text-amber-300/80 block mt-0.5">
+                        <span className={`text-[10px] ${bannerTheme.accentText} opacity-90 block mt-0.5`}>
                           Tip: {space.heightNote}
                         </span>
                       </div>
@@ -681,16 +731,28 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
 
             {/* ART & ARTIST DISCOVERY FOOTER (NO PRICING OR SELLING) */}
             <div className="space-y-3 pt-2">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/30 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white shadow-xl">
+              <div className={`p-4 rounded-2xl ${
+                isSage
+                  ? 'bg-[#0E1A12]/90 border-[#3D5A44]/50'
+                  : isSapphire
+                  ? 'bg-[#06142B]/90 border-[#244A85]/50'
+                  : 'bg-black/85 border border-white/30'
+              } backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white shadow-xl`}>
                 <div className="flex items-center gap-2.5">
-                  <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                  <Sparkles className={`w-4 h-4 ${bannerTheme.sparkleIcon} shrink-0`} />
                   <span className="font-serif italic text-white text-xs sm:text-sm font-semibold">
                     “Handcrafted Dot Mandalas & Lippan Kaam mirror art by Shital Thosar.”
                   </span>
                 </div>
                 <button
                   onClick={() => onNavigate('/shop')}
-                  className="px-5 py-2.5 rounded-full bg-amber-400 hover:bg-amber-500 text-black font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer shrink-0 shadow-lg border border-amber-200"
+                  className={`px-5 py-2.5 rounded-full ${
+                    isSage
+                      ? 'bg-[#406847] hover:bg-[#34553A] text-white border border-[#558B60]'
+                      : isSapphire
+                      ? 'bg-gradient-to-r from-[#D4AF37] to-[#F1D675] hover:from-[#C59F2A] hover:to-[#E5C558] text-slate-950 font-bold border border-amber-300'
+                      : 'bg-amber-400 hover:bg-amber-500 text-black border border-amber-200'
+                  } font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer shrink-0 shadow-lg`}
                 >
                   <span>Explore Art Catalog</span>
                   <ArrowRight className="w-3.5 h-3.5" />
