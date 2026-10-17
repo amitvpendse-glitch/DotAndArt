@@ -295,16 +295,17 @@ export default function App() {
             {/* Left Waterfall Stream */}
             <SideArtStreams side="left" onSelectProduct={handleSelectProduct} />
 
-            {/* Central Main Stage: All sections resize smoothly across laptop, desktop, and smart TV */}
-            <main className="flex-1 min-w-0 w-full overflow-x-hidden">
-              {renderCurrentPage()}
-            </main>
+            {/* Central Main Stage: All page sections & footer wrap together so vertical side streams cover the entire page length */}
+            <div className="flex-1 min-w-0 w-full flex flex-col">
+              <main className="flex-1 w-full overflow-x-hidden">
+                {renderCurrentPage()}
+              </main>
+              <Footer onNavigate={navigate} settings={settings} />
+            </div>
 
             {/* Right Waterfall Stream */}
             <SideArtStreams side="right" onSelectProduct={handleSelectProduct} />
           </div>
-
-          <Footer onNavigate={navigate} settings={settings} />
           <EnquiryDrawer />
           <ThemeSelector />
           <FloatingActions />
