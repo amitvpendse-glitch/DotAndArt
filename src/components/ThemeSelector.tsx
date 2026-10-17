@@ -136,16 +136,6 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({ externalOpen, onCl
             );
           })}
         </div>
-
-        {/* Modal Footer - Fixed at Bottom */}
-        <div className="shrink-0 pt-3 text-center border-t border-theme-glass">
-          <button
-            onClick={handleClose}
-            className="w-full sm:w-auto px-8 py-2.5 rounded-full bg-theme-accent text-white text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer shadow-sm"
-          >
-            Apply Style & Close
-          </button>
-        </div>
       </div>
     </div>
   );
