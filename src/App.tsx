@@ -291,21 +291,20 @@ export default function App() {
           />
 
           {/* Unified Responsive Stage: Side streams and main sections resize seamlessly with 0% overlap */}
-          <div className="flex-1 flex w-full relative justify-center items-stretch">
+          <div className="flex-1 flex w-full relative justify-center items-start">
             {/* Left Waterfall Stream */}
             <SideArtStreams side="left" onSelectProduct={handleSelectProduct} />
 
-            {/* Central Main Stage: All page sections & footer wrap together so vertical side streams cover the entire page length */}
-            <div className="flex-1 min-w-0 w-full flex flex-col">
-              <main className="flex-1 w-full overflow-x-hidden">
-                {renderCurrentPage()}
-              </main>
-              <Footer onNavigate={navigate} settings={settings} />
-            </div>
+            {/* Central Main Stage: All page sections render naturally without forced block height extension */}
+            <main className="flex-1 min-w-0 w-full overflow-x-hidden">
+              {renderCurrentPage()}
+            </main>
 
             {/* Right Waterfall Stream */}
             <SideArtStreams side="right" onSelectProduct={handleSelectProduct} />
           </div>
+
+          <Footer onNavigate={navigate} settings={settings} />
           <EnquiryDrawer />
           <ThemeSelector />
           <FloatingActions />

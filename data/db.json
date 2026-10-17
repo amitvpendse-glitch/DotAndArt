@@ -4,7 +4,7 @@
     "pin_hash": "9c82a5e26b9ec4902f21e17a82761691b0eba9fbf5677cb4d0101413459ddd3a342756f5da74a394063d6482492dbf5fccefbe16e5041d8ebdb03f47e6714d56",
     "salt": "e3e4e2d3b316cd7756be024a0dfe6bb7",
     "updated_at": "2026-10-10T01:34:56.072Z",
-    "last_login_at": "2026-10-17T04:40:12.380Z"
+    "last_login_at": "2026-10-17T04:51:42.378Z"
   },
   "sessions": [
     {
@@ -90,6 +90,18 @@
       "admin_username": "admin",
       "expires_at": 1792219212412,
       "created_at": "2026-10-17T04:40:12.380Z"
+    },
+    {
+      "token_hash": "bc510c80486099a5ab1e3f4e7e7ed319ffa6bd0fa831048baa3e0d066ea1e2d4",
+      "admin_username": "admin",
+      "expires_at": 1792219619482,
+      "created_at": "2026-10-17T04:46:59.454Z"
+    },
+    {
+      "token_hash": "073558b09965c37c3ecc2eaff0eb06cb86ffad49db5f52da68e30521950ae589",
+      "admin_username": "admin",
+      "expires_at": 1792219902406,
+      "created_at": "2026-10-17T04:51:42.378Z"
     }
   ],
   "categories": [
@@ -3782,7 +3794,7 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2026-10-17T04:40:12.416Z"
+      "updated_at": "2026-10-17T04:51:42.409Z"
     },
     {
       "id": "page-shipping-policy",
@@ -3976,6 +3988,70 @@
     }
   },
   "audit_logs": [
+    {
+      "id": "log-1792212702411-47a2169b",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "Contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-17T04:51:42.411Z"
+    },
+    {
+      "id": "log-1792212702392-3e4c052d",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-17T04:51:42.393Z"
+    },
+    {
+      "id": "log-1792212702381-a0464c78",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-17T04:51:42.381Z"
+    },
+    {
+      "id": "log-1792212419487-d1b0a025",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "Contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-17T04:46:59.487Z"
+    },
+    {
+      "id": "log-1792212419468-58c3365a",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-17T04:46:59.468Z"
+    },
+    {
+      "id": "log-1792212419456-96c289bb",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-17T04:46:59.456Z"
+    },
     {
       "id": "log-1792212012419-6ed9b23f",
       "admin_user_id": "admin",
