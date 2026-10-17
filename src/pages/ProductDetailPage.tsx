@@ -146,7 +146,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const currentActiveImage = imagesList[activeImageIndex];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16 bg-theme-page text-theme-primary transition-colors duration-500">
+    <div className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-8 space-y-16 bg-theme-page text-theme-primary transition-colors duration-500">
       {/* Back button */}
       <div>
         <button

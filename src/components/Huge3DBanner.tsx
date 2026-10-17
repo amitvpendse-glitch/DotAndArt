@@ -248,7 +248,7 @@ export const Huge3DBanner: React.FC<Huge3DBannerProps> = ({ onSelectProduct, onN
           <div className={`absolute w-[250px] h-[250px] sm:w-[400px] sm:h-[400px] md:w-[550px] md:h-[550px] rounded-full border border-dashed ${style.ringsBorder}`} />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-20">
+        <div className="relative max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-10 sm:py-16 lg:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
 
             {/* Left Column: ARTWORK METADATA & STORY */}

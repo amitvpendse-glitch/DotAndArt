@@ -168,7 +168,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 bg-theme-page text-theme-primary transition-colors duration-500">
+    <div className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-10 space-y-8 bg-theme-page text-theme-primary transition-colors duration-500">
       {/* PDF Progress Modal Overlay */}
       {isGeneratingPdf && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">

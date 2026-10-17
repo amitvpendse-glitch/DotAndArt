@@ -264,14 +264,27 @@ export default function App() {
   return (
     <ThemeProvider>
       <CartProvider>
-        <div className="min-h-screen flex flex-col font-sans antialiased bg-theme-page text-theme-primary transition-colors duration-500">
+        <div className="min-h-screen flex flex-col font-sans antialiased bg-theme-page text-theme-primary transition-colors duration-500 overflow-x-hidden">
           <Navbar
             currentPath={currentPath}
             onNavigate={navigate}
             announcement={settings?.announcement_banner}
           />
-          <main className="flex-1 bg-theme-page text-theme-primary">{renderCurrentPage()}</main>
-          <SideArtStreams onSelectProduct={handleSelectProduct} />
+
+          {/* Unified Responsive Stage: Side streams and main sections resize seamlessly with 0% overlap */}
+          <div className="flex-1 flex w-full relative justify-center items-start">
+            {/* Left Waterfall Stream */}
+            <SideArtStreams side="left" onSelectProduct={handleSelectProduct} />
+
+            {/* Central Main Stage: All sections resize smoothly across laptop, desktop, and smart TV */}
+            <main className="flex-1 min-w-0 w-full overflow-x-hidden">
+              {renderCurrentPage()}
+            </main>
+
+            {/* Right Waterfall Stream */}
+            <SideArtStreams side="right" onSelectProduct={handleSelectProduct} />
+          </div>
+
           <Footer onNavigate={navigate} settings={settings} />
           <EnquiryDrawer />
           <ThemeSelector />

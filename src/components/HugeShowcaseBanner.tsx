@@ -297,7 +297,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px]" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 space-y-8 sm:space-y-12">
+      <div className="relative max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-8 sm:py-12 lg:py-16 space-y-8 sm:space-y-12">
         {/* Top Header Eyebrow & Badge */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
           <div className="flex flex-wrap items-center gap-3">
@@ -320,7 +320,7 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
           
           {/* LEFT: HUGE IMAGE BANNER CONTAINER */}
           <div className="lg:col-span-7 flex flex-col items-center">
-            <div className={`relative w-full max-w-[580px] aspect-square rounded-3xl overflow-hidden shadow-2xl ${bannerTheme.frameBorder} group select-none transition-transform duration-500 hover:scale-[1.01]`}>
+            <div className={`relative w-full max-w-[460px] md:max-w-[520px] lg:max-w-[560px] 2xl:max-w-[680px] 3xl:max-w-[800px] aspect-square rounded-3xl overflow-hidden shadow-2xl ${bannerTheme.frameBorder} group select-none transition-transform duration-500 hover:scale-[1.01]`}>
               {/* Main Artwork Image */}
               <img
                 src={imageSrc}

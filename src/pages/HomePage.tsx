@@ -77,7 +77,7 @@ export function HomePage({
       />
 
       {/* Featured Products Section Header */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <section className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-12">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-4 border-b border-theme-glass gap-4">
           <div>
             <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
@@ -96,7 +96,7 @@ export function HomePage({
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 2xl:gap-8">
           {featuredProducts.map((product, index) => {
             const isLippan =
               product.category_slug === 'lippan-wall-hangings' ||
@@ -337,7 +337,7 @@ export function HomePage({
 
       {/* 3. TESTIMONIALS SECTION */}
       {testimonials.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-theme-glass">
+        <section className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-16 border-t border-theme-glass">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
             <span className="text-xs font-bold uppercase tracking-widest text-theme-accent">
               {testimonialsBadge}
