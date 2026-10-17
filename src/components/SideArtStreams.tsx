@@ -57,7 +57,7 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
         <aside
           className="hidden min-[1024px]:flex flex-col sticky top-20 self-start shrink-0 overflow-hidden pointer-events-none select-none z-20
             w-16 lg:w-20 xl:w-28 2xl:w-36 3xl:w-44
-            h-[calc(100vh-5.5rem)]
+            h-[calc(100vh-5rem)]
             py-2 pl-1 lg:pl-2 xl:pl-3 2xl:pl-4 transition-all duration-300"
           aria-label="Mandala Art Stream"
         >
@@ -112,7 +112,7 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
         <aside
           className="hidden min-[1024px]:flex flex-col sticky top-20 self-start shrink-0 overflow-hidden pointer-events-none select-none z-20
             w-16 lg:w-20 xl:w-28 2xl:w-36 3xl:w-44
-            h-[calc(100vh-5.5rem)]
+            h-[calc(100vh-5rem)]
             py-2 pr-1 lg:pr-2 xl:pr-3 2xl:pr-4 transition-all duration-300"
           aria-label="Lippan Art Stream"
         >

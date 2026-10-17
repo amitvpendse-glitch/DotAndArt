@@ -227,18 +227,25 @@
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-page);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--accent-gold);
-  border-radius: 4px;
+  border-radius: 5px;
+  border: 2px solid var(--bg-page);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-primary);
+}
+
+/* Firefox Scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-gold) var(--bg-page);
 }
 
 .craft-shadow {
