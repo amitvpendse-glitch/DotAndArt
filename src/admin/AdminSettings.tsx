@@ -618,6 +618,70 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
           </div>
         </div>
 
+        {/* 5. Artwork Images Available Badge Settings */}
+        <div className="space-y-4 pt-4 border-t border-theme-glass">
+          <div className="flex items-center justify-between">
+            <h3 className="font-serif text-base font-bold text-theme-accent uppercase tracking-wider flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>5. Artwork Images "Available" Badge Global Settings</span>
+            </h3>
+            <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 px-2 py-0.5 rounded-full">
+              Global Default
+            </span>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-theme-page border border-theme-glass space-y-4">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="showBadgesCheck"
+                checked={settings.show_available_badges !== false}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    show_available_badges: e.target.checked,
+                  })
+                }
+                className="rounded text-theme-accent cursor-pointer"
+              />
+              <label htmlFor="showBadgesCheck" className="font-semibold text-theme-primary cursor-pointer text-xs">
+                Enable "Available" badge across all artwork images (Catalog, Homepage, Gallery, Lightbox)
+              </label>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block font-semibold text-theme-primary text-xs mb-1">
+                  Default Badge Label Text
+                </label>
+                <input
+                  type="text"
+                  value={settings.available_badge_default_text || 'Available'}
+                  placeholder="e.g. Available, Available to Order"
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      available_badge_default_text: e.target.value,
+                    })
+                  }
+                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary text-xs font-semibold"
+                />
+                <p className="text-[10px] text-theme-muted mt-1">
+                  You can also customize the badge label and availability individually for each piece under Product Catalog.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-theme-card border border-theme-glass flex items-center gap-3">
+                <span className="text-xs text-theme-muted">Preview:</span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/85 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold shadow-xs uppercase tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>{settings.available_badge_default_text || 'Available'}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="pt-4 border-t border-theme-glass flex justify-end">
           <button
             type="submit"

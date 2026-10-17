@@ -4,6 +4,7 @@ import { Product } from '../types';
 import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { ImageZoomModal } from '../components/ImageZoomModal';
+import { AvailableBadge } from '../components/AvailableBadge';
 import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 
@@ -100,7 +101,20 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
                 className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
               />
 
-
+              {/* Top Left: SKU & Available Badge */}
+              <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 flex-wrap max-w-[85%] pointer-events-none">
+                <span className="text-[10px] font-mono tracking-wider bg-theme-card/90 backdrop-blur-md text-theme-primary px-2 py-0.5 rounded border border-theme-glass shadow-xs">
+                  {item.sku}
+                </span>
+                {item.show_available_badge !== false && (
+                  <AvailableBadge
+                    isAvailable={item.is_available !== false}
+                    badgeText={item.available_badge_text}
+                    unavailableText={item.unavailable_badge_text}
+                    size="xs"
+                  />
+                )}
+              </div>
 
               {/* Hover Overlay */}
               <div className="absolute inset-0 bg-theme-dark/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex flex-col justify-between text-white">
@@ -152,6 +166,21 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
                   size="lg"
                   className="w-full h-full"
                 />
+
+                {/* Top Left: SKU & Available Badge */}
+                <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+                  <span className="text-xs font-mono font-semibold text-theme-primary bg-theme-card/90 backdrop-blur-md px-2.5 py-1 rounded-md border border-theme-glass shadow-xs">
+                    {activeLightbox.sku}
+                  </span>
+                  {activeLightbox.show_available_badge !== false && (
+                    <AvailableBadge
+                      isAvailable={activeLightbox.is_available !== false}
+                      badgeText={activeLightbox.available_badge_text}
+                      unavailableText={activeLightbox.unavailable_badge_text}
+                      size="sm"
+                    />
+                  )}
+                </div>
 
                 <button
                   onClick={(e) => {

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Product } from '../types';
 import { SafeProductImage } from './SafeProductImage';
+import { AvailableBadge } from './AvailableBadge';
 import { downloadArtworkImage } from '../utils/whatsapp';
 
 interface ImageZoomModalProps {
@@ -175,6 +176,14 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-amber-300 border border-white/10 shrink-0">
                   {product.sku}
                 </span>
+                {product.show_available_badge !== false && (
+                  <AvailableBadge
+                    isAvailable={product.is_available !== false}
+                    badgeText={product.available_badge_text}
+                    unavailableText={product.unavailable_badge_text}
+                    size="xs"
+                  />
+                )}
               </div>
               <p className="text-[11px] text-slate-400 truncate">
                 {product.category_name || 'Catalog Artwork'} • High Definition Zoom Inspector

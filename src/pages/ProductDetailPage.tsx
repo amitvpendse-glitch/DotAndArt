@@ -22,6 +22,7 @@ import { Product, ProductVariant } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { ImageZoomModal } from '../components/ImageZoomModal';
+import { AvailableBadge } from '../components/AvailableBadge';
 import { useCart } from '../context/CartContext';
 import {
   dispatchDirectWhatsAppOrder,
@@ -177,9 +178,19 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-102"
               />
 
-              {/* SKU Pill */}
-              <div className="absolute top-4 left-4 px-3 py-1 rounded-md bg-theme-card/95 backdrop-blur-xs text-xs font-mono font-semibold text-theme-primary border border-theme-glass">
-                Code: {product.sku}
+              {/* Top Left: SKU Pill & Available Badge */}
+              <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+                <div className="px-3 py-1 rounded-md bg-theme-card/95 backdrop-blur-xs text-xs font-mono font-semibold text-theme-primary border border-theme-glass shadow-xs">
+                  Code: {product.sku}
+                </div>
+                {product.show_available_badge !== false && (
+                  <AvailableBadge
+                    isAvailable={product.is_available !== false}
+                    badgeText={product.available_badge_text}
+                    unavailableText={product.unavailable_badge_text}
+                    size="sm"
+                  />
+                )}
               </div>
 
               {/* Top Action Buttons Overlay */}
@@ -280,15 +291,23 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </span>
             </div>
 
-            {/* High Demand Status Badge */}
-            {isHighDemand && (
-              <div className="pt-2 flex flex-wrap items-center gap-2.5">
+            {/* Availability & High Demand Status Badges */}
+            <div className="pt-2 flex flex-wrap items-center gap-2.5">
+              {product.show_available_badge !== false && (
+                <AvailableBadge
+                  isAvailable={product.is_available !== false}
+                  badgeText={product.available_badge_text}
+                  unavailableText={product.unavailable_badge_text}
+                  size="md"
+                />
+              )}
+              {isHighDemand && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-linear-to-r from-amber-500 to-orange-500 text-white text-xs font-bold shadow-xs">
                   <Flame className="w-3.5 h-3.5 fill-white text-white" />
                   <span>🔥 High Demand</span>
                 </span>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* High Demand Positive Notice Box */}
             {isHighDemand && (

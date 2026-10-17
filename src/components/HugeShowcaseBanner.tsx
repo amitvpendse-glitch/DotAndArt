@@ -34,6 +34,7 @@ import {
   WhatsAppAttachmentItem,
 } from '../utils/whatsapp';
 import { WhatsAppAttachmentModal } from './WhatsAppAttachmentModal';
+import { AvailableBadge } from './AvailableBadge';
 
 interface HugeShowcaseBannerProps {
   onSelectProduct: (sku: string) => void;
@@ -449,6 +450,19 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
 
               {/* Inner glow rim */}
               <div className="absolute inset-0 rounded-3xl pointer-events-none ring-1 ring-inset ring-white/20 shadow-[inset_0_0_50px_rgba(0,0,0,0.6)]" />
+
+              {/* Floating Available Badge & SKU on Monumental Showcase Image */}
+              <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+                <span className="text-xs font-mono font-semibold text-white bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/20 shadow-md">
+                  {bannerSku}
+                </span>
+                <AvailableBadge
+                  isAvailable={product?.is_available !== false}
+                  badgeText={product?.available_badge_text || 'Available'}
+                  unavailableText={product?.unavailable_badge_text || 'Made to Order'}
+                  size="sm"
+                />
+              </div>
 
               {/* Interactive Hotspot Pins */}
               {showHotspots &&

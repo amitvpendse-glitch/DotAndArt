@@ -3,6 +3,7 @@ import { Search, Filter, SlidersHorizontal, Eye, ShoppingBag, X, Sparkles, Chevr
 import { Product, Category, WebsiteSettings } from '../types';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { ImageZoomModal } from '../components/ImageZoomModal';
+import { AvailableBadge } from '../components/AvailableBadge';
 import { useCart } from '../context/CartContext';
 import { safeFetchJson } from '../lib/safeFetch';
 import { generateProfessionalCatalogPDF } from '../utils/pdfCatalogGenerator';
@@ -423,11 +424,19 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
                     className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                   />
 
-                  {/* SKU Badge */}
-                  <div className="absolute top-3 left-3 z-30">
-                    <span className="px-2 py-0.5 rounded bg-theme-card/90 backdrop-blur-xs text-[10px] font-mono font-semibold text-theme-primary border border-theme-glass">
+                  {/* Top Left: SKU Badge & Available Badge on Artwork Image */}
+                  <div className="absolute top-3 left-3 z-30 flex items-center gap-1.5 flex-wrap max-w-[80%]">
+                    <span className="px-2 py-0.5 rounded bg-theme-card/90 backdrop-blur-xs text-[10px] font-mono font-semibold text-theme-primary border border-theme-glass shadow-xs">
                       {product.sku}
                     </span>
+                    {product.show_available_badge !== false && (
+                      <AvailableBadge
+                        isAvailable={product.is_available !== false}
+                        badgeText={product.available_badge_text}
+                        unavailableText={product.unavailable_badge_text}
+                        size="xs"
+                      />
+                    )}
                   </div>
 
                   {/* High Demand Badge on Thumbnail */}

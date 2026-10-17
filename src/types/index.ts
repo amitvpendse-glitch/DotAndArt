@@ -50,6 +50,9 @@ export interface Product {
   featured: boolean;
   is_published: boolean;
   is_available?: boolean; // Shown as available in catalog (editable by admin)
+  available_badge_text?: string; // Custom badge label text (e.g. "Available", "Available to Order", "In Stock")
+  unavailable_badge_text?: string; // Custom badge label when unavailable (e.g. "Made to Order", "Unavailable")
+  show_available_badge?: boolean; // Whether to display badge on images (editable by admin)
   is_high_demand?: boolean; // Lippan art items shown as high demand (editable by admin)
   extra_delivery_days?: number; // e.g. 5 extra days (editable by admin)
   high_demand_message?: string; // Free text box saying it will take 5 more days than usual, positively phrased (editable by admin)
@@ -162,6 +165,8 @@ export interface WebsiteSettings {
   studio_address: string;
   payment_terms: string;
   shipping_policy_summary: string;
+  available_badge_default_text?: string;
+  show_available_badges?: boolean;
   featured_3d_sku?: string;
   featured_3d_image?: string;
   showcase_banner?: ShowcaseBannerConfig;

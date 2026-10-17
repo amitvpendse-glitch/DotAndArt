@@ -313,14 +313,14 @@ export const EnquiryDrawer: React.FC = () => {
                     />
                   </div>
 
-                  {/* Enquiry Suggestion Notice */}
+                  {/* Order Suggestion Notice */}
                   <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1.5 shadow-xs">
                     <div className="flex items-center gap-2 font-bold text-amber-700 dark:text-amber-400 text-xs">
                       <Download className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
-                      <span>Enquiry Suggestion</span>
+                      <span>Order Suggestion</span>
                     </div>
                     <p className="text-[11.5px] text-theme-muted leading-relaxed font-medium">
-                      After placing enquiry please download the images from the catalog and send to Shital
+                      After placing order please download the images from the catalog and send to Shital
                     </p>
                   </div>
 

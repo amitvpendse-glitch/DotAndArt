@@ -1026,6 +1026,9 @@ app.post('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
     featured,
     is_published,
     is_available,
+    available_badge_text,
+    unavailable_badge_text,
+    show_available_badge,
     is_high_demand,
     extra_delivery_days,
     high_demand_message,
@@ -1069,6 +1072,9 @@ app.post('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
     featured: Boolean(featured),
     is_published: is_published ?? true,
     is_available: is_available !== undefined ? Boolean(is_available) : true,
+    available_badge_text: available_badge_text || 'Available',
+    unavailable_badge_text: unavailable_badge_text || 'Made to Order',
+    show_available_badge: show_available_badge !== undefined ? Boolean(show_available_badge) : true,
     is_high_demand: is_high_demand !== undefined ? Boolean(is_high_demand) : isLippanCategory,
     extra_delivery_days: extra_delivery_days !== undefined ? Number(extra_delivery_days) : (isLippanCategory ? 5 : 0),
     high_demand_message: high_demand_message || (isLippanCategory ? '✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your sacred piece.' : ''),
@@ -1127,6 +1133,9 @@ app.put('/api/admin/products/:id', requireAdmin, (req: Request, res: Response) =
   if (p.featured !== undefined) db.products[index].featured = Boolean(p.featured);
   if (p.is_published !== undefined) db.products[index].is_published = Boolean(p.is_published);
   if (p.is_available !== undefined) db.products[index].is_available = Boolean(p.is_available);
+  if (p.available_badge_text !== undefined) db.products[index].available_badge_text = p.available_badge_text;
+  if (p.unavailable_badge_text !== undefined) db.products[index].unavailable_badge_text = p.unavailable_badge_text;
+  if (p.show_available_badge !== undefined) db.products[index].show_available_badge = Boolean(p.show_available_badge);
   if (p.is_high_demand !== undefined) db.products[index].is_high_demand = Boolean(p.is_high_demand);
   if (p.extra_delivery_days !== undefined) db.products[index].extra_delivery_days = Number(p.extra_delivery_days);
   if (p.high_demand_message !== undefined) db.products[index].high_demand_message = p.high_demand_message;

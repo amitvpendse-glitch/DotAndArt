@@ -18,10 +18,13 @@ import {
   MoveDown,
   Flame,
   Clock,
+  Tag,
+  Check,
 } from 'lucide-react';
 import { Product, Category, ProductVariant, ProductImage } from '../types';
 import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
 import { SafeProductImage } from '../components/SafeProductImage';
+import { AvailableBadge } from '../components/AvailableBadge';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
 
 interface AdminProductsProps {
@@ -61,6 +64,9 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
   const [featured, setFeatured] = useState(false);
   const [isPublished, setIsPublished] = useState(true);
   const [isAvailable, setIsAvailable] = useState(true);
+  const [availableBadgeText, setAvailableBadgeText] = useState('Available');
+  const [unavailableBadgeText, setUnavailableBadgeText] = useState('Made to Order');
+  const [showAvailableBadge, setShowAvailableBadge] = useState(true);
   const [isHighDemand, setIsHighDemand] = useState(false);
   const [extraDeliveryDays, setExtraDeliveryDays] = useState<number>(5);
   const [highDemandMessage, setHighDemandMessage] = useState(
@@ -116,6 +122,9 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
     setFeatured(false);
     setIsPublished(true);
     setIsAvailable(true);
+    setAvailableBadgeText('Available');
+    setUnavailableBadgeText('Made to Order');
+    setShowAvailableBadge(true);
     const initialCategory = categories[0];
     const isLippanDefault = initialCategory?.slug === 'lippan-wall-hangings';
     setIsHighDemand(isLippanDefault);
@@ -149,6 +158,9 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
     setFeatured(Boolean(p.featured));
     setIsPublished(Boolean(p.is_published));
     setIsAvailable(p.is_available !== false);
+    setAvailableBadgeText(p.available_badge_text || 'Available');
+    setUnavailableBadgeText(p.unavailable_badge_text || 'Made to Order');
+    setShowAvailableBadge(p.show_available_badge !== false);
     const isLippanArt =
       p.category_slug === 'lippan-wall-hangings' ||
       (p.name || '').toLowerCase().includes('lippan') ||
@@ -308,6 +320,9 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
       featured,
       is_published: isPublished,
       is_available: isAvailable,
+      available_badge_text: safeTrim(availableBadgeText) || 'Available',
+      unavailable_badge_text: safeTrim(unavailableBadgeText) || 'Made to Order',
+      show_available_badge: showAvailableBadge,
       is_high_demand: isHighDemand,
       extra_delivery_days: Number(extraDeliveryDays) || 0,
       high_demand_message: safeTrim(highDemandMessage),
@@ -373,6 +388,29 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleQuickToggleAvailability = async (p: Product, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    const nextVal = !(p.is_available !== false);
+    // Optimistic update
+    setProducts((prev) =>
+      prev.map((item) => (item.id === p.id ? { ...item, is_available: nextVal } : item))
+    );
+
+    try {
+      await fetch(`/api/admin/products/${p.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ is_available: nextVal }),
+      });
+    } catch (err) {
+      console.error('Failed to toggle availability', err);
+      fetchProductsAndCategories();
     }
   };
 
@@ -502,7 +540,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                   <tr key={p.id} className="hover:bg-[#FAF7F2]/60 transition-colors">
                     {/* Thumbnail */}
                     <td className="px-4 py-3">
-                      <div className="w-12 h-12 rounded-lg overflow-hidden border border-[#E0D2C2] bg-[#FAF7F2]">
+                      <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-[#E0D2C2] bg-[#FAF7F2]">
                         <SafeProductImage
                           src={primaryImg?.storage_path}
                           alt={p.name}
@@ -512,6 +550,14 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                           size="sm"
                           className="w-full h-full"
                         />
+                        <div className="absolute bottom-0.5 left-0.5 z-10 pointer-events-none scale-75 origin-bottom-left">
+                          <AvailableBadge
+                            isAvailable={p.is_available !== false}
+                            badgeText={p.available_badge_text}
+                            unavailableText={p.unavailable_badge_text}
+                            size="xs"
+                          />
+                        </div>
                       </div>
                     </td>
 
@@ -549,17 +595,31 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
 
                     {/* Availability & Demand */}
                     <td className="px-4 py-3">
-                      <div className="flex flex-col gap-1 items-start">
-                        {p.is_available !== false ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-semibold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            Available
-                          </span>
-                        ) : (
-                          <span className="px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200 text-[10px] font-semibold">
-                            Unavailable
-                          </span>
-                        )}
+                      <div className="flex flex-col gap-1.5 items-start">
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={(e) => handleQuickToggleAvailability(p, e)}
+                            className="transition-transform hover:scale-105 active:scale-95 cursor-pointer text-left"
+                            title="Click to toggle Available / Unavailable instantly"
+                          >
+                            <AvailableBadge
+                              isAvailable={p.is_available !== false}
+                              badgeText={p.available_badge_text}
+                              unavailableText={p.unavailable_badge_text}
+                              size="xs"
+                            />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEdit(p)}
+                            className="p-1 rounded text-[#8C7667] hover:text-[#C85A32] hover:bg-[#FAF0E6] cursor-pointer"
+                            title="Edit Available badge text & settings"
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </button>
+                        </div>
                         {isDemandHigh && (
                           <span
                             className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold"
@@ -969,32 +1029,178 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
               <div className="space-y-4 pt-4 border-t border-[#F0E5D8]">
                 <div className="flex items-center justify-between">
                   <h4 className="font-semibold text-sm text-[#8C4A28] uppercase tracking-wider flex items-center gap-2">
-                    <Flame className="w-4 h-4 text-amber-600" />
-                    <span>5. Availability & High Demand Lead Time</span>
+                    <Tag className="w-4 h-4 text-emerald-600" />
+                    <span>5. Available Badge & Demand Settings</span>
                   </h4>
                   <span className="text-[10px] font-mono text-[#8C7667] bg-[#FAF0E6] px-2 py-0.5 rounded border border-[#E0D2C2]">
-                    Customer Notice Settings
+                    Image Badges & Lead Time
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Availability Toggle */}
-                  <div className="p-4 rounded-xl bg-[#FAF7F2] border border-[#D8C7B5] space-y-2">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={isAvailable}
-                        onChange={(e) => setIsAvailable(e.target.checked)}
-                        className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500"
-                      />
-                      <span className="font-semibold text-sm text-[#2C2724]">Item Available to Order</span>
-                    </label>
-                    <p className="text-[11px] text-[#8C7667] pl-6">
-                      Displayed on the catalog and details page with an active &quot;Available to Order&quot; status indicator.
-                    </p>
+                {/* Available Badge Editor Card */}
+                <div className="p-5 rounded-2xl bg-[#F6FAF6] border-2 border-emerald-500/30 space-y-4 shadow-2xs">
+                  <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span className="font-semibold text-sm text-emerald-950">
+                        Artwork Image "Available" Badge Configuration
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                      Editable in CMS
+                    </span>
                   </div>
 
-                  {/* High Demand Toggle */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Left: Toggles & Inputs */}
+                    <div className="space-y-3.5">
+                      {/* Show Badge Toggle */}
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={showAvailableBadge}
+                          onChange={(e) => setShowAvailableBadge(e.target.checked)}
+                          className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500"
+                        />
+                        <span className="font-semibold text-xs text-[#2C2724]">
+                          Display Available Badge on artwork image
+                        </span>
+                      </label>
+
+                      {/* Item Available Status Toggle */}
+                      <div className="p-3 rounded-xl bg-white border border-emerald-200 space-y-1.5">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={isAvailable}
+                            onChange={(e) => setIsAvailable(e.target.checked)}
+                            className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500"
+                          />
+                          <span className="font-bold text-xs text-emerald-950">
+                            Artwork is Available to Order (Active)
+                          </span>
+                        </label>
+                        <p className="text-[11px] text-[#7D6B5D] pl-6">
+                          Uncheck if this original piece has been claimed or requires custom commission.
+                        </p>
+                      </div>
+
+                      {/* Available Badge Label */}
+                      <div>
+                        <label className="block font-semibold text-[#4A3E36] text-xs mb-1">
+                          Available Badge Label Text
+                        </label>
+                        <input
+                          type="text"
+                          value={availableBadgeText}
+                          onChange={(e) => setAvailableBadgeText(e.target.value)}
+                          placeholder="e.g. Available, Available to Order, In Stock"
+                          className="w-full px-3 py-2 rounded-xl bg-white text-[#2C2724] border border-[#D8C7B5] focus:outline-none focus:border-emerald-600 text-xs font-semibold"
+                        />
+                        {/* Quick Presets */}
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {['Available', 'Available to Order', 'Ready to Ship', 'In Stock', 'Original Piece'].map((txt) => (
+                            <button
+                              key={txt}
+                              type="button"
+                              onClick={() => setAvailableBadgeText(txt)}
+                              className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border transition-all cursor-pointer ${
+                                availableBadgeText === txt
+                                  ? 'bg-emerald-700 text-white border-emerald-800'
+                                  : 'bg-white hover:bg-emerald-50 text-emerald-900 border-emerald-200'
+                              }`}
+                            >
+                              {txt}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Unavailable Badge Label (shown when not available) */}
+                      <div>
+                        <label className="block font-semibold text-[#4A3E36] text-xs mb-1">
+                          Unavailable Badge Label (when not in stock)
+                        </label>
+                        <input
+                          type="text"
+                          value={unavailableBadgeText}
+                          onChange={(e) => setUnavailableBadgeText(e.target.value)}
+                          placeholder="e.g. Made to Order, Unavailable, Sold Out"
+                          className="w-full px-3 py-2 rounded-xl bg-white text-[#2C2724] border border-[#D8C7B5] focus:outline-none focus:border-stone-600 text-xs font-semibold"
+                        />
+                        {/* Quick Presets */}
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {['Made to Order', 'Unavailable', 'Sold Out', 'Commission Only'].map((txt) => (
+                            <button
+                              key={txt}
+                              type="button"
+                              onClick={() => setUnavailableBadgeText(txt)}
+                              className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border transition-all cursor-pointer ${
+                                unavailableBadgeText === txt
+                                  ? 'bg-stone-700 text-white border-stone-800'
+                                  : 'bg-white hover:bg-stone-50 text-stone-900 border-stone-300'
+                              }`}
+                            >
+                              {txt}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right: Live Visual Badge Preview */}
+                    <div className="p-4 rounded-xl bg-white border border-emerald-200 flex flex-col justify-between space-y-3">
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-semibold text-xs text-[#2C2724]">
+                            Live Preview on Artwork Image
+                          </span>
+                          <span className="text-[10px] text-emerald-700 font-mono">
+                            Catalog & Gallery View
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#7D6B5D] mb-3">
+                          This is how the badge appears floating on this artwork photo on the public website:
+                        </p>
+
+                        <div className="relative aspect-square max-w-[200px] mx-auto rounded-xl overflow-hidden border-2 border-[#E0D2C2] bg-[#FAF7F2] p-2 flex items-center justify-center shadow-xs">
+                          <SafeProductImage
+                            src={images[0]?.storage_path}
+                            alt={name || 'Preview'}
+                            name={name || 'Preview'}
+                            sku={sku || 'DNA-PREVIEW'}
+                            category_slug={categories.find((c) => c.id === categoryId)?.slug}
+                            size="sm"
+                            className="w-full h-full"
+                          />
+                          {/* Live Badge Overlay */}
+                          {showAvailableBadge && (
+                            <div className="absolute top-2 left-2 z-10 flex items-center gap-1 flex-wrap">
+                              <span className="px-1.5 py-0.5 rounded bg-black/75 text-[9px] font-mono text-white/90 border border-white/20">
+                                {sku || 'SKU'}
+                              </span>
+                              <AvailableBadge
+                                isAvailable={isAvailable}
+                                badgeText={availableBadgeText}
+                                unavailableText={unavailableBadgeText}
+                                size="xs"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="text-center pt-2 border-t border-[#F0E5D8]">
+                        <span className="text-[11px] font-semibold text-emerald-800">
+                          Status: {isAvailable ? `Available ("${availableBadgeText || 'Available'}")` : `Unavailable ("${unavailableBadgeText || 'Made to Order'}")`}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* High Demand Toggle & Lead Time */}
+                <div className="grid grid-cols-1 gap-4">
                   <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 space-y-2">
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input

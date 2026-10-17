@@ -104,33 +104,50 @@ export const WhatsAppAttachmentModal: React.FC<WhatsAppAttachmentModalProps> = (
           </button>
 
           {/* Header */}
-          <div className="space-y-1.5 pr-8">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#25D366]/15 text-[#128C7E] flex items-center justify-center">
-                <MessageCircle className="w-4 h-4 fill-[#128C7E] text-white" />
-              </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-theme-accent">
-                Direct WhatsApp Order
-              </span>
-            </div>
-            <h3 className="font-serif text-2xl font-bold text-theme-primary">
-              {title}
-            </h3>
-            <p className="text-xs text-theme-muted leading-relaxed">
-              Order messaging directly connected to artist Shital Thosar ({DISPLAY_WHATSAPP_NUMBER}).
-            </p>
-          </div>
+          {(() => {
+            const isBespoke = title.toLowerCase().includes('commission') || title.toLowerCase().includes('bespoke');
+            return (
+              <>
+                <div className="space-y-1.5 pr-8">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-[#25D366]/15 text-[#128C7E] flex items-center justify-center">
+                      <MessageCircle className="w-4 h-4 fill-[#128C7E] text-white" />
+                    </div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-theme-accent">
+                      {isBespoke ? 'Bespoke WhatsApp Enquiry' : 'Direct WhatsApp Order'}
+                    </span>
+                  </div>
+                  <h3 className="font-serif text-2xl font-bold text-theme-primary">
+                    {title}
+                  </h3>
+                  <p className="text-xs text-theme-muted leading-relaxed">
+                    {isBespoke
+                      ? `Custom commission messaging directly connected to artist Shital Thosar (${DISPLAY_WHATSAPP_NUMBER}).`
+                      : `Order messaging directly connected to artist Shital Thosar (${DISPLAY_WHATSAPP_NUMBER}).`}
+                  </p>
+                </div>
 
-          {/* How to Send Instructions */}
-          <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-theme-primary space-y-2">
-            <div className="font-bold flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-sm">
-              <Sparkles className="w-4 h-4" />
-              <span>Direct WhatsApp Order:</span>
-            </div>
-            <p className="text-theme-primary text-xs leading-relaxed">
-              Your order details will be sent directly as a text message on WhatsApp. <strong>Order Suggestion:</strong> After placing order please download the images from the catalog and send to Shital once your communication channel is established.
-            </p>
-          </div>
+                {/* How to Send Instructions */}
+                <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-theme-primary space-y-2">
+                  <div className="font-bold flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-sm">
+                    <Sparkles className="w-4 h-4" />
+                    <span>{isBespoke ? 'Direct WhatsApp Enquiry:' : 'Direct WhatsApp Order:'}</span>
+                  </div>
+                  <p className="text-theme-primary text-xs leading-relaxed">
+                    {isBespoke ? (
+                      <>
+                        Your enquiry details will be sent directly as a text message on WhatsApp. <strong>Enquiry Suggestion:</strong> After placing enquiry please download the images from the catalog and send to Shital once your communication channel is established.
+                      </>
+                    ) : (
+                      <>
+                        Your order details will be sent directly as a text message on WhatsApp. <strong>Order Suggestion:</strong> After placing order please download the images from the catalog and send to Shital once your communication channel is established.
+                      </>
+                    )}
+                  </p>
+                </div>
+              </>
+            );
+          })()}
 
           {/* Attachments gallery strip */}
           {attachments.length > 0 && (
