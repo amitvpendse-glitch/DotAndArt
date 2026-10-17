@@ -296,7 +296,7 @@ export default function App() {
             <SideArtStreams side="left" onSelectProduct={handleSelectProduct} />
 
             {/* Central Main Stage: All page sections render naturally without forced block height extension */}
-            <main className="flex-1 min-w-0 w-full overflow-x-hidden">
+            <main id="main-stage-content" className="flex-1 min-w-0 w-full overflow-x-hidden">
               {renderCurrentPage()}
             </main>
 

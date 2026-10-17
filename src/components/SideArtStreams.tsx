@@ -7,8 +7,57 @@ interface SideArtStreamsProps {
   onSelectProduct?: (sku: string) => void;
 }
 
+// Helper to construct a seamless, rich infinite loop array with at least 64 items (~8,000px height)
+const createInfiniteLoop = (baseItems: Product[], minCount = 64): Product[] => {
+  if (!baseItems || baseItems.length === 0) return [];
+  let result: Product[] = [];
+  while (result.length < minCount) {
+    result = [...result, ...baseItems];
+  }
+  // Ensure even count for seamless keyframe loop resets
+  if (result.length % 2 !== 0) {
+    result = [...result, ...baseItems];
+  }
+  return result;
+};
+
 export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', onSelectProduct }) => {
   const [artworks, setArtworks] = useState<Product[]>([]);
+  const [stageHeight, setStageHeight] = useState<number | null>(null);
+
+  // Smart dynamic height observer matching exact main content height
+  useEffect(() => {
+    const mainEl = document.getElementById('main-stage-content');
+
+    const updateHeight = () => {
+      if (mainEl) {
+        setStageHeight(mainEl.clientHeight);
+      }
+    };
+
+    updateHeight();
+    const rafId = requestAnimationFrame(updateHeight);
+
+    let observer: ResizeObserver | null = null;
+    if (mainEl && typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(() => {
+        updateHeight();
+      });
+      observer.observe(mainEl);
+    }
+
+    window.addEventListener('resize', updateHeight);
+
+    // Fallback polling for asynchronous image / font layout shifts
+    const timer = setInterval(updateHeight, 1000);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (observer) observer.disconnect();
+      window.removeEventListener('resize', updateHeight);
+      clearInterval(timer);
+    };
+  }, []);
 
   useEffect(() => {
     safeFetchJson<{ products: Product[] }>('/api/products?limit=50', undefined, { products: [] })
@@ -37,9 +86,9 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
   const leftBase = mandalaItems.length > 0 ? mandalaItems : artworks;
   const rightBase = lippanItems.length > 0 ? lippanItems : artworks;
 
-  // Duplicate items for continuous looping animation
-  const leftLoop = [...leftBase, ...leftBase, ...leftBase, ...leftBase];
-  const rightLoop = [...rightBase, ...rightBase, ...rightBase, ...rightBase];
+  // Build rich 64+ item loops for both streams so they span full height and loop seamlessly
+  const leftLoop = createInfiniteLoop(leftBase, 64);
+  const rightLoop = createInfiniteLoop(rightBase, 64);
 
   const handleCardClick = (sku: string) => {
     if (onSelectProduct) {
@@ -50,24 +99,26 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
     }
   };
 
+  const dynamicStyle = stageHeight && stageHeight > 100 ? { height: `${stageHeight}px` } : { height: '100%' };
+
   return (
     <>
       {/* LEFT SIDE WATERFALL STREAM */}
       {(side === 'left' || side === 'both') && (
         <aside
-          className="hidden min-[1024px]:flex flex-col sticky top-20 self-start shrink-0 overflow-hidden pointer-events-none select-none z-20
+          style={dynamicStyle}
+          className="hidden min-[1024px]:flex flex-col shrink-0 overflow-hidden pointer-events-none select-none z-20
             w-16 lg:w-20 xl:w-28 2xl:w-36 3xl:w-44
-            h-[calc(100vh-5rem)]
             py-2 pl-1 lg:pl-2 xl:pl-3 2xl:pl-4 transition-all duration-300"
           aria-label="Mandala Art Stream"
         >
-          <div className="sticky top-0 z-10 text-[9px] lg:text-[10px] xl:text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-1.5 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
+          <div className="sticky top-20 z-10 text-[9px] lg:text-[10px] xl:text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-1.5 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
             Mandalas
           </div>
 
-          <div className="relative flex-1 overflow-hidden w-full h-full">
+          <div className="relative flex-1 overflow-hidden w-full h-full min-h-0">
             <div
-              className="flex flex-col gap-2.5 lg:gap-3 xl:gap-4 animate-waterfall-down pointer-events-auto"
+              className="flex flex-col gap-2.5 lg:gap-3 xl:gap-4 animate-waterfall-left pointer-events-auto"
               style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)' }}
             >
               {leftLoop.map((item, index) => {
@@ -110,19 +161,19 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
       {/* RIGHT SIDE WATERFALL STREAM */}
       {(side === 'right' || side === 'both') && (
         <aside
-          className="hidden min-[1024px]:flex flex-col sticky top-20 self-start shrink-0 overflow-hidden pointer-events-none select-none z-20
+          style={dynamicStyle}
+          className="hidden min-[1024px]:flex flex-col shrink-0 overflow-hidden pointer-events-none select-none z-20
             w-16 lg:w-20 xl:w-28 2xl:w-36 3xl:w-44
-            h-[calc(100vh-5rem)]
             py-2 pr-1 lg:pr-2 xl:pr-3 2xl:pr-4 transition-all duration-300"
           aria-label="Lippan Art Stream"
         >
-          <div className="sticky top-0 z-10 text-[9px] lg:text-[10px] xl:text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-1.5 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
+          <div className="sticky top-20 z-10 text-[9px] lg:text-[10px] xl:text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-1.5 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
             Lippan
           </div>
 
-          <div className="relative flex-1 overflow-hidden w-full h-full">
+          <div className="relative flex-1 overflow-hidden w-full h-full min-h-0">
             <div
-              className="flex flex-col gap-2.5 lg:gap-3 xl:gap-4 animate-waterfall-up pointer-events-auto"
+              className="flex flex-col gap-2.5 lg:gap-3 xl:gap-4 animate-waterfall-right pointer-events-auto"
               style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)' }}
             >
               {rightLoop.map((item, index) => {

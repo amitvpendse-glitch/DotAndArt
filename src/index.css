@@ -255,23 +255,24 @@ html {
 /* Waterfall Side Stream Animations (GPU Hardware Accelerated) */
 @keyframes waterfallDown {
   0% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, -50%, 0);
   }
   100% {
-    transform: translate3d(0, -50%, 0);
+    transform: translate3d(0, 0%, 0);
   }
 }
 
 @keyframes waterfallUp {
   0% {
-    transform: translate3d(0, -50%, 0);
+    transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, -50%, 0);
   }
 }
 
-.animate-waterfall-down {
+.animate-waterfall-down,
+.animate-waterfall-left {
   animation: waterfallDown 300s linear infinite;
   will-change: transform;
   transform: translate3d(0, 0, 0);
@@ -279,8 +280,9 @@ html {
   contain: layout paint;
 }
 
-.animate-waterfall-up {
-  animation: waterfallUp 50s linear infinite;
+.animate-waterfall-up,
+.animate-waterfall-right {
+  animation: waterfallUp 200s linear infinite;
   will-change: transform;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
@@ -288,6 +290,8 @@ html {
 }
 
 .animate-waterfall-down:hover,
-.animate-waterfall-up:hover {
+.animate-waterfall-up:hover,
+.animate-waterfall-left:hover,
+.animate-waterfall-right:hover {
   animation-play-state: paused;
 }
