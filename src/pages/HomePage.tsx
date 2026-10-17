@@ -54,6 +54,9 @@ export function HomePage({
       }
     }
     loadData();
+
+    window.addEventListener('app_products_updated', loadData);
+    return () => window.removeEventListener('app_products_updated', loadData);
   }, []);
 
   const featuredSec = cmsPage?.sections?.find(

@@ -182,12 +182,21 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
         });
 
         if (settings.whatsapp_number) {
-          setActiveWhatsAppNumber(settings.whatsapp_number);
+          setActiveWhatsAppNumber(settings.whatsapp_number, settings.whatsapp_display);
           try {
             localStorage.setItem('dot_whatsapp_number', settings.whatsapp_number);
+            if (settings.whatsapp_display) {
+              localStorage.setItem('dot_whatsapp_display', settings.whatsapp_display);
+            }
           } catch {}
         }
       }
+
+      // Always dispatch custom events for instant live reflection across the public site
+      if (settings) {
+        window.dispatchEvent(new CustomEvent('app_settings_updated', { detail: settings }));
+      }
+      window.dispatchEvent(new Event('app_pages_updated'));
 
       setSuccessMsg(
         activePage.slug === 'contact'

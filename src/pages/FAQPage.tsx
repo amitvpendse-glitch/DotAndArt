@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, MessageCircle, Sparkles, HelpCircle } from 'lucide-react';
 import { FAQ } from '../types';
-import { createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
+import { createWhatsAppUrl, getDisplayWhatsAppNumber, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 
@@ -41,7 +41,7 @@ export const FAQPage: React.FC = () => {
   const helpDesc =
     helpSec?.content_json?.description ||
     'We are just a message away. Reach out to the artist on WhatsApp for immediate answers regarding your bespoke requirements.';
-  const helpBtnText = helpSec?.content_json?.button_text || 'Chat on WhatsApp (+91 86521 62647)';
+  const helpBtnText = helpSec?.content_json?.button_text || `Chat on WhatsApp (${getDisplayWhatsAppNumber()})`;
 
   const categories = ['All', ...Array.from(new Set(faqs.map((f) => f.category)))];
 

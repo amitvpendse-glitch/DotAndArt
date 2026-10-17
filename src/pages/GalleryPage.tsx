@@ -20,8 +20,14 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
   const [zoomedProduct, setZoomedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    safeFetchJson<{ products: Product[] }>('/api/products', undefined, { products: [] })
-      .then((data) => setProducts(data.products || []));
+    const loadGalleryProducts = () => {
+      safeFetchJson<{ products: Product[] }>('/api/products', undefined, { products: [] })
+        .then((data) => setProducts(data.products || []));
+    };
+    loadGalleryProducts();
+
+    window.addEventListener('app_products_updated', loadGalleryProducts);
+    return () => window.removeEventListener('app_products_updated', loadGalleryProducts);
   }, []);
 
   const filtered = products.filter((p) => {

@@ -6,6 +6,7 @@ import {
   openExternalLink,
   createWhatsAppUrl,
   WhatsAppAttachmentItem,
+  getDisplayWhatsAppNumber,
 } from '../utils/whatsapp';
 import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
 import { CustomMandalaInquiry } from '../types';
@@ -415,7 +416,7 @@ export const CustomOrderPage: React.FC = () => {
               className="w-full py-4 px-6 rounded-full bg-theme-accent hover:opacity-90 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
             >
               <MessageCircle className="w-4 h-4 fill-white" />
-              <span>Submit & Open WhatsApp Enquiry (+91 86521 62647)</span>
+              <span>Submit & Open WhatsApp Enquiry ({getDisplayWhatsAppNumber()})</span>
             </button>
             <p className="text-[11px] text-theme-muted text-center mt-2.5">
               50% advance upon design approval • 50% prior to dispatch • Worldwide insured shipping

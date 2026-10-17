@@ -18,6 +18,7 @@ import {
   copyImageToClipboard,
   DISPLAY_WHATSAPP_NUMBER,
   BUSINESS_WHATSAPP_NUMBER,
+  getDisplayWhatsAppNumber,
 } from '../utils/whatsapp';
 
 interface WhatsAppAttachmentModalProps {
@@ -122,8 +123,8 @@ export const WhatsAppAttachmentModal: React.FC<WhatsAppAttachmentModalProps> = (
                   </h3>
                   <p className="text-xs text-theme-muted leading-relaxed">
                     {isBespoke
-                      ? `Custom commission messaging directly connected to artist Shital Thosar (${DISPLAY_WHATSAPP_NUMBER}).`
-                      : `Order messaging directly connected to artist Shital Thosar (${DISPLAY_WHATSAPP_NUMBER}).`}
+                      ? `Custom commission messaging directly connected to artist Shital Thosar (${getDisplayWhatsAppNumber()}).`
+                      : `Order messaging directly connected to artist Shital Thosar (${getDisplayWhatsAppNumber()}).`}
                   </p>
                 </div>
 
@@ -232,7 +233,7 @@ export const WhatsAppAttachmentModal: React.FC<WhatsAppAttachmentModalProps> = (
               className="w-full py-3.5 px-6 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
             >
               <MessageCircle className="w-4 h-4 fill-white" />
-              <span>Open WhatsApp Chat ({DISPLAY_WHATSAPP_NUMBER})</span>
+              <span>Open WhatsApp Chat ({getDisplayWhatsAppNumber()})</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
 

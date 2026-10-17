@@ -5,11 +5,12 @@ export const BUSINESS_WHATSAPP_NUMBER = '918652162647';
 export const DISPLAY_WHATSAPP_NUMBER = '+91 86521 62647';
 
 let _activeNumber = BUSINESS_WHATSAPP_NUMBER;
+let _displayNumber = DISPLAY_WHATSAPP_NUMBER;
 
-export function setActiveWhatsAppNumber(num: string): void {
+export function setActiveWhatsAppNumber(num: string, display?: string): void {
   if (num && num.trim()) {
     const clean = num.replace(/[^0-9]/g, '');
-    if (clean.length >= 10) {
+    if (clean.length >= 8) {
       _activeNumber = clean;
       if (typeof window !== 'undefined') {
         try {
@@ -20,13 +21,25 @@ export function setActiveWhatsAppNumber(num: string): void {
       }
     }
   }
+  if (display && display.trim()) {
+    _displayNumber = display.trim();
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('dot_whatsapp_display', display.trim());
+      } catch {
+        // ignore
+      }
+    }
+  } else if (num && num.trim()) {
+    _displayNumber = num.trim();
+  }
 }
 
 export function getActiveWhatsAppNumber(): string {
   if (typeof window !== 'undefined') {
     try {
       const stored = localStorage.getItem('dot_whatsapp_number');
-      if (stored && stored.replace(/[^0-9]/g, '').length >= 10) {
+      if (stored && stored.replace(/[^0-9]/g, '').length >= 8) {
         return stored.replace(/[^0-9]/g, '');
       }
     } catch {
@@ -34,6 +47,26 @@ export function getActiveWhatsAppNumber(): string {
     }
   }
   return _activeNumber || BUSINESS_WHATSAPP_NUMBER;
+}
+
+export function getDisplayWhatsAppNumber(settings?: any): string {
+  if (settings?.whatsapp_display && settings.whatsapp_display.trim()) {
+    return settings.whatsapp_display.trim();
+  }
+  if (settings?.whatsapp_number && settings.whatsapp_number.trim()) {
+    return settings.whatsapp_number.trim();
+  }
+  if (typeof window !== 'undefined') {
+    try {
+      const storedDisp = localStorage.getItem('dot_whatsapp_display');
+      if (storedDisp && storedDisp.trim()) return storedDisp.trim();
+      const storedNum = localStorage.getItem('dot_whatsapp_number');
+      if (storedNum && storedNum.trim()) return storedNum.trim();
+    } catch {
+      // ignore
+    }
+  }
+  return _displayNumber || DISPLAY_WHATSAPP_NUMBER;
 }
 
 export interface WhatsAppAttachmentItem {

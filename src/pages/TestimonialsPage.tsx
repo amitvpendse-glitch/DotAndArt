@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Star, MessageCircle, Sparkles } from 'lucide-react';
 import { Testimonial } from '../types';
-import { createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
+import { createWhatsAppUrl, getDisplayWhatsAppNumber, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 
@@ -74,7 +74,7 @@ export const TestimonialsPage: React.FC = () => {
             className="px-6 py-3 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-xs cursor-pointer"
           >
             <MessageCircle className="w-4 h-4 fill-white" />
-            <span>Chat on WhatsApp (+91 86521 62647)</span>
+            <span>Chat on WhatsApp ({getDisplayWhatsAppNumber()})</span>
           </button>
         </div>
       </div>

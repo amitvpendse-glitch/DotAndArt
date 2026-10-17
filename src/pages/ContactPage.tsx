@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MessageCircle, Mail, Instagram, Facebook, Send, CheckCircle2, MapPin } from 'lucide-react';
 import { WebsiteSettings } from '../types';
-import { createWhatsAppUrl, DISPLAY_WHATSAPP_NUMBER, openExternalLink } from '../utils/whatsapp';
+import { createWhatsAppUrl, DISPLAY_WHATSAPP_NUMBER, getDisplayWhatsAppNumber, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 
@@ -14,10 +14,25 @@ export const ContactPage: React.FC = () => {
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
-    safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null)
-      .then((settingsData) => {
-        if (settingsData) setSettings(settingsData);
-      });
+    const loadSettings = () => {
+      safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null)
+        .then((settingsData) => {
+          if (settingsData) setSettings(settingsData);
+        });
+    };
+    loadSettings();
+
+    const handleSettingsUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<WebsiteSettings>;
+      if (customEvent.detail && typeof customEvent.detail === 'object') {
+        setSettings(customEvent.detail);
+      } else {
+        loadSettings();
+      }
+    };
+
+    window.addEventListener('app_settings_updated', handleSettingsUpdate);
+    return () => window.removeEventListener('app_settings_updated', handleSettingsUpdate);
   }, []);
 
   const headerSec = cmsPage?.sections?.find(
@@ -195,7 +210,7 @@ export const ContactPage: React.FC = () => {
               className="w-full py-3.5 px-6 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer"
             >
               <MessageCircle className="w-4 h-4 fill-white" />
-              <span>Connect on WhatsApp (+91 86521 62647)</span>
+              <span>Connect on WhatsApp ({getDisplayWhatsAppNumber(settings)})</span>
             </button>
           </form>
         </div>

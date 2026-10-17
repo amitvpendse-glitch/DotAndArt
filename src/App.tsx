@@ -89,17 +89,36 @@ export default function App() {
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  // Fetch website settings
+  // Fetch website settings & listen for live updates
   useEffect(() => {
-    safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null)
-      .then((data) => {
-        if (data) {
-          setSettings(data);
-          if (data.whatsapp_number) {
-            setActiveWhatsAppNumber(data.whatsapp_number);
+    const fetchSettings = () => {
+      safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null)
+        .then((data) => {
+          if (data) {
+            setSettings(data);
+            if (data.whatsapp_number) {
+              setActiveWhatsAppNumber(data.whatsapp_number, data.whatsapp_display);
+            }
           }
+        });
+    };
+
+    fetchSettings();
+
+    const handleSettingsUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<WebsiteSettings>;
+      if (customEvent.detail && typeof customEvent.detail === 'object') {
+        setSettings(customEvent.detail);
+        if (customEvent.detail.whatsapp_number) {
+          setActiveWhatsAppNumber(customEvent.detail.whatsapp_number, customEvent.detail.whatsapp_display);
         }
-      });
+      } else {
+        fetchSettings();
+      }
+    };
+
+    window.addEventListener('app_settings_updated', handleSettingsUpdate);
+    return () => window.removeEventListener('app_settings_updated', handleSettingsUpdate);
   }, []);
 
   // Check admin session on mount

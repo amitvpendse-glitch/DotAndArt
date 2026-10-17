@@ -30,6 +30,7 @@ import {
   collectAttachmentsForProduct,
   downloadArtworkImage,
   WhatsAppAttachmentItem,
+  getDisplayWhatsAppNumber,
 } from '../utils/whatsapp';
 import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
 
@@ -461,7 +462,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               className="w-full py-3.5 px-6 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2.5 cursor-pointer"
             >
               <MessageCircle className="w-4 h-4 fill-white" />
-              <span>Enquire on WhatsApp (+91 86521 62647)</span>
+              <span>Enquire on WhatsApp ({getDisplayWhatsAppNumber()})</span>
             </button>
 
             {(() => {

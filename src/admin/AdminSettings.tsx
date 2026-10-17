@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Save, CheckCircle2, AlertCircle, Sparkles, UploadCloud, ImageIcon } from 'lucide-react';
 import { WebsiteSettings, Product } from '../types';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
+import { setActiveWhatsAppNumber } from '../utils/whatsapp';
 
 interface AdminSettingsProps {
   token: string;
@@ -61,6 +62,11 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
       );
 
       if (data) {
+        if (data.whatsapp_number) {
+          setActiveWhatsAppNumber(data.whatsapp_number, data.whatsapp_display);
+        }
+        window.dispatchEvent(new CustomEvent('app_settings_updated', { detail: data }));
+        window.dispatchEvent(new Event('app_pages_updated'));
         setSuccessMsg('Website settings and 3D Banner configuration updated successfully.');
       } else {
         setErrorMsg('Failed to update website settings.');

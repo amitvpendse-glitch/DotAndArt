@@ -360,6 +360,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
 
       setDrawerOpen(false);
       fetchProductsAndCategories();
+      window.dispatchEvent(new Event('app_products_updated'));
     } catch {
       setErrorMessage('Network error while saving product.');
     }
@@ -373,6 +374,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
       });
       if (res.ok) {
         fetchProductsAndCategories();
+        window.dispatchEvent(new Event('app_products_updated'));
       }
     } catch (err) {
       console.error(err);
@@ -389,6 +391,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
       if (res.ok) {
         setDeleteConfirm(null);
         fetchProductsAndCategories();
+        window.dispatchEvent(new Event('app_products_updated'));
       }
     } catch (err) {
       console.error(err);
@@ -411,6 +414,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
     setProducts((prev) =>
       prev.map((item) => (item.id === p.id ? { ...item, [field]: nextVal } : item))
     );
+    window.dispatchEvent(new Event('app_products_updated'));
 
     try {
       await fetch(`/api/admin/products/${p.id}`, {

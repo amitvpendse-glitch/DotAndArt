@@ -67,16 +67,32 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   }, [initialCategory]);
 
   useEffect(() => {
-    safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null).then((s) => {
-      if (s) setSettings(s);
-    });
+    const loadSettingsAndCategories = () => {
+      safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null).then((s) => {
+        if (s) setSettings(s);
+      });
 
-    safeFetchJson<any>('/api/categories', undefined, null).then((catRes) => {
-      const catList = Array.isArray(catRes) ? catRes : (catRes?.categories || []);
-      if (Array.isArray(catList) && catList.length > 0) {
-        setCategories(catList);
+      safeFetchJson<any>('/api/categories', undefined, null).then((catRes) => {
+        const catList = Array.isArray(catRes) ? catRes : (catRes?.categories || []);
+        if (Array.isArray(catList) && catList.length > 0) {
+          setCategories(catList);
+        }
+      });
+    };
+
+    loadSettingsAndCategories();
+
+    const handleSettingsUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<WebsiteSettings>;
+      if (customEvent.detail && typeof customEvent.detail === 'object') {
+        setSettings(customEvent.detail);
+      } else {
+        loadSettingsAndCategories();
       }
-    });
+    };
+
+    window.addEventListener('app_settings_updated', handleSettingsUpdate);
+    return () => window.removeEventListener('app_settings_updated', handleSettingsUpdate);
   }, []);
 
   useEffect(() => {
@@ -114,6 +130,9 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
     }
 
     fetchProducts();
+
+    window.addEventListener('app_products_updated', fetchProducts);
+    return () => window.removeEventListener('app_products_updated', fetchProducts);
   }, [selectedCategory, searchQuery, selectedSizeFilter, priceTier, sortBy]);
 
   const displayedProducts = products;

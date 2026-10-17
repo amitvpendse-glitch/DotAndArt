@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { WebsitePage } from '../types';
+import { WebsitePage, WebsiteSettings } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 
@@ -9,6 +9,13 @@ interface LegalPageProps {
 
 export const LegalPage: React.FC<LegalPageProps> = ({ slug }) => {
   const { page, loading } = usePageSeo(slug, `${slug.replace(/-/g, ' ')} — Dot And Art`);
+  const [settings, setSettings] = useState<WebsiteSettings | null>(null);
+
+  useEffect(() => {
+    safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null).then((data) => {
+      if (data) setSettings(data);
+    });
+  }, []);
 
   if (loading) {
     return (
@@ -52,7 +59,7 @@ export const LegalPage: React.FC<LegalPageProps> = ({ slug }) => {
           ))}
 
         <div className="pt-6 border-t border-[#F0E5D8] text-[11px] text-[#8C7667] italic">
-          Disclaimer: This policy document represents editable studio terms and conditions for Dot And Art and is subject to updates. For any questions, please contact shitalthosar@yahoo.com.
+          Disclaimer: This policy document represents editable studio terms and conditions for {settings?.business_name || 'Dot And Art'} and is subject to updates. For any questions, please contact <a href={`mailto:${settings?.email || 'shitalthosar@yahoo.com'}`} className="underline hover:text-[#A03E1B]">{settings?.email || 'shitalthosar@yahoo.com'}</a>.
         </div>
       </div>
     </div>
