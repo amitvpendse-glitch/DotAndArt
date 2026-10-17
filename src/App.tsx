@@ -291,7 +291,7 @@ export default function App() {
           />
 
           {/* Unified Responsive Stage: Side streams and main sections resize seamlessly with 0% overlap */}
-          <div className="flex-1 flex w-full relative justify-center items-start">
+          <div className="flex-1 flex w-full relative justify-center items-stretch">
             {/* Left Waterfall Stream */}
             <SideArtStreams side="left" onSelectProduct={handleSelectProduct} />
 

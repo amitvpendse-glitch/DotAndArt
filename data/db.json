@@ -4,7 +4,7 @@
     "pin_hash": "9c82a5e26b9ec4902f21e17a82761691b0eba9fbf5677cb4d0101413459ddd3a342756f5da74a394063d6482492dbf5fccefbe16e5041d8ebdb03f47e6714d56",
     "salt": "e3e4e2d3b316cd7756be024a0dfe6bb7",
     "updated_at": "2026-10-10T01:34:56.072Z",
-    "last_login_at": "2026-10-17T03:57:31.266Z"
+    "last_login_at": "2026-10-17T04:04:34.347Z"
   },
   "sessions": [
     {
@@ -42,6 +42,12 @@
       "admin_username": "admin",
       "expires_at": 1792216651292,
       "created_at": "2026-10-17T03:57:31.266Z"
+    },
+    {
+      "token_hash": "654688f2c1e7d815af228b7c214855f6f50665154d6265ab61fd46267835ea46",
+      "admin_username": "admin",
+      "expires_at": 1792217074372,
+      "created_at": "2026-10-17T04:04:34.347Z"
     }
   ],
   "categories": [
@@ -3734,7 +3740,7 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2026-10-17T03:57:31.296Z"
+      "updated_at": "2026-10-17T04:04:34.376Z"
     },
     {
       "id": "page-shipping-policy",
@@ -3928,6 +3934,38 @@
     }
   },
   "audit_logs": [
+    {
+      "id": "log-1792209874377-0e751150",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "Contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-17T04:04:34.377Z"
+    },
+    {
+      "id": "log-1792209874360-0855a76d",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-17T04:04:34.360Z"
+    },
+    {
+      "id": "log-1792209874349-469621b5",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-17T04:04:34.349Z"
+    },
     {
       "id": "log-1792209451297-afab6452",
       "admin_user_id": "admin",

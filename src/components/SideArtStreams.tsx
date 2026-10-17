@@ -11,7 +11,7 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
   const [artworks, setArtworks] = useState<Product[]>([]);
 
   useEffect(() => {
-    safeFetchJson<{ products: Product[] }>('/api/products?limit=24', undefined, { products: [] })
+    safeFetchJson<{ products: Product[] }>('/api/products?limit=50', undefined, { products: [] })
       .then((res) => {
         if (res && res.products && res.products.length > 0) {
           setArtworks(res.products);
@@ -22,24 +22,24 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
       });
   }, []);
 
-  if (!artworks || artworks.length < 4) {
+  if (!artworks || artworks.length < 2) {
     return null;
   }
 
-  // Filter or partition into Mandala (left) and Lippan (right) groups (up to 8 items each)
-  const mandalaItems = artworks
-    .filter((p) => !p.category_slug?.includes('lippan') && !p.name.toLowerCase().includes('lippan'))
-    .slice(0, 8);
-  const lippanItems = artworks
-    .filter((p) => p.category_slug?.includes('lippan') || p.name.toLowerCase().includes('lippan'))
-    .slice(0, 8);
+  // Separate into Mandalas (left) and Lippan (right) groups
+  const mandalaItems = artworks.filter(
+    (p) => !p.category_slug?.includes('lippan') && !p.name.toLowerCase().includes('lippan')
+  );
+  const lippanItems = artworks.filter(
+    (p) => p.category_slug?.includes('lippan') || p.name.toLowerCase().includes('lippan')
+  );
 
-  const leftGroup = mandalaItems.length >= 3 ? mandalaItems : artworks.slice(0, Math.ceil(artworks.length / 2)).slice(0, 8);
-  const rightGroup = lippanItems.length >= 3 ? lippanItems : artworks.slice(Math.ceil(artworks.length / 2)).slice(0, 8);
+  const leftBase = mandalaItems.length > 0 ? mandalaItems : artworks;
+  const rightBase = lippanItems.length > 0 ? lippanItems : artworks;
 
-  // Duplicate once for seamless 50% infinite keyframe loop (reduces DOM nodes by 60%)
-  const leftLoop = [...leftGroup, ...leftGroup];
-  const rightLoop = [...rightGroup, ...rightGroup];
+  // Multiply base items 8x so the stream contains 50+ items and covers the entire vertical length of any webpage down to the footer
+  const leftLoop = [...leftBase, ...leftBase, ...leftBase, ...leftBase, ...leftBase, ...leftBase, ...leftBase, ...leftBase];
+  const rightLoop = [...rightBase, ...rightBase, ...rightBase, ...rightBase, ...rightBase, ...rightBase, ...rightBase, ...rightBase];
 
   const handleCardClick = (sku: string) => {
     if (onSelectProduct) {
@@ -55,22 +55,18 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
       {/* LEFT SIDE WATERFALL STREAM */}
       {(side === 'left' || side === 'both') && (
         <aside
-          className="hidden min-[1024px]:flex flex-col sticky top-20 self-start shrink-0 overflow-hidden pointer-events-none select-none z-20
+          className="hidden min-[1024px]:flex flex-col h-full shrink-0 overflow-hidden pointer-events-none select-none z-20
             w-16 lg:w-20 xl:w-28 2xl:w-36 3xl:w-44
-            h-[calc(100vh-5.5rem)]
-            py-2 pl-1 lg:pl-2 xl:pl-3 2xl:pl-4 transition-all duration-300"
+            py-3 pl-1 lg:pl-2 xl:pl-3 2xl:pl-4 transition-all duration-300"
           aria-label="Mandala Art Stream"
         >
-          <div className="text-[9px] lg:text-[10px] xl:text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-1.5 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
+          <div className="sticky top-20 z-10 text-[9px] lg:text-[10px] xl:text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-3 py-1 px-1.5 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-sm truncate">
             Mandalas
           </div>
 
-          <div
-            className="relative flex-1 overflow-hidden rounded-xl lg:rounded-2xl border border-theme-glass/60 bg-theme-page/40 p-1 lg:p-1.5 xl:p-2"
-            style={{ contain: 'strict' }}
-          >
+          <div className="relative flex-1 overflow-hidden w-full h-full">
             <div
-              className="flex flex-col gap-2.5 lg:gap-3 xl:gap-4 animate-waterfall-down pointer-events-auto"
+              className="flex flex-col gap-2.5 lg:gap-3 xl:gap-4 animate-waterfall-down pointer-events-auto min-h-full"
               style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)' }}
             >
               {leftLoop.map((item, index) => {
@@ -81,15 +77,14 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
                   <div
                     key={`left-${item.id}-${index}`}
                     onClick={() => handleCardClick(item.sku)}
-                    className="group relative aspect-square rounded-xl lg:rounded-2xl overflow-hidden border border-theme-glass bg-theme-card shadow-sm cursor-pointer hover:scale-105 transition-transform duration-200 flex items-center justify-center p-1 lg:p-1.5"
+                    className="group relative aspect-square rounded-xl lg:rounded-2xl overflow-hidden border border-theme-glass/80 bg-theme-card/90 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-200 flex items-center justify-center p-1 lg:p-1.5"
                     title={`${item.name} — ₹${item.base_price.toLocaleString('en-IN')}`}
                   >
                     <img
                       src={thumbUrl}
                       alt={item.name}
-                      loading={index < 3 ? 'eager' : 'lazy'}
+                      loading={index < 4 ? 'eager' : 'lazy'}
                       decoding="async"
-                      fetchPriority="low"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         if (e.currentTarget.src !== fullUrl) {
@@ -114,22 +109,18 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
       {/* RIGHT SIDE WATERFALL STREAM */}
       {(side === 'right' || side === 'both') && (
         <aside
-          className="hidden min-[1024px]:flex flex-col sticky top-20 self-start shrink-0 overflow-hidden pointer-events-none select-none z-20
+          className="hidden min-[1024px]:flex flex-col h-full shrink-0 overflow-hidden pointer-events-none select-none z-20
             w-16 lg:w-20 xl:w-28 2xl:w-36 3xl:w-44
-            h-[calc(100vh-5.5rem)]
-            py-2 pr-1 lg:pr-2 xl:pr-3 2xl:pr-4 transition-all duration-300"
+            py-3 pr-1 lg:pr-2 xl:pr-3 2xl:pr-4 transition-all duration-300"
           aria-label="Lippan Art Stream"
         >
-          <div className="text-[9px] lg:text-[10px] xl:text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-2 py-1 px-1.5 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-xs truncate">
+          <div className="sticky top-20 z-10 text-[9px] lg:text-[10px] xl:text-[11px] uppercase font-bold tracking-wider text-center text-theme-muted mb-3 py-1 px-1.5 bg-theme-glass/90 rounded-full border border-theme-glass pointer-events-auto shadow-sm truncate">
             Lippan
           </div>
 
-          <div
-            className="relative flex-1 overflow-hidden rounded-xl lg:rounded-2xl border border-theme-glass/60 bg-theme-page/40 p-1 lg:p-1.5 xl:p-2"
-            style={{ contain: 'strict' }}
-          >
+          <div className="relative flex-1 overflow-hidden w-full h-full">
             <div
-              className="flex flex-col gap-2.5 lg:gap-3 xl:gap-4 animate-waterfall-up pointer-events-auto"
+              className="flex flex-col gap-2.5 lg:gap-3 xl:gap-4 animate-waterfall-up pointer-events-auto min-h-full"
               style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)' }}
             >
               {rightLoop.map((item, index) => {
@@ -140,15 +131,14 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
                   <div
                     key={`right-${item.id}-${index}`}
                     onClick={() => handleCardClick(item.sku)}
-                    className="group relative aspect-square rounded-xl lg:rounded-2xl overflow-hidden border border-theme-glass bg-theme-card shadow-sm cursor-pointer hover:scale-105 transition-transform duration-200 flex items-center justify-center p-1 lg:p-1.5"
+                    className="group relative aspect-square rounded-xl lg:rounded-2xl overflow-hidden border border-theme-glass/80 bg-theme-card/90 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-200 flex items-center justify-center p-1 lg:p-1.5"
                     title={`${item.name} — ₹${item.base_price.toLocaleString('en-IN')}`}
                   >
                     <img
                       src={thumbUrl}
                       alt={item.name}
-                      loading={index < 3 ? 'eager' : 'lazy'}
+                      loading={index < 4 ? 'eager' : 'lazy'}
                       decoding="async"
-                      fetchPriority="low"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         if (e.currentTarget.src !== fullUrl) {
