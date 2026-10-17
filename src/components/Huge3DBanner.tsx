@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, ArrowRight, MessageCircle, Eye, Compass, Layers, ZoomIn, X, Settings, Check, UploadCloud, ImageIcon } from 'lucide-react';
+import { Sparkles, ArrowRight, MessageCircle, Eye, Compass, Layers, ZoomIn, X, Check } from 'lucide-react';
 import { createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
 import { Product } from '../types';
-import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
+import { safeFetchJson } from '../lib/safeFetch';
 import { useTheme } from '../context/ThemeContext';
 
 interface Huge3DBannerProps {
@@ -23,33 +23,17 @@ export const Huge3DBanner: React.FC<Huge3DBannerProps> = ({ onSelectProduct, onN
   // Dynamic 3D Artwork state
   const [featuredSku, setFeaturedSku] = useState('DA-MD-24-0001');
   const [customBannerImage, setCustomBannerImage] = useState<string | null>(null);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
-    return !!localStorage.getItem('dot_admin_token');
-  });
-  const [savingSettings, setSavingSettings] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     async function loadBannerData() {
       try {
-        const token = localStorage.getItem('dot_admin_token');
-        const [settingsRes, prodRes, sessionRes] = await Promise.all([
+        const [settingsRes, prodRes] = await Promise.all([
           safeFetchJson<{ featured_3d_sku?: string; featured_3d_image?: string }>('/api/settings', undefined, {}),
           safeFetchJson<{ products: Product[] }>('/api/products', undefined, { products: [] }),
-          token
-            ? safeFetchJson<{ authenticated: boolean }>('/api/admin/check', {
-                headers: { Authorization: `Bearer ${token}` },
-              }, { authenticated: false })
-            : Promise.resolve({ authenticated: false }),
         ]);
 
         const prods = prodRes?.products || [];
-        setAllProducts(prods);
-        setIsAdminLoggedIn(!!sessionRes?.authenticated || !!token);
-
         const skuToUse = settingsRes?.featured_3d_sku || 'DA-MD-24-0001';
         setFeaturedSku(skuToUse);
 
@@ -84,88 +68,6 @@ export const Huge3DBanner: React.FC<Huge3DBannerProps> = ({ onSelectProduct, onN
     }
     loadBannerData();
   }, []);
-
-  const handleAdminSaveBanner = async (newSku: string, newImage?: string) => {
-    setFeaturedSku(newSku);
-    if (newImage !== undefined) {
-      setCustomBannerImage(newImage);
-    }
-
-    const found = allProducts.find((p) => p.sku === newSku);
-    if (found) {
-      const activeImg = newImage || customBannerImage || found.images?.[0]?.storage_path;
-      if (activeImg) {
-        setActiveProduct({
-          ...found,
-          images: [
-            {
-              id: 'img-custom-3d',
-              product_id: found.id,
-              storage_path: activeImg,
-              is_primary: true,
-              display_order: 1,
-              created_at: new Date().toISOString(),
-            },
-            ...(found.images || []),
-          ],
-        });
-      } else {
-        setActiveProduct(found);
-      }
-    }
-
-    const token = localStorage.getItem('dot_admin_token');
-    if (token) {
-      setSavingSettings(true);
-      try {
-        const body: Record<string, string> = { featured_3d_sku: newSku };
-        if (newImage !== undefined) {
-          body.featured_3d_image = newImage;
-        } else if (customBannerImage) {
-          body.featured_3d_image = customBannerImage;
-        }
-
-        await fetch('/api/admin/settings', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(body),
-        });
-      } catch (err) {
-        console.error('Failed to save 3D banner artwork', err);
-      } finally {
-        setSavingSettings(false);
-      }
-    }
-  };
-
-  const handleFileUpload = async (file: File) => {
-    const token = localStorage.getItem('dot_admin_token');
-    if (!token) return;
-
-    setUploadingImage(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/uploads', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-
-      const data = await safeResponseJson(res, {});
-      if (res.ok && data.url) {
-        setCustomBannerImage(data.url);
-        await handleAdminSaveBanner(featuredSku, data.url);
-      }
-    } catch (err) {
-      console.error('Error uploading 3D banner image', err);
-    } finally {
-      setUploadingImage(false);
-    }
-  };
 
   // Image source resolution
   const primaryImg = activeProduct?.images?.find((i) => i.is_primary) || activeProduct?.images?.[0];
@@ -352,23 +254,12 @@ export const Huge3DBanner: React.FC<Huge3DBannerProps> = ({ onSelectProduct, onN
             {/* Left Column: ARTWORK METADATA & STORY */}
             <div className="lg:col-span-6 space-y-6 text-center lg:text-left order-2 lg:order-1">
               
-              {/* Badge & Admin Trigger */}
+              {/* Badge */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
                 <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full ${style.badgeBg} border text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-xs transition-colors duration-500`}>
                   <Sparkles className={`w-3.5 h-3.5 ${style.badgeIcon}`} />
                   <span>Featured 3D Masterpiece</span>
                 </span>
-
-                {isAdminLoggedIn && (
-                  <button
-                    onClick={() => setIsAdminOpen(true)}
-                    className="px-3 py-1.5 rounded-full bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/50 text-[11px] font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
-                    title="Admin: Change 3D Banner Artwork"
-                  >
-                    <Settings className="w-3.5 h-3.5 text-amber-300" />
-                    <span>Change 3D Banner Image</span>
-                  </button>
-                )}
               </div>
 
               {/* Title & Headline */}
@@ -528,146 +419,6 @@ export const Huge3DBanner: React.FC<Huge3DBannerProps> = ({ onSelectProduct, onN
           </div>
         </div>
       </section>
-
-      {/* ADMIN / USER 3D MANDALA SELECTOR MODAL */}
-      {isAdminOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
-          <div className="relative max-w-xl w-full glass-panel rounded-3xl p-6 shadow-2xl border border-white/60 space-y-5 bg-white/95 text-slate-900">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-              <div className="flex items-center gap-2">
-                <Settings className="w-5 h-5 text-[#C85A32]" />
-                <div>
-                  <h3 className="font-serif text-lg font-bold">Change 3D Banner Artwork</h3>
-                  <p className="text-xs text-slate-500">Pick any catalog product or upload a custom image for the 3D banner</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsAdminOpen(false)}
-                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Custom Image Upload Section */}
-            <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
-                  <ImageIcon className="w-4 h-4 text-[#C85A32]" />
-                  <span>Upload Custom 3D Banner Image:</span>
-                </span>
-                {customBannerImage && (
-                  <button
-                    onClick={() => {
-                      setCustomBannerImage(null);
-                      handleAdminSaveBanner(featuredSku, '');
-                    }}
-                    className="text-[10px] text-red-600 hover:underline cursor-pointer font-medium"
-                  >
-                    Reset to Default Catalog Image
-                  </button>
-                )}
-              </div>
-
-              <div className="flex items-center gap-3">
-                <input
-                  type="text"
-                  value={customBannerImage || ''}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setCustomBannerImage(val);
-                    handleAdminSaveBanner(featuredSku, val);
-                  }}
-                  placeholder="/uploads/my-3d-artwork.jpg or https://..."
-                  className="flex-1 px-3.5 py-2 rounded-xl bg-white border border-amber-200 text-xs text-slate-800 font-mono"
-                />
-
-                <label className="px-4 py-2 rounded-xl bg-[#C85A32] hover:bg-[#A03E1B] text-white text-xs font-semibold flex items-center gap-1.5 cursor-pointer shrink-0 transition-colors shadow-2xs">
-                  {uploadingImage ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <UploadCloud className="w-4 h-4" />
-                  )}
-                  <span>{uploadingImage ? 'Uploading...' : 'Upload File'}</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    disabled={uploadingImage}
-                    onChange={(e) => {
-                      if (e.target.files?.[0]) {
-                        handleFileUpload(e.target.files[0]);
-                      }
-                    }}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-            </div>
-
-            {/* Product Catalog List Selection */}
-            <div className="space-y-2">
-              <span className="text-xs font-bold text-slate-700 block">
-                Or Select Product Artwork from Catalog:
-              </span>
-
-              <div className="max-h-[40vh] overflow-y-auto space-y-2 pr-1">
-                {allProducts.map((p) => {
-                  const isSelected = p.sku === featuredSku && !customBannerImage;
-                  const pImg = p.images?.find((i) => i.is_primary) || p.images?.[0];
-                  return (
-                    <button
-                      key={p.id}
-                      onClick={() => {
-                        setCustomBannerImage(null);
-                        handleAdminSaveBanner(p.sku, '');
-                      }}
-                      className={`w-full text-left p-3 rounded-xl border flex items-center gap-3 transition-all cursor-pointer ${
-                        isSelected
-                          ? 'bg-[#C85A32]/10 border-[#C85A32] ring-1 ring-[#C85A32]'
-                          : 'bg-white border-slate-200 hover:bg-slate-50'
-                      }`}
-                    >
-                      <img
-                        src={pImg?.storage_path || `/static/assets/images/${p.sku}.jpg`}
-                        onError={(e) => {
-                          e.currentTarget.src = `/static/assets/images/${p.sku}.jpg`;
-                        }}
-                        alt={p.name}
-                        className="w-12 h-12 rounded-lg object-cover border border-slate-200 shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="font-mono text-[11px] font-bold text-[#C85A32]">{p.sku}</span>
-                          <span className="font-serif text-xs font-bold text-slate-700">₹{p.base_price.toLocaleString('en-IN')}</span>
-                        </div>
-                        <h4 className="text-xs font-semibold text-slate-900 truncate">{p.name}</h4>
-                        <p className="text-[10px] text-slate-500">{p.base_size}</p>
-                      </div>
-                      {isSelected && (
-                        <div className="w-6 h-6 rounded-full bg-[#C85A32] text-white flex items-center justify-center shrink-0">
-                          <Check className="w-3.5 h-3.5" />
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="pt-2 flex items-center justify-between border-t border-slate-200">
-              <span className="text-[11px] text-slate-500">
-                {savingSettings ? 'Saving to Database...' : `Active Artwork: ${featuredSku}`}
-              </span>
-              <button
-                onClick={() => setIsAdminOpen(false)}
-                className="px-5 py-2 rounded-full bg-[#2C2724] text-white text-xs font-semibold hover:bg-black transition-colors cursor-pointer"
-              >
-                Save & Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* FULL-RESOLUTION DETAIL ZOOM MODAL */}
       {isZoomModalOpen && (

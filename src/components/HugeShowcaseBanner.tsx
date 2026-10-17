@@ -15,16 +15,10 @@ import {
   Info,
   Maximize2,
   Compass,
-  Edit,
-  UploadCloud,
-  Save,
-  CheckCircle2,
-  AlertCircle,
-  Settings,
   Download,
 } from 'lucide-react';
 import { Product, WebsiteSettings } from '../types';
-import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
+import { safeFetchJson } from '../lib/safeFetch';
 import { useTheme } from '../context/ThemeContext';
 import { useCart } from '../context/CartContext';
 import {
@@ -154,29 +148,6 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
   const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(DEFAULT_HOTSPOTS[0]);
   const [showHotspots, setShowHotspots] = useState(true);
 
-  // Admin Quick Edit Modal State
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [adminToken, setAdminToken] = useState<string | null>(null);
-  const [isAdminEditOpen, setIsAdminEditOpen] = useState(false);
-  const [editingBanner, setEditingBanner] = useState({
-    title: '',
-    eyebrow: '',
-    short_description: '',
-    description: '',
-    image_url: '',
-    product_sku: '',
-    price: 5200,
-    size: '24 inches',
-    material: 'MDF Board, Acrylic Colors, Mirrors, Varnish',
-    creation_time: '8 Days',
-    shipping_info: 'All over the world (Bubble wrap and corrugated box)',
-    badge_text: '100% Handcrafted Original',
-  });
-  const [savingBanner, setSavingBanner] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [bannerSaveSuccess, setBannerSaveSuccess] = useState('');
-  const [bannerSaveError, setBannerSaveError] = useState('');
-
   // Full-View Modal State
   const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
 
@@ -186,15 +157,6 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
     msg: string;
     attachments: WhatsAppAttachmentItem[];
   }>({ msg: '', attachments: [] });
-
-  // Detect admin token
-  useEffect(() => {
-    const token = localStorage.getItem('dot_admin_token') || localStorage.getItem('admin_token');
-    if (token) {
-      setIsAdmin(true);
-      setAdminToken(token);
-    }
-  }, []);
 
   // Fetch settings & product catalog
   const loadBannerSettings = async () => {
@@ -248,121 +210,6 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
   const bannerFullDesc = bannerConfig?.description || product.description || 'An awe-inspiring 24-inch handcrafted sacred dot mandala wall hanging...';
   const bannerBadgeText = bannerConfig?.badge_text || '100% Handcrafted Original';
   const hotspotsList = bannerConfig?.hotspots || DEFAULT_HOTSPOTS;
-
-  // Initialize edit modal state when opening
-  const handleOpenAdminEdit = () => {
-    setEditingBanner({
-      title: bannerTitle,
-      eyebrow: bannerEyebrow,
-      short_description: bannerShortDesc,
-      description: bannerFullDesc,
-      image_url: imageSrc,
-      product_sku: bannerSku,
-      price: bannerPrice,
-      size: bannerSize,
-      material: bannerMaterial,
-      creation_time: bannerCreationTime,
-      shipping_info: bannerShippingInfo,
-      badge_text: bannerBadgeText,
-    });
-    setBannerSaveSuccess('');
-    setBannerSaveError('');
-    setIsAdminEditOpen(true);
-  };
-
-  const handleAdminImageUpload = async (file: File) => {
-    setUploadingImage(true);
-    setBannerSaveError('');
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/uploads', {
-        method: 'POST',
-        headers: adminToken ? { Authorization: `Bearer ${adminToken}` } : {},
-        body: formData,
-      });
-      const data = await safeResponseJson(res, {});
-      if (res.ok && data.url) {
-        setEditingBanner((prev) => ({ ...prev, image_url: data.url }));
-        setBannerSaveSuccess('Image uploaded! Click "Save Banner Changes" to publish live.');
-      } else {
-        setBannerSaveError(data?.error || 'Failed to upload image file.');
-      }
-    } catch {
-      setBannerSaveError('Error uploading banner image file.');
-    } finally {
-      setUploadingImage(false);
-    }
-  };
-
-  const handleSaveBannerConfig = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSavingBanner(true);
-    setBannerSaveSuccess('');
-    setBannerSaveError('');
-
-    try {
-      const updatedSettings: WebsiteSettings = {
-        ...(settings || ({
-          business_name: 'Dot And Art Studio',
-          tagline: 'Handcrafted Sacred Mandalas',
-          domain: 'dotandart.in',
-          whatsapp_number: '+918652162647',
-          whatsapp_display: '+91 86521 62647',
-          instagram_url: 'https://instagram.com',
-          facebook_url: 'https://facebook.com',
-          email: 'shitalthosar@yahoo.com',
-          studio_address: 'Mumbai, Maharashtra, India',
-          payment_terms: '50% advance for custom commissions',
-          shipping_policy_summary: 'Worldwide insured shipping',
-          announcement_banner: { enabled: true, text: '✨ Explore our catalog!' },
-          default_seo: { title: 'Dot And Art', description: 'Handcrafted art', keywords: 'art' },
-        } as WebsiteSettings)),
-        showcase_banner: {
-          title: editingBanner.title,
-          eyebrow: editingBanner.eyebrow,
-          short_description: editingBanner.short_description,
-          description: editingBanner.description,
-          image_url: editingBanner.image_url,
-          product_sku: editingBanner.product_sku,
-          price: editingBanner.price,
-          size: editingBanner.size,
-          material: editingBanner.material,
-          creation_time: editingBanner.creation_time,
-          shipping_info: editingBanner.shipping_info,
-          badge_text: editingBanner.badge_text,
-          hotspots: settings?.showcase_banner?.hotspots || DEFAULT_HOTSPOTS,
-        },
-      };
-
-      const resData = await safeFetchJson<WebsiteSettings | null>(
-        '/api/admin/settings',
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
-          },
-          body: JSON.stringify(updatedSettings),
-        },
-        null
-      );
-
-      if (resData) {
-        setSettings(updatedSettings);
-        setBannerSaveSuccess('Hero Banner image & details updated successfully!');
-        setTimeout(() => {
-          setIsAdminEditOpen(false);
-        }, 1200);
-      } else {
-        setBannerSaveError('Failed to save banner settings.');
-      }
-    } catch {
-      setBannerSaveError('Network error saving banner configuration.');
-    } finally {
-      setSavingBanner(false);
-    }
-  };
 
   const handleWhatsAppEnquiry = () => {
     const customProd: Product = {
@@ -458,18 +305,6 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
               <Sparkles className={`w-3.5 h-3.5 ${bannerTheme.sparkleIcon}`} />
               <span>{bannerEyebrow}</span>
             </span>
-
-            {/* Admin Quick Edit Button */}
-            {isAdmin && (
-              <button
-                onClick={handleOpenAdminEdit}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500 text-black font-bold text-xs hover:bg-amber-400 transition-all shadow-md cursor-pointer animate-bounce"
-                title="Admin: Edit Banner Image & Details"
-              >
-                <Edit className="w-3.5 h-3.5" />
-                <span>Admin: Change Banner Image & Details</span>
-              </button>
-            )}
           </div>
 
           <div className="flex items-center gap-2 text-xs text-white/70">
@@ -562,16 +397,6 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
                     <Compass className="w-3 h-3 text-amber-300" />
                     <span>{showHotspots ? 'Hide Pins' : 'Explore Pins'}</span>
                   </button>
-
-                  {isAdmin && (
-                    <button
-                      onClick={handleOpenAdminEdit}
-                      className="px-2.5 py-1 rounded-lg bg-amber-500/30 hover:bg-amber-500/50 text-amber-200 text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer border border-amber-400/40"
-                    >
-                      <Edit className="w-3 h-3" />
-                      <span>Edit Banner</span>
-                    </button>
-                  )}
                 </div>
 
                 <button
@@ -762,222 +587,6 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
           </div>
         </div>
       </div>
-
-      {/* ADMIN QUICK EDIT BANNER MODAL */}
-      {isAdminEditOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative max-w-2xl w-full bg-[#1A1714] border border-amber-500/40 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl text-white">
-            <button
-              onClick={() => setIsAdminEditOpen(false)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                <Settings className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-serif text-xl font-bold text-white">
-                  Admin: Change Showcase Banner Image & Details
-                </h3>
-                <p className="text-xs text-white/60">
-                  Update the main hero image, headline, specifications, and price on the home page.
-                </p>
-              </div>
-            </div>
-
-            {bannerSaveSuccess && (
-              <div className="p-3.5 rounded-xl bg-green-500/20 border border-green-500/40 text-green-300 text-xs flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
-                <span>{bannerSaveSuccess}</span>
-              </div>
-            )}
-
-            {bannerSaveError && (
-              <div className="p-3.5 rounded-xl bg-red-500/20 border border-red-500/40 text-red-300 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-                <span>{bannerSaveError}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSaveBannerConfig} className="space-y-4 text-xs">
-              {/* Image Upload & Link */}
-              <div className="p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
-                <label className="block font-bold text-amber-300 uppercase tracking-wider text-[11px]">
-                  1. Banner Image & Catalog SKU
-                </label>
-
-                <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 rounded-xl overflow-hidden border border-white/20 shrink-0 bg-black">
-                    <img
-                      src={editingBanner.image_url || '/static/assets/images/DA-MD-24-0002.jpg'}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                      onError={(e) => { e.currentTarget.src = '/logo.png'; }}
-                    />
-                  </div>
-
-                  <div className="flex-1 space-y-2">
-                    <div>
-                      <span className="block text-[11px] text-white/70 mb-1">Select Catalog Product:</span>
-                      <select
-                        value={editingBanner.product_sku}
-                        onChange={(e) => {
-                          const sku = e.target.value;
-                          const found = productsList.find((p) => p.sku === sku);
-                          const img = found?.images?.[0]?.storage_path || `/static/assets/images/${sku}.jpg`;
-                          setEditingBanner({
-                            ...editingBanner,
-                            product_sku: sku,
-                            image_url: img,
-                            title: found?.name || editingBanner.title,
-                            price: found?.base_price || editingBanner.price,
-                            material: found?.material || editingBanner.material,
-                            creation_time: found?.creation_time || editingBanner.creation_time,
-                          });
-                        }}
-                        className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white font-medium cursor-pointer"
-                      >
-                        {productsList.map((p) => (
-                          <option key={p.sku} value={p.sku} className="bg-slate-900 text-white">
-                            {p.sku} — {p.name} (₹{p.base_price})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={editingBanner.image_url}
-                        placeholder="Image URL or upload file..."
-                        onChange={(e) => setEditingBanner({ ...editingBanner, image_url: e.target.value })}
-                        className="flex-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/20 text-white font-mono text-[11px]"
-                      />
-
-                      <label className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 font-bold flex items-center gap-1 cursor-pointer shrink-0 transition-colors">
-                        {uploadingImage ? (
-                          <div className="w-3.5 h-3.5 border-2 border-amber-300 border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <UploadCloud className="w-3.5 h-3.5" />
-                        )}
-                        <span>{uploadingImage ? 'Uploading...' : 'Upload File'}</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          disabled={uploadingImage}
-                          onChange={(e) => {
-                            if (e.target.files?.[0]) handleAdminImageUpload(e.target.files[0]);
-                          }}
-                          className="hidden"
-                        />
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Title & Badge */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-white/80 font-semibold mb-1">Banner Title / Headline</label>
-                  <input
-                    type="text"
-                    value={editingBanner.title}
-                    onChange={(e) => setEditingBanner({ ...editingBanner, title: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white font-bold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white/80 font-semibold mb-1">Eyebrow Badge Text</label>
-                  <input
-                    type="text"
-                    value={editingBanner.eyebrow}
-                    onChange={(e) => setEditingBanner({ ...editingBanner, eyebrow: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white font-semibold"
-                  />
-                </div>
-              </div>
-
-              {/* Specifications */}
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-white/80 font-semibold mb-1">Price (₹)</label>
-                  <input
-                    type="number"
-                    value={editingBanner.price}
-                    onChange={(e) => setEditingBanner({ ...editingBanner, price: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-amber-300 font-bold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white/80 font-semibold mb-1">Size Label</label>
-                  <input
-                    type="text"
-                    value={editingBanner.size}
-                    onChange={(e) => setEditingBanner({ ...editingBanner, size: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white/80 font-semibold mb-1">Lead Time</label>
-                  <input
-                    type="text"
-                    value={editingBanner.creation_time}
-                    onChange={(e) => setEditingBanner({ ...editingBanner, creation_time: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-white/80 font-semibold mb-1">Short Tagline</label>
-                <input
-                  type="text"
-                  value={editingBanner.short_description}
-                  onChange={(e) => setEditingBanner({ ...editingBanner, short_description: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-white/90 font-semibold mb-1">
-                  Full Detailed Story / Description
-                </label>
-                <textarea
-                  rows={4}
-                  value={editingBanner.description}
-                  onChange={(e) => setEditingBanner({ ...editingBanner, description: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white leading-relaxed"
-                />
-              </div>
-
-              <div className="pt-3 border-t border-white/10 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsAdminEditOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={savingBanner}
-                  className="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{savingBanner ? 'Saving...' : 'Save Banner Changes'}</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* FULL-SCREEN DETAIL INSPECTION MODAL */}
       {isZoomModalOpen && (
