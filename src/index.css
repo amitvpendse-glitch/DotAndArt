@@ -265,7 +265,7 @@
 }
 
 .animate-waterfall-down {
-  animation: waterfallDown 160s linear infinite;
+  animation: waterfallDown 300s linear infinite;
   will-change: transform;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
