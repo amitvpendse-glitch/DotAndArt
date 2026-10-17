@@ -4,7 +4,7 @@
     "pin_hash": "9c82a5e26b9ec4902f21e17a82761691b0eba9fbf5677cb4d0101413459ddd3a342756f5da74a394063d6482492dbf5fccefbe16e5041d8ebdb03f47e6714d56",
     "salt": "e3e4e2d3b316cd7756be024a0dfe6bb7",
     "updated_at": "2026-10-10T01:34:56.072Z",
-    "last_login_at": "2026-10-17T04:04:34.347Z"
+    "last_login_at": "2026-10-17T04:14:42.988Z"
   },
   "sessions": [
     {
@@ -48,6 +48,24 @@
       "admin_username": "admin",
       "expires_at": 1792217074372,
       "created_at": "2026-10-17T04:04:34.347Z"
+    },
+    {
+      "token_hash": "b4188bdbec3d2c418735e1572cb9a629b833d40517ab9cae16f87898263e7ca0",
+      "admin_username": "admin",
+      "expires_at": 1792217391976,
+      "created_at": "2026-10-17T04:09:51.949Z"
+    },
+    {
+      "token_hash": "f40fb14d245077d5a8801313bc7189d5e2f765f49efcc4e742501ae269e3aebe",
+      "admin_username": "admin",
+      "expires_at": 1792217579487,
+      "created_at": "2026-10-17T04:12:59.450Z"
+    },
+    {
+      "token_hash": "74120f4525d722cd8c303e3a7b87f6f181d188892d613fc1fd3d2d938d0b59a4",
+      "admin_username": "admin",
+      "expires_at": 1792217683015,
+      "created_at": "2026-10-17T04:14:42.988Z"
     }
   ],
   "categories": [
@@ -3740,7 +3758,7 @@
         }
       ],
       "created_at": "2025-01-01T00:00:00.000Z",
-      "updated_at": "2026-10-17T04:04:34.376Z"
+      "updated_at": "2026-10-17T04:14:43.019Z"
     },
     {
       "id": "page-shipping-policy",
@@ -3934,6 +3952,102 @@
     }
   },
   "audit_logs": [
+    {
+      "id": "log-1792210483021-01d503cb",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "Contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-17T04:14:43.021Z"
+    },
+    {
+      "id": "log-1792210483001-d574414b",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-17T04:14:43.001Z"
+    },
+    {
+      "id": "log-1792210482990-ccf19414",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-17T04:14:42.990Z"
+    },
+    {
+      "id": "log-1792210379492-ba5e44df",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "Contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-17T04:12:59.492Z"
+    },
+    {
+      "id": "log-1792210379464-cca642cb",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-17T04:12:59.464Z"
+    },
+    {
+      "id": "log-1792210379452-79e3d4d2",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-17T04:12:59.452Z"
+    },
+    {
+      "id": "log-1792210191981-9b405a98",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "Contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-17T04:09:51.981Z"
+    },
+    {
+      "id": "log-1792210191963-e3394b48",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-17T04:09:51.963Z"
+    },
+    {
+      "id": "log-1792210191951-42559094",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-17T04:09:51.951Z"
+    },
     {
       "id": "log-1792209874377-0e751150",
       "admin_user_id": "admin",
