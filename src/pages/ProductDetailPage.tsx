@@ -528,7 +528,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
             {related.map((rel) => {
               const relImg = rel.images?.find((i) => i.is_primary) || rel.images?.[0];
 
@@ -536,9 +536,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <div
                   key={rel.id}
                   onClick={() => onSelectProduct(rel.sku)}
-                  className="group rounded-2xl glass-card border border-theme-glass overflow-hidden cursor-pointer p-3 space-y-2.5 transition-all hover:scale-105 bg-theme-card"
+                  className="group rounded-xl sm:rounded-2xl glass-card border border-theme-glass overflow-hidden cursor-pointer p-2 sm:p-3 space-y-1.5 sm:space-y-2.5 transition-all hover:scale-105 bg-theme-card"
                 >
-                  <div className="relative aspect-square rounded-xl bg-theme-page overflow-hidden flex items-center justify-center p-2">
+                  <div className="relative aspect-square rounded-lg sm:rounded-xl bg-theme-page overflow-hidden flex items-center justify-center p-1.5 sm:p-2">
                     <SafeProductImage
                       src={relImg?.storage_path}
                       alt={rel.name}
@@ -549,14 +549,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                       fit="contain"
                       className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                     />
-
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono text-theme-muted">{rel.sku}</span>
-                    <h5 className="font-serif text-sm font-semibold text-theme-primary truncate group-hover:text-theme-accent">
+                    <span className="text-[8px] sm:text-[10px] font-mono text-theme-muted">{rel.sku}</span>
+                    <h5 className="font-serif text-xs sm:text-sm font-semibold text-theme-primary truncate group-hover:text-theme-accent">
                       {rel.name}
                     </h5>
-                    <p className="font-serif text-sm font-bold text-theme-accent mt-1">
+                    <p className="font-serif text-xs sm:text-sm font-bold text-theme-accent mt-0.5 sm:mt-1">
                       ₹{rel.base_price.toLocaleString('en-IN')}
                     </p>
                   </div>

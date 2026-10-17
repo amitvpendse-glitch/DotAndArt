@@ -20,6 +20,10 @@ import {
   Clock,
   Tag,
   Check,
+  Truck,
+  Sparkles,
+  Sliders,
+  Info,
 } from 'lucide-react';
 import { Product, Category, ProductVariant, ProductImage } from '../types';
 import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
@@ -391,12 +395,21 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
     }
   };
 
-  const handleQuickToggleAvailability = async (p: Product, e?: React.MouseEvent) => {
+  const handleQuickToggleField = async (
+    p: Product,
+    field: 'is_available' | 'is_published' | 'featured' | 'customizable' | 'is_high_demand',
+    e?: React.MouseEvent
+  ) => {
     if (e) e.stopPropagation();
-    const nextVal = !(p.is_available !== false);
+    const currentVal =
+      p[field] !== undefined
+        ? Boolean(p[field])
+        : field === 'is_available' || field === 'is_published';
+    const nextVal = !currentVal;
+
     // Optimistic update
     setProducts((prev) =>
-      prev.map((item) => (item.id === p.id ? { ...item, is_available: nextVal } : item))
+      prev.map((item) => (item.id === p.id ? { ...item, [field]: nextVal } : item))
     );
 
     try {
@@ -406,12 +419,16 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ is_available: nextVal }),
+        body: JSON.stringify({ [field]: nextVal }),
       });
     } catch (err) {
-      console.error('Failed to toggle availability', err);
+      console.error(`Failed to toggle ${field}`, err);
       fetchProductsAndCategories();
     }
+  };
+
+  const handleQuickToggleAvailability = async (p: Product, e?: React.MouseEvent) => {
+    return handleQuickToggleField(p, 'is_available', e);
   };
 
   // Filter products list
@@ -510,21 +527,130 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
         </span>
       </div>
 
-      {/* Products Table */}
+      {/* Products Table with Sticky First/Last Columns & Sticky Header */}
       <div className="bg-white rounded-2xl border border-[#E5D7C7] craft-shadow overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-[#FAF7F2] text-[#8C7667] uppercase tracking-wider font-semibold border-b border-[#E5D7C7]">
+        {/* Helper bar explaining frozen columns and scroll behavior */}
+        <div className="px-4 py-2 bg-[#FAF7F2] border-b border-[#E5D7C7] flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#8C7667]">
+          <span className="flex items-center gap-1.5">
+            <Sliders className="w-3.5 h-3.5 text-[#C85A32]" />
+            <span>
+              <strong>Scroll horizontally</strong> to review and edit all artwork fields. <strong>Photo</strong> (left) and <strong>Actions</strong> (right) stay frozen.
+            </span>
+          </span>
+          <span className="text-[10px] bg-white px-2 py-0.5 rounded border border-[#E5D7C7] font-medium text-[#5B331A]">
+            ⇅ Column headers stay frozen while scrolling vertically
+          </span>
+        </div>
+
+        {/* Scroll Container with defined max height for vertical scrolling */}
+        <div className="overflow-auto max-h-[72vh] relative border-t border-[#E5D7C7]">
+          <table className="w-full text-left text-xs border-separate border-spacing-0 min-w-max">
+            <thead className="text-[#8C7667] uppercase tracking-wider font-semibold">
               <tr>
-                <th className="px-4 py-3">Photo</th>
-                <th className="px-4 py-3">SKU</th>
-                <th className="px-4 py-3">Artwork Title</th>
-                <th className="px-4 py-3">Category</th>
-                <th className="px-4 py-3">Price</th>
-                <th className="px-4 py-3">Size</th>
-                <th className="px-4 py-3">Availability & Demand</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 text-right">Actions</th>
+                {/* 1. Photo (Frozen Left Column: z-40 on header) */}
+                <th className="sticky left-0 top-0 z-40 bg-[#FAF7F2] px-3 py-3.5 border-b border-r border-[#E0D2C2] shadow-[2px_0_6px_-2px_rgba(0,0,0,0.08)] min-w-[104px] w-28">
+                  Photo
+                </th>
+
+                {/* 2. SKU */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[130px]">
+                  SKU
+                </th>
+
+                {/* 3. Artwork Title */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[210px]">
+                  Artwork Title
+                </th>
+
+                {/* 4. Category */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[140px]">
+                  Category
+                </th>
+
+                {/* 5. Base Price */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[125px]">
+                  Base Price
+                </th>
+
+                {/* 6. Dimensions / Size */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[140px]">
+                  Base Size
+                </th>
+
+                {/* 7. Sizes & Variants */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[180px]">
+                  Sizes &amp; Variants
+                </th>
+
+                {/* 8. Framing */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[140px]">
+                  Framing
+                </th>
+
+                {/* 9. Availability & Badge */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[205px]">
+                  Availability &amp; Badge
+                </th>
+
+                {/* 10. Demand & Lead Time */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[195px]">
+                  Demand &amp; Lead Time
+                </th>
+
+                {/* 11. High Demand Notice */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[220px]">
+                  High Demand Notice
+                </th>
+
+                {/* 12. Materials Used */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[185px]">
+                  Materials Used
+                </th>
+
+                {/* 13. Creation Time */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[130px]">
+                  Creation Time
+                </th>
+
+                {/* 14. Shipping Details */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[180px]">
+                  Shipping Details
+                </th>
+
+                {/* 15. Care & Special */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[180px]">
+                  Care &amp; Special
+                </th>
+
+                {/* 16. Short Description */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[200px]">
+                  Short Description
+                </th>
+
+                {/* 17. Story / Full Description */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[240px]">
+                  Full Description
+                </th>
+
+                {/* 18. Customizable */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[125px]">
+                  Customizable
+                </th>
+
+                {/* 19. Featured */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[115px]">
+                  Featured
+                </th>
+
+                {/* 20. Status */}
+                <th className="sticky top-0 z-30 bg-[#FAF7F2] px-3.5 py-3.5 border-b border-[#E5D7C7] min-w-[120px]">
+                  Status
+                </th>
+
+                {/* 21. Actions (Frozen Right Column: z-40 on header) */}
+                <th className="sticky right-0 top-0 z-40 bg-[#FAF7F2] px-3 py-3.5 border-b border-l border-[#E0D2C2] shadow-[-2px_0_6px_-2px_rgba(0,0,0,0.08)] min-w-[180px] w-48 text-right font-bold">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F2EAE0]">
@@ -535,12 +661,18 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                   (p.sku || '').startsWith('DA-LP');
                 const isDemandHigh = p.is_high_demand !== undefined ? p.is_high_demand : isLippan;
                 const primaryImg = p.images?.find((img) => img.is_primary) || p.images?.[0];
+                const photoCount = p.images?.length || 0;
+                const variantCount = p.variants?.length || 0;
 
                 return (
-                  <tr key={p.id} className="hover:bg-[#FAF7F2]/60 transition-colors">
-                    {/* Thumbnail */}
-                    <td className="px-4 py-3">
-                      <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-[#E0D2C2] bg-[#FAF7F2]">
+                  <tr key={p.id} className="group hover:bg-[#FAF7F2]/80 transition-colors">
+                    {/* 1. PHOTO (Frozen First Column: z-20) */}
+                    <td className="sticky left-0 z-20 bg-white group-hover:bg-[#FFF9F3] border-b border-r border-[#E0D2C2] shadow-[2px_0_6px_-2px_rgba(0,0,0,0.08)] px-3 py-3 w-28 min-w-[104px]">
+                      <div
+                        onClick={() => handleOpenEdit(p)}
+                        className="relative w-14 h-14 rounded-xl overflow-hidden border border-[#E0D2C2] bg-[#FAF7F2] group/thumb cursor-pointer shadow-xs hover:border-[#C85A32] transition-all"
+                        title="Click to edit artwork photos & details"
+                      >
                         <SafeProductImage
                           src={primaryImg?.storage_path}
                           alt={p.name}
@@ -548,9 +680,20 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                           sku={p.sku}
                           category_slug={p.category_slug}
                           size="sm"
-                          className="w-full h-full"
+                          className="w-full h-full object-cover"
                         />
-                        <div className="absolute bottom-0.5 left-0.5 z-10 pointer-events-none scale-75 origin-bottom-left">
+                        {/* Hover Overlay */}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center text-white">
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </div>
+                        {/* Photo Count Pill */}
+                        <div className="absolute top-0.5 right-0.5 z-10">
+                          <span className={`px-1 py-0.2 rounded text-[8px] font-mono font-bold leading-none ${photoCount > 0 ? 'bg-black/75 text-white' : 'bg-red-600 text-white'}`}>
+                            {photoCount}
+                          </span>
+                        </div>
+                        {/* Small Available Badge indicator */}
+                        <div className="absolute bottom-0.5 left-0.5 z-10 pointer-events-none scale-65 origin-bottom-left">
                           <AvailableBadge
                             isAvailable={p.is_available !== false}
                             badgeText={p.available_badge_text}
@@ -561,47 +704,124 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                       </div>
                     </td>
 
-                    {/* SKU */}
-                    <td className="px-4 py-3 font-mono font-semibold text-[#8C4A28]">
-                      {p.sku}
+                    {/* 2. SKU */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(p)}
+                        className="font-mono font-bold text-xs text-[#8C4A28] hover:text-[#C85A32] hover:underline cursor-pointer flex items-center gap-1 text-left"
+                        title="Click to edit artwork SKU"
+                      >
+                        <span>{p.sku}</span>
+                      </button>
                     </td>
 
-                    {/* Title */}
-                    <td className="px-4 py-3">
-                      <span className="font-serif font-semibold text-sm text-[#2C2724] block line-clamp-1">
+                    {/* 3. ARTWORK TITLE */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(p)}
+                        className="text-left font-serif font-semibold text-xs text-[#2C2724] hover:text-[#C85A32] transition-colors cursor-pointer block line-clamp-1 max-w-[210px]"
+                        title={p.name}
+                      >
                         {p.name}
-                      </span>
-                      {(!p.images || p.images.length === 0) && (
-                        <span className="text-[10px] text-orange-600 font-medium">
+                      </button>
+                      {photoCount === 0 && (
+                        <span className="text-[10px] text-orange-600 font-medium block mt-0.5">
                           ⚠ Needs studio photo upload
                         </span>
                       )}
                     </td>
 
-                    {/* Category */}
-                    <td className="px-4 py-3 text-[#5B331A]">
-                      {p.category_name}
+                    {/* 4. CATEGORY */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0] whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FAF0E6] text-[#5B331A] text-[11px] font-medium border border-[#E8DACB]">
+                        <Tag className="w-3 h-3 text-[#A03E1B]" />
+                        <span>{p.category_name || categories.find((c) => c.id === p.category_id)?.name || 'Mandala Art'}</span>
+                      </span>
                     </td>
 
-                    {/* Price */}
-                    <td className="px-4 py-3 font-semibold text-[#A03E1B]">
-                      ₹{p.base_price.toLocaleString('en-IN')}
+                    {/* 5. BASE PRICE */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0] whitespace-nowrap">
+                      <div className="flex flex-col items-start">
+                        <span className="font-semibold text-sm text-[#A03E1B]">
+                          ₹{p.base_price?.toLocaleString('en-IN') || 0}
+                        </span>
+                        {variantCount > 0 && (
+                          <span className="text-[10px] text-[#8C7667] font-medium">
+                            +{variantCount} size options
+                          </span>
+                        )}
+                      </div>
                     </td>
 
-                    {/* Size */}
-                    <td className="px-4 py-3 text-[#7D6B5D]">
-                      {p.base_size}
+                    {/* 6. DIMENSIONS / SIZE */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0] whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(p)}
+                        className="text-xs text-[#5B331A] font-medium bg-[#FAF7F2] px-2 py-1 rounded-md border border-[#E5D7C7] hover:border-[#C85A32] cursor-pointer text-left"
+                        title="Click to edit dimensions"
+                      >
+                        {p.base_size || 'Standard Size'}
+                      </button>
                     </td>
 
-                    {/* Availability & Demand */}
-                    <td className="px-4 py-3">
-                      <div className="flex flex-col gap-1.5 items-start">
+                    {/* 7. SIZES & VARIANTS */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <div className="flex flex-wrap items-center gap-1 max-w-[180px]">
+                        {variantCount === 0 ? (
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEdit(p)}
+                            className="text-[10px] text-[#8C7667] italic hover:text-[#C85A32] cursor-pointer"
+                          >
+                            + Add custom sizes
+                          </button>
+                        ) : (
+                          p.variants?.slice(0, 2).map((v) => (
+                            <span
+                              key={v.id}
+                              className="px-1.5 py-0.5 rounded bg-[#FAF7F2] text-[#5B331A] text-[10px] font-mono border border-[#E5D7C7]"
+                              title={`${v.size} — ₹${v.price.toLocaleString('en-IN')}`}
+                            >
+                              {v.size.split(' ')[0]}: ₹{v.price}
+                            </span>
+                          ))
+                        )}
+                        {variantCount > 2 && (
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEdit(p)}
+                            className="text-[10px] text-[#C85A32] font-semibold hover:underline cursor-pointer"
+                          >
+                            +{variantCount - 2} more
+                          </button>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* 8. FRAMING */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(p)}
+                        className="text-left text-xs text-[#5B331A] hover:text-[#C85A32] transition-colors cursor-pointer truncate max-w-[130px] block"
+                        title={p.framing || 'Click to edit framing'}
+                      >
+                        {p.framing || <span className="text-[#8C7667] italic">Frameless / MDF Rim</span>}
+                      </button>
+                    </td>
+
+                    {/* 9. AVAILABILITY & BADGE */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <div className="flex flex-col gap-1 items-start">
                         <div className="flex items-center gap-1.5">
                           <button
                             type="button"
-                            onClick={(e) => handleQuickToggleAvailability(p, e)}
+                            onClick={(e) => handleQuickToggleField(p, 'is_available', e)}
                             className="transition-transform hover:scale-105 active:scale-95 cursor-pointer text-left"
-                            title="Click to toggle Available / Unavailable instantly"
+                            title="Click to toggle Available / Made to Order instantly"
                           >
                             <AvailableBadge
                               isAvailable={p.is_available !== false}
@@ -610,71 +830,200 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({ token, onPreviewPr
                               size="xs"
                             />
                           </button>
-
                           <button
                             type="button"
                             onClick={() => handleOpenEdit(p)}
                             className="p-1 rounded text-[#8C7667] hover:text-[#C85A32] hover:bg-[#FAF0E6] cursor-pointer"
-                            title="Edit Available badge text & settings"
+                            title="Edit badge label text & options in drawer"
                           >
                             <Edit2 className="w-3 h-3" />
                           </button>
                         </div>
-                        {isDemandHigh && (
-                          <span
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold"
-                            style={{
-                              backgroundColor: 'var(--high-demand-pill-bg)',
-                              color: 'var(--high-demand-pill-text)',
-                              borderColor: 'var(--high-demand-border)',
-                            }}
-                          >
-                            <Flame className="w-3 h-3 text-orange-600 shrink-0" />
-                            <span>High Demand (+{p.extra_delivery_days ?? 5}d)</span>
-                          </span>
-                        )}
+                        <span className="text-[10px] text-[#8C7667] font-mono truncate max-w-[180px]">
+                          Label: &ldquo;{p.is_available !== false ? (p.available_badge_text || 'Available') : (p.unavailable_badge_text || 'Made to Order')}&rdquo;
+                        </span>
                       </div>
                     </td>
 
-                    {/* Status */}
-                    <td className="px-4 py-3">
-                      {p.is_published ? (
-                        <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-800 text-[10px] font-semibold">
-                          Published
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-800 text-[10px] font-semibold">
-                          Draft
-                        </span>
-                      )}
+                    {/* 10. DEMAND & LEAD TIME */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <div className="flex flex-col gap-1 items-start">
+                        <button
+                          type="button"
+                          onClick={(e) => handleQuickToggleField(p, 'is_high_demand', e)}
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold border transition-all cursor-pointer flex items-center gap-1 hover:scale-105 ${
+                            isDemandHigh
+                              ? 'bg-orange-100 text-orange-800 border-orange-300 shadow-2xs'
+                              : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-orange-50 hover:text-orange-700'
+                          }`}
+                          title="Click to toggle High Demand status"
+                        >
+                          <Flame className={`w-3 h-3 ${isDemandHigh ? 'text-orange-600 fill-orange-500' : 'text-slate-400'}`} />
+                          <span>{isDemandHigh ? `High Demand (+${p.extra_delivery_days ?? 5}d)` : 'Standard Lead'}</span>
+                        </button>
+                      </div>
                     </td>
 
-                    {/* Actions */}
-                    <td className="px-4 py-3 text-right space-x-1.5 whitespace-nowrap">
+                    {/* 11. HIGH DEMAND NOTICE */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(p)}
+                        className="text-left text-[11px] text-[#7D6B5D] hover:text-[#C85A32] transition-colors cursor-pointer line-clamp-2 max-w-[210px] block"
+                        title={p.high_demand_message || 'Click to edit collector notice message'}
+                      >
+                        {p.high_demand_message || <span className="text-[#8C7667] italic">Default collector notice applied</span>}
+                      </button>
+                    </td>
+
+                    {/* 12. MATERIALS USED */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(p)}
+                        className="text-left text-xs text-[#5B331A] hover:text-[#C85A32] transition-colors cursor-pointer line-clamp-1 max-w-[170px]"
+                        title={p.material || 'Click to set materials'}
+                      >
+                        {p.material || <span className="text-[#8C7667] italic">Not specified</span>}
+                      </button>
+                    </td>
+
+                    {/* 13. CREATION TIME */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0] whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(p)}
+                        className="inline-flex items-center gap-1 text-xs text-[#5B331A] hover:text-[#C85A32] cursor-pointer"
+                        title="Click to edit creation duration"
+                      >
+                        <Clock className="w-3.5 h-3.5 text-[#C85A32]" />
+                        <span>{p.creation_time || '8 Days'}</span>
+                      </button>
+                    </td>
+
+                    {/* 14. SHIPPING DETAILS */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(p)}
+                        className="text-xs text-[#5B331A] hover:text-[#C85A32] inline-flex items-center gap-1 line-clamp-1 max-w-[170px] text-left cursor-pointer"
+                        title={p.shipping_info || 'Click to edit shipping instructions'}
+                      >
+                        <Truck className="w-3.5 h-3.5 text-[#8C7667] shrink-0" />
+                        <span className="truncate">{p.shipping_info || 'Worldwide'}</span>
+                      </button>
+                    </td>
+
+                    {/* 15. CARE & SPECIAL INSTRUCTIONS */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(p)}
+                        className="text-left text-xs text-[#5B331A] hover:text-[#C85A32] transition-colors cursor-pointer line-clamp-1 max-w-[170px]"
+                        title={p.special_information || 'Click to set care instructions'}
+                      >
+                        {p.special_information || <span className="text-[#8C7667] italic">Standard art care</span>}
+                      </button>
+                    </td>
+
+                    {/* 16. SHORT DESCRIPTION */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <p
+                        className="text-xs text-[#7D6B5D] line-clamp-2 max-w-[190px] cursor-pointer hover:text-[#2C2724]"
+                        onClick={() => handleOpenEdit(p)}
+                        title={p.short_description || 'Click to edit short description'}
+                      >
+                        {p.short_description || <span className="italic text-[#8C7667]">No short description</span>}
+                      </p>
+                    </td>
+
+                    {/* 17. STORY / FULL DESCRIPTION */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0]">
+                      <p
+                        className="text-xs text-[#7D6B5D] line-clamp-2 max-w-[230px] cursor-pointer hover:text-[#2C2724]"
+                        onClick={() => handleOpenEdit(p)}
+                        title={p.description || 'Click to edit narrative description'}
+                      >
+                        {p.description || <span className="italic text-[#8C7667]">No full description</span>}
+                      </p>
+                    </td>
+
+                    {/* 18. CUSTOMIZABLE TOGGLE */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0] whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={(e) => handleQuickToggleField(p, 'customizable', e)}
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-semibold border transition-all cursor-pointer hover:scale-105 ${
+                          p.customizable
+                            ? 'bg-amber-100 text-amber-900 border-amber-300'
+                            : 'bg-stone-100 text-stone-600 border-stone-200'
+                        }`}
+                        title="Click to toggle customizable upon request"
+                      >
+                        {p.customizable ? '✨ Yes' : 'Standard'}
+                      </button>
+                    </td>
+
+                    {/* 19. FEATURED TOGGLE */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0] whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={(e) => handleQuickToggleField(p, 'featured', e)}
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-semibold border transition-all cursor-pointer hover:scale-105 flex items-center gap-1 ${
+                          p.featured
+                            ? 'bg-amber-400 text-black border-amber-500 font-bold shadow-2xs'
+                            : 'bg-stone-100 text-stone-600 border-stone-200'
+                        }`}
+                        title="Click to toggle featured on home page"
+                      >
+                        <Sparkles className="w-3 h-3 text-amber-950" />
+                        <span>{p.featured ? 'Featured' : 'Regular'}</span>
+                      </button>
+                    </td>
+
+                    {/* 20. PUBLISH STATUS TOGGLE */}
+                    <td className="px-3.5 py-3 border-b border-[#F2EAE0] whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={(e) => handleQuickToggleField(p, 'is_published', e)}
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold border transition-all cursor-pointer hover:scale-105 ${
+                          p.is_published
+                            ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                            : 'bg-stone-200 text-stone-700 border-stone-300'
+                        }`}
+                        title="Click to toggle Published / Draft status"
+                      >
+                        {p.is_published ? '● Published' : '○ Draft'}
+                      </button>
+                    </td>
+
+                    {/* 21. ACTIONS (Frozen Last Column: z-20) */}
+                    <td className="sticky right-0 z-20 bg-white group-hover:bg-[#FFF9F3] border-b border-l border-[#E0D2C2] shadow-[-2px_0_6px_-2px_rgba(0,0,0,0.08)] px-3 py-3 w-48 min-w-[180px] text-right space-x-1.5 whitespace-nowrap">
                       <button
                         onClick={() => onPreviewProduct(p.sku)}
-                        className="p-1.5 rounded-lg text-[#5B331A] hover:bg-[#FAF0E6]"
+                        className="p-1.5 rounded-lg text-[#5B331A] hover:bg-[#FAF0E6] cursor-pointer"
                         title="Preview Public Page"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleOpenEdit(p)}
-                        className="p-1.5 rounded-lg text-[#5B331A] hover:bg-[#FAF0E6]"
-                        title="Edit Artwork"
+                        className="p-1.5 rounded-lg bg-[#FAF0E6] text-[#A03E1B] hover:bg-[#F3ECE2] font-semibold text-xs inline-flex items-center gap-1 cursor-pointer border border-[#E0D2C2]"
+                        title="Edit Artwork in Full Drawer"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="w-3.5 h-3.5" />
+                        <span>Edit</span>
                       </button>
                       <button
                         onClick={() => handleDuplicate(p)}
-                        className="p-1.5 rounded-lg text-[#5B331A] hover:bg-[#FAF0E6]"
+                        className="p-1.5 rounded-lg text-[#5B331A] hover:bg-[#FAF0E6] cursor-pointer"
                         title="Duplicate Product"
                       >
                         <Copy className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => setDeleteConfirm(p)}
-                        className="p-1.5 rounded-lg text-red-500 hover:bg-red-50"
+                        className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 cursor-pointer"
                         title="Delete Product"
                       >
                         <Trash2 className="w-4 h-4" />

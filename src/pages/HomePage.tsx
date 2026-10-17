@@ -96,7 +96,7 @@ export function HomePage({
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {featuredProducts.map((product, index) => {
             const isLippan =
               product.category_slug === 'lippan-wall-hangings' ||
@@ -114,7 +114,7 @@ export function HomePage({
                 {/* Visual Area */}
                 <div
                   onClick={() => onSelectProduct(product.sku)}
-                  className="relative aspect-square bg-theme-page overflow-hidden cursor-pointer flex items-center justify-center p-3"
+                  className="relative aspect-square bg-theme-page overflow-hidden cursor-pointer flex items-center justify-center p-2 sm:p-3"
                 >
                   <SafeProductImage
                     src={primaryImg?.storage_path}
@@ -129,8 +129,8 @@ export function HomePage({
                   />
 
                   {/* Top Left: SKU Badge & Available Badge */}
-                  <div className="absolute top-3 left-3 z-30 flex items-center gap-1.5 flex-wrap max-w-[80%]">
-                    <span className="px-2 py-0.5 rounded bg-theme-card/90 backdrop-blur-xs text-[10px] font-mono font-semibold text-theme-primary border border-theme-glass shadow-xs">
+                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-30 flex items-center gap-1 sm:gap-1.5 flex-wrap max-w-[85%]">
+                    <span className="px-1.5 sm:px-2 py-0.5 rounded bg-theme-card/90 backdrop-blur-xs text-[9px] sm:text-[10px] font-mono font-semibold text-theme-primary border border-theme-glass shadow-xs">
                       {product.sku}
                     </span>
                     {product.show_available_badge !== false && (
@@ -145,89 +145,87 @@ export function HomePage({
 
                   {/* High Demand Badge on Thumbnail */}
                   {isHighDemand && (
-                    <div className="absolute bottom-3 right-3 z-30 px-2.5 py-0.5 rounded-full bg-linear-to-r from-amber-500 to-orange-500 text-white text-[9px] font-bold shadow-xs flex items-center gap-1 backdrop-blur-xs">
-                      <Flame className="w-3 h-3 fill-white text-white" />
+                    <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-30 px-1.5 sm:px-2.5 py-0.5 rounded-full bg-linear-to-r from-amber-500 to-orange-500 text-white text-[8px] sm:text-[9px] font-bold shadow-xs flex items-center gap-0.5 sm:gap-1 backdrop-blur-xs">
+                      <Flame className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-white text-white" />
                       <span>High Demand</span>
                     </div>
                   )}
 
                   {product.featured && (
-                    <div className="absolute top-3 right-3 z-30 px-2 py-0.5 rounded-full bg-theme-accent text-white text-[9px] font-bold uppercase tracking-wider shadow-xs">
+                    <div className="absolute top-2 right-2 sm:top-3 right-3 z-30 px-1.5 sm:px-2 py-0.5 rounded-full bg-theme-accent text-white text-[8px] sm:text-[9px] font-bold uppercase tracking-wider shadow-xs">
                       Featured
                     </div>
                   )}
                 </div>
 
                 {/* Details Area with authentic specifications */}
-                <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-theme-muted font-semibold">
-                      <span>{isLippan ? 'Lippan Wall Hanging' : 'Mandala Wall Hanging'}</span>
-                      <span className="font-mono text-theme-accent font-bold px-1.5 py-0.5 rounded bg-theme-accent/10 border border-theme-glass">
+                <div className="p-2.5 sm:p-4 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
+                  <div className="space-y-1 sm:space-y-1.5">
+                    <div className="flex items-center justify-between text-[9px] sm:text-[10px] uppercase tracking-wider text-theme-muted font-semibold">
+                      <span className="truncate mr-1">{isLippan ? 'Lippan Art' : 'Mandala Art'}</span>
+                      <span className="font-mono text-theme-accent font-bold px-1 py-0.2 rounded bg-theme-accent/10 border border-theme-glass text-[9px]">
                         {product.sku}
                       </span>
                     </div>
 
                     <h3
                       onClick={() => onSelectProduct(product.sku)}
-                      className="font-serif text-base font-semibold text-theme-primary group-hover:text-theme-accent transition-colors cursor-pointer leading-tight"
+                      className="font-serif text-xs sm:text-base font-semibold text-theme-primary group-hover:text-theme-accent transition-colors cursor-pointer leading-tight line-clamp-1"
+                      title={product.name}
                     >
                       {product.name}
                     </h3>
 
-                    <p className="text-xs text-theme-muted font-light line-clamp-1">
+                    <p className="text-[10px] sm:text-xs text-theme-muted font-light line-clamp-1 hidden sm:block">
                       {product.description}
                     </p>
 
-                    {/* High Demand Positive Free-Text Notice Box */}
+                    {/* High Demand Notice */}
                     {isHighDemand && (
                       <div
-                        className="p-2.5 rounded-xl border text-[10px] space-y-1 font-medium transition-colors shadow-2xs"
+                        className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl border text-[9px] sm:text-[10px] space-y-0.5 sm:space-y-1 font-medium transition-colors shadow-2xs"
                         style={{
                           backgroundColor: 'var(--high-demand-bg)',
                           borderColor: 'var(--high-demand-border)',
                         }}
                       >
                         <div className="flex items-center justify-between font-bold">
-                          <span className="flex items-center gap-1 font-bold" style={{ color: 'var(--high-demand-title)' }}>
-                            <Flame className="w-3 h-3 text-orange-600 fill-orange-500 shrink-0" />
-                            <span>High Demand Artisan Piece</span>
+                          <span className="flex items-center gap-1 font-bold text-[8px] sm:text-[10px]" style={{ color: 'var(--high-demand-title)' }}>
+                            <Flame className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-orange-600 fill-orange-500 shrink-0" />
+                            <span>High Demand</span>
                           </span>
                           <span
-                            className="text-[9px] font-mono px-1.5 py-0.5 rounded font-bold"
+                            className="text-[8px] sm:text-[9px] font-mono px-1 py-0.2 rounded font-bold"
                             style={{
                               backgroundColor: 'var(--high-demand-pill-bg)',
                               color: 'var(--high-demand-pill-text)',
                             }}
                           >
-                            +{extraDays} days
+                            +{extraDays}d
                           </span>
                         </div>
-                        <p className="leading-tight font-medium" style={{ color: 'var(--high-demand-text)' }}>
+                        <p className="leading-tight font-medium hidden sm:block text-[9px]" style={{ color: 'var(--high-demand-text)' }}>
                           {product.high_demand_message ||
-                            `✨ Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow ${extraDays} additional days for our master artist to craft and perfect your sacred piece.`}
+                            `Artisan piece: please allow ${extraDays} extra crafting days.`}
                         </p>
                       </div>
                     )}
 
                     {/* Detailed Specifications Box */}
-                    <div className="pt-2 border-t border-theme-glass space-y-1 text-[11px]">
+                    <div className="pt-1.5 sm:pt-2 border-t border-theme-glass space-y-0.5 sm:space-y-1 text-[9px] sm:text-[11px]">
                       <div className="flex justify-between items-center">
                         <span className="text-theme-muted">Size:</span>
-                        <span className="font-semibold text-theme-primary">{product.base_size}</span>
+                        <span className="font-semibold text-theme-primary truncate ml-1">{product.base_size}</span>
                       </div>
-                      <div className="flex justify-between items-start gap-2">
+                      <div className="hidden sm:flex justify-between items-start gap-2">
                         <span className="text-theme-muted shrink-0">Material:</span>
                         <span className="font-medium text-theme-primary text-right text-[10px] leading-tight line-clamp-1" title={product.material}>
                           {product.material}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center text-[10px] text-theme-muted pt-0.5">
-                        <div>Creation: <strong className="text-theme-primary">{product.creation_time}</strong></div>
-                        <div>Customizable: <strong className="text-emerald-600 font-bold">Yes</strong></div>
-                      </div>
-                      <div className="text-[10px] text-theme-muted truncate" title="Worldwide shipping in bubble wrap and corrugated box">
-                        Shipping: <strong className="text-theme-primary">Bubble wrap & corrugated box</strong>
+                      <div className="flex justify-between items-center text-[9px] sm:text-[10px] text-theme-muted pt-0.5">
+                        <div className="truncate mr-1">Time: <strong className="text-theme-primary">{product.creation_time}</strong></div>
+                        <div className="hidden sm:block">Custom: <strong className="text-emerald-600 font-bold">Yes</strong></div>
                       </div>
                     </div>
                   </div>
@@ -236,25 +234,25 @@ export function HomePage({
                   {(() => {
                     const itemQty = getItemQuantity(product.id);
                     return (
-                      <div className="flex items-center justify-between pt-2 border-t border-theme-glass">
+                      <div className="flex items-center justify-between pt-1.5 sm:pt-2 border-t border-theme-glass gap-1">
                         <div>
-                          <span className="text-[10px] uppercase tracking-wider text-theme-muted font-semibold">Price</span>
-                          <p className="font-serif text-lg font-bold text-theme-accent">
+                          <span className="text-[8px] sm:text-[10px] uppercase tracking-wider text-theme-muted font-semibold hidden sm:block">Price</span>
+                          <p className="font-serif text-xs sm:text-base font-bold text-theme-accent">
                             ₹{product.base_price.toLocaleString('en-IN')}
                           </p>
                         </div>
 
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1 sm:gap-1.5">
                           {/* Zoom Image Button */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               setZoomedProduct(product);
                             }}
-                            className="p-2 rounded-full border border-theme-glass text-theme-primary hover:bg-theme-accent hover:text-white transition-colors cursor-pointer"
+                            className="p-1 sm:p-2 rounded-full border border-theme-glass text-theme-primary hover:bg-theme-accent hover:text-white transition-colors cursor-pointer"
                             title="Zoom and inspect artwork image"
                           >
-                            <Eye className="w-4 h-4" />
+                            <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
 
                           {/* Download Artwork Image Button */}
@@ -273,7 +271,7 @@ export function HomePage({
                               }
                             }}
                             disabled={downloadingSku === product.sku}
-                            className={`p-2 rounded-full border border-theme-glass transition-all cursor-pointer ${
+                            className={`p-1 sm:p-2 rounded-full border border-theme-glass transition-all cursor-pointer ${
                               downloadingSku === product.sku
                                 ? 'bg-emerald-600 text-white'
                                 : 'text-theme-primary hover:bg-theme-glass hover:text-theme-accent'
@@ -281,25 +279,25 @@ export function HomePage({
                             title="Download artwork image (.jpg)"
                           >
                             {downloadingSku === product.sku ? (
-                              <Check className="w-4 h-4 animate-scale-in" />
+                              <Check className="w-3 h-3 sm:w-4 sm:h-4 animate-scale-in" />
                             ) : (
-                              <Download className="w-4 h-4" />
+                              <Download className="w-3 h-3 sm:w-4 sm:h-4" />
                             )}
                           </button>
 
                           {itemQty > 0 ? (
-                            <div className="flex items-center gap-1 px-1.5 py-1 rounded-full bg-theme-accent/15 border border-theme-accent shadow-xs">
+                            <div className="flex items-center gap-0.5 sm:gap-1 px-1 sm:px-1.5 py-0.5 sm:py-1 rounded-full bg-theme-accent/15 border border-theme-accent shadow-xs">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   decrementItem(product);
                                 }}
-                                className="w-6 h-6 rounded-full bg-theme-accent text-white flex items-center justify-center hover:opacity-90 transition-all cursor-pointer shadow-2xs"
+                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-theme-accent text-white flex items-center justify-center hover:opacity-90 transition-all cursor-pointer shadow-2xs"
                                 title="Decrease quantity"
                               >
-                                <Minus className="w-3.5 h-3.5" />
+                                <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                               </button>
-                              <span className="px-1.5 text-xs font-bold text-theme-accent min-w-[1.2rem] text-center">
+                              <span className="px-1 text-[10px] sm:text-xs font-bold text-theme-accent min-w-[1rem] text-center">
                                 {itemQty}
                               </span>
                               <button
@@ -307,20 +305,23 @@ export function HomePage({
                                   e.stopPropagation();
                                   addToCart(product);
                                 }}
-                                className="w-6 h-6 rounded-full bg-theme-accent text-white flex items-center justify-center hover:opacity-90 transition-all cursor-pointer shadow-2xs"
+                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-theme-accent text-white flex items-center justify-center hover:opacity-90 transition-all cursor-pointer shadow-2xs"
                                 title="Increase quantity"
                               >
-                                <Plus className="w-3.5 h-3.5" />
+                                <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                               </button>
                             </div>
                           ) : (
                             <button
-                              onClick={() => addToCart(product)}
-                              className="px-3.5 py-1.5 rounded-full bg-theme-accent hover:opacity-90 text-white text-xs font-semibold transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                addToCart(product);
+                              }}
+                              className="px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-theme-accent hover:opacity-90 text-white text-[10px] sm:text-xs font-semibold transition-all shadow-xs cursor-pointer flex items-center gap-1"
                               title="Add to cart"
                             >
-                              <ShoppingBag className="w-3.5 h-3.5" />
-                              <span>Add to Cart</span>
+                              <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              <span className="hidden xs:inline sm:inline">Add</span>
                             </button>
                           )}
                         </div>

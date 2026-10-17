@@ -79,7 +79,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
       </div>
 
       {/* Gallery Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
         {filtered.map((item, index) => {
           const primaryImg = item.images?.find((i) => i.is_primary) || item.images?.[0];
 
@@ -87,7 +87,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
             <div
               key={item.id}
               onClick={() => setActiveLightbox(item)}
-              className="group relative aspect-square rounded-2xl overflow-hidden glass-card craft-shadow hover:shadow-xl transition-all duration-300 cursor-pointer flex items-center justify-center p-3"
+              className="group relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden glass-card craft-shadow hover:shadow-xl transition-all duration-300 cursor-pointer flex items-center justify-center p-1.5 sm:p-3"
             >
               <SafeProductImage
                 src={primaryImg?.storage_path}
@@ -102,8 +102,8 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
               />
 
               {/* Top Left: SKU & Available Badge */}
-              <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 flex-wrap max-w-[85%] pointer-events-none">
-                <span className="text-[10px] font-mono tracking-wider bg-theme-card/90 backdrop-blur-md text-theme-primary px-2 py-0.5 rounded border border-theme-glass shadow-xs">
+              <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 z-20 flex items-center gap-1 sm:gap-1.5 flex-wrap max-w-[88%] pointer-events-none">
+                <span className="text-[8px] sm:text-[10px] font-mono tracking-wider bg-theme-card/90 backdrop-blur-md text-theme-primary px-1.5 sm:px-2 py-0.5 rounded border border-theme-glass shadow-xs">
                   {item.sku}
                 </span>
                 {item.show_available_badge !== false && (
@@ -117,20 +117,20 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
               </div>
 
               {/* Hover Overlay */}
-              <div className="absolute inset-0 bg-theme-dark/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex flex-col justify-between text-white">
-                <span className="text-[10px] font-mono tracking-wider bg-white/20 px-2 py-0.5 rounded self-start">
+              <div className="absolute inset-0 bg-theme-dark/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-2 sm:p-4 flex flex-col justify-between text-white">
+                <span className="text-[8px] sm:text-[10px] font-mono tracking-wider bg-white/20 px-1.5 sm:px-2 py-0.5 rounded self-start">
                   {item.sku}
                 </span>
 
-                <div className="space-y-1">
-                  <h4 className="font-serif text-base font-semibold leading-tight">{item.name}</h4>
-                  <p className="text-[11px] opacity-80">
+                <div className="space-y-0.5 sm:space-y-1">
+                  <h4 className="font-serif text-xs sm:text-base font-semibold leading-tight line-clamp-2">{item.name}</h4>
+                  <p className="text-[9px] sm:text-[11px] opacity-80">
                     {item.base_size} • ₹{item.base_price.toLocaleString('en-IN')}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-xs text-theme-accent font-medium">
-                  <ZoomIn className="w-4 h-4" />
+                <div className="flex items-center gap-1 text-[10px] sm:text-xs text-theme-accent font-medium">
+                  <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <span>Enlarge Preview</span>
                 </div>
               </div>
