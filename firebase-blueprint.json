@@ -1,0 +1,157 @@
+{
+  "entities": {
+    "Category": {
+      "title": "Category",
+      "description": "Artwork category such as Mandala or Lippan Wall Hangings",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "description": { "type": "string" },
+        "image_path": { "type": "string" },
+        "display_order": { "type": "number" },
+        "is_active": { "type": "boolean" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["id", "name", "slug", "is_active"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Handmade artwork catalog piece",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sku": { "type": "string" },
+        "name": { "type": "string" },
+        "short_description": { "type": "string" },
+        "description": { "type": "string" },
+        "category_id": { "type": "string" },
+        "category_name": { "type": "string" },
+        "category_slug": { "type": "string" },
+        "material": { "type": "string" },
+        "framing": { "type": "string" },
+        "customizable": { "type": "boolean" },
+        "creation_time": { "type": "string" },
+        "shipping_info": { "type": "string" },
+        "special_information": { "type": "string" },
+        "featured": { "type": "boolean" },
+        "is_published": { "type": "boolean" },
+        "base_price": { "type": "number" },
+        "base_size": { "type": "string" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["id", "sku", "name", "category_id", "base_price", "is_published"]
+    },
+    "MediaAsset": {
+      "title": "MediaAsset",
+      "description": "Uploaded artwork media item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "storage_path": { "type": "string" },
+        "media_type": { "type": "string" },
+        "filename": { "type": "string" },
+        "title": { "type": "string" },
+        "alt_text": { "type": "string" },
+        "caption": { "type": "string" },
+        "file_size": { "type": "number" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["id", "storage_path", "filename"]
+    },
+    "WebsitePage": {
+      "title": "WebsitePage",
+      "description": "Editable CMS page document",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "slug": { "type": "string" },
+        "title": { "type": "string" },
+        "seo_title": { "type": "string" },
+        "meta_description": { "type": "string" },
+        "status": { "type": "string" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["id", "slug", "title", "status"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Collector feedback review",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customer_name": { "type": "string" },
+        "content": { "type": "string" },
+        "rating": { "type": "number" },
+        "location": { "type": "string" },
+        "artwork_purchased": { "type": "string" },
+        "display_order": { "type": "number" },
+        "is_published": { "type": "boolean" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["id", "customer_name", "content", "rating", "is_published"]
+    },
+    "FAQ": {
+      "title": "FAQ",
+      "description": "Frequently asked question entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "question": { "type": "string" },
+        "answer": { "type": "string" },
+        "category": { "type": "string" },
+        "display_order": { "type": "number" },
+        "is_published": { "type": "boolean" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["id", "question", "answer", "is_published"]
+    },
+    "WebsiteSettings": {
+      "title": "WebsiteSettings",
+      "description": "Global website configuration",
+      "type": "object",
+      "properties": {
+        "business_name": { "type": "string" },
+        "whatsapp_number": { "type": "string" },
+        "domain": { "type": "string" }
+      },
+      "required": ["business_name", "whatsapp_number"]
+    }
+  },
+  "firestore": {
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "Category" },
+      "description": "Collection of artwork categories"
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "Product" },
+      "description": "Collection of artwork products"
+    },
+    "/media_assets/{assetId}": {
+      "schema": { "$ref": "MediaAsset" },
+      "description": "Uploaded media library items"
+    },
+    "/pages/{pageId}": {
+      "schema": { "$ref": "WebsitePage" },
+      "description": "Website CMS pages"
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": { "$ref": "Testimonial" },
+      "description": "Customer testimonials"
+    },
+    "/faqs/{faqId}": {
+      "schema": { "$ref": "FAQ" },
+      "description": "Frequently asked questions"
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "WebsiteSettings" },
+      "description": "Global website settings"
+    }
+  }
+}

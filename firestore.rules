@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    match /categories/{categoryId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(categoryId);
+    }
+
+    match /products/{productId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(productId);
+    }
+
+    match /catalog_state/{stateId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(stateId);
+    }
+
+    match /media_assets/{assetId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(assetId);
+    }
+
+    match /pages/{pageId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(pageId);
+    }
+
+    match /testimonials/{testimonialId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(testimonialId);
+    }
+
+    match /faqs/{faqId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(faqId);
+    }
+
+    match /settings/{settingId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(settingId);
+    }
+
+    match /audit_logs/{logId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(logId);
+    }
+
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

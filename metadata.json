@@ -1,0 +1,6 @@
+{
+  "name": "Dot And Art — Handcrafted Mandala & Lippan Artwork",
+  "description": "Authentic handmade mandala and Lippan mud-mirror artwork studio. Custom spiritual wall hangings, worldwide shipping, and original orders.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
