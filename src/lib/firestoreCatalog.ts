@@ -44,7 +44,7 @@ let lastProductsFetchTime = 0;
 const CACHE_TTL_MS = 2000; // 2 seconds
 
 // Quota safeguard flag to prevent quota error loops
-let firestoreQuotaExceeded = true;
+let firestoreQuotaExceeded = false;
 
 function checkQuotaError(err: unknown) {
   const msg = err instanceof Error ? err.message : String(err);

@@ -418,95 +418,95 @@ export const HugeShowcaseBanner: React.FC<HugeShowcaseBannerProps> = ({
               </div>
             </div>
 
-            {/* Quick Hotspot Highlight Card (Controlled from Admin) */}
+            {/* Quick Hotspot Highlight Card (White box with black fonts) */}
             {showHotspots && selectedHotspot && (
-              <div className="w-full max-w-[580px] mt-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-start gap-3 text-xs">
-                <div className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+              <div className="w-full max-w-[580px] mt-3 p-3.5 rounded-2xl bg-white/95 border border-stone-200/90 shadow-md text-stone-900 backdrop-blur-md flex items-start gap-3 text-xs select-none">
+                <div className="w-7 h-7 rounded-full bg-amber-500/15 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
                   <Eye className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 space-y-0.5">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-amber-200">{selectedHotspot.title}</span>
-                    <span className="text-[10px] uppercase font-mono tracking-wider text-white/50">
+                    <span className="font-bold text-stone-950 text-xs tracking-wide">{selectedHotspot.title}</span>
+                    <span className="text-[10px] uppercase font-mono tracking-wider text-amber-800 font-bold">
                       {selectedHotspot.tag}
                     </span>
                   </div>
-                  <p className="text-white/70 text-[11px] leading-relaxed">
+                  <p className="text-stone-800 font-normal text-[11px] leading-relaxed">
                     {selectedHotspot.description}
                   </p>
                 </div>
               </div>
             )}
 
-            {/* Informative Studio Craft & Specifications Grid */}
+            {/* Informative Studio Craft & Specifications Grid (White boxes with black fonts) */}
             <div className="w-full max-w-[580px] mt-3.5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs select-none">
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white/10 hover:border-amber-500/30">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+              <div className="p-3.5 rounded-2xl bg-white/95 border border-stone-200/90 shadow-md text-stone-900 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white hover:shadow-lg">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
                   <Layers className="w-4 h-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="font-bold text-amber-200 text-xs">Moisture-Proof Base</h4>
-                  <p className="text-[11px] text-white/70 leading-snug">
+                  <h4 className="font-bold text-stone-950 text-xs tracking-wide">Moisture-Proof Base</h4>
+                  <p className="text-stone-800 font-normal text-[11px] leading-snug">
                     8mm high-density MDF board with hand-sanded edges & moisture-seal coat.
                   </p>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white/10 hover:border-amber-500/30">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+              <div className="p-3.5 rounded-2xl bg-white/95 border border-stone-200/90 shadow-md text-stone-900 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white hover:shadow-lg">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="font-bold text-amber-200 text-xs">Protective Gloss Varnish</h4>
-                  <p className="text-[11px] text-white/70 leading-snug">
+                  <h4 className="font-bold text-stone-950 text-xs tracking-wide">Protective Gloss Varnish</h4>
+                  <p className="text-stone-800 font-normal text-[11px] leading-snug">
                     Sealed with dual-coat artist varnish to preserve rich pigment vibrancy for decades.
                   </p>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white/10 hover:border-amber-500/30">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+              <div className="p-3.5 rounded-2xl bg-white/95 border border-stone-200/90 shadow-md text-stone-900 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white hover:shadow-lg">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
                   <Truck className="w-4 h-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="font-bold text-amber-200 text-xs">Insured Global Transit</h4>
-                  <p className="text-[11px] text-white/70 leading-snug">
+                  <h4 className="font-bold text-stone-950 text-xs tracking-wide">Insured Global Transit</h4>
+                  <p className="text-stone-800 font-normal text-[11px] leading-snug">
                     Encapsulated in high-density foam, bubble armor, and 7-ply corrugated box.
                   </p>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white/10 hover:border-amber-500/30">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+              <div className="p-3.5 rounded-2xl bg-white/95 border border-stone-200/90 shadow-md text-stone-900 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white hover:shadow-lg">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
                   <Clock className="w-4 h-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="font-bold text-amber-200 text-xs">Handmade Dedication</h4>
-                  <p className="text-[11px] text-white/70 leading-snug">
+                  <h4 className="font-bold text-stone-950 text-xs tracking-wide">Handmade Dedication</h4>
+                  <p className="text-stone-800 font-normal text-[11px] leading-snug">
                     100% manual dotting & mirror inlay taking 8+ dedicated studio days per piece.
                   </p>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white/10 hover:border-amber-500/30">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+              <div className="p-3.5 rounded-2xl bg-white/95 border border-stone-200/90 shadow-md text-stone-900 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white hover:shadow-lg">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="font-bold text-amber-200 text-xs">Light-Reflecting Mirrors</h4>
-                  <p className="text-[11px] text-white/70 leading-snug">
+                  <h4 className="font-bold text-stone-950 text-xs tracking-wide">Light-Reflecting Mirrors</h4>
+                  <p className="text-stone-800 font-normal text-[11px] leading-snug">
                     Concentric hand-embedded mirrors that catch natural sunlight & room lighting.
                   </p>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white/10 hover:border-amber-500/30">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+              <div className="p-3.5 rounded-2xl bg-white/95 border border-stone-200/90 shadow-md text-stone-900 backdrop-blur-md flex items-start gap-3 transition-all hover:bg-white hover:shadow-lg">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
                   <Palette className="w-4 h-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="font-bold text-amber-200 text-xs">Custom Sizes & Colors</h4>
-                  <p className="text-[11px] text-white/70 leading-snug">
+                  <h4 className="font-bold text-stone-950 text-xs tracking-wide">Custom Sizes & Colors</h4>
+                  <p className="text-stone-800 font-normal text-[11px] leading-snug">
                     Tailored diameters from 10" to 30" with color schemes matched to your room.
                   </p>
                 </div>

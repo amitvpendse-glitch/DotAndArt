@@ -61,18 +61,17 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
               </button>
               <div
                 onClick={() => handleLinkClick('/')}
-                className="flex items-center gap-2 cursor-pointer"
+                className="flex items-center cursor-pointer"
+                title="Dot And Art Studio"
               >
-                <div className="w-10 h-10 rounded-full overflow-hidden filter drop-shadow">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden filter drop-shadow">
                   <img
                     src="/static/assets/images/DotAndArt_Logo.jpeg"
                     alt="Dot And Art Logo"
                     className="w-full h-full object-cover rounded-full"
+                    onError={(e) => { e.currentTarget.src = '/logo.png'; }}
                   />
                 </div>
-                <span className="text-xs font-bold text-theme-primary tracking-wider uppercase font-sans">
-                  Dot &amp; Art
-                </span>
               </div>
             </div>
 
