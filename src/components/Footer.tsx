@@ -248,23 +248,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, settings }) => {
 
         {/* Soughtweb Labs Credit Note */}
         <div className="mt-4 pt-3 border-t border-theme-glass/40 text-center text-[11px] text-theme-muted leading-relaxed">
-          <span>Powered by Soughtweb Labs , </span>
-          <a href="tel:9823640764" className="hover:text-theme-primary transition-colors underline underline-offset-2">
-            9823640764
-          </a>
-          <span>, </span>
-          <a href="mailto:amit.v.pendse@gmail.com" className="hover:text-theme-primary transition-colors underline underline-offset-2">
-            amit.v.pendse@gmail.com
-          </a>
-          <span>, insta </span>
-          <a
-            href="https://www.instagram.com/soughtweblabs"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-theme-primary font-medium transition-colors underline underline-offset-2"
-          >
-            @soughtweblabs
-          </a>
+          <span>Powered by Soughtweb Labs</span>
         </div>
       </div>
     </footer>

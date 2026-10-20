@@ -51,7 +51,7 @@ export const FloatingActions: React.FC = () => {
       <button
         onClick={handlePhoneCall}
         className="w-12 h-12 rounded-full bg-theme-dark text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer border border-[var(--accent-gold)]/60 group"
-        title="Call Artist (+91 86521 62647)"
+        title="Call Artist (+91 8652162647)"
         aria-label="Call artist directly"
       >
         <Phone className="w-5 h-5 text-[var(--accent-gold)] group-hover:rotate-12 transition-transform" />
@@ -61,7 +61,7 @@ export const FloatingActions: React.FC = () => {
       <button
         onClick={handleWhatsApp}
         className="w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-[0_8px_25px_rgba(37,211,102,0.45)] hover:shadow-[0_10px_30px_rgba(37,211,102,0.6)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white group relative"
-        title="Chat on WhatsApp (+91 86521 62647)"
+        title="Chat on WhatsApp (+91 8652162647)"
         aria-label="Chat on WhatsApp"
       >
         <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-200 border-2 border-white animate-ping" />

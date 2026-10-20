@@ -955,9 +955,9 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                       </label>
                       <input
                         type="text"
-                        value={settings?.whatsapp_display ?? '+91 86521 62647'}
+                        value={settings?.whatsapp_display ?? '+91 8652162647'}
                         onChange={(e) => setSettings((prev) => prev ? ({ ...prev, whatsapp_display: e.target.value }) : null)}
-                        placeholder="e.g. +91 86521 62647"
+                        placeholder="e.g. +91 8652162647"
                         className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary font-semibold"
                       />
                       <p className="text-[10px] text-theme-muted mt-1">
@@ -1103,7 +1103,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                     className="px-3.5 py-2 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white text-xs font-bold inline-flex items-center gap-2 shadow-xs transition-all cursor-pointer"
                   >
                     <MessageCircle className="w-4 h-4 fill-white" />
-                    <span>Test WhatsApp ({settings?.whatsapp_display || settings?.whatsapp_number || '+91 86521 62647'})</span>
+                    <span>Test WhatsApp ({settings?.whatsapp_display || settings?.whatsapp_number || '+91 8652162647'})</span>
                   </a>
 
                   <a
@@ -1241,9 +1241,9 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                     </label>
                     <input
                       type="text"
-                      value={faqHelpContent.button_text ?? 'Chat on WhatsApp (+91 86521 62647)'}
+                      value={faqHelpContent.button_text ?? 'Chat on WhatsApp (+91 8652162647)'}
                       onChange={(e) => updateSectionField('faqs_help_card', 'button_text', e.target.value)}
-                      placeholder="e.g. Chat on WhatsApp (+91 86521 62647)"
+                      placeholder="e.g. Chat on WhatsApp (+91 8652162647)"
                       className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
                     />
                   </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Menu, X, ShoppingBag, MessageCircle, ChevronRight, ShieldCheck, Palette } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
-import { createWhatsAppUrl, openExternalLink } from '../utils/whatsapp';
+import { createWhatsAppUrl, openExternalLink, DISPLAY_WHATSAPP_NUMBER } from '../utils/whatsapp';
 
 interface NavbarProps {
   currentPath: string;
@@ -237,7 +237,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
                 className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#25D366] text-white font-medium shadow-xs cursor-pointer"
               >
                 <MessageCircle className="w-5 h-5 fill-white" />
-                <span>Chat on WhatsApp (+91 86521 62647)</span>
+                <span>Chat on WhatsApp ({DISPLAY_WHATSAPP_NUMBER})</span>
               </button>
             </div>
           </div>

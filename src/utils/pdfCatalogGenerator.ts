@@ -230,7 +230,7 @@ export async function generateProfessionalCatalogPDF(
   pdf.setFontSize(8.5);
   pdf.setTextColor(212, 163, 115);
   pdf.text(`Email: ${settings?.email || 'info@dotandart.com'}`, 28, yPos + 18);
-  pdf.text(`Phone / WhatsApp: ${settings?.whatsapp_display || settings?.whatsapp_number || '+91 98765 43210'}`, 28, yPos + 24);
+  pdf.text(`Phone / WhatsApp: ${settings?.whatsapp_display || settings?.whatsapp_number || '+91 8652162647'}`, 28, yPos + 24);
   pdf.text(`Location: ${settings?.studio_address || 'Pune, Maharashtra, India'}`, 28, yPos + 30);
 
   pdf.setTextColor(250, 247, 242);
