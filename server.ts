@@ -826,11 +826,22 @@ app.get('/api/categories', (_req: Request, res: Response) => {
 });
 
 // Products (Public Catalog with search, filter, sort, pagination)
-app.get('/api/products', (req: Request, res: Response) => {
-  const hiddenSkus = new Set<string>([
-    'DA-AP-10-0001', 'DA-AP-10-0002', 'DA-AP-10-0003', 'DA-AP-10-0004', 'DA-AP-10-0005'
+function isServerSkuBlocked(sku?: string): boolean {
+  if (!sku) return false;
+  const s = sku.trim().toUpperCase();
+  if (s.startsWith('DA-AP') || s.includes('AP-10-000')) return true;
+  if (s.startsWith('DA-LP-SM') || s.startsWith('DA-LP-MD') || s.startsWith('DA-LP-LG')) return true;
+  const blockedSet = new Set<string>([
+    'DA-AP-10-0001', 'DA-AP-10-0002', 'DA-AP-10-0003', 'DA-AP-10-0004', 'DA-AP-10-0005',
+    'DA-LP-SM-0001', 'DA-LP-SM-0002',
+    'DA-LP-MD-0001', 'DA-LP-MD-0002', 'DA-LP-MD-0003',
+    'DA-LP-LG-0001', 'DA-LP-LG-0002', 'DA-LP-LG-0003',
   ]);
-  let list = deduplicateProducts(db.products).filter((p) => p.is_published && !hiddenSkus.has(p.sku));
+  return blockedSet.has(s);
+}
+
+app.get('/api/products', (req: Request, res: Response) => {
+  let list = deduplicateProducts(db.products).filter((p) => p.is_published && !isServerSkuBlocked(p.sku));
 
   const { category, search, minPrice, maxPrice, size, sort, featured } = req.query;
 
@@ -916,17 +927,17 @@ app.get('/api/products', (req: Request, res: Response) => {
 app.get('/api/products/:idOrSku', (req: Request, res: Response) => {
   const { idOrSku } = req.params;
   const product = (db.products || []).find(
-    (p) => (p.id === idOrSku || p.sku.toLowerCase() === idOrSku.toLowerCase()) && p.is_published
+    (p) => (p.id === idOrSku || p.sku.toLowerCase() === idOrSku.toLowerCase()) && p.is_published && !isServerSkuBlocked(p.sku)
   );
 
-  if (!product) {
+  if (!product || isServerSkuBlocked(product.sku)) {
     res.status(404).json({ error: 'Product not found' });
     return;
   }
 
   // Related products from the same category
   const related = db.products
-    .filter((p) => p.is_published && p.id !== product.id && p.category_id === product.category_id)
+    .filter((p) => p.is_published && p.id !== product.id && p.category_id === product.category_id && !isServerSkuBlocked(p.sku))
     .slice(0, 4);
 
   res.json({

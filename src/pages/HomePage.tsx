@@ -358,6 +358,7 @@ export function HomePage({
                 src="/static/assets/images/Art_artist.jpg"
                 alt="Artist Shital Thosar"
                 className="w-full h-full object-cover rounded-2xl"
+                onError={(e) => { e.currentTarget.src = '/static/assets/images/Art_artist.jpeg'; }}
               />
             </div>
           </div>

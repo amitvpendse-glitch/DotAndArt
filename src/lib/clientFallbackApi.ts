@@ -14,6 +14,10 @@ import {
   updateFirestoreProducts,
   bulkImportFirestoreProducts,
   addFirestoreDeletedIds,
+  saveFirestoreSettings,
+  saveFirestorePage,
+  getFirestoreSettings,
+  getFirestorePages,
 } from './firestoreCatalog';
 import { isAwaitingPhoto } from '../utils/productUtils';
 import { isSkuBlocked } from './blockedSkus';
@@ -718,6 +722,7 @@ export async function handleClientFallbackApi<T = any>(
       const body = options?.body ? JSON.parse(options.body as string) : {};
       const updated = { ...current, ...body };
       localStorage.setItem('app_custom_settings', JSON.stringify(updated));
+      saveFirestoreSettings(updated).catch((e) => console.warn('[clientFallbackApi] Firestore save settings error', e));
       return jsonRes(updated);
     } catch {}
     return jsonRes(getStoredSettings());
@@ -775,6 +780,7 @@ export async function handleClientFallbackApi<T = any>(
       try {
         localStorage.setItem('app_custom_pages', JSON.stringify(pages));
       } catch {}
+      saveFirestorePage(pages[index]).catch((e) => console.warn('[clientFallbackApi] Firestore save page error', e));
       return jsonRes(pages[index]);
     } catch (err) {
       return jsonRes({ error: 'Failed to parse request body' });

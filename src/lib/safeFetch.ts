@@ -12,6 +12,9 @@ import {
   deleteFirestoreProducts,
   updateFirestoreProducts,
   saveFirestoreProduct,
+  saveFirestoreSettings,
+  saveFirestorePage,
+  getFirestorePages,
 } from './firestoreCatalog';
 
 import { isSkuBlocked } from './blockedSkus';
@@ -185,7 +188,7 @@ export async function safeFetchJson<T = any>(
   }
 
   // 4. Direct Cloud Firestore Read for Website Settings
-  if (method === 'GET' && urlString === '/api/settings') {
+  if (method === 'GET' && (urlString === '/api/settings' || urlString === '/api/admin/settings')) {
     try {
       const settings = await getFirestoreSettings();
       if (settings) {
@@ -193,6 +196,24 @@ export async function safeFetchJson<T = any>(
       }
     } catch (fsErr) {
       console.warn('[safeFetchJson] Firestore settings error', fsErr);
+    }
+  }
+
+  // 4b. Direct Cloud Firestore Read for Website Pages
+  if (method === 'GET' && (urlString === '/api/admin/pages' || urlString.startsWith('/api/pages/'))) {
+    try {
+      const pages = await getFirestorePages();
+      if (pages && pages.length > 0) {
+        if (urlString.startsWith('/api/pages/')) {
+          const slug = urlString.replace('/api/pages/', '').split('?')[0];
+          const found = pages.find((p) => p.slug === slug);
+          if (found) return found as unknown as T;
+        } else {
+          return pages as unknown as T;
+        }
+      }
+    } catch (fsErr) {
+      console.warn('[safeFetchJson] Firestore pages error', fsErr);
     }
   }
 
@@ -231,6 +252,49 @@ export async function safeFetchJson<T = any>(
     deleteFirestoreProducts([id], [id]).catch((e) =>
       console.error('[safeFetchJson] Firestore delete sync error', e)
     );
+  }
+
+  // 7b. Intercept Single Product Save/Update
+  if ((method === 'POST' || method === 'PUT') && urlString.startsWith('/api/admin/products') && !urlString.includes('bulk') && !urlString.includes('duplicate')) {
+    try {
+      const body = typeof init?.body === 'string' ? JSON.parse(init.body) : init?.body || {};
+      if (body && typeof body === 'object' && body.name) {
+        saveFirestoreProduct(body).catch((e) =>
+          console.error('[safeFetchJson] Firestore product save sync error', e)
+        );
+      }
+    } catch (err) {
+      console.error('[safeFetchJson] Error parsing product payload', err);
+    }
+  }
+
+  // 7c. Intercept Settings Save/Update
+  if (method === 'PUT' && (urlString === '/api/admin/settings' || urlString === '/api/settings')) {
+    try {
+      const body = typeof init?.body === 'string' ? JSON.parse(init.body) : init?.body || {};
+      if (body && typeof body === 'object') {
+        saveFirestoreSettings(body).catch((e) =>
+          console.error('[safeFetchJson] Firestore settings save sync error', e)
+        );
+      }
+    } catch (err) {
+      console.error('[safeFetchJson] Error parsing settings payload', err);
+    }
+  }
+
+  // 7d. Intercept Page Save/Update
+  if (method === 'PUT' && urlString.startsWith('/api/admin/pages/')) {
+    const slug = urlString.replace('/api/admin/pages/', '').split('?')[0];
+    try {
+      const body = typeof init?.body === 'string' ? JSON.parse(init.body) : init?.body || {};
+      if (body && typeof body === 'object') {
+        saveFirestorePage({ ...body, slug }).catch((e) =>
+          console.error('[safeFetchJson] Firestore page save sync error', e)
+        );
+      }
+    } catch (err) {
+      console.error('[safeFetchJson] Error parsing page payload', err);
+    }
   }
 
   // 8. Standard Fetch for other API calls or fallback

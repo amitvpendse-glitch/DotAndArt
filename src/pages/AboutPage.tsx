@@ -660,8 +660,24 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
           )}
         </div>
 
-        {/* Right: Studio Philosophy Vignette */}
+        {/* Right: Studio Philosophy Vignette & Artist Portrait */}
         <div className="lg:col-span-5 space-y-6">
+          {/* Artist Portrait Card */}
+          <div className="glass-card p-4 rounded-3xl border border-theme-glass bg-theme-card text-center space-y-3 shadow-md">
+            <div className="relative w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-2xl overflow-hidden border-2 border-theme-accent/30 shadow-lg p-1.5 bg-theme-page">
+              <img
+                src="/static/assets/images/Art_artist.jpg"
+                alt="Artist Shital Thosar"
+                className="w-full h-full object-cover rounded-xl"
+                onError={(e) => { e.currentTarget.src = '/static/assets/images/Art_artist.jpeg'; }}
+              />
+            </div>
+            <div>
+              <h3 className="font-serif font-bold text-lg text-theme-primary">Shital Thosar</h3>
+              <p className="text-xs font-mono uppercase tracking-wider text-theme-accent">Founder & Master Artist</p>
+            </div>
+          </div>
+
           {/* Handcrafted Promise Box */}
           <div
             className={`glass-card p-6 rounded-3xl border border-theme-glass space-y-4 bg-theme-card ${
