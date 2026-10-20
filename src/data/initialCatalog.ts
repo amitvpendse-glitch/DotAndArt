@@ -5687,7 +5687,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "featured": false,
     "is_published": true,
     "is_available": true,
-    "base_price": 1200,
+    "base_price": 800,
     "base_size": "10 Inches",
     "images": [
       {
@@ -5722,7 +5722,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "featured": false,
     "is_published": true,
     "is_available": true,
-    "base_price": 2400,
+    "base_price": 2100,
     "base_size": "14 Inches",
     "images": [
       {
@@ -5757,7 +5757,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "featured": false,
     "is_published": true,
     "is_available": true,
-    "base_price": 3600,
+    "base_price": 3500,
     "base_size": "18 Inches",
     "images": [
       {
@@ -5862,7 +5862,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "featured": false,
     "is_published": true,
     "is_available": true,
-    "base_price": 3600,
+    "base_price": 3500,
     "base_size": "18 Inches",
     "images": [
       {
@@ -5897,7 +5897,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "featured": false,
     "is_published": true,
     "is_available": true,
-    "base_price": 3600,
+    "base_price": 3500,
     "base_size": "18 Inches",
     "images": [
       {
@@ -5932,7 +5932,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "featured": false,
     "is_published": true,
     "is_available": true,
-    "base_price": 9500,
+    "base_price": 30000,
     "base_size": "24x48 Inches",
     "images": [
       {
@@ -5967,7 +5967,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "featured": false,
     "is_published": true,
     "is_available": true,
-    "base_price": 7500,
+    "base_price": 25000,
     "base_size": "36 Inches",
     "images": [
       {
@@ -6002,7 +6002,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "featured": false,
     "is_published": true,
     "is_available": true,
-    "base_price": 4500,
+    "base_price": 1600,
     "base_size": "Set",
     "images": [
       {
@@ -6037,7 +6037,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "featured": false,
     "is_published": true,
     "is_available": true,
-    "base_price": 4500,
+    "base_price": 1600,
     "base_size": "Set",
     "images": [
       {
@@ -6072,7 +6072,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "featured": false,
     "is_published": true,
     "is_available": true,
-    "base_price": 4500,
+    "base_price": 3000,
     "base_size": "Set",
     "images": [
       {
@@ -6114,10 +6114,10 @@ export const INITIAL_SETTINGS: any = {
   "business_name": "Dot And Art Studio",
   "tagline": "Authentic Handcrafted Mandala & Lippan Mirror Art",
   "domain": "dotandart.com",
-  "whatsapp_number": "+919876543210",
-  "whatsapp_display": "+91 98765 43210",
-  "instagram_url": "https://instagram.com/dotandart",
-  "facebook_url": "https://facebook.com/dotandart",
+  "whatsapp_number": "+918652162647",
+  "whatsapp_display": "+91 8652162647",
+  "instagram_url": "https://www.instagram.com/sathosar",
+  "facebook_url": "https://www.facebook.com/people/Dot-And-Art/61570301135652/",
   "email": "contact@dotandart.com",
   "studio_address": "Mumbai, India",
   "payment_terms": "50% advance for custom commissions.",

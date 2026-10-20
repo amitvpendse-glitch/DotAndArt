@@ -2,7 +2,7 @@ import JSZip from 'jszip';
 import { CartItem, CustomMandalaInquiry, Product } from '../types';
 
 export const BUSINESS_WHATSAPP_NUMBER = '918652162647';
-export const DISPLAY_WHATSAPP_NUMBER = '+91 86521 62647';
+export const DISPLAY_WHATSAPP_NUMBER = '+91 8652162647';
 
 let _activeNumber = BUSINESS_WHATSAPP_NUMBER;
 let _displayNumber = DISPLAY_WHATSAPP_NUMBER;
