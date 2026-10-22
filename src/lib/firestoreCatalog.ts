@@ -363,12 +363,6 @@ export async function getFirestoreSettings(): Promise<WebsiteSettings> {
       const merged: WebsiteSettings = {
         ...INITIAL_SETTINGS,
         ...data,
-        whatsapp_number: '+918652162647',
-        whatsapp_display: '+91 8652162647',
-        instagram_url: 'https://www.instagram.com/sathosar',
-        facebook_url: 'https://www.facebook.com/people/Dot-And-Art/61570301135652/?rdid=pVSv1qBdjZtMtY9r&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1LuTQvNiMU%2F',
-        email: 'shitalthosar@yahoo.com',
-        studio_address: 'Pune, India',
       };
       return merged;
     }

@@ -1261,6 +1261,21 @@ const handlePageUpdate = (req: Request, res: Response) => {
   if (status && ['published', 'draft'].includes(status)) db.pages[index].status = status;
   if (Array.isArray(sections)) {
     db.pages[index].sections = sections;
+    if (slug === 'contact') {
+      const infoSec = (sections || []).find((s: any) => s.section_type === 'info_cards' || s.section_key === 'studio_info');
+      if (infoSec?.content_json) {
+        if (infoSec.content_json.whatsapp_display) {
+          db.settings.whatsapp_display = infoSec.content_json.whatsapp_display;
+          db.settings.whatsapp_number = infoSec.content_json.whatsapp_display.replace(/[^0-9+]/g, '');
+        }
+        if (infoSec.content_json.email_address) db.settings.email = infoSec.content_json.email_address;
+        if (infoSec.content_json.studio_address) db.settings.studio_address = infoSec.content_json.studio_address;
+        if (infoSec.content_json.domain_name) db.settings.domain = infoSec.content_json.domain_name;
+        if (infoSec.content_json.instagram_url) db.settings.instagram_url = infoSec.content_json.instagram_url;
+        if (infoSec.content_json.facebook_url) db.settings.facebook_url = infoSec.content_json.facebook_url;
+        saveFirestoreSettings(db.settings).catch((e) => console.warn('[server] Firestore settings sync error', e));
+      }
+    }
   }
   db.pages[index].updated_at = new Date().toISOString();
   saveDB(db);
