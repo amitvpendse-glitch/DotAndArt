@@ -37,6 +37,7 @@ import {
   getFirestoreTestimonials,
   saveFirestoreSyncFlag,
   getFirestoreSyncFlag,
+  getFirestoreProductById,
 } from './src/lib/firestoreCatalog.ts';
 
 const app = express();
@@ -652,10 +653,53 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.use('/api', (_req: Request, res: Response, next: NextFunction) => {
+app.use('/api', async (_req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
+  db = loadDB();
+
+  try {
+    const fsFlag = await getFirestoreSyncFlag();
+    if (fsFlag && fsFlag.changed) {
+      console.log('[ServerSync] Sync flag is TRUE in Firestore! Performing direct Firestore lookup and refresh...');
+      const [fsPages, fsSettings, fsProducts, fsTestimonials] = await Promise.all([
+        getFirestorePages().catch(() => null),
+        getFirestoreSettings().catch(() => null),
+        getFirestoreProducts(true).catch(() => null),
+        getFirestoreTestimonials().catch(() => null),
+      ]);
+
+      let updated = false;
+      if (Array.isArray(fsProducts) && fsProducts.length > 0) {
+        db.products = deduplicateProducts(fsProducts);
+        updated = true;
+      }
+      if (Array.isArray(fsPages) && fsPages.length > 0) {
+        db.pages = fsPages;
+        updated = true;
+      }
+      if (fsSettings && fsSettings.business_name) {
+        db.settings = { ...db.settings, ...fsSettings };
+        updated = true;
+      }
+      if (Array.isArray(fsTestimonials) && fsTestimonials.length > 0) {
+        db.testimonials = fsTestimonials;
+        updated = true;
+      }
+
+      if (updated) {
+        saveDB(db, false);
+      }
+
+      db.sync_flag = { changed: false, updated_at: new Date().toISOString() };
+      saveDB(db, false);
+      await saveFirestoreSyncFlag(false).catch(() => {});
+    }
+  } catch (err) {
+    // Ignore network hiccups during sync check
+  }
+
   next();
 });
 
@@ -950,6 +994,28 @@ app.post('/api/sync-reset', (_req: Request, res: Response) => {
   saveFirestoreSyncFlag(false).catch(() => {});
   res.json({ success: true });
 });
+
+// Debug endpoint for any product by SKU or ID
+app.get('/api/debug/product/:sku', async (req: Request, res: Response) => {
+  try {
+    const target = req.params.sku;
+    const prodFs = await getFirestoreProductById(target);
+    const prodLocal = (db.products || []).find(p => p.sku?.toUpperCase() === target.toUpperCase() || p.id?.toUpperCase() === target.toUpperCase() || p.id?.toUpperCase().includes(target.toUpperCase()));
+    res.json({
+      success: true,
+      query: target,
+      firestore_product: prodFs || null,
+      local_product: prodLocal || null,
+      unavailable_badge_text_firestore: prodFs?.unavailable_badge_text || null,
+      unavailable_badge_text_local: prodLocal?.unavailable_badge_text || null,
+      full_description_firestore: prodFs?.description || null,
+      full_description_local: prodLocal?.description || null
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 /* =========================================================
    PUBLIC WEBSITE ENDPOINTS

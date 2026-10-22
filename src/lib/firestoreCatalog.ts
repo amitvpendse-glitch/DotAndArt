@@ -180,6 +180,30 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
   }
 }
 
+export async function getFirestoreProductById(idOrSku: string): Promise<Product | null> {
+  if (firestoreQuotaExceeded) return null;
+  try {
+    const docRef = doc(db, PRODUCTS_COLLECTION, idOrSku);
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      return snap.data() as Product;
+    }
+    const colRef = collection(db, PRODUCTS_COLLECTION);
+    const allSnap = await getDocs(colRef);
+    let found: Product | null = null;
+    allSnap.forEach((d) => {
+      const data = d.data() as Product;
+      if (d.id === idOrSku || data.id === idOrSku || data.sku?.toUpperCase() === idOrSku.toUpperCase()) {
+        found = data;
+      }
+    });
+    return found;
+  } catch (err) {
+    checkQuotaError(err);
+    return null;
+  }
+}
+
 /**
  * Saves or updates a single product in Firestore.
  */
