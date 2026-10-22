@@ -55,14 +55,26 @@ export async function safeFetchJson<T = any>(
   init?: RequestInit,
   fallbackValue: any = null
 ): Promise<T> {
-  const urlString = String(input);
+  let urlString = String(input);
   const method = (init?.method || 'GET').toUpperCase();
+
+  if (method === 'GET') {
+    const separator = urlString.includes('?') ? '&' : '?';
+    if (!urlString.includes('_cb=')) {
+      urlString = `${urlString}${separator}_cb=${Date.now()}`;
+    }
+  }
+
+  const enhancedInit: RequestInit = {
+    ...init,
+    cache: 'no-store',
+  };
 
   // Try standard backend Express server fetch first
   try {
-    const res = await fetch(input, init);
+    const res = await fetch(urlString, enhancedInit);
     if (res.ok) {
-      const result = await safeResponseJson<T>(res, fallbackValue, init, urlString);
+      const result = await safeResponseJson<T>(res, fallbackValue, enhancedInit, urlString);
       if (result !== null && result !== undefined) {
         return result;
       }
