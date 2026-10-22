@@ -1166,6 +1166,19 @@ app.get('/api/pages', (_req: Request, res: Response) => {
   res.json(db.pages.filter((p) => p.status === 'published'));
 });
 
+// Admin list pages
+app.get('/api/admin/pages', (_req: Request, res: Response) => {
+  INITIAL_PAGES.forEach((initPage) => {
+    let existing = (db.pages || []).find((p) => p.slug === initPage.slug);
+    if (!existing) {
+      (db.pages = db.pages || []).push(JSON.parse(JSON.stringify(initPage)));
+    } else {
+      mergeMissingPageSections(existing);
+    }
+  });
+  res.json(db.pages);
+});
+
 app.get('/api/pages/:slug', (req: Request, res: Response) => {
   const { slug } = req.params;
   let page = (db.pages || []).find((p) => p.slug === slug);
@@ -1194,7 +1207,7 @@ app.get('/api/pages/:slug', (req: Request, res: Response) => {
 });
 
 // Update Page Content (Supports Admin Token or PIN)
-app.put('/api/pages/:slug', (req: Request, res: Response) => {
+const handlePageUpdate = (req: Request, res: Response) => {
   const { slug } = req.params;
   const authHeader = req.headers.authorization;
   const cookies = parseCookies(req.headers.cookie);
@@ -1251,9 +1264,13 @@ app.put('/api/pages/:slug', (req: Request, res: Response) => {
   }
   db.pages[index].updated_at = new Date().toISOString();
   saveDB(db);
-  logAudit('page_updated_inline', 'page', slug, { title: db.pages[index].title });
+  saveFirestorePage(db.pages[index]).catch((err) => console.warn('[server] Firestore page save warning:', err));
+  logAudit('page_updated', 'page', slug, { title: db.pages[index].title });
   res.json(db.pages[index]);
-});
+};
+
+app.put('/api/pages/:slug', handlePageUpdate);
+app.put('/api/admin/pages/:slug', handlePageUpdate);
 
 // Custom Enquiry Logger (Public)
 app.post('/api/custom-enquiry', (req: Request, res: Response) => {
