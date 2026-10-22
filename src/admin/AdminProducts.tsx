@@ -28,6 +28,7 @@ import {
   FileSpreadsheet,
   FileDown,
   Loader2,
+  Save,
 } from 'lucide-react';
 import { Product, Category, ProductVariant, ProductImage, WebsiteSettings } from '../types';
 import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
@@ -104,6 +105,12 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({
   const [highDemandMessage, setHighDemandMessage] = useState(
     'Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.'
   );
+  const [badgeTag, setBadgeTag] = useState('');
+  const [photosAvailableNote, setPhotosAvailableNote] = useState('');
+
+  // Save button disabled/enabled state tracking (Requirement 4)
+  const [isDrawerDirty, setIsDrawerDirty] = useState(false);
+  const [savingProduct, setSavingProduct] = useState(false);
 
   // Images & Variants
   const [images, setImages] = useState<ProductImage[]>([]);
@@ -608,6 +615,9 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     setVariants([
       { id: `v-${Date.now()}-1`, product_id: '', size: '12 inches diameter', price: 2500, is_available: true, display_order: 1 },
     ]);
+    setBadgeTag('');
+    setPhotosAvailableNote('');
+    setIsDrawerDirty(false);
     setErrorMessage('');
     setDrawerOpen(true);
   };
@@ -633,6 +643,8 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     setAvailableBadgeText(p.available_badge_text || 'Available');
     setUnavailableBadgeText(p.unavailable_badge_text || 'Made to Order');
     setShowAvailableBadge(p.show_available_badge !== false);
+    setBadgeTag(p.badge_tag || '');
+    setPhotosAvailableNote(p.photos_available_note || '');
     const isLippanArt =
       p.category_slug === 'lippan-wall-hangings' ||
       (p.name || '').toLowerCase().includes('lippan') ||
@@ -645,6 +657,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     );
     setImages(p?.images ? [...p?.images] : []);
     setVariants(p.variants ? [...p.variants] : []);
+    setIsDrawerDirty(false);
     setErrorMessage('');
     setDrawerOpen(true);
   };
@@ -811,10 +824,14 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
       show_available_badge: showAvailableBadge,
       is_high_demand: isHighDemand,
       extra_delivery_days: Number(extraDeliveryDays) || 0,
-      high_demand_message: safeTrim(highDemandMessage),
+      badge_tag: safeTrim(badgeTag),
+      photos_available_note: safeTrim(photosAvailableNote),
       images,
       variants,
     };
+
+    setSavingProduct(true);
+    setErrorMessage('');
 
     try {
       const url = editingProduct
@@ -840,11 +857,14 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         return;
       }
 
+      setIsDrawerDirty(false);
       setDrawerOpen(false);
       fetchProductsAndCategories();
       window.dispatchEvent(new Event('app_products_updated'));
     } catch {
       setErrorMessage('Network error while saving product.');
+    } finally {
+      setSavingProduct(false);
     }
   };
 
@@ -1750,7 +1770,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
               </div>
             )}
 
-            <form onSubmit={handleSaveProduct} className="space-y-6 text-xs">
+            <form onSubmit={handleSaveProduct} onChange={() => setIsDrawerDirty(true)} className="space-y-6 text-xs">
               {/* Basic Details */}
               <div className="space-y-4">
                 <h4 className="font-semibold text-sm text-[#8C4A28] uppercase tracking-wider">
@@ -2287,6 +2307,39 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                     </div>
                   </div>
 
+                  {/* Custom Promotional Badge Tag */}
+                  <div className="p-4 rounded-xl bg-white border border-[#E3D4C4] space-y-2">
+                    <label className="block font-semibold text-[#4A3E36] text-xs">
+                      Promotional Badge Tag (e.g. Featured, Bestseller, New Arrival, Limited Edition)
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      <input
+                        type="text"
+                        value={badgeTag}
+                        onChange={(e) => {
+                          setBadgeTag(e.target.value);
+                          setIsDrawerDirty(true);
+                        }}
+                        placeholder="e.g. Bestseller, Masterpiece, New Arrival..."
+                        className="flex-1 min-w-[180px] px-3 py-2 rounded-xl bg-[#FAF7F2] text-[#2C2724] border border-[#D8C7B5]"
+                      />
+                      {['Bestseller', 'New Arrival', 'Masterpiece', 'Limited Edition'].map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => {
+                            setBadgeTag(tag);
+                            setIsDrawerDirty(true);
+                          }}
+                          className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold border cursor-pointer ${
+                            badgeTag === tag ? 'bg-[#C85A32] text-white border-[#C85A32]' : 'bg-[#FAF0E6] text-[#A03E1B] border-[#E8DACB]'
+                          }`}
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
                 </div>
 
@@ -2412,20 +2465,46 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
               </div>
 
               {/* Submit Buttons */}
-              <div className="pt-6 border-t border-[#F0E5D8] flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setDrawerOpen(false)}
-                  className="px-5 py-2.5 rounded-xl border border-[#D4A373] text-[#5B331A]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#A03E1B] text-white font-semibold"
-                >
-                  Save Artwork
-                </button>
+              <div className="pt-6 border-t border-[#F0E5D8] flex items-center justify-between">
+                <span className="text-[11px] text-[#8C7667]">
+                  {isDrawerDirty ? 'Unsaved edits detected' : 'All changes saved to database'}
+                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setDrawerOpen(false)}
+                    className="px-5 py-2.5 rounded-xl border border-[#D4A373] text-[#5B331A] cursor-pointer hover:bg-[#FAF7F2]"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!isDrawerDirty || savingProduct}
+                    className={`px-6 py-2.5 rounded-xl text-xs font-semibold shadow-xs flex items-center gap-2 transition-all ${
+                      !isDrawerDirty
+                        ? 'bg-stone-500/20 text-stone-400 cursor-not-allowed border border-[#D8C7B5]'
+                        : 'bg-[#C85A32] hover:bg-[#A03E1B] text-white cursor-pointer shadow-md transform hover:-translate-y-0.5'
+                    }`}
+                    title={!isDrawerDirty ? 'No unsaved edits' : 'Click to save artwork to database'}
+                  >
+                    {savingProduct ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Saving to Cloud...</span>
+                      </>
+                    ) : !isDrawerDirty ? (
+                      <>
+                        <Check className="w-4 h-4 text-emerald-600" />
+                        <span>Saved</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" />
+                        <span>Save Artwork</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </form>
           </div>

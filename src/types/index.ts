@@ -56,6 +56,7 @@ export interface Product {
   is_high_demand?: boolean; // Lippan art items shown as high demand (editable by admin)
   extra_delivery_days?: number; // e.g. 5 extra days (editable by admin)
   high_demand_message?: string; // Free text box saying it will take 5 more days than usual, positively phrased (editable by admin)
+  badge_tag?: string; // Custom promotional badge tag e.g. "Featured", "Bestseller", "New", "Staff Pick"
   photos_available_note?: string;
   base_price: number;
   base_size: string;
@@ -168,6 +169,9 @@ export interface WebsiteSettings {
   payment_terms: string;
   shipping_policy_summary: string;
   available_badge_default_text?: string;
+  unavailable_badge_default_text?: string;
+  artisan_badge_text?: string;
+  shipping_badge_text?: string;
   show_available_badges?: boolean;
   featured_3d_sku?: string;
   featured_3d_image?: string;

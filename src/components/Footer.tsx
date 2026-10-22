@@ -94,7 +94,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, settings }) => {
             {/* Social Links */}
             <div className="flex items-center gap-3 pt-2">
               <a
-                href={settings?.instagram_url || 'https://www.instagram.com/sathosar'}
+                href="https://www.instagram.com/sathosar"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full glass-button hover:bg-[#E1306C] text-theme-primary flex items-center justify-center transition-colors"
@@ -104,7 +104,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, settings }) => {
                 <Instagram className="w-4 h-4" />
               </a>
               <a
-                href={settings?.facebook_url || 'https://www.facebook.com/people/Dot-And-Art/61570301135652/'}
+                href="https://www.facebook.com/people/Dot-And-Art/61570301135652/?rdid=pVSv1qBdjZtMtY9r&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1LuTQvNiMU%2F"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full glass-button hover:bg-[#1877F2] text-theme-primary flex items-center justify-center transition-colors"
@@ -200,18 +200,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, settings }) => {
               <li className="flex items-start gap-2">
                 <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0 mt-0.5" />
                 <button onClick={handleWhatsApp} className="text-left hover:text-theme-primary cursor-pointer">
-                  WhatsApp: <span className="font-semibold text-theme-primary">{settings?.whatsapp_display || DISPLAY_WHATSAPP_NUMBER}</span>
+                  WhatsApp: <span className="font-semibold text-theme-primary">+91 8652162647</span>
                 </button>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-theme-accent shrink-0" />
-                <a href={`mailto:${settings?.email || 'shitalthosar@yahoo.com'}`} className="hover:text-theme-primary">
-                  {settings?.email || 'shitalthosar@yahoo.com'}
+                <a href="mailto:shitalthosar@yahoo.com" className="hover:text-theme-primary">
+                  shitalthosar@yahoo.com
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-theme-accent shrink-0 mt-0.5" />
-                <span>{settings?.studio_address || 'Dot And Art Studio, Maharashtra, India (Worldwide Shipping)'}</span>
+                <span>Pune, India</span>
               </li>
             </ul>
           </div>
@@ -248,7 +248,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, settings }) => {
 
         {/* Soughtweb Labs Credit Note */}
         <div className="mt-4 pt-3 border-t border-theme-glass/40 text-center text-[11px] text-theme-muted leading-relaxed">
-          <span>Powered by Soughtweb Labs</span>
+          <span>Powered by Soughtweb Labs , 9823640764</span>
         </div>
       </div>
     </footer>

@@ -48,17 +48,17 @@ export const ContactPage: React.FC = () => {
     (s: any) => s.section_type === 'brand_identity' || s.section_key === 'brand_identity'
   );
 
-  const instagramUrl = settings?.instagram_url || brandSec?.content_json?.instagram_url || 'https://www.instagram.com/sathosar';
-  const facebookUrl = settings?.facebook_url || brandSec?.content_json?.facebook_url || 'https://www.facebook.com/people/Dot-And-Art/61570301135652/';
-  const rawHandle = instagramUrl.includes('instagram.com/')
-    ? instagramUrl.split('instagram.com/')[1].split('/')[0].split('?')[0]
-    : 'sathosar';
-  const instagramHandle = rawHandle ? `@${rawHandle}` : '@sathosar';
+  const instagramUrl = 'https://www.instagram.com/sathosar';
+  const facebookUrl = 'https://www.facebook.com/people/Dot-And-Art/61570301135652/?rdid=pVSv1qBdjZtMtY9r&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1LuTQvNiMU%2F';
+  const instagramHandle = '@sathosar';
+  const emailAddress = 'shitalthosar@yahoo.com';
+  const studioAddress = 'Pune, India';
+  const displayPhone = '+91 8652162647';
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     const formatted = `Hello Dot And Art,\n\nI am contacting you from the website:\n\nName: ${name}\nPhone: ${phone}\nMessage: ${message}`;
-    const url = createWhatsAppUrl(formatted, settings?.whatsapp_number);
+    const url = createWhatsAppUrl(formatted, '918652162647');
     openExternalLink(url);
     setSent(true);
   };
@@ -66,7 +66,7 @@ export const ContactPage: React.FC = () => {
   const handleDirectWhatsApp = () => {
     const url = createWhatsAppUrl(
       'Hello Dot And Art! I would like to connect regarding your artwork.',
-      settings?.whatsapp_number
+      '918652162647'
     );
     openExternalLink(url);
   };
@@ -101,7 +101,7 @@ export const ContactPage: React.FC = () => {
                 <div>
                   <span className="font-bold text-theme-primary block">WhatsApp (Primary Channel)</span>
                   <button onClick={handleDirectWhatsApp} className="text-[#128C7E] hover:underline font-semibold mt-0.5 cursor-pointer">
-                    {settings?.whatsapp_display || settings?.whatsapp_number || DISPLAY_WHATSAPP_NUMBER}
+                    {displayPhone}
                   </button>
                   <p className="text-[11px] text-theme-muted">Direct messaging & custom order assistance</p>
                 </div>
@@ -113,23 +113,21 @@ export const ContactPage: React.FC = () => {
                 </div>
                 <div>
                   <span className="font-bold text-theme-primary block">Email Inquiries</span>
-                  <a href={`mailto:${settings?.email || 'shitalthosar@yahoo.com'}`} className="hover:underline text-theme-accent">
-                    {settings?.email || 'shitalthosar@yahoo.com'}
+                  <a href={`mailto:${emailAddress}`} className="hover:underline text-theme-accent">
+                    {emailAddress}
                   </a>
                 </div>
               </div>
 
-              {(settings?.studio_address || brandSec?.content_json?.studio_address) && (
-                <div className="flex items-start gap-3">
-                  <div className="w-9 h-9 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="font-bold text-theme-primary block">Studio Address</span>
-                    <p className="text-theme-muted mt-0.5">{settings?.studio_address || brandSec?.content_json?.studio_address}</p>
-                  </div>
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
+                  <MapPin className="w-5 h-5" />
                 </div>
-              )}
+                <div>
+                  <span className="font-bold text-theme-primary block">Studio Address</span>
+                  <p className="text-theme-muted mt-0.5">{studioAddress}</p>
+                </div>
+              </div>
             </div>
 
             {/* Social Links */}

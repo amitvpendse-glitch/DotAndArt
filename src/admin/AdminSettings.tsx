@@ -13,6 +13,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -28,7 +29,10 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
           safeFetchJson<{ products: Product[] }>('/api/products', undefined, { products: [] }),
         ]);
 
-        if (settingsData) setSettings(settingsData);
+        if (settingsData) {
+          setSettings(settingsData);
+          setIsDirty(false);
+        }
         if (prodData?.products) setProducts(prodData.products);
       } catch (err) {
         console.error('Error loading settings/products', err);
@@ -39,8 +43,8 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
     loadData();
   }, [token]);
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSave = async (e?: React.FormEvent) => {
+    if (e && e.preventDefault) e.preventDefault();
     if (!settings) return;
 
     setSaving(true);
@@ -67,7 +71,8 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
         }
         window.dispatchEvent(new CustomEvent('app_settings_updated', { detail: data }));
         window.dispatchEvent(new Event('app_pages_updated'));
-        setSuccessMsg('Website settings and 3D Banner configuration updated successfully.');
+        setIsDirty(false);
+        setSuccessMsg('Website settings, badges, and configuration updated successfully.');
       } else {
         setErrorMsg('Failed to update website settings.');
       }
@@ -134,12 +139,31 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
 
         <button
           type="button"
-          disabled={saving}
-          onClick={handleSave}
-          className="px-5 py-2.5 rounded-xl bg-theme-accent hover:opacity-90 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+          disabled={!isDirty || saving}
+          onClick={() => handleSave()}
+          className={`px-5 py-2.5 rounded-xl text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-all ${
+            !isDirty
+              ? 'bg-stone-500/20 text-stone-400 dark:text-stone-500 cursor-not-allowed border border-white/10'
+              : 'bg-[#C85A32] hover:bg-[#A03E1B] text-white cursor-pointer shadow-md transform hover:-translate-y-0.5'
+          }`}
+          title={!isDirty ? 'No unsaved edits' : 'Click to save settings to database'}
         >
-          <Save className="w-4 h-4" />
-          <span>{saving ? 'Saving...' : 'Save All Settings'}</span>
+          {saving ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <span>Saving to Cloud...</span>
+            </>
+          ) : !isDirty ? (
+            <>
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              <span>Saved</span>
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4" />
+              <span>Save All Settings</span>
+            </>
+          )}
         </button>
       </div>
 
@@ -157,7 +181,11 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
         </div>
       )}
 
-      <form onSubmit={handleSave} className="glass-card p-6 sm:p-8 rounded-3xl border border-theme-glass craft-shadow space-y-8 text-xs text-theme-primary">
+      <form
+        onSubmit={handleSave}
+        onChange={() => setIsDirty(true)}
+        className="glass-card p-6 sm:p-8 rounded-3xl border border-theme-glass craft-shadow space-y-8 text-xs text-theme-primary"
+      >
         {/* 1. Homepage Showcase Banner Artwork & Details Configuration */}
         <div className="space-y-6 p-5 sm:p-6 rounded-2xl bg-theme-page border border-theme-glass">
           <div className="flex items-center gap-2">
@@ -861,43 +889,113 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block font-semibold text-theme-primary text-xs mb-1">
-                  Default Badge Label Text
+                  Default "Available" Badge Label Text
                 </label>
                 <input
                   type="text"
                   value={settings.available_badge_default_text || 'Available'}
                   placeholder="e.g. Available, Available to Order"
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setSettings({
                       ...settings,
                       available_badge_default_text: e.target.value,
-                    })
-                  }
+                    });
+                    setIsDirty(true);
+                  }}
                   className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary text-xs font-semibold"
                 />
-                <p className="text-[10px] text-theme-muted mt-1">
-                  You can also customize the badge label and availability individually for each piece under Product Catalog.
-                </p>
               </div>
 
-              <div className="p-3 rounded-xl bg-theme-card border border-theme-glass flex items-center gap-3">
-                <span className="text-xs text-theme-muted">Preview:</span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/85 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold shadow-xs uppercase tracking-wider">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>{settings.available_badge_default_text || 'Available'}</span>
-                </span>
+              <div>
+                <label className="block font-semibold text-theme-primary text-xs mb-1">
+                  Default "Made to Order" / Unavailable Badge Label
+                </label>
+                <input
+                  type="text"
+                  value={settings.unavailable_badge_default_text || 'Made to Order'}
+                  placeholder="e.g. Made to Order, Custom Order"
+                  onChange={(e) => {
+                    setSettings({
+                      ...settings,
+                      unavailable_badge_default_text: e.target.value,
+                    });
+                    setIsDirty(true);
+                  }}
+                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary text-xs font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-theme-primary text-xs mb-1">
+                  Authenticity Trust Badge
+                </label>
+                <input
+                  type="text"
+                  value={settings.artisan_badge_text || 'Original Studio Photography • 100% Non-AI Guarantee'}
+                  placeholder="e.g. 100% Non-AI Guarantee"
+                  onChange={(e) => {
+                    setSettings({
+                      ...settings,
+                      artisan_badge_text: e.target.value,
+                    });
+                    setIsDirty(true);
+                  }}
+                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary text-xs font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-theme-primary text-xs mb-1">
+                  Shipping Badge
+                </label>
+                <input
+                  type="text"
+                  value={settings.shipping_badge_text || 'Worldwide Safe Courier Shipping'}
+                  placeholder="e.g. Worldwide Shipping"
+                  onChange={(e) => {
+                    setSettings({
+                      ...settings,
+                      shipping_badge_text: e.target.value,
+                    });
+                    setIsDirty(true);
+                  }}
+                  className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary text-xs font-semibold"
+                />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="pt-4 border-t border-theme-glass flex justify-end">
+        <div className="pt-4 border-t border-theme-glass flex items-center justify-between">
+          <span className="text-[11px] text-theme-muted">
+            {isDirty ? 'Unsaved settings detected' : 'All settings saved to database'}
+          </span>
           <button
             type="submit"
-            disabled={saving}
-            className="px-6 py-2.5 rounded-xl bg-theme-accent hover:opacity-90 text-white font-semibold shadow-xs cursor-pointer"
+            disabled={!isDirty || saving}
+            className={`px-6 py-2.5 rounded-xl text-xs font-semibold shadow-xs flex items-center gap-2 transition-all ${
+              !isDirty
+                ? 'bg-stone-500/20 text-stone-400 dark:text-stone-500 cursor-not-allowed border border-white/10'
+                : 'bg-[#C85A32] hover:bg-[#A03E1B] text-white cursor-pointer shadow-md transform hover:-translate-y-0.5'
+            }`}
+            title={!isDirty ? 'No unsaved edits' : 'Click to save settings to database'}
           >
-            {saving ? 'Saving...' : 'Save All Settings'}
+            {saving ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Saving to Cloud...</span>
+              </>
+            ) : !isDirty ? (
+              <>
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                <span>Saved</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                <span>Save All Settings</span>
+              </>
+            )}
           </button>
         </div>
       </form>

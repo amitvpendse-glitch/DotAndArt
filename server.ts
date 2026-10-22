@@ -28,6 +28,13 @@ import {
   deleteFirestoreProducts,
   updateFirestoreProducts,
   bulkImportFirestoreProducts,
+  saveFirestorePage,
+  getFirestorePages,
+  saveFirestoreSettings,
+  getFirestoreSettings,
+  saveFirestoreTestimonial,
+  deleteFirestoreTestimonial,
+  getFirestoreTestimonials,
 } from './src/lib/firestoreCatalog.ts';
 
 const app = express();
@@ -213,9 +220,19 @@ function loadDB(): DBState {
       const data = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
       data.pages = INITIAL_PAGES.length === 0 ? [] : INITIAL_PAGES;
       data.products = INITIAL_PRODUCTS.length === 0 ? [] : deduplicateProducts(INITIAL_PRODUCTS);
-      data.categories = INITIAL_CATEGORIES.length === 0 ? [] : INITIAL_CATEGORIES;
-      data.testimonials = INITIAL_TESTIMONIALS.length === 0 ? [] : INITIAL_TESTIMONIALS;
-      data.faqs = INITIAL_FAQS.length === 0 ? [] : INITIAL_FAQS;
+      if (!Array.isArray(data.testimonials) || data.testimonials.length === 0) {
+        data.testimonials = [...INITIAL_TESTIMONIALS];
+      }
+      if (!Array.isArray(data.faqs) || data.faqs.length === 0) {
+        data.faqs = [...INITIAL_FAQS];
+      } else if (data.faqs.length < 10) {
+        const existingQ = new Set(data.faqs.map((f: any) => (f.question || '').toLowerCase().trim()));
+        for (const initFaq of INITIAL_FAQS) {
+          if (!existingQ.has((initFaq.question || '').toLowerCase().trim())) {
+            data.faqs.push(initFaq);
+          }
+        }
+      }
       if (!data.settings) data.settings = { ...INITIAL_SETTINGS };
       if (!data.settings.showcase_banner) data.settings.showcase_banner = { ...INITIAL_SETTINGS.showcase_banner };
       ensureDbArrays(data);
@@ -262,7 +279,75 @@ function loadDB(): DBState {
 
 let db = loadDB();
 
-// Firestore sync removed
+// Smart Firestore Synchronization: Load persisted Firestore records on boot with zero runtime read penalty
+async function syncFromFirestoreOnBoot() {
+  try {
+    const [fsPages, fsSettings, fsProducts, fsTestimonials] = await Promise.all([
+      getFirestorePages().catch(() => null),
+      getFirestoreSettings().catch(() => null),
+      getFirestoreProducts().catch(() => null),
+      getFirestoreTestimonials().catch(() => null),
+    ]);
+
+    let changed = false;
+
+    if (Array.isArray(fsPages) && fsPages.length > 0) {
+      fsPages.forEach((fp) => {
+        const idx = (db.pages || []).findIndex((p) => p.slug === fp.slug);
+        if (idx >= 0) {
+          db.pages[idx] = { ...db.pages[idx], ...fp };
+        } else {
+          (db.pages = db.pages || []).push(fp);
+        }
+      });
+      changed = true;
+    }
+
+    if (fsSettings && fsSettings.business_name) {
+      db.settings = { ...db.settings, ...fsSettings };
+      changed = true;
+    }
+
+    if (Array.isArray(fsProducts) && fsProducts.length > 0) {
+      const pMap = new Map<string, Product>();
+      (db.products || []).forEach((p) => {
+        if (p?.sku) pMap.set(p.sku.toUpperCase(), p);
+      });
+      fsProducts.forEach((fp) => {
+        if (fp?.sku) {
+          const key = fp.sku.toUpperCase();
+          const existing = pMap.get(key);
+          pMap.set(key, { ...(existing || {}), ...fp });
+        }
+      });
+      db.products = Array.from(pMap.values());
+      changed = true;
+    }
+
+    if (Array.isArray(fsTestimonials) && fsTestimonials.length > 0) {
+      const tMap = new Map<string, Testimonial>();
+      (db.testimonials || []).forEach((t) => {
+        if (t?.id) tMap.set(t.id, t);
+      });
+      fsTestimonials.forEach((ft) => {
+        if (ft?.id) {
+          const existing = tMap.get(ft.id);
+          tMap.set(ft.id, { ...(existing || {}), ...ft });
+        }
+      });
+      db.testimonials = Array.from(tMap.values());
+      changed = true;
+    }
+
+    if (changed) {
+      saveDB(db);
+      console.log('[server] Initialized and synchronized from Firestore.');
+    }
+  } catch (e) {
+    console.warn('[server] Firestore boot sync notice:', e);
+  }
+}
+syncFromFirestoreOnBoot();
 
 
 let smartSyncWatcherInitialized = false;
@@ -946,19 +1031,90 @@ app.get('/api/products/:idOrSku', (req: Request, res: Response) => {
   });
 });
 
-// Testimonials (Public)
+// Testimonials (Public GET)
 app.get('/api/testimonials', (_req: Request, res: Response) => {
-  const list = db.testimonials
+  if (!Array.isArray(db.testimonials) || db.testimonials.length === 0) {
+    db.testimonials = [...INITIAL_TESTIMONIALS];
+    saveDB(db);
+  }
+  const list = (db.testimonials || [])
     .filter((t) => t.is_published)
-    .sort((a, b) => a.display_order - b.display_order);
+    .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
   res.json(list);
 });
 
-// FAQs (Public)
+// Allow ANY user to add a new real testimonial (Public POST)
+app.post('/api/testimonials', (req: Request, res: Response) => {
+  const { customer_name, content, rating, location, artwork_purchased } = req.body;
+
+  if (!customer_name || typeof customer_name !== 'string' || !customer_name.trim()) {
+    res.status(400).json({ error: 'Please enter your name.' });
+    return;
+  }
+
+  if (!content || typeof content !== 'string' || !content.trim()) {
+    res.status(400).json({ error: 'Please enter your review / testimonial.' });
+    return;
+  }
+
+  const cleanRating = Math.max(1, Math.min(5, Number(rating) || 5));
+  const now = new Date().toISOString();
+
+  const newTestimonial: Testimonial = {
+    id: `test-user-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
+    customer_name: customer_name.trim(),
+    content: content.trim(),
+    rating: cleanRating,
+    location: (location || '').trim(),
+    artwork_purchased: (artwork_purchased || '').trim(),
+    image_path: '',
+    display_order: (db.testimonials || []).length + 1,
+    is_published: true, // Published immediately for public appreciation
+    created_at: now,
+    updated_at: now,
+  };
+
+  db.testimonials = db.testimonials || [];
+  db.testimonials.unshift(newTestimonial); // Display near top
+  saveDB(db);
+  saveFirestoreTestimonial(newTestimonial).catch((e) => console.warn('[server] Firestore testimonial save error', e));
+
+  logAudit('public_testimonial_added', 'testimonial', newTestimonial.id, {
+    customer_name: newTestimonial.customer_name,
+    rating: newTestimonial.rating,
+  });
+
+  res.status(201).json({
+    success: true,
+    message: 'Thank you! Your testimonial has been published successfully.',
+    testimonial: newTestimonial,
+  });
+});
+
+// Unauthorized public PUT/DELETE on /api/testimonials/:id - Restricted to admin only
+app.put('/api/testimonials/:id', (_req: Request, res: Response) => {
+  res.status(401).json({ error: 'Editing testimonials requires administrator privileges.' });
+});
+
+app.delete('/api/testimonials/:id', (_req: Request, res: Response) => {
+  res.status(401).json({ error: 'Deleting testimonials requires administrator privileges.' });
+});
+
+// FAQs (Public GET - ensures all 10 FAQs are present)
 app.get('/api/faqs', (_req: Request, res: Response) => {
+  if (!Array.isArray(db.faqs) || db.faqs.length < 10) {
+    db.faqs = db.faqs || [];
+    const existingQ = new Set(db.faqs.map((f) => (f.question || '').toLowerCase().trim()));
+    INITIAL_FAQS.forEach((initFaq) => {
+      if (!existingQ.has((initFaq.question || '').toLowerCase().trim())) {
+        db.faqs.push(initFaq);
+      }
+    });
+    saveDB(db);
+  }
   const list = db.faqs
     .filter((f) => f.is_published)
-    .sort((a, b) => a.display_order - b.display_order);
+    .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
   res.json(list);
 });
 
@@ -974,7 +1130,101 @@ app.get('/api/pages', (_req: Request, res: Response) => {
 
 app.get('/api/pages/:slug', (req: Request, res: Response) => {
   const { slug } = req.params;
-  const page = (db.pages || []).find((p) => p.slug === slug && p.status === 'published');
+  let page = (db.pages || []).find((p) => p.slug === slug && p.status === 'published');
+  if (!page && slug === 'about') {
+    const now = new Date().toISOString();
+    const defaultAbout: WebsitePage = {
+      id: 'page-about',
+      slug: 'about',
+      title: 'About Shital Thosar - Dot And Art',
+      status: 'published',
+      sections: [
+        {
+          id: 'sec-about-hero',
+          page_id: 'page-about',
+          section_type: 'hero',
+          section_key: 'artist_hero',
+          content_json: {
+            badge: 'Meet The Artist',
+            title: 'About Shital Thosar',
+            subtitle: 'Artist & Founder behind DotAndArt',
+          },
+          display_order: 1,
+          is_visible: true,
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: 'sec-about-story',
+          page_id: 'page-about',
+          section_type: 'bio',
+          section_key: 'artist_story',
+          content_json: {
+            statement_heading: 'Hi, I’m Shital Thosar, the artist and creator behind DotAndArt.',
+            paragraph_1: 'What started as a love for colours, patterns and the simple joy of creating with my hands slowly grew into something much more meaningful—my own art journey.',
+          },
+          display_order: 2,
+          is_visible: true,
+          created_at: now,
+          updated_at: now,
+        },
+      ],
+      created_at: now,
+      updated_at: now,
+    };
+    if (!Array.isArray(db.pages)) db.pages = [];
+    db.pages.push(defaultAbout);
+    saveDB(db);
+    page = defaultAbout;
+  }
+  if (!page && slug === 'testimonials') {
+    const now = new Date().toISOString();
+    const defaultTestimonials: WebsitePage = {
+      id: 'page-testimonials',
+      slug: 'testimonials',
+      title: 'Collector Testimonials & Reviews — Dot And Art',
+      status: 'published',
+      sections: [
+        {
+          id: 'sec-test-hero',
+          page_id: 'page-testimonials',
+          section_type: 'hero',
+          section_key: 'testimonials_hero',
+          content_json: {
+            badge: 'Client & Collector Testimonials',
+            title: 'Words from Art Collectors',
+            subtitle: 'Read verified experiences from collectors, homeowners, yoga studios, and interior designers who have welcomed Shital Thosar’s authentic Dot Mandala and Lippan Art into their spaces.',
+          },
+          display_order: 1,
+          is_visible: true,
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: 'sec-test-cta',
+          page_id: 'page-testimonials',
+          section_type: 'cta',
+          section_key: 'testimonials_cta',
+          content_json: {
+            title: 'Ready to experience the serenity in your home?',
+            description: 'Browse our handcrafted catalog or discuss a bespoke diameter and custom color palette directly with Shital Thosar.',
+            button_text: 'Chat on WhatsApp',
+          },
+          display_order: 2,
+          is_visible: true,
+          created_at: now,
+          updated_at: now,
+        },
+      ],
+      created_at: now,
+      updated_at: now,
+    };
+    if (!Array.isArray(db.pages)) db.pages = [];
+    db.pages.push(defaultTestimonials);
+    saveDB(db);
+    saveFirestorePage(defaultTestimonials).catch(() => {});
+    page = defaultTestimonials;
+  }
   if (!page) {
     res.status(404).json({ error: 'Page not found' });
     return;
@@ -1514,6 +1764,8 @@ app.put('/api/admin/products/:id', requireAdmin, (req: Request, res: Response) =
   if (p.high_demand_message !== undefined) db.products[index].high_demand_message = p.high_demand_message;
   if (p.base_price !== undefined) db.products[index].base_price = Number(p.base_price);
   if (p.base_size !== undefined) db.products[index].base_size = p.base_size;
+  if (p.badge_tag !== undefined) db.products[index].badge_tag = p.badge_tag;
+  if (p.photos_available_note !== undefined) db.products[index].photos_available_note = p.photos_available_note;
   if (p.images !== undefined) db.products[index].images = p.images;
   if (p.variants !== undefined) db.products[index].variants = p.variants;
 
@@ -2033,6 +2285,7 @@ app.put('/api/admin/pages/:slug', requireAdmin, (req: Request, res: Response) =>
 
   db.pages[index].updated_at = new Date().toISOString();
   saveDB(db);
+  saveFirestorePage(db.pages[index]).catch((e) => console.warn('[server] Firestore page save error', e));
   logAudit('page_updated', 'page', slug, { title: db.pages[index].title, status: db.pages[index].status });
   res.json(db.pages[index]);
 });
@@ -2067,6 +2320,7 @@ app.post('/api/admin/testimonials', requireAdmin, (req: Request, res: Response) 
 
   (db.testimonials = db.testimonials || []).push(item);
   saveDB(db);
+  saveFirestoreTestimonial(item).catch((e) => console.warn('[server] Firestore testimonial save error', e));
   logAudit('testimonial_created', 'testimonial', item.id, { customer_name: item.customer_name });
   res.json(item);
 });
@@ -2091,6 +2345,7 @@ app.put('/api/admin/testimonials/:id', requireAdmin, (req: Request, res: Respons
 
   db.testimonials[index].updated_at = new Date().toISOString();
   saveDB(db);
+  saveFirestoreTestimonial(db.testimonials[index]).catch((e) => console.warn('[server] Firestore testimonial update error', e));
   logAudit('testimonial_updated', 'testimonial', id);
   res.json(db.testimonials[index]);
 });
@@ -2104,6 +2359,7 @@ app.delete('/api/admin/testimonials/:id', requireAdmin, (req: Request, res: Resp
   }
   const deleted = db.testimonials.splice(index, 1)[0];
   saveDB(db);
+  deleteFirestoreTestimonial(id).catch((e) => console.warn('[server] Firestore testimonial delete error', e));
   logAudit('testimonial_deleted', 'testimonial', id, { customer_name: deleted.customer_name });
   res.json({ success: true, message: 'Testimonial deleted' });
 });
@@ -2183,6 +2439,7 @@ app.put('/api/admin/settings', requireAdmin, (req: Request, res: Response) => {
     ...newSettings,
   };
   saveDB(db);
+  saveFirestoreSettings(db.settings).catch((e) => console.warn('[server] Firestore settings save error', e));
   logAudit('settings_updated', 'settings', 'global');
   res.json(db.settings);
 });

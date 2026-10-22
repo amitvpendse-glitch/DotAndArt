@@ -8,8 +8,8 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './firebase';
-import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SETTINGS, INITIAL_PAGES } from '../data/initialCatalog';
-import { Product, Category, WebsiteSettings, WebsitePage } from '../types';
+import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SETTINGS, INITIAL_PAGES, INITIAL_TESTIMONIALS } from '../data/initialCatalog';
+import { Product, Category, WebsiteSettings, WebsitePage, Testimonial } from '../types';
 import { isSkuBlocked } from './blockedSkus';
 
 /**
@@ -36,6 +36,7 @@ const PRODUCTS_COLLECTION = 'products';
 const CATEGORIES_COLLECTION = 'categories';
 const SETTINGS_COLLECTION = 'settings';
 const PAGES_COLLECTION = 'pages';
+const TESTIMONIALS_COLLECTION = 'testimonials';
 const CATALOG_STATE_COLLECTION = 'catalog_state';
 
 // In-memory cache with short TTL to avoid excessive Firestore reads while ensuring multi-device consistency
@@ -53,11 +54,13 @@ function checkQuotaError(err: unknown) {
     msg.includes('RESOURCE_EXHAUSTED') ||
     msg.includes('quota') ||
     msg.includes('Permission denied') ||
-    msg.includes('offline')
+    msg.includes('offline') ||
+    msg.includes('Could not reach Cloud Firestore backend') ||
+    msg.includes('Backend didn\'t respond within')
   ) {
     if (!firestoreQuotaExceeded) {
       firestoreQuotaExceeded = true;
-      console.warn('[firestoreCatalog] Firestore quota/permission limit reached. Operating in offline/local fallback mode.');
+      console.warn('[firestoreCatalog] Firestore offline or unreachable. Operating in lightning-fast local fallback mode.');
     }
   }
 }
@@ -416,3 +419,58 @@ export async function saveFirestorePage(page: WebsitePage): Promise<void> {
     checkQuotaError(err);
   }
 }
+
+/**
+ * Retrieves testimonials from Firestore.
+ */
+export async function getFirestoreTestimonials(): Promise<Testimonial[]> {
+  if (firestoreQuotaExceeded) return INITIAL_TESTIMONIALS;
+  try {
+    const colRef = collection(db, TESTIMONIALS_COLLECTION);
+    const snap = await getDocs(colRef);
+    if (snap.empty) {
+      return INITIAL_TESTIMONIALS;
+    }
+    const list: Testimonial[] = [];
+    snap.forEach((docSnap) => list.push(docSnap.data() as Testimonial));
+    return list;
+  } catch (err) {
+    checkQuotaError(err);
+    return INITIAL_TESTIMONIALS;
+  }
+}
+
+export async function saveFirestoreTestimonial(testimonial: Testimonial): Promise<void> {
+  if (firestoreQuotaExceeded) return;
+  try {
+    const docRef = doc(db, TESTIMONIALS_COLLECTION, testimonial.id);
+    await setDoc(docRef, cleanFirestoreData({ ...testimonial, updated_at: new Date().toISOString() }), { merge: true });
+  } catch (err) {
+    checkQuotaError(err);
+  }
+}
+
+export async function deleteFirestoreTestimonial(id: string): Promise<void> {
+  if (firestoreQuotaExceeded) return;
+  try {
+    const docRef = doc(db, TESTIMONIALS_COLLECTION, id);
+    await deleteDoc(docRef);
+  } catch (err) {
+    checkQuotaError(err);
+  }
+}
+
+export async function bulkImportFirestoreTestimonials(testimonials: Testimonial[]): Promise<void> {
+  if (firestoreQuotaExceeded || !testimonials || testimonials.length === 0) return;
+  try {
+    const batch = writeBatch(db);
+    testimonials.forEach((t) => {
+      const docRef = doc(db, TESTIMONIALS_COLLECTION, t.id);
+      batch.set(docRef, cleanFirestoreData(t), { merge: true });
+    });
+    await batch.commit();
+  } catch (err) {
+    checkQuotaError(err);
+  }
+}
+

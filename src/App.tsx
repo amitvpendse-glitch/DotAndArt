@@ -283,8 +283,8 @@ export default function App() {
       return <GalleryPage onSelectProduct={handleSelectProduct} />;
     }
 
-    if (currentPath === '/testimonials') {
-      return <TestimonialsPage />;
+    if (currentPath === '/testimonials' || currentPath === '/about/testimonials') {
+      return <TestimonialsPage onNavigate={navigate} />;
     }
 
     if (currentPath === '/faq' || currentPath === '/faqs') {

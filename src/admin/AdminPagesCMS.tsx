@@ -39,6 +39,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [isDraggingBanner, setIsDraggingBanner] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -78,11 +79,13 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
         const found = (list || []).find((p) => p.slug === currentSlug) || list[0];
         setSelectedSlug(found.slug);
         setActivePage(JSON.parse(JSON.stringify(found)));
+        setIsDirty(false);
       })
       .catch((err) => {
         console.error(err);
         setPages(INITIAL_PAGES);
         setActivePage(JSON.parse(JSON.stringify(INITIAL_PAGES[0])));
+        setIsDirty(false);
       })
       .finally(() => setLoading(false));
   };
@@ -98,6 +101,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
     const found = (pages || []).find((p) => p.slug === slug);
     if (found) {
       setActivePage(JSON.parse(JSON.stringify(found)));
+      setIsDirty(false);
     }
   };
 
@@ -200,6 +204,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
       }
       window.dispatchEvent(new Event('app_pages_updated'));
 
+      setIsDirty(false);
       setSuccessMsg(
         activePage.slug === 'contact'
           ? `✓ Contact details, WhatsApp number, email, and social profiles saved & published live!`
@@ -217,6 +222,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
   // Helper to update a section's content field cleanly
   const updateSectionField = (sectionKeyOrType: string, fieldKey: string, value: any) => {
     if (!activePage) return;
+    setIsDirty(true);
     const copy = [...(activePage.sections || [])];
     const secIdx = copy.findIndex(
       (s) => s.section_key === sectionKeyOrType || s.section_type === sectionKeyOrType
@@ -273,6 +279,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
       const data = await safeResponseJson(res, {});
       if (res.ok && data.url) {
         updateSectionField(sectionKeyOrType, fieldKey, data.url);
+        setIsDirty(true);
         setSuccessMsg(`Image uploaded successfully! Click "Save & Publish Changes" to apply.`);
       } else {
         setErrorMsg(data?.error || 'Failed to upload image.');
@@ -343,12 +350,31 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
           {activePage && (
             <button
               type="button"
-              disabled={saving}
+              disabled={!isDirty || saving}
               onClick={() => handleSave('published')}
-              className="px-5 py-2.5 rounded-xl bg-theme-accent hover:opacity-90 text-white text-xs font-semibold shadow-xs flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+              className={`px-5 py-2.5 rounded-xl text-xs font-semibold shadow-xs flex items-center gap-2 transition-all ${
+                !isDirty
+                  ? 'bg-stone-500/20 text-stone-400 dark:text-stone-500 cursor-not-allowed border border-white/10'
+                  : 'bg-[#C85A32] hover:bg-[#A03E1B] text-white cursor-pointer shadow-md transform hover:-translate-y-0.5'
+              }`}
+              title={!isDirty ? 'No unsaved edits' : 'Click to save changes to Firestore'}
             >
-              <Save className="w-4 h-4" />
-              <span>{saving ? 'Saving...' : 'Save & Publish Changes'}</span>
+              {saving ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Saving to Cloud...</span>
+                </>
+              ) : !isDirty ? (
+                <>
+                  <Check className="w-4 h-4 text-emerald-500" />
+                  <span>Saved</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>Save &amp; Publish Changes</span>
+                </>
+              )}
             </button>
           )}
         </div>
@@ -391,6 +417,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                 {p.slug === 'home' && <span>🏠</span>}
                 {p.slug === 'contact' && <span>📬</span>}
                 {p.slug === 'faqs' && <span>❓</span>}
+                {p.slug === 'testimonials' && <span>💬</span>}
                 {p.slug === 'shop' && <span>🎨</span>}
                 {p.slug === 'custom-order' && <span>🛒</span>}
                 {p.slug === 'gallery' && <span>🖼️</span>}
@@ -1971,7 +1998,10 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                 <input
                   type="text"
                   value={activePage.title}
-                  onChange={(e) => setActivePage({ ...activePage, title: e.target.value })}
+                  onChange={(e) => {
+                    setActivePage({ ...activePage, title: e.target.value });
+                    setIsDirty(true);
+                  }}
                   className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
                 />
               </div>
@@ -1981,7 +2011,10 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                 <input
                   type="text"
                   value={activePage.seo_title || ''}
-                  onChange={(e) => setActivePage({ ...activePage, seo_title: e.target.value })}
+                  onChange={(e) => {
+                    setActivePage({ ...activePage, seo_title: e.target.value });
+                    setIsDirty(true);
+                  }}
                   className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary"
                 />
               </div>
@@ -1992,7 +2025,10 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
               <textarea
                 rows={2}
                 value={activePage.meta_description || ''}
-                onChange={(e) => setActivePage({ ...activePage, meta_description: e.target.value })}
+                onChange={(e) => {
+                  setActivePage({ ...activePage, meta_description: e.target.value });
+                  setIsDirty(true);
+                }}
                 className="w-full px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary resize-none"
               />
             </div>
@@ -2005,12 +2041,31 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
             </p>
             <button
               type="button"
-              disabled={saving}
+              disabled={!isDirty || saving}
               onClick={() => handleSave('published')}
-              className="px-6 py-2.5 rounded-xl bg-theme-accent hover:opacity-90 text-white text-xs font-semibold shadow-xs flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+              className={`px-6 py-2.5 rounded-xl text-xs font-semibold shadow-xs flex items-center gap-2 transition-all ${
+                !isDirty
+                  ? 'bg-stone-500/20 text-stone-400 dark:text-stone-500 cursor-not-allowed border border-white/10'
+                  : 'bg-[#C85A32] hover:bg-[#A03E1B] text-white cursor-pointer shadow-md transform hover:-translate-y-0.5'
+              }`}
+              title={!isDirty ? 'No unsaved edits' : 'Click to save changes to Firestore'}
             >
-              <Save className="w-4 h-4" />
-              <span>{saving ? 'Saving...' : 'Save & Publish Changes'}</span>
+              {saving ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Saving to Cloud...</span>
+                </>
+              ) : !isDirty ? (
+                <>
+                  <Check className="w-4 h-4 text-emerald-500" />
+                  <span>Saved</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>Save &amp; Publish Changes</span>
+                </>
+              )}
             </button>
           </div>
         </div>

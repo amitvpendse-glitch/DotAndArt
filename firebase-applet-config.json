@@ -1,12 +1,12 @@
 {
-  "projectId": "gen-lang-client-0550716143",
-  "appId": "1:215195017594:web:f570e29a2fa4997b6136c3",
-  "apiKey": "AIzaSyD6hFYxs8yisiRSmBqZOhNvH9xPL0WD17E",
-  "authDomain": "gen-lang-client-0550716143.firebaseapp.com",
+  "projectId": "dot-and-art",
+  "appId": "1:253570142799:web:279e88fa2fba838218903a",
+  "apiKey": "AIzaSyDCZb_5pSl35aQe8fIh1XfaLmM40qn-GtA",
+  "authDomain": "dot-and-art.firebaseapp.com",
   "firestoreDatabaseId": "ai-studio-878af9fc-6392-403d-8397-bdcc0967dab5",
-  "storageBucket": "gen-lang-client-0550716143.firebasestorage.app",
-  "messagingSenderId": "215195017594",
+  "storageBucket": "dot-and-art.firebasestorage.app",
+  "messagingSenderId": "253570142799",
   "measurementId": "",
-  "oAuthClientId": "215195017594-0mk6f6f85ui8c1sk24ui8vrneo2svss5.apps.googleusercontent.com",
+  "oAuthClientId": "253570142799-913kvbf2e9cql31ls7f3sl42nd4246i7.apps.googleusercontent.com",
   "recaptchaSiteKey": ""
 }

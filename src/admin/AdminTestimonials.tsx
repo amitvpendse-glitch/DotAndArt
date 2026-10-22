@@ -22,9 +22,15 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
 
   const fetchItems = () => {
     setLoading(true);
-    safeFetchJson<Testimonial[]>('/api/testimonials')
+    fetch('/api/admin/testimonials', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
       .then((data) => setItems(Array.isArray(data) ? data : []))
-      .catch((err) => console.error(err))
+      .catch(() => {
+        safeFetchJson<Testimonial[]>('/api/testimonials')
+          .then((data) => setItems(Array.isArray(data) ? data : []));
+      })
       .finally(() => setLoading(false));
   };
 

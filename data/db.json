@@ -6115,69 +6115,907 @@
     "tagline": "Handcrafted Authentic Mandalas & Lippan Mirror Art",
     "domain": "dotandart.in",
     "whatsapp_number": "+918652162647",
-    "whatsapp_display": "+91 8652162647",
+    "whatsapp_display": "+91 86521 62647",
     "instagram_url": "https://www.instagram.com/sathosar",
-    "facebook_url": "https://www.facebook.com/people/Dot-And-Art/61570301135652/?rdid=pVSv1qBdjZtMtY9r&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1LuTQvNiMU%2F",
+    "facebook_url": "https://www.facebook.com/people/Dot-And-Art/61570301135652/",
     "email": "shitalthosar@yahoo.com",
-    "studio_address": "Pune, India",
-    "payment_terms": "50% advance for custom commissions, balance upon photo approval prior to dispatch.",
-    "shipping_policy_summary": "Worldwide insured shipping available with robust bubble & crate packing.",
+    "studio_address": "Pune, Maharashtra, India",
+    "payment_terms": "50% advance for custom commissions.",
+    "shipping_policy_summary": "Worldwide insured shipping.",
     "featured_3d_sku": "DA-MD-24-0001",
     "featured_3d_image": "/static/assets/images/DA-MD-24-0001.jpg",
     "showcase_banner": {
-      "title": "Shital Thosar — Authentic Geometry & Handmade Mandala Art",
-      "eyebrow": "MEET THE ARTIST & MASTER CRAFTSWOMAN",
-      "description": "Shital Thosar is a visionary Indian artisan specializing in authentic Dot Mandalas and traditional Gujarati Lippan Kaam mirror art. Handcrafted on moisture-resistant MDF board with heavy-body acrylics, light-reflecting mirrors, and protective varnish, her creations bring spiritual harmony, positive energy, and radiant warmth into modern homes across the globe.",
-      "short_description": "Crafting serene dot mandalas and traditional Lippan Kaam mirror art with deep devotion and precision.",
-      "image_url": "/static/assets/images/Home_page_banner.jpeg",
-      "product_sku": "ARTIST-SHITAL",
-      "price": 0,
-      "size": "Custom Sizes Available",
-      "material": "MDF Board, Lippan Clay Relief, Acrylics, Mirrors, Varnish",
-      "creation_time": "Handmade on Order",
+      "material": "Moisture-Resistant MDF Board, Heavy-Body Acrylic Colors, Mirrors, Varnish",
       "shipping_info": "Worldwide Insured Express Delivery",
-      "badge_text": "Handmade with Devotion",
-      "hotspots": [
+      "price": 5200,
+      "pins_enabled": true,
+      "creation_time": "8 Days",
+      "short_description": "Monumental 24-inch handcrafted authentic dot mandala with shimmering mirrors, intricate neutral tones, and protective glossy varnish.",
+      "badge_text": "100% Handcrafted Original",
+      "product_sku": "Home_page_banner",
+      "title": "Authentic Harmony — Handcrafted Dot Mandala Wall Hanging",
+      "image_url": "/static/assets/images/Home_page_banner.jpeg",
+      "size": "24 inches",
+      "eyebrow": "Monumental Studio Showcase"
+    },
+    "announcement_banner": {
+      "text": "",
+      "enabled": false
+    },
+    "default_seo": {
+      "description": "",
+      "title": "Dot And Art Studio",
+      "keywords": ""
+    },
+    "logo_url": "/static/assets/images/DotAndArt_Logo.jpeg"
+  },
+  "pages": [
+    {
+      "id": "page-home",
+      "slug": "home",
+      "title": "Home Page — Dot And Art Studio",
+      "seo_title": "Dot And Art Studio — Handcrafted Mandalas & Lippan Mirror Art",
+      "meta_description": "Discover authentic hand-painted dot mandalas and traditional Kutch Lippan mud-mirror art by artist Shital Thosar.",
+      "status": "published",
+      "sections": [
         {
-          "id": "mirrors",
-          "x": 65,
-          "y": 35,
-          "title": "Precision Mirror Inlays",
-          "tag": "Light Reflection",
-          "description": "Concentric hand-embedded mirrors that playfully catch daylight and evening room illumination."
+          "id": "sec-home-banner",
+          "page_id": "page-home",
+          "section_type": "banner",
+          "section_key": "banner",
+          "content_json": {
+            "eyebrow": "MEET THE ARTIST & MASTER CRAFTSWOMAN",
+            "title": "Shital Thosar — Authentic Geometry & Handmade Mandala Art",
+            "short_description": "Crafting serene dot mandalas and traditional Lippan Kaam mirror art with deep devotion and precision.",
+            "description": "Shital Thosar is a visionary Indian artisan specializing in authentic Dot Mandalas and traditional Gujarati Lippan Kaam mirror art. Handcrafted on moisture-resistant MDF board with heavy-body acrylics, light-reflecting mirrors, and protective varnish.",
+            "size": "Custom Sizes Available (8\" to 36\"+)",
+            "price": 0,
+            "badge_text": "Handmade with Devotion",
+            "material": "MDF Board, Acrylic Colors, Mirrors, Varnish",
+            "creation_time": "8 Days",
+            "shipping_info": "Worldwide Insured Express Delivery",
+            "image_url": "/static/assets/images/Home_page_banner.jpeg",
+            "product_sku": "Home_page_banner"
+          },
+          "display_order": 1,
+          "is_visible": true,
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "updated_at": "2026-10-15T08:00:00.000Z"
         },
         {
-          "id": "color-gradients",
-          "x": 35,
-          "y": 65,
-          "title": "Deep Pigment Layering",
-          "tag": "Artisan Technique",
-          "description": "Graduated teal, mystical indigo, metallic bronze, and gold heavy-body artist acrylics."
-        },
-        {
-          "id": "outer-rim",
-          "x": 78,
-          "y": 72,
-          "title": "24-Inch Sealed Diameter",
-          "tag": "Moisture-Proof Base",
-          "description": "Rigid 8mm moisture-resistant MDF board, hand-sanded with flush rear hook and gloss protective varnish."
+          "id": "sec-home-featured",
+          "page_id": "page-home",
+          "section_type": "featured_artworks",
+          "section_key": "featured_artworks",
+          "content_json": {
+            "badge": "Studio Highlights",
+            "title": "Featured Handcrafted Creations",
+            "description": "Explore our most sought-after Dot Mandalas and Lippan Mud-Mirror Art, each piece individually hand-painted."
+          },
+          "display_order": 2,
+          "is_visible": true,
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "updated_at": "2026-10-15T08:00:00.000Z"
         }
       ]
     },
-    "announcement_banner": {
-      "enabled": false,
-      "text": "",
-      "link_url": ""
+    {
+      "id": "page-shop",
+      "slug": "shop",
+      "title": "Artworks Catalog — Dot And Art",
+      "seo_title": "Artworks Catalog — Mandala Wall Hangings & Lippan Mirror Art",
+      "meta_description": "Browse our full collection of handcrafted Mandala Wall Hangings and traditional Kutch Lippan Mud-Mirror Art.",
+      "status": "published",
+      "sections": [
+        {
+          "id": "sec-shop-header",
+          "page_id": "page-shop",
+          "section_type": "header",
+          "section_key": "shop_header",
+          "content_json": {
+            "badge": "Handcrafted Collection",
+            "title": "Artworks & Mirrors",
+            "description": "Discover serene dot mandalas, intricate sacred geometry, and traditional Kutch Lippan mud-mirror art. Ready to hang with protective varnish."
+          },
+          "display_order": 1,
+          "is_visible": true,
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "updated_at": "2026-10-15T08:00:00.000Z"
+        }
+      ]
     },
-    "default_seo": {
-      "title": "Dot And Art — Handcrafted Authentic Mandalas & Lippan Mirror Art",
-      "description": "Discover exquisite handcrafted dot mandalas and traditional Lippan mirror wall hangings created with devotion and precision.",
-      "keywords": "dot mandala, lippan art, wall hangings, spiritual art, handmade home decor"
+    {
+      "id": "page-custom-order",
+      "slug": "custom-order",
+      "title": "Bespoke Commissions — Dot And Art",
+      "seo_title": "Bespoke Commissions & Custom Mandalas — Dot And Art",
+      "meta_description": "Commission a bespoke dot mandala or Lippan mirror artwork with your chosen color palette, diameter, and custom inscriptions.",
+      "status": "published",
+      "sections": [
+        {
+          "id": "sec-custom-header",
+          "page_id": "page-custom-order",
+          "section_type": "header",
+          "section_key": "custom_header",
+          "content_json": {
+            "badge": "Bespoke Artworks",
+            "title": "Commission Your Custom Piece",
+            "subtitle": "Bring your vision to life. Choose your exact diameter, custom color palette, or request a personalized photo mandala created with love by Shital Thosar."
+          },
+          "display_order": 1,
+          "is_visible": true,
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "updated_at": "2026-10-15T08:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "page-about",
+      "slug": "about",
+      "title": "About Shital Thosar - Dot And Art",
+      "seo_title": "About Shital Thosar — Artist & Founder, Dot And Art",
+      "meta_description": "Learn about artist Shital Thosar, her meditative journey into dot mandala painting, and traditional Lippan Kaam mirror art.",
+      "status": "published",
+      "sections": [
+        {
+          "section_key": "artist_hero",
+          "id": "sec-about-hero",
+          "is_visible": true,
+          "page_id": "page-about",
+          "section_type": "hero",
+          "display_order": 1,
+          "content_json": {
+            "title": "About Shital Thosar",
+            "badge": "Meet The Artist",
+            "subtitle": "Artist & Founder behind DotAndArt"
+          }
+        },
+        {
+          "page_id": "page-about",
+          "section_key": "artist_story",
+          "is_visible": true,
+          "section_type": "bio",
+          "display_order": 2,
+          "id": "sec-about-story",
+          "content_json": {
+            "paragraph_1": "What started as a love for colours, patterns and the simple joy of creating with my hands slowly grew into something much more meaningful—my own art journey.",
+            "statement_heading": "Hi, I’m Shital Thosar, the artist and creator behind DotAndArt."
+          }
+        }
+      ],
+      "updated_at": "2026-10-22T13:56:52.523Z"
+    },
+    {
+      "id": "page-testimonials",
+      "slug": "testimonials",
+      "title": "Collector Testimonials & Reviews — Dot And Art",
+      "seo_title": "Collector Testimonials — Dot And Art Studio",
+      "meta_description": "Read verified reviews and experiences from collectors and homeowners who have welcomed Dot And Art creations into their sanctuaries.",
+      "status": "published",
+      "sections": [
+        {
+          "id": "sec-test-hero",
+          "page_id": "page-testimonials",
+          "section_type": "hero",
+          "section_key": "testimonials_hero",
+          "content_json": {
+            "badge": "Client & Collector Testimonials",
+            "title": "Words from Art Collectors",
+            "subtitle": "Read verified experiences from collectors, homeowners, yoga studios, and interior designers who have welcomed Shital Thosar’s authentic Dot Mandala and Lippan Art into their spaces."
+          },
+          "display_order": 1,
+          "is_visible": true,
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "updated_at": "2026-10-15T08:00:00.000Z"
+        },
+        {
+          "id": "sec-test-cta",
+          "page_id": "page-testimonials",
+          "section_type": "cta",
+          "section_key": "testimonials_cta",
+          "content_json": {
+            "title": "Ready to experience the serenity in your home?",
+            "description": "Browse our handcrafted catalog or discuss a bespoke diameter and custom color palette directly with Shital Thosar.",
+            "button_text": "Chat on WhatsApp"
+          },
+          "display_order": 2,
+          "is_visible": true,
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "updated_at": "2026-10-15T08:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "page-faqs",
+      "slug": "faqs",
+      "title": "Frequently Asked Questions — Dot And Art",
+      "seo_title": "Frequently Asked Questions — Care, Shipping & Commissions | Dot And Art",
+      "meta_description": "Find answers to top 10 questions regarding materials, framing, custom sizes, creation timelines, advance payments, and worldwide shipping.",
+      "status": "published",
+      "sections": [
+        {
+          "id": "sec-faqs-header",
+          "page_id": "page-faqs",
+          "section_type": "header",
+          "section_key": "faqs_header",
+          "content_json": {
+            "badge": "Common Inquiries",
+            "title": "Frequently Asked Questions",
+            "description": "Everything you need to know about our handcrafted mandala creation process, Lippan mirror art, customization, care, packaging, advance policies, and worldwide insured shipping."
+          },
+          "display_order": 1,
+          "is_visible": true,
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "updated_at": "2026-10-15T08:00:00.000Z"
+        },
+        {
+          "id": "sec-faqs-help",
+          "page_id": "page-faqs",
+          "section_type": "help_card",
+          "section_key": "faqs_help_card",
+          "content_json": {
+            "title": "Still have a question?",
+            "description": "We are just a message away. Reach out to the artist on WhatsApp for immediate answers regarding your custom requirements.",
+            "button_text": "Chat on WhatsApp (+91 8652162647)"
+          },
+          "display_order": 2,
+          "is_visible": true,
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "updated_at": "2026-10-15T08:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "page-1792674991990",
+      "slug": "contact",
+      "title": "contact",
+      "seo_title": "contact",
+      "meta_description": "",
+      "status": "published",
+      "sections": [
+        {
+          "updated_at": "2026-10-22T13:16:31.984Z",
+          "created_at": "2026-10-22T13:16:31.983Z",
+          "section_type": "brand_identity",
+          "id": "sec-contact-brand",
+          "is_visible": true,
+          "content_json": {
+            "tagline": "Handcrafted Authentic Mandalas & Lippan Mirror Art",
+            "instagram_url": "https://www.instagram.com/sathosar",
+            "whatsapp_number": "+918652162647",
+            "facebook_url": "https://www.facebook.com/people/Dot-And-Art/61570301135652/",
+            "studio_address": "Pune, Maharashtra, India",
+            "business_name": "Dot And Art Studio",
+            "domain": "dotandart.in",
+            "email": "shitalthosar@yahoo.com",
+            "whatsapp_display": "+91 86521 62647"
+          },
+          "display_order": 1,
+          "section_key": "brand_identity"
+        }
+      ],
+      "created_at": "2026-10-22T13:16:31.990Z",
+      "updated_at": "2026-10-22T13:56:51.994Z"
     }
-  },
-  "pages": [],
-  "testimonials": [],
+  ],
+  "testimonials": [
+    {
+      "id": "test-dummy-001",
+      "customer_name": "Pooja Sharma",
+      "content": "The precision of every single dot is astonishing! It has transformed our living room and meditation corner into a sanctuary of calm. Arrived impeccably packed in a custom wooden-reinforced crate without a single scratch.",
+      "rating": 5,
+      "location": "Mumbai, Maharashtra",
+      "artwork_purchased": "24-Inch Golden Harmony Dot Mandala",
+      "image_path": "",
+      "display_order": 1,
+      "is_published": true,
+      "created_at": "2026-10-15T10:00:00.000Z",
+      "updated_at": "2026-10-15T10:00:00.000Z"
+    },
+    {
+      "id": "test-dummy-002",
+      "customer_name": "Dr. Rajesh Kulkarni",
+      "content": "We commissioned a bespoke Lippan piece for our clinic reception. Shital kept us updated throughout the process and incorporated our requested clay relief patterns and mirrors. Patients constantly compliment the craftsmanship.",
+      "rating": 5,
+      "location": "Pune, Maharashtra",
+      "artwork_purchased": "Traditional Kutch Lippan Mud-Mirror Art",
+      "image_path": "",
+      "display_order": 2,
+      "is_published": true,
+      "created_at": "2026-10-16T11:30:00.000Z",
+      "updated_at": "2026-10-16T11:30:00.000Z"
+    },
+    {
+      "id": "test-dummy-003",
+      "customer_name": "Ananya Deshmukh",
+      "content": "Photos simply do not do justice to the tactile depth and gloss finish. The mirrors catch the morning sun in the most magical way. You can feel the hours of patient devotion in every concentric circle.",
+      "rating": 5,
+      "location": "Bengaluru, Karnataka",
+      "artwork_purchased": "Teal & Gold Sacred Lotus Mandala",
+      "image_path": "",
+      "display_order": 3,
+      "is_published": true,
+      "created_at": "2026-10-17T09:15:00.000Z",
+      "updated_at": "2026-10-17T09:15:00.000Z"
+    },
+    {
+      "id": "test-dummy-004",
+      "customer_name": "Siddharth & Meera Nair",
+      "content": "Working with Shital on our custom anniversary piece was a delight. She tailored the color palette to our dining room wall perfectly. The unboxing experience felt like opening a royal gift.",
+      "rating": 5,
+      "location": "Hyderabad, Telangana",
+      "artwork_purchased": "Custom 30-Inch Multi-Tier Floral Mandala",
+      "image_path": "",
+      "display_order": 4,
+      "is_published": true,
+      "created_at": "2026-10-18T14:20:00.000Z",
+      "updated_at": "2026-10-18T14:20:00.000Z"
+    },
+    {
+      "id": "test-dummy-005",
+      "customer_name": "Elena Rostova",
+      "content": "Ordered international delivery to Dubai and it arrived within 5 days safely in flawless condition. Outstanding craftsmanship, mesmerizing symmetry, and responsive communication from the artist.",
+      "rating": 5,
+      "location": "Dubai, UAE",
+      "artwork_purchased": "Sacred Geometry Lippan Mirror Hanging",
+      "image_path": "",
+      "display_order": 5,
+      "is_published": true,
+      "created_at": "2026-10-19T16:45:00.000Z",
+      "updated_at": "2026-10-19T16:45:00.000Z"
+    }
+  ],
   "audit_logs": [
+    {
+      "id": "log-1792677413106-8697fe28",
+      "admin_user_id": "admin",
+      "action": "testimonial_deleted",
+      "entity_type": "testimonial",
+      "entity_id": "test-1792677413093",
+      "safe_metadata_json": {
+        "customer_name": "VIP Client 1792677413087"
+      },
+      "created_at": "2026-10-22T13:56:53.106Z"
+    },
+    {
+      "id": "log-1792677413095-92b14f56",
+      "admin_user_id": "admin",
+      "action": "testimonial_created",
+      "entity_type": "testimonial",
+      "entity_id": "test-1792677413093",
+      "safe_metadata_json": {
+        "customer_name": "VIP Client 1792677413087"
+      },
+      "created_at": "2026-10-22T13:56:53.095Z"
+    },
+    {
+      "id": "log-1792677413077-9778a022",
+      "admin_user_id": "admin",
+      "action": "testimonial_deleted",
+      "entity_type": "testimonial",
+      "entity_id": "test-user-1792677412956-b6abf6",
+      "safe_metadata_json": {
+        "customer_name": "Verified Collector 1792677413041"
+      },
+      "created_at": "2026-10-22T13:56:53.077Z"
+    },
+    {
+      "id": "log-1792677413056-3d24766e",
+      "admin_user_id": "admin",
+      "action": "testimonial_updated",
+      "entity_type": "testimonial",
+      "entity_id": "test-user-1792677412956-b6abf6",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-22T13:56:53.056Z"
+    },
+    {
+      "id": "log-1792677413037-2493ec4f",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:56:53.037Z"
+    },
+    {
+      "id": "log-1792677412960-5d011732",
+      "admin_user_id": "admin",
+      "action": "public_testimonial_added",
+      "entity_type": "testimonial",
+      "entity_id": "test-user-1792677412956-b6abf6",
+      "safe_metadata_json": {
+        "customer_name": "Art Enthusiast 1792677412948",
+        "rating": 5
+      },
+      "created_at": "2026-10-22T13:56:52.960Z"
+    },
+    {
+      "id": "log-1792677412603-1cadfd26",
+      "admin_user_id": "admin",
+      "action": "category_deleted",
+      "entity_type": "category",
+      "entity_id": "cat-1792677412592",
+      "safe_metadata_json": {
+        "name": "Test Category 1792677412587"
+      },
+      "created_at": "2026-10-22T13:56:52.604Z"
+    },
+    {
+      "id": "log-1792677412594-5ff9f9ba",
+      "admin_user_id": "admin",
+      "action": "category_created",
+      "entity_type": "category",
+      "entity_id": "cat-1792677412592",
+      "safe_metadata_json": {
+        "name": "Test Category 1792677412587"
+      },
+      "created_at": "2026-10-22T13:56:52.594Z"
+    },
+    {
+      "id": "log-1792677412528-36c5fa2f",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "about",
+      "safe_metadata_json": {
+        "title": "About Shital Thosar - Dot And Art",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:56:52.528Z"
+    },
+    {
+      "id": "log-1792677412511-910d0297",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "about",
+      "safe_metadata_json": {
+        "title": "About Shital Thosar - Dot And Art",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:56:52.512Z"
+    },
+    {
+      "id": "log-1792677412493-638054d3",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:56:52.493Z"
+    },
+    {
+      "id": "log-1792677411998-9f288551",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:56:51.998Z"
+    },
+    {
+      "id": "log-1792677411965-a2864309",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-22T13:56:51.965Z"
+    },
+    {
+      "id": "log-1792677411948-5349ec38",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:56:51.948Z"
+    },
+    {
+      "id": "log-1792676446027-2b7e0539",
+      "admin_user_id": "admin",
+      "action": "testimonial_deleted",
+      "entity_type": "testimonial",
+      "entity_id": "test-1792676446016",
+      "safe_metadata_json": {
+        "customer_name": "VIP Client 1792676446013"
+      },
+      "created_at": "2026-10-22T13:40:46.027Z"
+    },
+    {
+      "id": "log-1792676446018-471c4161",
+      "admin_user_id": "admin",
+      "action": "testimonial_created",
+      "entity_type": "testimonial",
+      "entity_id": "test-1792676446016",
+      "safe_metadata_json": {
+        "customer_name": "VIP Client 1792676446013"
+      },
+      "created_at": "2026-10-22T13:40:46.018Z"
+    },
+    {
+      "id": "log-1792676446006-6281a474",
+      "admin_user_id": "admin",
+      "action": "testimonial_deleted",
+      "entity_type": "testimonial",
+      "entity_id": "test-user-1792676445910-486cd6",
+      "safe_metadata_json": {
+        "customer_name": "Verified Collector 1792676445986"
+      },
+      "created_at": "2026-10-22T13:40:46.006Z"
+    },
+    {
+      "id": "log-1792676445992-7ffd2163",
+      "admin_user_id": "admin",
+      "action": "testimonial_updated",
+      "entity_type": "testimonial",
+      "entity_id": "test-user-1792676445910-486cd6",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-22T13:40:45.992Z"
+    },
+    {
+      "id": "log-1792676445983-e8b62dd3",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:40:45.983Z"
+    },
+    {
+      "id": "log-1792676445912-c6cd4cb6",
+      "admin_user_id": "admin",
+      "action": "public_testimonial_added",
+      "entity_type": "testimonial",
+      "entity_id": "test-user-1792676445910-486cd6",
+      "safe_metadata_json": {
+        "customer_name": "Art Enthusiast 1792676445905",
+        "rating": 5
+      },
+      "created_at": "2026-10-22T13:40:45.912Z"
+    },
+    {
+      "id": "log-1792676445506-64a8b2cb",
+      "admin_user_id": "admin",
+      "action": "category_deleted",
+      "entity_type": "category",
+      "entity_id": "cat-1792676445495",
+      "safe_metadata_json": {
+        "name": "Test Category 1792676445491"
+      },
+      "created_at": "2026-10-22T13:40:45.506Z"
+    },
+    {
+      "id": "log-1792676445496-10276476",
+      "admin_user_id": "admin",
+      "action": "category_created",
+      "entity_type": "category",
+      "entity_id": "cat-1792676445495",
+      "safe_metadata_json": {
+        "name": "Test Category 1792676445491"
+      },
+      "created_at": "2026-10-22T13:40:45.497Z"
+    },
+    {
+      "id": "log-1792676445487-389061ab",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "about",
+      "safe_metadata_json": {
+        "title": "About Shital Thosar - Dot And Art",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:40:45.488Z"
+    },
+    {
+      "id": "log-1792676445477-951f6cce",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "about",
+      "safe_metadata_json": {
+        "title": "About Shital Thosar - Dot And Art",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:40:45.477Z"
+    },
+    {
+      "id": "log-1792676445443-e0a3d315",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:40:45.443Z"
+    },
+    {
+      "id": "log-1792676444929-3def69f5",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:40:44.929Z"
+    },
+    {
+      "id": "log-1792676444896-516e450c",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-22T13:40:44.897Z"
+    },
+    {
+      "id": "log-1792676444883-34dbd759",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:40:44.883Z"
+    },
+    {
+      "id": "log-1792675406926-49b9fa8c",
+      "admin_user_id": "admin",
+      "action": "category_deleted",
+      "entity_type": "category",
+      "entity_id": "cat-1792675406915",
+      "safe_metadata_json": {
+        "name": "Test Category 1792675406910"
+      },
+      "created_at": "2026-10-22T13:23:26.926Z"
+    },
+    {
+      "id": "log-1792675406917-c560586e",
+      "admin_user_id": "admin",
+      "action": "category_created",
+      "entity_type": "category",
+      "entity_id": "cat-1792675406915",
+      "safe_metadata_json": {
+        "name": "Test Category 1792675406910"
+      },
+      "created_at": "2026-10-22T13:23:26.917Z"
+    },
+    {
+      "id": "log-1792675406907-9683caac",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "about",
+      "safe_metadata_json": {
+        "title": "About Shital Thosar - Dot And Art",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:23:26.907Z"
+    },
+    {
+      "id": "log-1792675406893-c5b7e759",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "about",
+      "safe_metadata_json": {
+        "title": "About Shital Thosar - Dot And Art",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:23:26.893Z"
+    },
+    {
+      "id": "log-1792675406880-d346d695",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:23:26.880Z"
+    },
+    {
+      "id": "log-1792675406410-82f154b6",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:23:26.410Z"
+    },
+    {
+      "id": "log-1792675406381-eb3aef9f",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-22T13:23:26.381Z"
+    },
+    {
+      "id": "log-1792675406366-46d82c6e",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:23:26.366Z"
+    },
+    {
+      "id": "log-1792675244366-7ad5310d",
+      "admin_user_id": "admin",
+      "action": "category_deleted",
+      "entity_type": "category",
+      "entity_id": "cat-1792675244346",
+      "safe_metadata_json": {
+        "name": "Test Category 1792675244342"
+      },
+      "created_at": "2026-10-22T13:20:44.366Z"
+    },
+    {
+      "id": "log-1792675244349-f0938db1",
+      "admin_user_id": "admin",
+      "action": "category_created",
+      "entity_type": "category",
+      "entity_id": "cat-1792675244346",
+      "safe_metadata_json": {
+        "name": "Test Category 1792675244342"
+      },
+      "created_at": "2026-10-22T13:20:44.349Z"
+    },
+    {
+      "id": "log-1792675244334-0b8ceac6",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "about",
+      "safe_metadata_json": {
+        "title": "About Shital Thosar - Dot And Art",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:20:44.334Z"
+    },
+    {
+      "id": "log-1792675244317-5d22006a",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "about",
+      "safe_metadata_json": {
+        "title": "About Shital Thosar - Dot And Art",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:20:44.317Z"
+    },
+    {
+      "id": "log-1792675244296-eefa0b8e",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:20:44.297Z"
+    },
+    {
+      "id": "log-1792675243715-49759f13",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:20:43.715Z"
+    },
+    {
+      "id": "log-1792675243690-6774e963",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-22T13:20:43.690Z"
+    },
+    {
+      "id": "log-1792675243676-d27eafb8",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:20:43.676Z"
+    },
+    {
+      "id": "log-1792675219914-49792788",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:20:19.914Z"
+    },
+    {
+      "id": "log-1792675219887-b8656821",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-22T13:20:19.887Z"
+    },
+    {
+      "id": "log-1792675219870-8bace76b",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:20:19.870Z"
+    },
+    {
+      "id": "log-1792674991992-21de3cb9",
+      "admin_user_id": "admin",
+      "action": "page_updated",
+      "entity_type": "page",
+      "entity_id": "contact",
+      "safe_metadata_json": {
+        "title": "contact",
+        "status": "published"
+      },
+      "created_at": "2026-10-22T13:16:31.992Z"
+    },
+    {
+      "id": "log-1792674991966-0b688dac",
+      "admin_user_id": "admin",
+      "action": "settings_updated",
+      "entity_type": "settings",
+      "entity_id": "global",
+      "safe_metadata_json": {},
+      "created_at": "2026-10-22T13:16:31.966Z"
+    },
+    {
+      "id": "log-1792674991951-cc3f8f36",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-22T13:16:31.951Z"
+    },
     {
       "id": "log-1792504008305-c7a38414",
       "admin_user_id": "admin",
@@ -6213,13 +7051,187 @@
       "admin_username": "admin",
       "expires_at": 1792511208300,
       "created_at": "2026-10-20T13:38:17.511Z"
+    },
+    {
+      "token_hash": "a3acda727e4c892c7e84bd80062160d2945cb033633111d0089b711cefaa2348",
+      "admin_username": "admin",
+      "expires_at": 1792682191987,
+      "created_at": "2026-10-22T13:16:31.949Z"
+    },
+    {
+      "token_hash": "4c61af2826ff9ceb7262fed7d8f169af17e0ff96ae511812a4426264d1edfd98",
+      "admin_username": "admin",
+      "expires_at": 1792682419910,
+      "created_at": "2026-10-22T13:20:19.868Z"
+    },
+    {
+      "token_hash": "663150bcf6c924a0d8594379d3a6b5d6ef86eccc941a3af033d4c39116f50c1b",
+      "admin_username": "admin",
+      "expires_at": 1792682443708,
+      "created_at": "2026-10-22T13:20:43.674Z"
+    },
+    {
+      "token_hash": "c2390104e19f59767d683acfb446190d85e9bdda67802034368de18668c0ebb5",
+      "admin_username": "admin",
+      "expires_at": 1792682444356,
+      "created_at": "2026-10-22T13:20:44.293Z"
+    },
+    {
+      "token_hash": "73ec2d5ac507b88c7b72bd4f0c1c13310157bcdc1b7956d1b127213fe21feacf",
+      "admin_username": "admin",
+      "expires_at": 1792682606405,
+      "created_at": "2026-10-22T13:23:26.364Z"
+    },
+    {
+      "token_hash": "fc47eeb6a17a5e8875dcea6a556380cc04280ba9789899b288b05afcc04a07da",
+      "admin_username": "admin",
+      "expires_at": 1792682606922,
+      "created_at": "2026-10-22T13:23:26.877Z"
+    },
+    {
+      "token_hash": "544aa1960564ec971f8161cd6c7eabed4ec9696405ffa1f5947c4e400257c339",
+      "admin_username": "admin",
+      "expires_at": 1792683644922,
+      "created_at": "2026-10-22T13:40:44.881Z"
+    },
+    {
+      "token_hash": "3ba19b88f417d33fc5e052d6b7cfe3f5b4fccb3835453583d22bb451a72eb32e",
+      "admin_username": "admin",
+      "expires_at": 1792683645501,
+      "created_at": "2026-10-22T13:40:45.441Z"
+    },
+    {
+      "token_hash": "dff2612a0a22fc9d7c571b9f479ced7b70b282532d8457a1579ad221640c22d2",
+      "admin_username": "admin",
+      "expires_at": 1792683646023,
+      "created_at": "2026-10-22T13:40:45.981Z"
+    },
+    {
+      "token_hash": "ad320a474404e9be8ad4d2c88bca14f650b80aaeb0aedfb24cbb116bedae3022",
+      "admin_username": "admin",
+      "expires_at": 1792684611991,
+      "created_at": "2026-10-22T13:56:51.946Z"
+    },
+    {
+      "token_hash": "36a7650119adf08104b7616744ec4512660975c249f1c2308a82b5e1cd61585b",
+      "admin_username": "admin",
+      "expires_at": 1792684612599,
+      "created_at": "2026-10-22T13:56:52.490Z"
+    },
+    {
+      "token_hash": "501acf92513230372f60a49646687c0b352a81506d68bfa55822e83e7cffabf6",
+      "admin_username": "admin",
+      "expires_at": 1792684613100,
+      "created_at": "2026-10-22T13:56:53.034Z"
     }
   ],
-  "faqs": [],
+  "faqs": [
+    {
+      "id": "faq-001",
+      "question": "What materials and tools are used in creating Dot Mandala and Lippan Artworks?",
+      "answer": "Each dot mandala is handcrafted using moisture-resistant engineered MDF wooden boards, high-grade artist heavy-body acrylic paints, fine dotting tools, and authentic reflective mirrors. Lippan art pieces are crafted using traditional mud and ceramic relief clay mixtures combined with intricately arranged hand-cut glass mirrors (aabhla). Every completed artwork is sealed with archival, UV-resistant protective gloss varnish for longevity.",
+      "category": "Materials & Craft",
+      "display_order": 1,
+      "is_published": true,
+      "created_at": "2026-10-15T08:00:00.000Z",
+      "updated_at": "2026-10-15T08:00:00.000Z"
+    },
+    {
+      "id": "faq-002",
+      "question": "Are the artworks ready to hang upon arrival?",
+      "answer": "Yes! Every artwork comes 100% ready to hang with a heavy-duty, rust-resistant triangle or sawtooth hanging hook pre-installed on the back, along with soft wall-stabilizer bumpers to ensure the artwork sits flush and protects your wall surface.",
+      "category": "Installation & Hardware",
+      "display_order": 2,
+      "is_published": true,
+      "created_at": "2026-10-15T08:05:00.000Z",
+      "updated_at": "2026-10-15T08:05:00.000Z"
+    },
+    {
+      "id": "faq-003",
+      "question": "Can I commission a custom design, color palette, or specific size?",
+      "answer": "Absolutely. Custom orders are warmly welcomed. You can choose specific sizes (from 8 inches up to 36+ inches), color schemes matching your interior palette, sacred geometry patterns, or personalized inscriptions. Reach out via our Bespoke Commissions page or WhatsApp directly with the artist to discuss your ideas.",
+      "category": "Custom Orders",
+      "display_order": 3,
+      "is_published": true,
+      "created_at": "2026-10-15T08:10:00.000Z",
+      "updated_at": "2026-10-15T08:10:00.000Z"
+    },
+    {
+      "id": "faq-004",
+      "question": "How long does it take to create and dispatch a handcrafted artwork?",
+      "answer": "Depending on the complexity and diameter, standard catalog items ship within 1–3 business days. Bespoke commissioned pieces typically require 5 to 12 days to ensure adequate curing time for clay relief layers, precision dotting in multiple pigment layers, and complete varnish drying.",
+      "category": "Timelines & Process",
+      "display_order": 4,
+      "is_published": true,
+      "created_at": "2026-10-15T08:15:00.000Z",
+      "updated_at": "2026-10-15T08:15:00.000Z"
+    },
+    {
+      "id": "faq-005",
+      "question": "How are the delicate artworks packed for safe transit?",
+      "answer": "We take utmost care in packaging. Each piece is wrapped in acid-free tissue, enclosed in multiple layers of heavy-duty shock-absorbing bubble wrap, protected with rigid corner guards, and encased in reinforced double-wall corrugated cartons or sturdy wooden crating for oversized mirrors.",
+      "category": "Packaging & Protection",
+      "display_order": 5,
+      "is_published": true,
+      "created_at": "2026-10-15T08:20:00.000Z",
+      "updated_at": "2026-10-15T08:20:00.000Z"
+    },
+    {
+      "id": "faq-006",
+      "question": "Do you ship across India and internationally?",
+      "answer": "Yes, we provide tracked and insured shipping across India (usually arriving within 3–7 business days) as well as worldwide international express delivery with reputed logistics partners (DHL/FedEx).",
+      "category": "Shipping & Delivery",
+      "display_order": 6,
+      "is_published": true,
+      "created_at": "2026-10-15T08:25:00.000Z",
+      "updated_at": "2026-10-15T08:25:00.000Z"
+    },
+    {
+      "id": "faq-007",
+      "question": "How should I care for and clean my Dot Art and Lippan mirror wall hangings?",
+      "answer": "Maintenance is very simple. Gently dust the surface with a soft, clean, dry microfiber cloth or a soft bristle brush. For Lippan mirrors, you may lightly wipe the mirror glass with a barely damp cotton swab. Never use harsh abrasive chemicals, alcohol sprays, or soak the piece in water. For indoor display away from direct rain and prolonged harsh direct outdoor sunlight.",
+      "category": "Care & Maintenance",
+      "display_order": 7,
+      "is_published": true,
+      "created_at": "2026-10-15T08:30:00.000Z",
+      "updated_at": "2026-10-15T08:30:00.000Z"
+    },
+    {
+      "id": "faq-008",
+      "question": "What is your payment and advance policy for custom commissions?",
+      "answer": "For custom commissioned artwork, a 50% advance booking deposit is required to begin design sketching, material sourcing, and studio creation. The remaining 50% balance is payable upon completion after we share high-definition photos and video of your finished artwork prior to secure dispatch.",
+      "category": "Payment & Pricing",
+      "display_order": 8,
+      "is_published": true,
+      "created_at": "2026-10-15T08:35:00.000Z",
+      "updated_at": "2026-10-15T08:35:00.000Z"
+    },
+    {
+      "id": "faq-009",
+      "question": "What happens if an artwork is damaged during courier transit?",
+      "answer": "Every shipment is 100% transit-insured. In the extremely rare event that your package arrives damaged, simply take a short unboxing video and clear photographs of the outer packaging and damaged item within 24 hours of receipt, and send it to our WhatsApp helpline (+91 8652162647). We will immediately replace or restore your piece free of charge.",
+      "category": "Insurance & Guarantees",
+      "display_order": 9,
+      "is_published": true,
+      "created_at": "2026-10-15T08:40:00.000Z",
+      "updated_at": "2026-10-15T08:40:00.000Z"
+    },
+    {
+      "id": "faq-010",
+      "question": "Do Dot And Art creations come with an artist Certificate of Authenticity?",
+      "answer": "Yes, all original Dot And Art creations come signed by the artist Shital Thosar and include a studio Certificate of Authenticity specifying the artwork title, year of creation, dimensions, and medium used.",
+      "category": "Authenticity & Certification",
+      "display_order": 10,
+      "is_published": true,
+      "created_at": "2026-10-15T08:45:00.000Z",
+      "updated_at": "2026-10-15T08:45:00.000Z"
+    }
+  ],
   "admin": {
     "username": "admin",
-    "pin_hash": "ed4577c911be12043e67ec26de45c233446c6115a6b40caf2ba52ba9144f241f7227f40f4263dfad10a97e849098b91dfa0fe2fd4d860c609690af4e9099282c",
+    "pin_hash": "7662a132bb39ea437a2e775b1fa714b68b2d039e560b8f57b9cff245230f4b08151c89b323bc88b651983629763f3da0fc0b521ac799a940f9cdf1aa0456d007",
     "salt": "5010969e51c56e0400b8165282bbc2e6",
-    "updated_at": "2026-10-20T13:38:17.511Z"
+    "updated_at": "2026-10-20T13:38:17.511Z",
+    "last_login_at": "2026-10-22T13:56:53.034Z"
   }
 }

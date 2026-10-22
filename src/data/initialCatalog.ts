@@ -6106,9 +6106,176 @@ export const INITIAL_CATEGORIES: any[] = [
   }
 ];
 
-export const INITIAL_TESTIMONIALS: any[] = [];
+export const INITIAL_TESTIMONIALS: any[] = [
+  {
+    "id": "test-dummy-001",
+    "customer_name": "Pooja Sharma",
+    "content": "The precision of every single dot is astonishing! It has transformed our living room and meditation corner into a sanctuary of calm. Arrived impeccably packed in a custom wooden-reinforced crate without a single scratch.",
+    "rating": 5,
+    "location": "Mumbai, Maharashtra",
+    "artwork_purchased": "24-Inch Golden Harmony Dot Mandala",
+    "image_path": "",
+    "display_order": 1,
+    "is_published": true,
+    "created_at": "2026-10-15T10:00:00.000Z",
+    "updated_at": "2026-10-15T10:00:00.000Z"
+  },
+  {
+    "id": "test-dummy-002",
+    "customer_name": "Dr. Rajesh Kulkarni",
+    "content": "We commissioned a bespoke Lippan piece for our clinic reception. Shital kept us updated throughout the process and incorporated our requested clay relief patterns and mirrors. Patients constantly compliment the craftsmanship.",
+    "rating": 5,
+    "location": "Pune, Maharashtra",
+    "artwork_purchased": "Traditional Kutch Lippan Mud-Mirror Art",
+    "image_path": "",
+    "display_order": 2,
+    "is_published": true,
+    "created_at": "2026-10-16T11:30:00.000Z",
+    "updated_at": "2026-10-16T11:30:00.000Z"
+  },
+  {
+    "id": "test-dummy-003",
+    "customer_name": "Ananya Deshmukh",
+    "content": "Photos simply do not do justice to the tactile depth and gloss finish. The mirrors catch the morning sun in the most magical way. You can feel the hours of patient devotion in every concentric circle.",
+    "rating": 5,
+    "location": "Bengaluru, Karnataka",
+    "artwork_purchased": "Teal & Gold Sacred Lotus Mandala",
+    "image_path": "",
+    "display_order": 3,
+    "is_published": true,
+    "created_at": "2026-10-17T09:15:00.000Z",
+    "updated_at": "2026-10-17T09:15:00.000Z"
+  },
+  {
+    "id": "test-dummy-004",
+    "customer_name": "Siddharth & Meera Nair",
+    "content": "Working with Shital on our custom anniversary piece was a delight. She tailored the color palette to our dining room wall perfectly. The unboxing experience felt like opening a royal gift.",
+    "rating": 5,
+    "location": "Hyderabad, Telangana",
+    "artwork_purchased": "Custom 30-Inch Multi-Tier Floral Mandala",
+    "image_path": "",
+    "display_order": 4,
+    "is_published": true,
+    "created_at": "2026-10-18T14:20:00.000Z",
+    "updated_at": "2026-10-18T14:20:00.000Z"
+  },
+  {
+    "id": "test-dummy-005",
+    "customer_name": "Elena Rostova",
+    "content": "Ordered international delivery to Dubai and it arrived within 5 days safely in flawless condition. Outstanding craftsmanship, mesmerizing symmetry, and responsive communication from the artist.",
+    "rating": 5,
+    "location": "Dubai, UAE",
+    "artwork_purchased": "Sacred Geometry Lippan Mirror Hanging",
+    "image_path": "",
+    "display_order": 5,
+    "is_published": true,
+    "created_at": "2026-10-19T16:45:00.000Z",
+    "updated_at": "2026-10-19T16:45:00.000Z"
+  }
+];
 
-export const INITIAL_FAQS: any[] = [];
+export const INITIAL_FAQS: any[] = [
+  {
+    "id": "faq-001",
+    "question": "What materials and tools are used in creating Dot Mandala and Lippan Artworks?",
+    "answer": "Each dot mandala is handcrafted using moisture-resistant engineered MDF wooden boards, high-grade artist heavy-body acrylic paints, fine dotting tools, and authentic reflective mirrors. Lippan art pieces are crafted using traditional mud and ceramic relief clay mixtures combined with intricately arranged hand-cut glass mirrors (aabhla). Every completed artwork is sealed with archival, UV-resistant protective gloss varnish for longevity.",
+    "category": "Materials & Craft",
+    "display_order": 1,
+    "is_published": true,
+    "created_at": "2026-10-15T08:00:00.000Z",
+    "updated_at": "2026-10-15T08:00:00.000Z"
+  },
+  {
+    "id": "faq-002",
+    "question": "Are the artworks ready to hang upon arrival?",
+    "answer": "Yes! Every artwork comes 100% ready to hang with a heavy-duty, rust-resistant triangle or sawtooth hanging hook pre-installed on the back, along with soft wall-stabilizer bumpers to ensure the artwork sits flush and protects your wall surface.",
+    "category": "Installation & Hardware",
+    "display_order": 2,
+    "is_published": true,
+    "created_at": "2026-10-15T08:05:00.000Z",
+    "updated_at": "2026-10-15T08:05:00.000Z"
+  },
+  {
+    "id": "faq-003",
+    "question": "Can I commission a custom design, color palette, or specific size?",
+    "answer": "Absolutely. Custom orders are warmly welcomed. You can choose specific sizes (from 8 inches up to 36+ inches), color schemes matching your interior palette, sacred geometry patterns, or personalized inscriptions. Reach out via our Bespoke Commissions page or WhatsApp directly with the artist to discuss your ideas.",
+    "category": "Custom Orders",
+    "display_order": 3,
+    "is_published": true,
+    "created_at": "2026-10-15T08:10:00.000Z",
+    "updated_at": "2026-10-15T08:10:00.000Z"
+  },
+  {
+    "id": "faq-004",
+    "question": "How long does it take to create and dispatch a handcrafted artwork?",
+    "answer": "Depending on the complexity and diameter, standard catalog items ship within 1–3 business days. Bespoke commissioned pieces typically require 5 to 12 days to ensure adequate curing time for clay relief layers, precision dotting in multiple pigment layers, and complete varnish drying.",
+    "category": "Timelines & Process",
+    "display_order": 4,
+    "is_published": true,
+    "created_at": "2026-10-15T08:15:00.000Z",
+    "updated_at": "2026-10-15T08:15:00.000Z"
+  },
+  {
+    "id": "faq-005",
+    "question": "How are the delicate artworks packed for safe transit?",
+    "answer": "We take utmost care in packaging. Each piece is wrapped in acid-free tissue, enclosed in multiple layers of heavy-duty shock-absorbing bubble wrap, protected with rigid corner guards, and encased in reinforced double-wall corrugated cartons or sturdy wooden crating for oversized mirrors.",
+    "category": "Packaging & Protection",
+    "display_order": 5,
+    "is_published": true,
+    "created_at": "2026-10-15T08:20:00.000Z",
+    "updated_at": "2026-10-15T08:20:00.000Z"
+  },
+  {
+    "id": "faq-006",
+    "question": "Do you ship across India and internationally?",
+    "answer": "Yes, we provide tracked and insured shipping across India (usually arriving within 3–7 business days) as well as worldwide international express delivery with reputed logistics partners (DHL/FedEx).",
+    "category": "Shipping & Delivery",
+    "display_order": 6,
+    "is_published": true,
+    "created_at": "2026-10-15T08:25:00.000Z",
+    "updated_at": "2026-10-15T08:25:00.000Z"
+  },
+  {
+    "id": "faq-007",
+    "question": "How should I care for and clean my Dot Art and Lippan mirror wall hangings?",
+    "answer": "Maintenance is very simple. Gently dust the surface with a soft, clean, dry microfiber cloth or a soft bristle brush. For Lippan mirrors, you may lightly wipe the mirror glass with a barely damp cotton swab. Never use harsh abrasive chemicals, alcohol sprays, or soak the piece in water. For indoor display away from direct rain and prolonged harsh direct outdoor sunlight.",
+    "category": "Care & Maintenance",
+    "display_order": 7,
+    "is_published": true,
+    "created_at": "2026-10-15T08:30:00.000Z",
+    "updated_at": "2026-10-15T08:30:00.000Z"
+  },
+  {
+    "id": "faq-008",
+    "question": "What is your payment and advance policy for custom commissions?",
+    "answer": "For custom commissioned artwork, a 50% advance booking deposit is required to begin design sketching, material sourcing, and studio creation. The remaining 50% balance is payable upon completion after we share high-definition photos and video of your finished artwork prior to secure dispatch.",
+    "category": "Payment & Pricing",
+    "display_order": 8,
+    "is_published": true,
+    "created_at": "2026-10-15T08:35:00.000Z",
+    "updated_at": "2026-10-15T08:35:00.000Z"
+  },
+  {
+    "id": "faq-009",
+    "question": "What happens if an artwork is damaged during courier transit?",
+    "answer": "Every shipment is 100% transit-insured. In the extremely rare event that your package arrives damaged, simply take a short unboxing video and clear photographs of the outer packaging and damaged item within 24 hours of receipt, and send it to our WhatsApp helpline (+91 8652162647). We will immediately replace or restore your piece free of charge.",
+    "category": "Insurance & Guarantees",
+    "display_order": 9,
+    "is_published": true,
+    "created_at": "2026-10-15T08:40:00.000Z",
+    "updated_at": "2026-10-15T08:40:00.000Z"
+  },
+  {
+    "id": "faq-010",
+    "question": "Do Dot And Art creations come with an artist Certificate of Authenticity?",
+    "answer": "Yes, all original Dot And Art creations come signed by the artist Shital Thosar and include a studio Certificate of Authenticity specifying the artwork title, year of creation, dimensions, and medium used.",
+    "category": "Authenticity & Certification",
+    "display_order": 10,
+    "is_published": true,
+    "created_at": "2026-10-15T08:45:00.000Z",
+    "updated_at": "2026-10-15T08:45:00.000Z"
+  }
+];
 
 export const INITIAL_SETTINGS: any = {
   "business_name": "Dot And Art Studio",
@@ -6148,4 +6315,256 @@ export const INITIAL_SETTINGS: any = {
   }
 };
 
-export const INITIAL_PAGES: any = [];
+export const INITIAL_PAGES: any = [
+  {
+    "id": "page-home",
+    "slug": "home",
+    "title": "Home Page — Dot And Art Studio",
+    "seo_title": "Dot And Art Studio — Handcrafted Mandalas & Lippan Mirror Art",
+    "meta_description": "Discover authentic hand-painted dot mandalas and traditional Kutch Lippan mud-mirror art by artist Shital Thosar.",
+    "status": "published",
+    "sections": [
+      {
+        "id": "sec-home-banner",
+        "page_id": "page-home",
+        "section_type": "banner",
+        "section_key": "banner",
+        "content_json": {
+          "eyebrow": "MEET THE ARTIST & MASTER CRAFTSWOMAN",
+          "title": "Shital Thosar — Authentic Geometry & Handmade Mandala Art",
+          "short_description": "Crafting serene dot mandalas and traditional Lippan Kaam mirror art with deep devotion and precision.",
+          "description": "Shital Thosar is a visionary Indian artisan specializing in authentic Dot Mandalas and traditional Gujarati Lippan Kaam mirror art. Handcrafted on moisture-resistant MDF board with heavy-body acrylics, light-reflecting mirrors, and protective varnish.",
+          "size": "Custom Sizes Available (8\" to 36\"+)",
+          "price": 0,
+          "badge_text": "Handmade with Devotion",
+          "material": "MDF Board, Acrylic Colors, Mirrors, Varnish",
+          "creation_time": "8 Days",
+          "shipping_info": "Worldwide Insured Express Delivery",
+          "image_url": "/static/assets/images/Home_page_banner.jpeg",
+          "product_sku": "Home_page_banner"
+        },
+        "display_order": 1,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-home-featured",
+        "page_id": "page-home",
+        "section_type": "featured_artworks",
+        "section_key": "featured_artworks",
+        "content_json": {
+          "badge": "Studio Highlights",
+          "title": "Featured Handcrafted Creations",
+          "description": "Explore our most sought-after Dot Mandalas and Lippan Mud-Mirror Art, each piece individually hand-painted."
+        },
+        "display_order": 2,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "page-shop",
+    "slug": "shop",
+    "title": "Artworks Catalog — Dot And Art",
+    "seo_title": "Artworks Catalog — Mandala Wall Hangings & Lippan Mirror Art",
+    "meta_description": "Browse our full collection of handcrafted Mandala Wall Hangings and traditional Kutch Lippan Mud-Mirror Art.",
+    "status": "published",
+    "sections": [
+      {
+        "id": "sec-shop-header",
+        "page_id": "page-shop",
+        "section_type": "header",
+        "section_key": "shop_header",
+        "content_json": {
+          "badge": "Handcrafted Collection",
+          "title": "Artworks & Mirrors",
+          "description": "Discover serene dot mandalas, intricate sacred geometry, and traditional Kutch Lippan mud-mirror art. Ready to hang with protective varnish."
+        },
+        "display_order": 1,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "page-custom-order",
+    "slug": "custom-order",
+    "title": "Bespoke Commissions — Dot And Art",
+    "seo_title": "Bespoke Commissions & Custom Mandalas — Dot And Art",
+    "meta_description": "Commission a bespoke dot mandala or Lippan mirror artwork with your chosen color palette, diameter, and custom inscriptions.",
+    "status": "published",
+    "sections": [
+      {
+        "id": "sec-custom-header",
+        "page_id": "page-custom-order",
+        "section_type": "header",
+        "section_key": "custom_header",
+        "content_json": {
+          "badge": "Bespoke Artworks",
+          "title": "Commission Your Custom Piece",
+          "subtitle": "Bring your vision to life. Choose your exact diameter, custom color palette, or request a personalized photo mandala created with love by Shital Thosar."
+        },
+        "display_order": 1,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "page-about",
+    "slug": "about",
+    "title": "About Shital Thosar — Dot And Art Studio",
+    "seo_title": "About Shital Thosar — Artist & Founder, Dot And Art",
+    "meta_description": "Learn about artist Shital Thosar, her meditative journey into dot mandala painting, and traditional Lippan Kaam mirror art.",
+    "status": "published",
+    "sections": [
+      {
+        "id": "sec-about-hero",
+        "page_id": "page-about",
+        "section_type": "hero",
+        "section_key": "artist_hero",
+        "content_json": {
+          "badge": "Meet The Artist",
+          "title": "About Shital Thosar",
+          "subtitle": "Artist & Founder behind DotAndArt"
+        },
+        "display_order": 1,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-about-story",
+        "page_id": "page-about",
+        "section_type": "bio",
+        "section_key": "artist_story",
+        "content_json": {
+          "statement_heading": "Hi, I’m Shital Thosar, the artist and creator behind DotAndArt.",
+          "paragraph_1": "What started as a love for colours, patterns and the simple joy of creating with my hands slowly grew into something much more meaningful—my own art journey.",
+          "paragraph_2": "I found myself drawn to Dot Mandala Art, where tiny dots come together to create intricate patterns, balance and harmony. For me, mandala is not just about creating something beautiful. It is a process of slowing down, being present and finding a little calm in the middle of everyday life.",
+          "paragraph_3": "With time, my art has evolved into a blend of traditional mandala patterns, contemporary colours and Indian artistic influences. I enjoy experimenting with colours, textures and different forms while keeping the handmade character of every piece alive.",
+          "paragraph_4": "Every DotAndArt creation is painted by hand, one dot and one detail at a time. Whether it is a personalised photo mandala, a festive piece, a wall artwork or a custom creation, I put a little piece of my creativity and love into each one.",
+          "paragraph_5": "Today, DotAndArt is not just about selling handmade art. It is about creating meaningful pieces that become part of someone's home, celebrations and memories.",
+          "closing_thanks": "Thank you for being a part of my creative journey.",
+          "closing_sign": "With love,",
+          "closing_name": "Shital",
+          "closing_role": "Artist & Founder, DotAndArt"
+        },
+        "display_order": 2,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "page-testimonials",
+    "slug": "testimonials",
+    "title": "Collector Testimonials & Reviews — Dot And Art",
+    "seo_title": "Collector Testimonials — Dot And Art Studio",
+    "meta_description": "Read verified reviews and experiences from collectors and homeowners who have welcomed Dot And Art creations into their sanctuaries.",
+    "status": "published",
+    "sections": [
+      {
+        "id": "sec-test-hero",
+        "page_id": "page-testimonials",
+        "section_type": "hero",
+        "section_key": "testimonials_hero",
+        "content_json": {
+          "badge": "Client & Collector Testimonials",
+          "title": "Words from Art Collectors",
+          "subtitle": "Read verified experiences from collectors, homeowners, yoga studios, and interior designers who have welcomed Shital Thosar’s authentic Dot Mandala and Lippan Art into their spaces."
+        },
+        "display_order": 1,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-test-cta",
+        "page_id": "page-testimonials",
+        "section_type": "cta",
+        "section_key": "testimonials_cta",
+        "content_json": {
+          "title": "Ready to experience the serenity in your home?",
+          "description": "Browse our handcrafted catalog or discuss a bespoke diameter and custom color palette directly with Shital Thosar.",
+          "button_text": "Chat on WhatsApp"
+        },
+        "display_order": 2,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "page-faqs",
+    "slug": "faqs",
+    "title": "Frequently Asked Questions — Dot And Art",
+    "seo_title": "Frequently Asked Questions — Care, Shipping & Commissions | Dot And Art",
+    "meta_description": "Find answers to top 10 questions regarding materials, framing, custom sizes, creation timelines, advance payments, and worldwide shipping.",
+    "status": "published",
+    "sections": [
+      {
+        "id": "sec-faqs-header",
+        "page_id": "page-faqs",
+        "section_type": "header",
+        "section_key": "faqs_header",
+        "content_json": {
+          "badge": "Common Inquiries",
+          "title": "Frequently Asked Questions",
+          "description": "Everything you need to know about our handcrafted mandala creation process, Lippan mirror art, customization, care, packaging, advance policies, and worldwide insured shipping."
+        },
+        "display_order": 1,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-faqs-help",
+        "page_id": "page-faqs",
+        "section_type": "help_card",
+        "section_key": "faqs_help_card",
+        "content_json": {
+          "title": "Still have a question?",
+          "description": "We are just a message away. Reach out to the artist on WhatsApp for immediate answers regarding your custom requirements.",
+          "button_text": "Chat on WhatsApp (+91 8652162647)"
+        },
+        "display_order": 2,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "page-contact",
+    "slug": "contact",
+    "title": "Contact Studio — Dot And Art",
+    "seo_title": "Contact Studio & Artist Helpline — Dot And Art",
+    "meta_description": "Get in touch with Shital Thosar for studio visits in Pune, custom order inquiries, WhatsApp assistance, and email support.",
+    "status": "published",
+    "sections": [
+      {
+        "id": "sec-contact-header",
+        "page_id": "page-contact",
+        "section_type": "header",
+        "section_key": "contact_header",
+        "content_json": {
+          "badge": "Studio Connection",
+          "title": "Get in Touch with the Artist",
+          "description": "Have a question about a artwork or want to discuss a custom commission? Reach out directly via WhatsApp, phone, email, or visit our Pune studio."
+        },
+        "display_order": 1,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      }
+    ]
+  }
+];
