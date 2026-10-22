@@ -468,3 +468,27 @@ export async function bulkImportFirestoreTestimonials(testimonials: Testimonial[
   }
 }
 
+export async function getFirestoreSyncFlag(): Promise<{ changed: boolean; updated_at: string }> {
+  if (firestoreQuotaExceeded) return { changed: false, updated_at: new Date().toISOString() };
+  try {
+    const docRef = doc(db, CATALOG_STATE_COLLECTION, 'sync_flag');
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      return snap.data() as { changed: boolean; updated_at: string };
+    }
+  } catch (err) {
+    checkQuotaError(err);
+  }
+  return { changed: false, updated_at: new Date().toISOString() };
+}
+
+export async function saveFirestoreSyncFlag(changed: boolean): Promise<void> {
+  if (firestoreQuotaExceeded) return;
+  try {
+    const docRef = doc(db, CATALOG_STATE_COLLECTION, 'sync_flag');
+    await setDoc(docRef, { changed, updated_at: new Date().toISOString() }, { merge: true });
+  } catch (err) {
+    checkQuotaError(err);
+  }
+}
+

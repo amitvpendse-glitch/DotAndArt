@@ -51,10 +51,12 @@ export function usePageSeo(slug: string, defaultTitle: string, defaultDesc?: str
     };
 
     window.addEventListener('app_pages_updated', handlePageUpdate);
+    window.addEventListener('app_sync_refresh', handlePageUpdate);
 
     return () => {
       isMounted = false;
       window.removeEventListener('app_pages_updated', handlePageUpdate);
+      window.removeEventListener('app_sync_refresh', handlePageUpdate);
     };
   }, [slug, defaultTitle]);
 

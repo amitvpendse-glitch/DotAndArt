@@ -35,6 +35,8 @@ import {
   saveFirestoreTestimonial,
   deleteFirestoreTestimonial,
   getFirestoreTestimonials,
+  saveFirestoreSyncFlag,
+  getFirestoreSyncFlag,
 } from './src/lib/firestoreCatalog.ts';
 
 const app = express();
@@ -72,6 +74,20 @@ interface DBState {
   faqs: FAQ[];
   settings: WebsiteSettings;
   audit_logs: AuditLog[];
+  sync_flag: {
+    changed: boolean;
+    updated_at: string;
+  };
+}
+
+function markAdminChange() {
+  if (!db.sync_flag) {
+    db.sync_flag = { changed: false, updated_at: new Date().toISOString() };
+  }
+  db.sync_flag.changed = true;
+  db.sync_flag.updated_at = new Date().toISOString();
+  saveDB(db);
+  saveFirestoreSyncFlag(true).catch(() => {});
 }
 
 // Password hashing helper using scrypt
@@ -273,7 +289,7 @@ function loadDB(): DBState {
     ],
   };
 
-  saveDB(initialDB);
+  saveDB(initialDB, false);
   return initialDB;
 }
 
@@ -472,7 +488,7 @@ function syncImagesWithDB(): SyncResult {
     }
   });
 
-  saveDB(db);
+  saveDB(db, false);
   console.log(`[SmartImageSync] Synced ${files.length} images from folder with ${updatedCount} products in database.`);
   return {
     mediaCount: files.length,
@@ -532,7 +548,15 @@ function initSmartImageSync() {
 initSmartImageSync();
 */
 
-function saveDB(state: DBState) {
+function saveDB(state: DBState, markChange = true) {
+  if (markChange) {
+    if (!state.sync_flag) {
+      state.sync_flag = { changed: false, updated_at: new Date().toISOString() };
+    }
+    state.sync_flag.changed = true;
+    state.sync_flag.updated_at = new Date().toISOString();
+    saveFirestoreSyncFlag(true).catch(() => {});
+  }
   const tempFile = `${DB_FILE}.tmp`;
   fs.writeFileSync(tempFile, JSON.stringify(state, null, 2), 'utf-8');
   fs.renameSync(tempFile, DB_FILE);
@@ -904,6 +928,27 @@ app.post('/api/admin/change-pin', requireAdmin, (req: Request, res: Response) =>
     success: true,
     message: 'PIN successfully changed. All sessions have been logged out. Please sign in with your new PIN.',
   });
+});
+
+// Sync Flag Endpoints for Database Hit Optimization
+app.get('/api/sync-flag', async (_req: Request, res: Response) => {
+  if (!db.sync_flag) {
+    db.sync_flag = { changed: false, updated_at: new Date().toISOString() };
+  }
+  try {
+    const fsFlag = await getFirestoreSyncFlag();
+    if (fsFlag && typeof fsFlag.changed === 'boolean') {
+      db.sync_flag.changed = db.sync_flag.changed || fsFlag.changed;
+    }
+  } catch {}
+  res.json(db.sync_flag);
+});
+
+app.post('/api/sync-reset', (_req: Request, res: Response) => {
+  db.sync_flag = { changed: false, updated_at: new Date().toISOString() };
+  saveDB(db);
+  saveFirestoreSyncFlag(false).catch(() => {});
+  res.json({ success: true });
 });
 
 /* =========================================================
