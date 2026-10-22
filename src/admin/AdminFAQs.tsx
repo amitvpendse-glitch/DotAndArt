@@ -54,7 +54,7 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
     const method = editing ? 'PUT' : 'POST';
 
     try {
-      const res = await fetch(url, {
+      await safeFetchJson(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -68,10 +68,8 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
         }),
       });
 
-      if (res.ok) {
-        setModalOpen(false);
-        fetchFaqs();
-      }
+      setModalOpen(false);
+      fetchFaqs();
     } catch (err) {
       console.error(err);
     }
@@ -80,14 +78,12 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this FAQ entry?')) return;
     try {
-      const res = await fetch(`/api/admin/faqs/${id}`, {
+      await safeFetchJson(`/api/admin/faqs/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (res.ok) {
-        fetchFaqs();
-      }
+      fetchFaqs();
     } catch (err) {
       console.error(err);
     }

@@ -1209,33 +1209,6 @@ app.get('/api/pages/:slug', (req: Request, res: Response) => {
 // Update Page Content (Supports Admin Token or PIN)
 const handlePageUpdate = (req: Request, res: Response) => {
   const { slug } = req.params;
-  const authHeader = req.headers.authorization;
-  const cookies = parseCookies(req.headers.cookie);
-  const token = (authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null) || cookies['dot_admin_session'];
-
-  let isAuthorized = false;
-  if (token) {
-    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
-    const now = Date.now();
-    const sessionIndex = (db.sessions || []).findIndex((s) => s.token_hash === tokenHash && s.expires_at > now);
-    if (sessionIndex !== -1) {
-      isAuthorized = true;
-    }
-  }
-
-  const pinProvided = (req.headers['x-admin-pin'] as string) || req.body?.pin;
-  if (!isAuthorized && pinProvided && typeof pinProvided === 'string') {
-    const cleanPin = pinProvided.trim();
-    const computedHash = hashPin(cleanPin, getAdminSalt());
-    if (computedHash === db.admin.pin_hash || cleanPin === '2647') {
-      isAuthorized = true;
-    }
-  }
-
-  if (!isAuthorized) {
-    res.status(401).json({ error: 'Admin authentication or valid 4-digit PIN required to save page content.' });
-    return;
-  }
 
   let index = (db.pages || []).findIndex((p) => p.slug === slug);
   if (index === -1) {
@@ -1284,8 +1257,8 @@ const handlePageUpdate = (req: Request, res: Response) => {
   res.json(db.pages[index]);
 };
 
-app.put('/api/pages/:slug', handlePageUpdate);
-app.put('/api/admin/pages/:slug', handlePageUpdate);
+app.put('/api/pages/:slug', requireAdmin, handlePageUpdate);
+app.put('/api/admin/pages/:slug', requireAdmin, handlePageUpdate);
 
 // Custom Enquiry Logger (Public)
 app.post('/api/custom-enquiry', (req: Request, res: Response) => {
@@ -1720,10 +1693,26 @@ app.put('/api/admin/products/:id', requireAdmin, (req: Request, res: Response) =
     db.products[index].sku = cleanSku;
   }
 
-  if (p.category_id) {
-    const cat = (db.categories || []).find((c) => c.id === p.category_id);
-    db.products[index].category_id = p.category_id;
+  if (p.category_id !== undefined || p.category_name !== undefined || p.category_slug !== undefined) {
+    const catInput = String(p.category_id || p.category_name || p.category_slug || '').trim();
+    let cat = (db.categories || []).find((c) => c.id === catInput || c.name.toLowerCase() === catInput.toLowerCase() || c.slug === catInput);
+    if (!cat && catInput) {
+      const cleanSlug = catInput.toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+      cat = {
+        id: `cat-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        name: catInput,
+        slug: cleanSlug,
+        description: '',
+        image_path: '',
+        display_order: db.categories.length + 1,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      (db.categories = db.categories || []).push(cat);
+    }
     if (cat) {
+      db.products[index].category_id = cat.id;
       db.products[index].category_name = cat.name;
       db.products[index].category_slug = cat.slug;
     }
@@ -1747,12 +1736,12 @@ app.put('/api/admin/products/:id', requireAdmin, (req: Request, res: Response) =
   if (p.is_high_demand !== undefined) db.products[index].is_high_demand = Boolean(p.is_high_demand);
   if (p.extra_delivery_days !== undefined) db.products[index].extra_delivery_days = Number(p.extra_delivery_days);
   if (p.high_demand_message !== undefined) db.products[index].high_demand_message = p.high_demand_message;
-  if (p.base_price !== undefined) db.products[index].base_price = Number(p.base_price);
+  if (p.base_price !== undefined) db.products[index].base_price = Number(p.base_price) || 0;
   if (p.base_size !== undefined) db.products[index].base_size = p.base_size;
   if (p.badge_tag !== undefined) db.products[index].badge_tag = p.badge_tag;
   if (p.photos_available_note !== undefined) db.products[index].photos_available_note = p.photos_available_note;
-  if (p.images !== undefined) db.products[index].images = p.images;
-  if (p.variants !== undefined) db.products[index].variants = p.variants;
+  if (p.images !== undefined) db.products[index].images = Array.isArray(p.images) ? p.images : [];
+  if (p.variants !== undefined) db.products[index].variants = Array.isArray(p.variants) ? p.variants : [];
 
   db.products[index].updated_at = new Date().toISOString();
   saveDB(db);
@@ -1841,11 +1830,10 @@ app.put('/api/admin/products/bulk-update', requireAdmin, (req: Request, res: Res
       updatedCount++;
       const updated = { ...p };
 
-      if (fields.category_id !== undefined || fields.category_name !== undefined) {
-        const catInput = String(fields.category_id || fields.category_name || '').trim();
+      if (fields.category_id !== undefined || fields.category_name !== undefined || fields.category_slug !== undefined) {
+        const catInput = String(fields.category_id || fields.category_name || fields.category_slug || '').trim();
         let cat = (db.categories || []).find((c) => c.id === catInput || c.name.toLowerCase() === catInput.toLowerCase() || c.slug === catInput);
         if (!cat && catInput) {
-          // Create new category dynamically
           const cleanSlug = catInput.toLowerCase().replace(/[^a-z0-9-_]/g, '-');
           cat = {
             id: `cat-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
@@ -1867,6 +1855,10 @@ app.put('/api/admin/products/bulk-update', requireAdmin, (req: Request, res: Res
         }
       }
       if (fields.base_price !== undefined) updated.base_price = Number(fields.base_price) || updated.base_price;
+      if (fields.base_size !== undefined) updated.base_size = fields.base_size;
+      if (fields.name !== undefined) updated.name = fields.name;
+      if (fields.short_description !== undefined) updated.short_description = fields.short_description;
+      if (fields.description !== undefined) updated.description = fields.description;
       if (fields.is_published !== undefined) updated.is_published = Boolean(fields.is_published);
       if (fields.is_available !== undefined) updated.is_available = Boolean(fields.is_available);
       if (fields.featured !== undefined) updated.featured = Boolean(fields.featured);
@@ -1874,6 +1866,18 @@ app.put('/api/admin/products/bulk-update', requireAdmin, (req: Request, res: Res
       if (fields.framing !== undefined) updated.framing = fields.framing;
       if (fields.creation_time !== undefined) updated.creation_time = fields.creation_time;
       if (fields.material !== undefined) updated.material = fields.material;
+      if (fields.shipping_info !== undefined) updated.shipping_info = fields.shipping_info;
+      if (fields.special_information !== undefined) updated.special_information = fields.special_information;
+      if (fields.available_badge_text !== undefined) updated.available_badge_text = fields.available_badge_text;
+      if (fields.unavailable_badge_text !== undefined) updated.unavailable_badge_text = fields.unavailable_badge_text;
+      if (fields.show_available_badge !== undefined) updated.show_available_badge = Boolean(fields.show_available_badge);
+      if (fields.is_high_demand !== undefined) updated.is_high_demand = Boolean(fields.is_high_demand);
+      if (fields.extra_delivery_days !== undefined) updated.extra_delivery_days = Number(fields.extra_delivery_days);
+      if (fields.high_demand_message !== undefined) updated.high_demand_message = fields.high_demand_message;
+      if (fields.badge_tag !== undefined) updated.badge_tag = fields.badge_tag;
+      if (fields.photos_available_note !== undefined) updated.photos_available_note = fields.photos_available_note;
+      if (fields.images !== undefined) updated.images = fields.images;
+      if (fields.variants !== undefined) updated.variants = fields.variants;
 
       updated.updated_at = now;
       return updated;

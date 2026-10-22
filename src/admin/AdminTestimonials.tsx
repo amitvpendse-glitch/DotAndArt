@@ -22,10 +22,9 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
 
   const fetchItems = () => {
     setLoading(true);
-    fetch('/api/admin/testimonials', {
+    safeFetchJson<Testimonial[]>('/api/admin/testimonials', {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => res.json())
       .then((data) => setItems(Array.isArray(data) ? data : []))
       .catch(() => {
         safeFetchJson<Testimonial[]>('/api/testimonials')
@@ -66,7 +65,7 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
     const method = editing ? 'PUT' : 'POST';
 
     try {
-      const res = await fetch(url, {
+      await safeFetchJson(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -82,10 +81,8 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
         }),
       });
 
-      if (res.ok) {
-        setModalOpen(false);
-        fetchItems();
-      }
+      setModalOpen(false);
+      fetchItems();
     } catch (err) {
       console.error(err);
     }
@@ -94,14 +91,12 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this testimonial?')) return;
     try {
-      const res = await fetch(`/api/admin/testimonials/${id}`, {
+      await safeFetchJson(`/api/admin/testimonials/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (res.ok) {
-        fetchItems();
-      }
+      fetchItems();
     } catch (err) {
       console.error(err);
     }
