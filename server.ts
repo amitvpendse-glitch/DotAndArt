@@ -294,10 +294,11 @@ async function syncFromFirestoreOnBoot() {
     if (Array.isArray(fsPages) && fsPages.length > 0) {
       fsPages.forEach((fp) => {
         const idx = (db.pages || []).findIndex((p) => p.slug === fp.slug);
+        const mergedFp = mergeMissingPageSections(fp);
         if (idx >= 0) {
-          db.pages[idx] = { ...db.pages[idx], ...fp };
+          db.pages[idx] = mergeMissingPageSections({ ...db.pages[idx], ...mergedFp });
         } else {
-          (db.pages = db.pages || []).push(fp);
+          (db.pages = db.pages || []).push(mergedFp);
         }
       });
       changed = true;
@@ -1123,114 +1124,66 @@ app.get('/api/settings', (_req: Request, res: Response) => {
   res.json(db.settings);
 });
 
+// Helper to merge missing sections and content_json keys from INITIAL_PAGES
+function mergeMissingPageSections(page: any): any {
+  const initP = INITIAL_PAGES.find((ip: any) => ip.slug === page.slug);
+  if (!initP || !initP.sections) return page;
+
+  page.sections = page.sections || [];
+  const existingMap = new Map<string, any>();
+  page.sections.forEach((s: any) => existingMap.set(s.section_key || s.id, s));
+
+  initP.sections.forEach((initSec: any) => {
+    const secKey = initSec.section_key || initSec.id;
+    const existingSec = existingMap.get(secKey);
+    if (!existingSec) {
+      page.sections.push(JSON.parse(JSON.stringify(initSec)));
+    } else {
+      existingSec.content_json = existingSec.content_json || {};
+      if (initSec.content_json) {
+        Object.entries(initSec.content_json).forEach(([k, v]) => {
+          if (existingSec.content_json[k] === undefined || existingSec.content_json[k] === null) {
+            existingSec.content_json[k] = v;
+          }
+        });
+      }
+    }
+  });
+
+  return page;
+}
+
 // Page Content (Public CMS)
 app.get('/api/pages', (_req: Request, res: Response) => {
+  INITIAL_PAGES.forEach((initPage) => {
+    let existing = (db.pages || []).find((p) => p.slug === initPage.slug);
+    if (!existing) {
+      (db.pages = db.pages || []).push(JSON.parse(JSON.stringify(initPage)));
+    } else {
+      mergeMissingPageSections(existing);
+    }
+  });
   res.json(db.pages.filter((p) => p.status === 'published'));
 });
 
 app.get('/api/pages/:slug', (req: Request, res: Response) => {
   const { slug } = req.params;
-  let page = (db.pages || []).find((p) => p.slug === slug && p.status === 'published');
-  if (!page && slug === 'about') {
-    const now = new Date().toISOString();
-    const defaultAbout: WebsitePage = {
-      id: 'page-about',
-      slug: 'about',
-      title: 'About Shital Thosar - Dot And Art',
-      status: 'published',
-      sections: [
-        {
-          id: 'sec-about-hero',
-          page_id: 'page-about',
-          section_type: 'hero',
-          section_key: 'artist_hero',
-          content_json: {
-            badge: 'Meet The Artist',
-            title: 'About Shital Thosar',
-            subtitle: 'Artist & Founder behind DotAndArt',
-          },
-          display_order: 1,
-          is_visible: true,
-          created_at: now,
-          updated_at: now,
-        },
-        {
-          id: 'sec-about-story',
-          page_id: 'page-about',
-          section_type: 'bio',
-          section_key: 'artist_story',
-          content_json: {
-            statement_heading: 'Hi, I’m Shital Thosar, the artist and creator behind DotAndArt.',
-            paragraph_1: 'What started as a love for colours, patterns and the simple joy of creating with my hands slowly grew into something much more meaningful—my own art journey.',
-          },
-          display_order: 2,
-          is_visible: true,
-          created_at: now,
-          updated_at: now,
-        },
-      ],
-      created_at: now,
-      updated_at: now,
-    };
-    if (!Array.isArray(db.pages)) db.pages = [];
-    db.pages.push(defaultAbout);
+  let page = (db.pages || []).find((p) => p.slug === slug);
+  const initPage = INITIAL_PAGES.find((p) => p.slug === slug);
+
+  if (!page && initPage) {
+    page = JSON.parse(JSON.stringify(initPage));
+    (db.pages = db.pages || []).push(page);
     saveDB(db);
-    page = defaultAbout;
+  } else if (page) {
+    mergeMissingPageSections(page);
   }
-  if (!page && slug === 'testimonials') {
-    const now = new Date().toISOString();
-    const defaultTestimonials: WebsitePage = {
-      id: 'page-testimonials',
-      slug: 'testimonials',
-      title: 'Collector Testimonials & Reviews — Dot And Art',
-      status: 'published',
-      sections: [
-        {
-          id: 'sec-test-hero',
-          page_id: 'page-testimonials',
-          section_type: 'hero',
-          section_key: 'testimonials_hero',
-          content_json: {
-            badge: 'Client & Collector Testimonials',
-            title: 'Words from Art Collectors',
-            subtitle: 'Read verified experiences from collectors, homeowners, yoga studios, and interior designers who have welcomed Shital Thosar’s authentic Dot Mandala and Lippan Art into their spaces.',
-          },
-          display_order: 1,
-          is_visible: true,
-          created_at: now,
-          updated_at: now,
-        },
-        {
-          id: 'sec-test-cta',
-          page_id: 'page-testimonials',
-          section_type: 'cta',
-          section_key: 'testimonials_cta',
-          content_json: {
-            title: 'Ready to experience the serenity in your home?',
-            description: 'Browse our handcrafted catalog or discuss a bespoke diameter and custom color palette directly with Shital Thosar.',
-            button_text: 'Chat on WhatsApp',
-          },
-          display_order: 2,
-          is_visible: true,
-          created_at: now,
-          updated_at: now,
-        },
-      ],
-      created_at: now,
-      updated_at: now,
-    };
-    if (!Array.isArray(db.pages)) db.pages = [];
-    db.pages.push(defaultTestimonials);
-    saveDB(db);
-    saveFirestorePage(defaultTestimonials).catch(() => {});
-    page = defaultTestimonials;
-  }
+
   if (!page) {
     res.status(404).json({ error: 'Page not found' });
     return;
   }
 
-  // Filter only visible sections sorted by display order
   const filtered = {
     ...page,
     sections: (page.sections || [])
@@ -2189,9 +2142,16 @@ app.delete('/api/admin/media/:id', requireAdmin, (req: Request, res: Response) =
 app.get('/api/admin/pages', requireAdmin, (_req: Request, res: Response) => {
   let updated = false;
   INITIAL_PAGES.forEach((initPage) => {
-    if (!db.pages.some((p) => p.slug === initPage.slug)) {
-      (db.pages = db.pages || []).push(initPage);
+    let existing = (db.pages || []).find((p) => p.slug === initPage.slug);
+    if (!existing) {
+      (db.pages = db.pages || []).push(JSON.parse(JSON.stringify(initPage)));
       updated = true;
+    } else {
+      const beforeLen = existing.sections ? existing.sections.length : 0;
+      mergeMissingPageSections(existing);
+      if (existing.sections && existing.sections.length > beforeLen) {
+        updated = true;
+      }
     }
   });
   if (updated) saveDB(db);

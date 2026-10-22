@@ -5604,7 +5604,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "sku": "DA-MD-Set-0001",
     "name": "Mandala Wall Hanging",
     "short_description": "Set of dot mandalas",
-    "description": "Handcrafted set of dot mandalas representing sacred geometry.",
+    "description": "Handcrafted set of dot mandalas representing harmonic geometry.",
     "category_id": "cat-mandala",
     "category_name": "Mandala Wall Hangings",
     "category_slug": "mandala-wall-hangings",
@@ -5639,7 +5639,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "sku": "DA-MD-Set-7Chakra",
     "name": "Mandala Wall Hanging",
     "short_description": "Set of dot mandalas",
-    "description": "Handcrafted set of dot mandalas representing sacred geometry.",
+    "description": "Handcrafted set of dot mandalas representing harmonic geometry.",
     "category_id": "cat-mandala",
     "category_name": "Mandala Wall Hangings",
     "category_slug": "mandala-wall-hangings",
@@ -6096,7 +6096,7 @@ export const INITIAL_CATEGORIES: any[] = [
     "id": "cat-mandala",
     "name": "Mandala Wall Hangings",
     "slug": "mandala-wall-hangings",
-    "description": "Sacred geometry dot mandala wall art"
+    "description": "Harmonic geometry dot mandala wall art"
   },
   {
     "id": "cat-lippan",
@@ -6123,7 +6123,7 @@ export const INITIAL_TESTIMONIALS: any[] = [
   {
     "id": "test-dummy-002",
     "customer_name": "Dr. Rajesh Kulkarni",
-    "content": "We commissioned a bespoke Lippan piece for our clinic reception. Shital kept us updated throughout the process and incorporated our requested clay relief patterns and mirrors. Patients constantly compliment the craftsmanship.",
+    "content": "We commissioned a custom Lippan piece for our clinic reception. Shital kept us updated throughout the process and incorporated our requested clay relief patterns and mirrors. Patients constantly compliment the craftsmanship.",
     "rating": 5,
     "location": "Pune, Maharashtra",
     "artwork_purchased": "Traditional Kutch Lippan Mud-Mirror Art",
@@ -6139,7 +6139,7 @@ export const INITIAL_TESTIMONIALS: any[] = [
     "content": "Photos simply do not do justice to the tactile depth and gloss finish. The mirrors catch the morning sun in the most magical way. You can feel the hours of patient devotion in every concentric circle.",
     "rating": 5,
     "location": "Bengaluru, Karnataka",
-    "artwork_purchased": "Teal & Gold Sacred Lotus Mandala",
+    "artwork_purchased": "Teal & Gold Harmonic Lotus Mandala",
     "image_path": "",
     "display_order": 3,
     "is_published": true,
@@ -6165,7 +6165,7 @@ export const INITIAL_TESTIMONIALS: any[] = [
     "content": "Ordered international delivery to Dubai and it arrived within 5 days safely in flawless condition. Outstanding craftsmanship, mesmerizing symmetry, and responsive communication from the artist.",
     "rating": 5,
     "location": "Dubai, UAE",
-    "artwork_purchased": "Sacred Geometry Lippan Mirror Hanging",
+    "artwork_purchased": "Harmonic Geometry Lippan Mirror Hanging",
     "image_path": "",
     "display_order": 5,
     "is_published": true,
@@ -6198,7 +6198,7 @@ export const INITIAL_FAQS: any[] = [
   {
     "id": "faq-003",
     "question": "Can I commission a custom design, color palette, or specific size?",
-    "answer": "Absolutely. Custom orders are warmly welcomed. You can choose specific sizes (from 8 inches up to 36+ inches), color schemes matching your interior palette, sacred geometry patterns, or personalized inscriptions. Reach out via our Bespoke Commissions page or WhatsApp directly with the artist to discuss your ideas.",
+    "answer": "Absolutely. Custom orders are warmly welcomed. You can choose specific sizes (from 8 inches up to 36+ inches), color schemes matching your interior palette, geometric patterns, or personalized inscriptions. Reach out via our Custom Commissions page or WhatsApp directly with the artist to discuss your ideas.",
     "category": "Custom Orders",
     "display_order": 3,
     "is_published": true,
@@ -6208,7 +6208,7 @@ export const INITIAL_FAQS: any[] = [
   {
     "id": "faq-004",
     "question": "How long does it take to create and dispatch a handcrafted artwork?",
-    "answer": "Depending on the complexity and diameter, standard catalog items ship within 1–3 business days. Bespoke commissioned pieces typically require 5 to 12 days to ensure adequate curing time for clay relief layers, precision dotting in multiple pigment layers, and complete varnish drying.",
+    "answer": "Depending on the complexity and diameter, standard catalog items ship within 1–3 business days. Custom commissioned pieces typically require 5 to 12 days to ensure adequate curing time for clay relief layers, precision dotting in multiple pigment layers, and complete varnish drying.",
     "category": "Timelines & Process",
     "display_order": 4,
     "is_published": true,
@@ -6280,7 +6280,7 @@ export const INITIAL_FAQS: any[] = [
 export const INITIAL_SETTINGS: any = {
   "business_name": "Dot And Art Studio",
   "tagline": "Authentic Handcrafted Mandala & Lippan Mirror Art",
-  "domain": "dotandart.com",
+  "domain": "www.dotandart.in",
   "whatsapp_number": "+918652162647",
   "whatsapp_display": "+91 8652162647",
   "instagram_url": "https://www.instagram.com/sathosar",
@@ -6325,25 +6325,125 @@ export const INITIAL_PAGES: any = [
     "status": "published",
     "sections": [
       {
-        "id": "sec-home-banner",
+        "id": "sec-home-slideshow",
         "page_id": "page-home",
-        "section_type": "banner",
-        "section_key": "banner",
+        "section_type": "slideshow",
+        "section_key": "slideshow",
         "content_json": {
-          "eyebrow": "MEET THE ARTIST & MASTER CRAFTSWOMAN",
-          "title": "Shital Thosar — Authentic Geometry & Handmade Mandala Art",
-          "short_description": "Crafting serene dot mandalas and traditional Lippan Kaam mirror art with deep devotion and precision.",
-          "description": "Shital Thosar is a visionary Indian artisan specializing in authentic Dot Mandalas and traditional Gujarati Lippan Kaam mirror art. Handcrafted on moisture-resistant MDF board with heavy-body acrylics, light-reflecting mirrors, and protective varnish.",
-          "size": "Custom Sizes Available (8\" to 36\"+)",
-          "price": 0,
-          "badge_text": "Handmade with Devotion",
-          "material": "MDF Board, Acrylic Colors, Mirrors, Varnish",
-          "creation_time": "8 Days",
-          "shipping_info": "Worldwide Insured Express Delivery",
-          "image_url": "/static/assets/images/Home_page_banner.jpeg",
-          "product_sku": "Home_page_banner"
+          "title": "Handcrafted Artwork Showcase",
+          "slides": [
+            {
+              "image": "/static/assets/images/Home_page_banner.jpeg",
+              "title": "AUTHENTIC HARMONY · 24\" HANDCRAFTED DOT MANDALA",
+              "subtext": "Hand-painted dot mandala art by Shital Thosar"
+            },
+            {
+              "image": "/static/assets/images/DA-MD-30-0001.jpg",
+              "title": "GRAND AURA · 30\" MONUMENTAL WALL MANDALA",
+              "subtext": "Intricate symmetry and vibrant gold pigments"
+            },
+            {
+              "image": "/static/assets/images/DA-MD-24-0001.jpg",
+              "title": "CELESTIAL RADIANCE · 24\" GEOMETRY MANDALA",
+              "subtext": "Meticulously placed acrylic dots"
+            },
+            {
+              "image": "/static/assets/images/DA-LP-36-0001.jpg",
+              "title": "HERITAGE MIRROR · 36\" GUJARATI LIPPAN KAAM",
+              "subtext": "Mud-relief craft with shimmering mirrors"
+            },
+            {
+              "image": "/static/assets/images/DA-MD-Set-7Chakra.jpg",
+              "title": "SEVEN CHAKRAS · COMPLETE MEDITATION SET",
+              "subtext": "Complete set of hand-painted chakra plaques"
+            },
+            {
+              "image": "/static/assets/images/DA-MD-24-0002.jpg",
+              "title": "LOTUS MEDITATION · 24\" SPIRITUAL DOT MANDALA",
+              "subtext": "Harmonic geometry for tranquil wall decor"
+            },
+            {
+              "image": "/static/assets/images/DA-LP-24x48-0001.jpg",
+              "title": "KUTCH TRADITION · 24\"x48\" LIPPAN MUD-MIRROR PANEL",
+              "subtext": "Reflective mirror clay relief panel"
+            },
+            {
+              "image": "/static/assets/images/DA-MD-18-0002.jpg",
+              "title": "GOLDEN SUNBURST · 18\" ENERGY MANDALA",
+              "subtext": "Vibrant energy and precise dotwork"
+            },
+            {
+              "image": "/static/assets/images/DA-MD-24-0005.jpg",
+              "title": "ROYAL AZURE · 24\" INTRICATE CERAMIC MANDALA",
+              "subtext": "Deep blue hues with gold highlights"
+            },
+            {
+              "image": "/static/assets/images/DA-MD-15-0001.jpg",
+              "title": "VIBRANT BLOSSOM · 15\" CONTEMPORARY MANDALA",
+              "subtext": "Modern color palettes with traditional techniques"
+            }
+          ]
         },
         "display_order": 1,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-home-begin-portals",
+        "page_id": "page-home",
+        "section_type": "begin_portals",
+        "section_key": "begin_portals",
+        "content_json": {
+          "title": "Where would you like to begin?",
+          "subtitle": "Select a category to explore our authentic collection or start a custom order.",
+          "portals": [
+            {
+              "title": "Artworks Collection",
+              "subtitle": "Explore handcrafted Dot Mandalas & Lippan Mirrors",
+              "image": "/static/assets/images/DA-MD-12-0001.jpg",
+              "link": "/shop"
+            },
+            {
+              "title": "Commissions Studio",
+              "subtitle": "Personalized sizes, color palettes & photo art",
+              "image": "/static/assets/images/shital-studio-working.jpg",
+              "link": "/custom-order"
+            },
+            {
+              "title": "Artist & Studio Story",
+              "subtitle": "Meet Shital Thosar and read collector reviews",
+              "image": "/static/assets/images/Home_page_banner.jpeg",
+              "link": "/about"
+            }
+          ]
+        },
+        "display_order": 2,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-home-detail-plates",
+        "page_id": "page-home",
+        "section_type": "detail_plates",
+        "section_key": "detail_plates",
+        "content_json": {
+          "title": "Details you can feel before you touch it.",
+          "subtitle": "Zoom in on the raised acrylic dots, clay mud relief, and sparkling mirrorwork.",
+          "plates": [
+            { "src": "/static/assets/images/DA-MD-12-0001.jpg", "sku": "DA-MD-12-0001", "name": "Celestial Teal Mandala", "size": "12\"" },
+            { "src": "/static/assets/images/DA-MD-18-0002.jpg", "sku": "DA-MD-18-0002", "name": "Peacock Bloom Mandala", "size": "18\"" },
+            { "src": "/static/assets/images/DA-LP-14-0001.jpg", "sku": "DA-LP-14-0001", "name": "Radiant Lippan Kaam Mirror", "size": "14\"" },
+            { "src": "/static/assets/images/DA-MD-10-0001.jpg", "sku": "DA-MD-10-0001", "name": "Harmonic Ochre Mandala", "size": "10\"" },
+            { "src": "/static/assets/images/DA-MD-15-0001.jpg", "sku": "DA-MD-15-0001", "name": "Multi-Colour Symphony", "size": "15\"" },
+            { "src": "/static/assets/images/DA-LP-18-0001.jpg", "sku": "DA-LP-18-0001", "name": "Concentric Lippan Relief", "size": "18\"" },
+            { "src": "/static/assets/images/DA-LP-Set-0001.jpg", "sku": "DA-LP-Set-0001", "name": "Kutch Diya & Mirror Inlay", "size": "Set" },
+            { "src": "/static/assets/images/DA-MD-12-0006.jpg", "sku": "DA-MD-12-0006", "name": "Blush Lotus Mandala", "size": "12\"" },
+            { "src": "/static/assets/images/DA-MD-24-0001.jpg", "sku": "DA-MD-24-0001", "name": "Royal Emerald Monumental", "size": "24\"" }
+          ]
+        },
+        "display_order": 3,
         "is_visible": true,
         "created_at": "2026-10-15T08:00:00.000Z",
         "updated_at": "2026-10-15T08:00:00.000Z"
@@ -6355,10 +6455,58 @@ export const INITIAL_PAGES: any = [
         "section_key": "featured_artworks",
         "content_json": {
           "badge": "Studio Highlights",
-          "title": "Featured Handcrafted Creations",
+          "title": "Featured Hand-Painted Pieces",
           "description": "Explore our most sought-after Dot Mandalas and Lippan Mud-Mirror Art, each piece individually hand-painted."
         },
-        "display_order": 2,
+        "display_order": 4,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-home-large-mandalas",
+        "page_id": "page-home",
+        "section_type": "large_mandalas_banner",
+        "section_key": "large_mandalas_banner",
+        "content_json": {
+          "eyebrow": "CUSTOM COMMISSIONS · LARGE SIZED MANDALAS",
+          "title": "Made to enthrall,\nup close and across the room.",
+          "paragraph": "At this scale a mandala holds you still for a moment. From the doorway it reads as one bold form. Step closer and the nuance arrives: the concentric rings, the subtle gradients, the thousands of individual dots and light-reflecting mirrors that built it.",
+          "quote": "You choose the colours and the inspiration. I create the mandala. Together, it creates magic.",
+          "author": "— Shital Thosar",
+          "image": "/static/assets/images/Art_artist.jpeg"
+        },
+        "display_order": 5,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-home-trust-boxes",
+        "page_id": "page-home",
+        "section_type": "trust_boxes",
+        "section_key": "trust_boxes",
+        "content_json": {
+          "boxes": [
+            {
+              "title": "100% Handcrafted Originals",
+              "description": "Every dot and clay relief pattern is meticulously handcrafted by artist Shital Thosar."
+            },
+            {
+              "title": "Protective Varnish Finish",
+              "description": "Sealed with professional UV & moisture resistant varnish for long-lasting vibrant artwork."
+            },
+            {
+              "title": "Safe Worldwide Delivery",
+              "description": "Multi-layered custom wooden crate & foam bubble packaging ensures 100% safe transit."
+            },
+            {
+              "title": "Direct Artist Support",
+              "description": "Direct communication with the artist for color advice, wall sizing & custom creations."
+            }
+          ]
+        },
+        "display_order": 6,
         "is_visible": true,
         "created_at": "2026-10-15T08:00:00.000Z",
         "updated_at": "2026-10-15T08:00:00.000Z"
@@ -6381,7 +6529,7 @@ export const INITIAL_PAGES: any = [
         "content_json": {
           "badge": "Handcrafted Collection",
           "title": "Artworks & Mirrors",
-          "description": "Discover serene dot mandalas, intricate sacred geometry, and traditional Kutch Lippan mud-mirror art. Ready to hang with protective varnish."
+          "description": "Discover serene dot mandalas, intricate geometric mandalas, and traditional Kutch Lippan mud-mirror art. Ready to hang with protective varnish."
         },
         "display_order": 1,
         "is_visible": true,
@@ -6393,9 +6541,9 @@ export const INITIAL_PAGES: any = [
   {
     "id": "page-custom-order",
     "slug": "custom-order",
-    "title": "Bespoke Commissions — Dot And Art",
-    "seo_title": "Bespoke Commissions & Custom Mandalas — Dot And Art",
-    "meta_description": "Commission a bespoke dot mandala or Lippan mirror artwork with your chosen color palette, diameter, and custom inscriptions.",
+    "title": "Custom Commissions — Dot And Art",
+    "seo_title": "Custom Commissions & Tailored Mandalas — Dot And Art",
+    "meta_description": "Commission a custom dot mandala or Lippan mirror artwork with your chosen color palette, diameter, and custom inscriptions.",
     "status": "published",
     "sections": [
       {
@@ -6404,11 +6552,63 @@ export const INITIAL_PAGES: any = [
         "section_type": "header",
         "section_key": "custom_header",
         "content_json": {
-          "badge": "Bespoke Artworks",
-          "title": "Commission Your Custom Piece",
-          "subtitle": "Bring your vision to life. Choose your exact diameter, custom color palette, or request a personalized photo mandala created with love by Shital Thosar."
+          "badge": "CUSTOM AUTHENTIC ART COMMISSION",
+          "title": "Commission a Custom Artwork",
+          "subtitle": "Have an exact wall size, a personal spiritual intention, or a authentic central deity/photo in mind? We craft one-of-a-kind handmade mandalas and Lippan relief mirrors to your specifications."
         },
         "display_order": 1,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-custom-pillars",
+        "page_id": "page-custom-order",
+        "section_type": "features",
+        "section_key": "custom_pillars",
+        "content_json": {
+          "size_title": "Available Sizes",
+          "size_desc": "10, 12, 15, 18, 24, or 30 inches.",
+          "color_title": "Your Color Energy",
+          "color_desc": "Match your room interior, authentic chakra, or astrological gemstone.",
+          "bindu_title": "Photo / Deity Bindu",
+          "bindu_desc": "Incorporate an embossed photo or deity glyph at the mandala nucleus."
+        },
+        "display_order": 2,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-custom-headings",
+        "page_id": "page-custom-order",
+        "section_type": "form_headings",
+        "section_key": "custom_form_headings",
+        "content_json": {
+          "step1_heading": "1. Your Contact & Delivery Information",
+          "step2_heading": "2. Dimensions, Colors & Reference",
+          "step3_heading": "3. Central Element & Pattern Requirements",
+          "cta_button_text": "SUBMIT COMMISSION VIA WHATSAPP",
+          "policy_note": "50% advance upon design approval • 50% prior to dispatch • Worldwide insured shipping"
+        },
+        "display_order": 3,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-custom-labels",
+        "page_id": "page-custom-order",
+        "section_type": "form_labels",
+        "section_key": "custom_form_labels",
+        "content_json": {
+          "central_photo_label": "Central Photo or Deity Requirement & Dimension (Optional)",
+          "central_photo_note": "Note: Reference artwork URLs are automatically included in the WhatsApp message text.",
+          "pattern_label": "Specific Pattern or Energy Requirements",
+          "instructions_label": "Additional Instructions & Preferred Color Palette",
+          "instructions_placeholder": "Specify your preferred colors / color palette, wall interior notes, target occasion, or delivery deadline..."
+        },
+        "display_order": 4,
         "is_visible": true,
         "created_at": "2026-10-15T08:00:00.000Z",
         "updated_at": "2026-10-15T08:00:00.000Z"
@@ -6424,6 +6624,21 @@ export const INITIAL_PAGES: any = [
     "status": "published",
     "sections": [
       {
+        "id": "sec-about-guarantee",
+        "page_id": "page-about",
+        "section_type": "guarantee",
+        "section_key": "artist_authenticity_guarantee",
+        "content_json": {
+          "heading": "Authenticity Guarantee: 100% Hand-Painted",
+          "tag": "ORIGINAL PHOTOGRAPHY [NO AI]",
+          "paragraph": "All artworks crafted at DotAndArt are authentic, physical hand-painted creations. Every image on this website is an original photograph of actual physical pieces, never AI-generated or digitally fabricated."
+        },
+        "display_order": 1,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
         "id": "sec-about-hero",
         "page_id": "page-about",
         "section_type": "hero",
@@ -6433,7 +6648,7 @@ export const INITIAL_PAGES: any = [
           "title": "About Shital Thosar",
           "subtitle": "Artist & Founder behind DotAndArt"
         },
-        "display_order": 1,
+        "display_order": 2,
         "is_visible": true,
         "created_at": "2026-10-15T08:00:00.000Z",
         "updated_at": "2026-10-15T08:00:00.000Z"
@@ -6453,9 +6668,115 @@ export const INITIAL_PAGES: any = [
           "closing_thanks": "Thank you for being a part of my creative journey.",
           "closing_sign": "With love,",
           "closing_name": "Shital",
-          "closing_role": "Artist & Founder, DotAndArt"
+          "closing_role": "ARTIST & FOUNDER, DOTANDART"
         },
-        "display_order": 2,
+        "display_order": 3,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-about-card",
+        "page_id": "page-about",
+        "section_type": "profile_card",
+        "section_key": "artist_card",
+        "content_json": {
+          "image": "/static/assets/images/Art_artist.jpeg",
+          "name": "Shital Thosar",
+          "role": "FOUNDER & MASTER ARTIST"
+        },
+        "display_order": 4,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-about-promise",
+        "page_id": "page-about",
+        "section_type": "features",
+        "section_key": "artist_promise",
+        "content_json": {
+          "promise_title": "The Handcrafted Promise",
+          "promise_desc": "Every artwork leaving the studio has been painted by hand with patience, precision, and devotion. We use non-toxic, lightfast acrylics, moisture-sealed MDF bases, and authentic mirrors.",
+          "point_1": "Zero mass-production or stencil printing",
+          "point_2": "Hand painted dot by dot, detail by detail",
+          "point_3": "Protective moisture-seal applied to every creation"
+        },
+        "display_order": 5,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-about-custom-card",
+        "page_id": "page-about",
+        "section_type": "callout",
+        "section_key": "artist_custom_card",
+        "content_json": {
+          "card_title": "Custom Artworks",
+          "card_desc": "Looking for custom colors, specific dimensions, or a personalized photo mandala?",
+          "button_text": "Commission Custom Piece"
+        },
+        "display_order": 6,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-about-discipline",
+        "page_id": "page-about",
+        "section_type": "philosophy",
+        "section_key": "meditative_discipline",
+        "content_json": {
+          "discipline_badge": "THE MEDITATIVE DISCIPLINE",
+          "discipline_title": "Every Dot Placed with Breath, Patience & Devotion",
+          "discipline_intro_1": "At DotAndArt, art is not merely decoration; it is a authentic meditation. Each dot mandala begins at the central Bindu — the spark of primordial consciousness — and blossoms outward in thousands of concentric, hand-dropped acrylic droplets.",
+          "discipline_intro_2": "Our Lippan Kaam honors the pastoral tribes of Kutch, where hand-kneaded organic clay relief lines cradle gleaming hand-cut mirrors that reflect light and ward off negativity. No molds, no mass production — only singular handmade devotion.",
+          "feature_1_title": "No Mechanization",
+          "feature_1_desc": "Every circle, arc, and mirror placement is created manually using traditional dotting tools.",
+          "feature_2_title": "Authentic Geometry",
+          "feature_2_desc": "Designs rooted in ancient Vedic proportions that balance energy and harmony in living spaces.",
+          "feature_3_title": "Weather Protective Seal",
+          "feature_3_desc": "Coated with professional artist varnish to safeguard colors and mirrors against dust and humidity.",
+          "feature_4_title": "Transit Safe Crate",
+          "feature_4_desc": "Custom shock-absorbent multi-ply packaging ensures your delicate artwork arrives flawless."
+        },
+        "display_order": 7,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-about-process",
+        "page_id": "page-about",
+        "section_type": "steps",
+        "section_key": "creation_process",
+        "content_json": {
+          "process_badge": "THE CREATION PROCESS",
+          "process_title": "How Each Piece Comes To Life",
+          "step_1_title": "Base Preparation",
+          "step_1_desc": "Moisture-resistant MDF discs are precision-cut, sanded, primed, and coated in rich foundational base paint.",
+          "step_2_title": "Symmetry & Geometry",
+          "step_2_desc": "Harmonious radial divisions are mapped outward from the central nucleus to guide dot placements.",
+          "step_3_title": "Dotting & Detailing",
+          "step_3_desc": "Layer after layer of graduated paint droplets or hand-set mirrors are painted with steady presence.",
+          "step_4_title": "Sealing & Finishing",
+          "step_4_desc": "Artworks cure naturally before being sealed with protective varnish and fitted with mounting hardware."
+        },
+        "display_order": 8,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-about-cta",
+        "page_id": "page-about",
+        "section_type": "cta",
+        "section_key": "bottom_cta",
+        "content_json": {
+          "button_text": "Explore Entire Product Catalog"
+        },
+        "display_order": 9,
         "is_visible": true,
         "created_at": "2026-10-15T08:00:00.000Z",
         "updated_at": "2026-10-15T08:00:00.000Z"
@@ -6476,11 +6797,35 @@ export const INITIAL_PAGES: any = [
         "section_type": "hero",
         "section_key": "testimonials_hero",
         "content_json": {
-          "badge": "Client & Collector Testimonials",
+          "badge": "CLIENT & COLLECTOR TESTIMONIALS",
           "title": "Words from Art Collectors",
-          "subtitle": "Read verified experiences from collectors, homeowners, yoga studios, and interior designers who have welcomed Shital Thosar’s authentic Dot Mandala and Lippan Art into their spaces."
+          "subtitle": "Read verified experiences from collectors, homeowners, yoga studios, and interior designers who have welcomed Shital Thosar’s authentic Dot Mandala and Lippan Art into their spaces.",
+          "button_text": "+ Leave a Review / Share Your Experience"
         },
         "display_order": 1,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-test-stats",
+        "page_id": "page-testimonials",
+        "section_type": "stats",
+        "section_key": "testimonials_stats",
+        "content_json": {
+          "stat1_value": "5.0 Star Rating",
+          "stat1_label": "Verified Customer Score",
+          "stat2_value": "100%",
+          "stat2_sub": "Handcrafted",
+          "stat2_label": "Zero mass production",
+          "stat3_value": "Worldwide",
+          "stat3_sub": "Insured Delivery",
+          "stat3_label": "Custom shockproof crating",
+          "stat4_value": "Direct",
+          "stat4_sub": "Artist Connection",
+          "stat4_label": "Pune Studio, India"
+        },
+        "display_order": 2,
         "is_visible": true,
         "created_at": "2026-10-15T08:00:00.000Z",
         "updated_at": "2026-10-15T08:00:00.000Z"
@@ -6492,10 +6837,10 @@ export const INITIAL_PAGES: any = [
         "section_key": "testimonials_cta",
         "content_json": {
           "title": "Ready to experience the serenity in your home?",
-          "description": "Browse our handcrafted catalog or discuss a bespoke diameter and custom color palette directly with Shital Thosar.",
+          "description": "Browse our handcrafted catalog or discuss a custom diameter and custom color palette directly with Shital Thosar.",
           "button_text": "Chat on WhatsApp"
         },
-        "display_order": 2,
+        "display_order": 3,
         "is_visible": true,
         "created_at": "2026-10-15T08:00:00.000Z",
         "updated_at": "2026-10-15T08:00:00.000Z"

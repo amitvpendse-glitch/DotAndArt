@@ -12,9 +12,12 @@ import {
 import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
 import { CustomMandalaInquiry } from '../types';
 import { usePageSeo } from '../lib/usePageSeo';
+import { safeFetchJson } from '../lib/safeFetch';
 
 export const CustomOrderPage: React.FC = () => {
   usePageSeo('custom-order', 'Commission a Custom Mandala or Lippan Artwork — Dot And Art');
+
+  const [pageData, setPageData] = useState<any>(null);
   const [formData, setFormData] = useState<CustomMandalaInquiry>({
     customer_name: '',
     whatsapp_number: '',
@@ -38,6 +41,66 @@ export const CustomOrderPage: React.FC = () => {
     msg: string;
     attachments: WhatsAppAttachmentItem[];
   }>({ msg: '', attachments: [] });
+
+  // Load custom-order page sections dynamically from API
+  useEffect(() => {
+    const loadPageContent = () => {
+      safeFetchJson<any>('/api/pages/custom-order', {}, null)
+        .then((data) => {
+          if (data && Array.isArray(data.sections)) {
+            setPageData(data);
+          }
+        })
+        .catch(() => {});
+    };
+
+    loadPageContent();
+    window.addEventListener('app_pages_updated', loadPageContent);
+    return () => window.removeEventListener('app_pages_updated', loadPageContent);
+  }, []);
+
+  const getSection = (key: string) => {
+    if (!pageData || !Array.isArray(pageData.sections)) return {};
+    const sec = pageData.sections.find((s: any) => s.section_key === key || s.id === key);
+    return sec?.content_json || {};
+  };
+
+  const headerSec = getSection('custom_header');
+  const pillarsSec = getSection('custom_pillars');
+  const headingsSec = getSection('custom_form_headings');
+  const labelsSec = getSection('custom_form_labels');
+
+  const headerBadge = headerSec.badge || 'CUSTOM AUTHENTIC ART COMMISSION';
+  const headerTitle = headerSec.title || 'Commission a Custom Artwork';
+  const headerSubtitle =
+    headerSec.subtitle ||
+    'Have an exact wall size, a personal spiritual intention, or a authentic central deity/photo in mind? We craft one-of-a-kind handmade mandalas and Lippan relief mirrors to your specifications.';
+
+  const sizeTitle = pillarsSec.size_title || 'Available Sizes';
+  const sizeDesc = pillarsSec.size_desc || '10, 12, 15, 18, 24, or 30 inches.';
+  const colorTitle = pillarsSec.color_title || 'Your Color Energy';
+  const colorDesc = pillarsSec.color_desc || 'Match your room interior, authentic chakra, or astrological gemstone.';
+  const binduTitle = pillarsSec.bindu_title || 'Photo / Deity Bindu';
+  const binduDesc = pillarsSec.bindu_desc || 'Incorporate an embossed photo or deity glyph at the mandala nucleus.';
+
+  const step1Heading = headingsSec.step1_heading || '1. Your Contact & Delivery Information';
+  const step2Heading = headingsSec.step2_heading || '2. Dimensions, Colors & Reference';
+  const step3Heading = headingsSec.step3_heading || '3. Central Element & Pattern Requirements';
+  const ctaButtonText = headingsSec.cta_button_text || 'SUBMIT COMMISSION VIA WHATSAPP';
+  const policyNote =
+    headingsSec.policy_note ||
+    '50% advance upon design approval • 50% prior to dispatch • Worldwide insured shipping';
+
+  const centralPhotoLabel =
+    labelsSec.central_photo_label || 'Central Photo or Deity Requirement & Dimension (Optional)';
+  const centralPhotoNote =
+    labelsSec.central_photo_note ||
+    'Note: Reference artwork URLs are automatically included in the WhatsApp message text.';
+  const patternLabel = labelsSec.pattern_label || 'Specific Pattern or Energy Requirements';
+  const instructionsLabel = labelsSec.instructions_label || 'Additional Instructions & Preferred Color Palette';
+  const instructionsPlaceholder =
+    labelsSec.instructions_placeholder ||
+    'Specify your preferred colors / color palette, wall interior notes, target occasion, or delivery deadline...';
 
   const sizeOptions = [
     '10 inches',
@@ -89,37 +152,6 @@ export const CustomOrderPage: React.FC = () => {
     }
   }, [formData.reference_product_code, referenceImages.length]);
 
-  const handleOpenCopyModal = () => {
-    const attachments = getAttachments();
-    if (attachments.length > 0) {
-      const msg = formatCustomMandalaEnquiry(formData, false, attachments);
-      setPreparedEnquiry({ msg, attachments });
-      setAttachmentModalOpen(true);
-    }
-  };
-
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    const newItems: WhatsAppAttachmentItem[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const f = files[i];
-      const objectUrl = URL.createObjectURL(f);
-      newItems.push({
-        url: objectUrl,
-        filename: f.name || `reference_${Date.now()}_${i + 1}.jpg`,
-        title: f.name,
-      });
-    }
-    setReferenceImages((prev) => [...prev, ...newItems]);
-    setHasCopiedImage(false);
-  };
-
-  const handleRemovePhoto = (index: number) => {
-    setReferenceImages((prev) => prev.filter((_, i) => i !== index));
-    setHasCopiedImage(false);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -154,8 +186,6 @@ export const CustomOrderPage: React.FC = () => {
       body: JSON.stringify(formData),
     }).catch(() => {});
 
-    // For single image (isSingleImage=true): clean text without URLs
-    // For >1 images (isMultiImage=true): insert image URLs and names in text string
     const message = formatCustomMandalaEnquiry(formData, isMultiImage, attachments);
     dispatchDirectWhatsAppOrder(message, attachments);
     setSubmitted(true);
@@ -170,13 +200,13 @@ export const CustomOrderPage: React.FC = () => {
       <div className="text-center space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-theme-accent/10 text-theme-accent text-xs font-semibold uppercase tracking-wider border border-theme-glass">
           <Palette className="w-3.5 h-3.5 text-theme-accent" />
-          <span>Custom Authentic Art Commission</span>
+          <span>{headerBadge}</span>
         </div>
         <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-theme-primary">
-          Commission a Custom Artwork
+          {headerTitle}
         </h1>
         <p className="text-sm sm:text-base text-theme-muted max-w-2xl mx-auto font-light leading-relaxed">
-          Have an exact wall size, a personal spiritual intention, or a authentic central deity/photo in mind? We craft one-of-a-kind handmade mandalas and Lippan relief mirrors to your specifications.
+          {headerSubtitle}
         </p>
       </div>
 
@@ -187,8 +217,8 @@ export const CustomOrderPage: React.FC = () => {
             <Ruler className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="font-semibold text-theme-primary">Available Sizes</h4>
-            <p className="text-theme-muted text-[11px]">10, 12, 15, 18, 24, or 30 inches.</p>
+            <h4 className="font-semibold text-theme-primary">{sizeTitle}</h4>
+            <p className="text-theme-muted text-[11px]">{sizeDesc}</p>
           </div>
         </div>
 
@@ -197,8 +227,8 @@ export const CustomOrderPage: React.FC = () => {
             <Palette className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="font-semibold text-theme-primary">Your Color Energy</h4>
-            <p className="text-theme-muted text-[11px]">Match your room interior, authentic chakra, or astrological gemstone.</p>
+            <h4 className="font-semibold text-theme-primary">{colorTitle}</h4>
+            <p className="text-theme-muted text-[11px]">{colorDesc}</p>
           </div>
         </div>
 
@@ -207,8 +237,8 @@ export const CustomOrderPage: React.FC = () => {
             <Camera className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="font-semibold text-theme-primary">Photo / Deity Bindu</h4>
-            <p className="text-theme-muted text-[11px]">Incorporate an embossed photo or deity glyph at the mandala nucleus.</p>
+            <h4 className="font-semibold text-theme-primary">{binduTitle}</h4>
+            <p className="text-theme-muted text-[11px]">{binduDesc}</p>
           </div>
         </div>
       </div>
@@ -253,7 +283,7 @@ export const CustomOrderPage: React.FC = () => {
           {/* Section 1: Customer Contact */}
           <div className="space-y-4 pb-6 border-b border-theme-glass">
             <h3 className="font-serif text-lg font-semibold text-theme-primary">
-              1. Your Contact & Delivery Information
+              {step1Heading}
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -319,7 +349,7 @@ export const CustomOrderPage: React.FC = () => {
           {/* Section 2: Artwork Specifications */}
           <div className="space-y-4 pb-6 border-b border-theme-glass">
             <h3 className="font-serif text-lg font-semibold text-theme-primary">
-              2. Dimensions, Colors & Reference
+              {step2Heading}
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -358,12 +388,12 @@ export const CustomOrderPage: React.FC = () => {
           {/* Section 3: Custom Details */}
           <div className="space-y-4">
             <h3 className="font-serif text-lg font-semibold text-theme-primary">
-              3. Central Element & Pattern Requirements
+              {step3Heading}
             </h3>
 
             <div>
               <label className="block text-xs font-semibold text-theme-primary mb-1">
-                Central Photo or Deity Requirement & Dimension (Optional)
+                {centralPhotoLabel}
               </label>
               <input
                 type="text"
@@ -373,13 +403,13 @@ export const CustomOrderPage: React.FC = () => {
                 className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary"
               />
               <span className="text-[10px] text-theme-muted mt-1 block">
-                Note: Reference artwork URLs are automatically included in the WhatsApp message text.
+                {centralPhotoNote}
               </span>
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-theme-primary mb-1">
-                Specific Pattern or Energy Requirements
+                {patternLabel}
               </label>
               <input
                 type="text"
@@ -392,13 +422,13 @@ export const CustomOrderPage: React.FC = () => {
 
             <div>
               <label className="block text-xs font-semibold text-theme-primary mb-1">
-                Additional Instructions & Preferred Color Palette
+                {instructionsLabel}
               </label>
               <textarea
                 rows={3}
                 value={formData.additional_instructions}
                 onChange={(e) => setFormData({ ...formData, additional_instructions: e.target.value })}
-                placeholder="Specify your preferred colors / color palette, wall interior notes, target occasion, or delivery deadline..."
+                placeholder={instructionsPlaceholder}
                 className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary resize-none"
               />
             </div>
@@ -452,15 +482,15 @@ export const CustomOrderPage: React.FC = () => {
                   <MessageCircle className="w-4 h-4 fill-white" />
                   <span>
                     {isSingleImage
-                      ? 'Submit Commission & Launch WhatsApp (Image Ready)'
-                      : 'Submit Commission via WhatsApp'}
+                      ? `${ctaButtonText} (IMAGE READY)`
+                      : ctaButtonText}
                   </span>
                 </>
               )}
             </button>
 
             <p className="text-[11px] text-theme-muted text-center mt-2.5">
-              50% advance upon design approval • 50% prior to dispatch • Worldwide insured shipping
+              {policyNote}
             </p>
           </div>
         </form>

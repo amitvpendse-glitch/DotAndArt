@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Mail, Instagram, Facebook, Send, CheckCircle2, MapPin } from 'lucide-react';
+import { MessageCircle, Mail, Instagram, Facebook, Send, CheckCircle2, MapPin, Globe } from 'lucide-react';
 import { WebsiteSettings } from '../types';
 import { createWhatsAppUrl, DISPLAY_WHATSAPP_NUMBER, getDisplayWhatsAppNumber, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
@@ -44,16 +44,13 @@ export const ContactPage: React.FC = () => {
     headerSec?.content_json?.description ||
     'We welcome custom commission enquiries, bulk orders, and interior design collaborations.';
 
-  const brandSec = cmsPage?.sections?.find(
-    (s: any) => s.section_type === 'brand_identity' || s.section_key === 'brand_identity'
-  );
-
-  const instagramUrl = 'https://www.instagram.com/sathosar';
-  const facebookUrl = 'https://www.facebook.com/people/Dot-And-Art/61570301135652/?rdid=pVSv1qBdjZtMtY9r&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1LuTQvNiMU%2F';
+  const instagramUrl = settings?.instagram_url || 'https://www.instagram.com/sathosar';
+  const facebookUrl = settings?.facebook_url || 'https://www.facebook.com/people/Dot-And-Art/61570301135652/?rdid=pVSv1qBdjZtMtY9r&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1LuTQvNiMU%2F';
   const instagramHandle = '@sathosar';
-  const emailAddress = 'shitalthosar@yahoo.com';
-  const studioAddress = 'Pune, India';
-  const displayPhone = '+91 8652162647';
+  const emailAddress = settings?.email || 'shitalthosar@yahoo.com';
+  const studioAddress = settings?.studio_address || 'Pune, India';
+  const displayPhone = settings?.whatsapp_display || '+91 8652162647';
+  const domainName = settings?.domain || 'www.dotandart.in';
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,11 +106,28 @@ export const ContactPage: React.FC = () => {
 
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
+                  <Globe className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="font-bold text-theme-primary block">Official Website Domain</span>
+                  <a
+                    href={`https://${domainName.replace(/^https?:\/\//, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline text-theme-accent font-semibold mt-0.5 block"
+                  >
+                    {domainName}
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
                   <span className="font-bold text-theme-primary block">Email Inquiries</span>
-                  <a href={`mailto:${emailAddress}`} className="hover:underline text-theme-accent">
+                  <a href={`mailto:${emailAddress}`} className="hover:underline text-theme-accent font-semibold">
                     {emailAddress}
                   </a>
                 </div>

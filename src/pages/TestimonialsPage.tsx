@@ -25,7 +25,47 @@ interface TestimonialsPageProps {
 }
 
 export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }) => {
-  usePageSeo('testimonials', 'Collector Testimonials & Reviews — Dot And Art');
+  const { page: cmsPage } = usePageSeo('testimonials', 'Collector Testimonials & Reviews — Dot And Art');
+
+  const heroSec = cmsPage?.sections?.find(
+    (s: any) => s.section_type === 'hero' || s.section_key === 'testimonials_hero'
+  )?.content_json || {};
+
+  const statsSec = cmsPage?.sections?.find(
+    (s: any) => s.section_type === 'stats' || s.section_key === 'testimonials_stats'
+  )?.content_json || {};
+
+  const ctaSec = cmsPage?.sections?.find(
+    (s: any) => s.section_type === 'cta' || s.section_key === 'testimonials_cta'
+  )?.content_json || {};
+
+  const badge = heroSec.badge || 'CLIENT & COLLECTOR TESTIMONIALS';
+  const title = heroSec.title || 'Words from Art Collectors';
+  const subtitle =
+    heroSec.subtitle ||
+    'Read verified experiences from collectors, homeowners, yoga studios, and interior designers who have welcomed Shital Thosar’s authentic Dot Mandala and Lippan Art into their spaces.';
+  const reviewBtnText = heroSec.button_text || 'Leave a Review / Share Your Experience';
+
+  const stat1Val = statsSec.stat1_value || '5.0 Star Rating';
+  const stat1Lbl = statsSec.stat1_label || 'Verified Customer Score';
+
+  const stat2Val = statsSec.stat2_value || '100%';
+  const stat2Sub = statsSec.stat2_sub || 'Handcrafted';
+  const stat2Lbl = statsSec.stat2_label || 'Zero mass production';
+
+  const stat3Val = statsSec.stat3_value || 'Worldwide';
+  const stat3Sub = statsSec.stat3_sub || 'Insured Delivery';
+  const stat3Lbl = statsSec.stat3_label || 'Custom shockproof crating';
+
+  const stat4Val = statsSec.stat4_value || 'Direct';
+  const stat4Sub = statsSec.stat4_sub || 'Artist Connection';
+  const stat4Lbl = statsSec.stat4_label || 'Pune Studio, India';
+
+  const ctaTitle = ctaSec.title || 'Ready to experience the serenity in your home?';
+  const ctaDesc =
+    ctaSec.description ||
+    'Browse our handcrafted catalog or discuss a custom diameter and custom color palette directly with Shital Thosar.';
+  const ctaBtnText = ctaSec.button_text || 'Chat on WhatsApp';
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>(INITIAL_TESTIMONIALS);
   const [loading, setLoading] = useState<boolean>(true);
@@ -256,15 +296,15 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-theme-accent/10 border border-theme-accent/25 text-theme-accent text-xs font-bold uppercase tracking-widest">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Client & Collector Testimonials</span>
+          <span>{badge}</span>
         </div>
 
         <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-theme-primary leading-tight">
-          Words from Art Collectors
+          {title}
         </h1>
 
         <p className="text-sm sm:text-base text-theme-muted font-light leading-relaxed max-w-2xl mx-auto">
-          Read verified experiences from collectors, homeowners, yoga studios, and interior designers who have welcomed Shital Thosar’s authentic Dot Mandala and Lippan Art into their spaces.
+          {subtitle}
         </p>
 
         {/* Action Buttons for public & admin */}
@@ -274,7 +314,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
             className="px-6 py-3 rounded-full bg-theme-accent hover:opacity-90 text-white text-xs sm:text-sm font-semibold tracking-wide shadow-md transition-all flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
           >
             <Plus className="w-4 h-4" />
-            <span>Leave a Review / Share Your Experience</span>
+            <span>{reviewBtnText}</span>
           </button>
 
           {adminToken && (
@@ -321,26 +361,26 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
               <Star key={i} className="w-4 h-4 fill-amber-400" />
             ))}
           </div>
-          <p className="text-xs font-bold text-theme-primary">5.0 Star Rating</p>
-          <p className="text-[10px] text-theme-muted">Verified Customer Score</p>
+          <p className="text-xs font-bold text-theme-primary">{stat1Val}</p>
+          <p className="text-[10px] text-theme-muted">{stat1Lbl}</p>
         </div>
 
         <div className="text-center space-y-1 border-l border-theme-glass">
-          <p className="font-serif text-lg font-bold text-theme-primary">100%</p>
-          <p className="text-xs font-bold text-theme-primary">Handcrafted</p>
-          <p className="text-[10px] text-theme-muted">Zero mass production</p>
+          <p className="font-serif text-lg font-bold text-theme-primary">{stat2Val}</p>
+          <p className="text-xs font-bold text-theme-primary">{stat2Sub}</p>
+          <p className="text-[10px] text-theme-muted">{stat2Lbl}</p>
         </div>
 
         <div className="text-center space-y-1 border-l border-theme-glass">
-          <p className="font-serif text-lg font-bold text-theme-primary">Worldwide</p>
-          <p className="text-xs font-bold text-theme-primary">Insured Delivery</p>
-          <p className="text-[10px] text-theme-muted">Custom shockproof crating</p>
+          <p className="font-serif text-lg font-bold text-theme-primary">{stat3Val}</p>
+          <p className="text-xs font-bold text-theme-primary">{stat3Sub}</p>
+          <p className="text-[10px] text-theme-muted">{stat3Lbl}</p>
         </div>
 
         <div className="text-center space-y-1 border-l border-theme-glass">
-          <p className="font-serif text-lg font-bold text-theme-primary">Direct</p>
-          <p className="text-xs font-bold text-theme-primary">Artist Connection</p>
-          <p className="text-[10px] text-theme-muted">Pune Studio, India</p>
+          <p className="font-serif text-lg font-bold text-theme-primary">{stat4Val}</p>
+          <p className="text-xs font-bold text-theme-primary">{stat4Sub}</p>
+          <p className="text-[10px] text-theme-muted">{stat4Lbl}</p>
         </div>
       </div>
 
@@ -427,10 +467,10 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
       {/* Bottom Help / Enquiry Banner */}
       <div className="p-8 rounded-3xl glass-panel border border-theme-glass text-center space-y-4 max-w-2xl mx-auto">
         <h3 className="font-serif text-2xl font-semibold text-theme-primary">
-          Ready to experience the serenity in your home?
+          {ctaTitle}
         </h3>
         <p className="text-xs sm:text-sm text-theme-muted">
-          Browse our handcrafted catalog or discuss a bespoke diameter and custom color palette directly with Shital Thosar.
+          {ctaDesc}
         </p>
         <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
           <button
@@ -442,7 +482,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
             className="px-6 py-3 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-xs cursor-pointer"
           >
             <MessageCircle className="w-4 h-4 fill-white" />
-            <span>Chat on WhatsApp ({getDisplayWhatsAppNumber()})</span>
+            <span>{ctaBtnText} ({getDisplayWhatsAppNumber()})</span>
           </button>
           {onNavigate && (
             <button

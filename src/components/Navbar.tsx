@@ -178,7 +178,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
                       className="w-full text-left px-4 py-2.5 text-xs text-theme-primary hover:bg-[#C85A32]/10 hover:text-[#C85A32] transition-colors flex items-center justify-between cursor-pointer"
                     >
                       <span>Mandala Wall Hangings</span>
-                      <span className="text-[10px] text-theme-muted">Sacred Dots</span>
+                      <span className="text-[10px] text-theme-muted">Harmonic Dots</span>
                     </button>
                     <button
                       onClick={() => handleLinkClick('/shop?category=lippan-wall-hangings')}
@@ -406,7 +406,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
                 currentPath === '/custom-order' ? 'bg-[#C85A32]/15 text-[#C85A32]' : 'text-theme-primary hover:bg-theme-glass'
               }`}
             >
-              Bespoke Commissions
+              Custom Commissions
             </button>
 
             {/* 4. About & Studio Collapsible Accordion */}
