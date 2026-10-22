@@ -6909,6 +6909,42 @@ export const INITIAL_PAGES: any = [
         "is_visible": true,
         "created_at": "2026-10-15T08:00:00.000Z",
         "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-contact-info",
+        "page_id": "page-contact",
+        "section_type": "info_cards",
+        "section_key": "studio_info",
+        "content_json": {
+          "info_title": "Studio Information",
+          "whatsapp_display": "+91 8652162647",
+          "whatsapp_note": "Direct messaging & custom order assistance",
+          "domain_name": "www.dotandart.in",
+          "email_address": "shitalthosar@yahoo.com",
+          "studio_address": "Pune, India",
+          "instagram_handle": "@sathosar",
+          "instagram_url": "https://www.instagram.com/sathosar",
+          "facebook_url": "https://www.facebook.com/people/Dot-And-Art/61570301135652/?rdid=pVSv1qBdjZtMtY9r&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1LuTQvNiMU%2F"
+        },
+        "display_order": 2,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
+      },
+      {
+        "id": "sec-contact-form",
+        "page_id": "page-contact",
+        "section_type": "form_header",
+        "section_key": "contact_form",
+        "content_json": {
+          "form_title": "Send a Direct Message",
+          "form_subtitle": "Fill in your inquiry below to open an immediate WhatsApp conversation with the artist.",
+          "submit_button_text": "Submit"
+        },
+        "display_order": 3,
+        "is_visible": true,
+        "created_at": "2026-10-15T08:00:00.000Z",
+        "updated_at": "2026-10-15T08:00:00.000Z"
       }
     ]
   }

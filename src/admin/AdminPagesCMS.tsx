@@ -91,6 +91,28 @@ const sortSectionKeys = (secKey: string, entries: [string, any][]): [string, any
     const preferred = ['title', 'description', 'button_text'];
     return [...entries].sort(([a], [b]) => preferred.indexOf(a) - preferred.indexOf(b));
   }
+  if (secKey === 'contact_header') {
+    const preferred = ['badge', 'title', 'description'];
+    return [...entries].sort(([a], [b]) => preferred.indexOf(a) - preferred.indexOf(b));
+  }
+  if (secKey === 'studio_info') {
+    const preferred = [
+      'info_title',
+      'whatsapp_display',
+      'whatsapp_note',
+      'domain_name',
+      'email_address',
+      'studio_address',
+      'instagram_handle',
+      'instagram_url',
+      'facebook_url',
+    ];
+    return [...entries].sort(([a], [b]) => preferred.indexOf(a) - preferred.indexOf(b));
+  }
+  if (secKey === 'contact_form') {
+    const preferred = ['form_title', 'form_subtitle', 'submit_button_text'];
+    return [...entries].sort(([a], [b]) => preferred.indexOf(a) - preferred.indexOf(b));
+  }
 
   return [...entries].sort(([a], [b]) => {
     const matchA = a.match(/\d+/);

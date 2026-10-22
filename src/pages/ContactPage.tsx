@@ -38,24 +38,36 @@ export const ContactPage: React.FC = () => {
   const headerSec = cmsPage?.sections?.find(
     (s: any) => s.section_type === 'header' || s.section_key === 'contact_header'
   );
-  const headerBadge = headerSec?.content_json?.badge || 'Get in Touch';
-  const headerTitle = headerSec?.content_json?.title || 'Contact Dot And Art Studio';
+  const headerBadge = headerSec?.content_json?.badge || 'Studio Connection';
+  const headerTitle = headerSec?.content_json?.title || 'Get in Touch with the Artist';
   const headerDesc =
     headerSec?.content_json?.description ||
-    'We welcome custom commission enquiries, bulk orders, and interior design collaborations.';
+    'Have a question about a artwork or want to discuss a custom commission? Reach out directly via WhatsApp, phone, email, or visit our Pune studio.';
 
-  const instagramUrl = settings?.instagram_url || 'https://www.instagram.com/sathosar';
-  const facebookUrl = settings?.facebook_url || 'https://www.facebook.com/people/Dot-And-Art/61570301135652/?rdid=pVSv1qBdjZtMtY9r&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1LuTQvNiMU%2F';
-  const instagramHandle = '@sathosar';
-  const emailAddress = settings?.email || 'shitalthosar@yahoo.com';
-  const studioAddress = settings?.studio_address || 'Pune, India';
-  const displayPhone = settings?.whatsapp_display || '+91 8652162647';
-  const domainName = settings?.domain || 'www.dotandart.in';
+  const infoSec = cmsPage?.sections?.find(
+    (s: any) => s.section_type === 'info_cards' || s.section_key === 'studio_info'
+  );
+  const infoTitle = infoSec?.content_json?.info_title || 'Studio Information';
+  const displayPhone = infoSec?.content_json?.whatsapp_display || settings?.whatsapp_display || '+91 8652162647';
+  const whatsappNote = infoSec?.content_json?.whatsapp_note || 'Direct messaging & custom order assistance';
+  const domainName = infoSec?.content_json?.domain_name || settings?.domain || 'www.dotandart.in';
+  const emailAddress = infoSec?.content_json?.email_address || settings?.email || 'shitalthosar@yahoo.com';
+  const studioAddress = infoSec?.content_json?.studio_address || settings?.studio_address || 'Pune, India';
+  const instagramHandle = infoSec?.content_json?.instagram_handle || '@sathosar';
+  const instagramUrl = infoSec?.content_json?.instagram_url || settings?.instagram_url || 'https://www.instagram.com/sathosar';
+  const facebookUrl = infoSec?.content_json?.facebook_url || settings?.facebook_url || 'https://www.facebook.com/people/Dot-And-Art/61570301135652/?rdid=pVSv1qBdjZtMtY9r&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1LuTQvNiMU%2F';
+
+  const formSec = cmsPage?.sections?.find(
+    (s: any) => s.section_type === 'form_header' || s.section_key === 'contact_form'
+  );
+  const formTitle = formSec?.content_json?.form_title || 'Send a Direct Message';
+  const formSubtitle = formSec?.content_json?.form_subtitle || 'Fill in your inquiry below to open an immediate WhatsApp conversation with the artist.';
+  const submitBtnText = formSec?.content_json?.submit_button_text || 'Submit';
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     const formatted = `Hello Dot And Art,\n\nI am contacting you from the website:\n\nName: ${name}\nPhone: ${phone}\nMessage: ${message}`;
-    const url = createWhatsAppUrl(formatted, '918652162647');
+    const url = createWhatsAppUrl(formatted, displayPhone.replace(/[^0-9]/g, ''));
     openExternalLink(url);
     setSent(true);
   };
@@ -63,7 +75,7 @@ export const ContactPage: React.FC = () => {
   const handleDirectWhatsApp = () => {
     const url = createWhatsAppUrl(
       'Hello Dot And Art! I would like to connect regarding your artwork.',
-      '918652162647'
+      displayPhone.replace(/[^0-9]/g, '')
     );
     openExternalLink(url);
   };
@@ -87,7 +99,7 @@ export const ContactPage: React.FC = () => {
         <div className="lg:col-span-5 space-y-6">
           <div className="p-6 rounded-3xl glass-card border border-theme-glass craft-shadow space-y-5">
             <h3 className="font-serif text-xl font-semibold text-theme-primary">
-              Studio Information
+              {infoTitle}
             </h3>
 
             <div className="space-y-4 text-xs text-theme-primary">
@@ -100,7 +112,7 @@ export const ContactPage: React.FC = () => {
                   <button onClick={handleDirectWhatsApp} className="text-[#128C7E] hover:underline font-semibold mt-0.5 cursor-pointer">
                     {displayPhone}
                   </button>
-                  <p className="text-[11px] text-theme-muted">Direct messaging & custom order assistance</p>
+                  <p className="text-[11px] text-theme-muted">{whatsappNote}</p>
                 </div>
               </div>
 
@@ -179,10 +191,10 @@ export const ContactPage: React.FC = () => {
             className="p-8 sm:p-10 rounded-3xl glass-card border border-theme-glass craft-shadow space-y-4"
           >
             <h3 className="font-serif text-2xl font-semibold text-theme-primary">
-              Send a Direct Message
+              {formTitle}
             </h3>
             <p className="text-xs text-theme-muted leading-relaxed">
-              Fill in your inquiry below to open an immediate WhatsApp conversation with the artist.
+              {formSubtitle}
             </p>
 
             {sent && (
@@ -233,7 +245,7 @@ export const ContactPage: React.FC = () => {
               className="w-full py-3.5 px-6 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer"
             >
               <MessageCircle className="w-4 h-4 fill-white" />
-              <span>Submit</span>
+              <span>{submitBtnText}</span>
             </button>
           </form>
         </div>
