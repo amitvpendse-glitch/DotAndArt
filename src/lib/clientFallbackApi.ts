@@ -6,7 +6,7 @@ import {
   INITIAL_SETTINGS,
   INITIAL_PAGES,
 } from '../data/initialCatalog';
-import { Product, Category, WebsiteSettings, WebsitePage, Testimonial, FAQ } from '../types';
+import { Product, Category, WebsiteSettings, WebsitePage, PageSection, Testimonial, FAQ } from '../types';
 import {
   getFirestoreProducts,
   saveFirestoreProduct,
@@ -135,12 +135,66 @@ function getStoredSettings(): WebsiteSettings {
   return INITIAL_SETTINGS;
 }
 
+function mergeMissingPageSectionsClient(page: WebsitePage): WebsitePage {
+  const initP = INITIAL_PAGES.find((ip: any) => ip.slug === page.slug);
+  if (!initP || !initP.sections) return page;
+
+  page.sections = page.sections || [];
+  const existingMap = new Map<string, PageSection>();
+  page.sections.forEach((s) => {
+    if (s.is_visible === undefined) s.is_visible = true;
+    existingMap.set(s.section_key || s.id, s);
+  });
+
+  initP.sections.forEach((initSec: PageSection) => {
+    const secKey = initSec.section_key || initSec.id;
+    const existingSec = existingMap.get(secKey);
+    if (!existingSec) {
+      const cloned = JSON.parse(JSON.stringify(initSec));
+      cloned.is_visible = cloned.is_visible ?? true;
+      page.sections.push(cloned);
+    } else {
+      existingSec.is_visible = existingSec.is_visible ?? true;
+      existingSec.content_json = existingSec.content_json || {};
+      if (initSec.content_json) {
+        Object.entries(initSec.content_json).forEach(([k, v]) => {
+          if (existingSec.content_json[k] === undefined || existingSec.content_json[k] === null) {
+            existingSec.content_json[k] = v;
+          }
+        });
+      }
+    }
+  });
+
+  return page;
+}
+
 function getStoredPages(): WebsitePage[] {
+  let list: WebsitePage[] = [];
   try {
     const custom = localStorage.getItem('app_custom_pages');
-    if (custom) return JSON.parse(custom);
+    if (custom) {
+      const parsed = JSON.parse(custom);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        list = parsed;
+      }
+    }
   } catch {}
-  return INITIAL_PAGES;
+
+  if (list.length === 0) {
+    list = JSON.parse(JSON.stringify(INITIAL_PAGES));
+  } else {
+    INITIAL_PAGES.forEach((initP) => {
+      const existing = list.find((p) => p.slug === initP.slug);
+      if (!existing) {
+        list.push(JSON.parse(JSON.stringify(initP)));
+      } else {
+        mergeMissingPageSectionsClient(existing);
+      }
+    });
+  }
+
+  return list;
 }
 
 export async function handleClientFallbackApi<T = any>(
@@ -743,13 +797,26 @@ export async function handleClientFallbackApi<T = any>(
     return jsonRes(getStoredPages());
   }
   if (pathname.startsWith('/api/pages/') && method === 'GET') {
-    const slug = pathname.replace('/api/pages/', '');
+    const slug = pathname.replace('/api/pages/', '').split('?')[0];
     const pages = getStoredPages();
-    const page = (pages || []).find((p) => p.slug === slug);
-    return jsonRes(page || null);
+    let page = (pages || []).find((p) => p.slug === slug);
+    if (!page) {
+      const initPage = INITIAL_PAGES.find((p) => p.slug === slug);
+      if (initPage) page = JSON.parse(JSON.stringify(initPage));
+    }
+    if (page) {
+      mergeMissingPageSectionsClient(page);
+      return jsonRes({
+        ...page,
+        sections: (page.sections || [])
+          .filter((s) => s.is_visible !== false)
+          .sort((a, b) => (a.display_order || 0) - (b.display_order || 0)),
+      });
+    }
+    return jsonRes(null);
   }
   if (pathname.startsWith('/api/admin/pages/') && method === 'PUT') {
-    const slug = pathname.replace('/api/admin/pages/', '');
+    const slug = pathname.replace('/api/admin/pages/', '').split('?')[0];
     const pages = getStoredPages();
     let index = pages.findIndex((p) => p.slug === slug);
     try {
@@ -775,7 +842,31 @@ export async function handleClientFallbackApi<T = any>(
       if (meta_description !== undefined) pages[index].meta_description = meta_description;
       if (og_image_path !== undefined) pages[index].og_image_path = og_image_path;
       if (status) pages[index].status = status;
-      if (Array.isArray(sections)) pages[index].sections = sections;
+      if (Array.isArray(sections)) {
+        pages[index].sections = sections;
+        if (slug === 'contact') {
+          const infoSec = (sections || []).find(
+            (s: any) => s.section_type === 'info_cards' || s.section_key === 'studio_info'
+          );
+          if (infoSec?.content_json) {
+            const settings = getStoredSettings();
+            if (infoSec.content_json.whatsapp_display) {
+              settings.whatsapp_display = infoSec.content_json.whatsapp_display;
+              settings.whatsapp_number = infoSec.content_json.whatsapp_display.replace(/[^0-9+]/g, '');
+            }
+            if (infoSec.content_json.email_address) settings.email = infoSec.content_json.email_address;
+            if (infoSec.content_json.studio_address) settings.studio_address = infoSec.content_json.studio_address;
+            if (infoSec.content_json.domain_name) settings.domain = infoSec.content_json.domain_name;
+            if (infoSec.content_json.instagram_url) settings.instagram_url = infoSec.content_json.instagram_url;
+            if (infoSec.content_json.facebook_url) settings.facebook_url = infoSec.content_json.facebook_url;
+
+            try {
+              localStorage.setItem('app_custom_settings', JSON.stringify(settings));
+            } catch {}
+            saveFirestoreSettings(settings).catch((e) => console.warn('[clientFallbackApi] Firestore save settings error', e));
+          }
+        }
+      }
       pages[index].updated_at = new Date().toISOString();
       try {
         localStorage.setItem('app_custom_pages', JSON.stringify(pages));
