@@ -20,6 +20,8 @@ import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 import { INITIAL_TESTIMONIALS } from '../data/initialCatalog';
 import { saveFirestoreTestimonial } from '../lib/firestoreCatalog';
+import { onSnapshot, collection } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 interface TestimonialsPageProps {
   onNavigate?: (path: string) => void;
@@ -106,25 +108,24 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
     if (token) setAdminToken(token);
   }, []);
 
-  const fetchTestimonials = () => {
-    setLoading(true);
-    safeFetchJson<Testimonial[]>('/api/testimonials', undefined, [])
-      .then((data) => {
-        const list = Array.isArray(data) ? data : ((data as any)?.testimonials || []);
-        if (Array.isArray(list) && list.length > 0) {
-          setTestimonials(list);
-        } else {
-          setTestimonials(INITIAL_TESTIMONIALS);
-        }
-      })
-      .catch(() => {
-        setTestimonials(INITIAL_TESTIMONIALS);
-      })
-      .finally(() => setLoading(false));
-  };
 
+  // Fetch testimonials via real-time listener
   useEffect(() => {
-    fetchTestimonials();
+    setLoading(true);
+    const colRef = collection(db, 'testimonials');
+    const unsubscribe = onSnapshot(colRef, (snapshot) => {
+      const list: Testimonial[] = [];
+      snapshot.forEach((doc) => doc.exists() && list.push(doc.data() as Testimonial));
+      
+      // Sort: newest first or as needed
+      list.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      
+      console.log('Testimonials from Firestore:', list);
+      setTestimonials(list.length > 0 ? list : INITIAL_TESTIMONIALS);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   // Handle Public User Submission
@@ -251,7 +252,6 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
 
       setIsAdminEditModalOpen(false);
       setIsAdminAddModalOpen(false);
-      fetchTestimonials();
     } catch (err: any) {
       setAdminError(err.message || 'Error saving testimonial.');
     } finally {
