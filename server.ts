@@ -1236,13 +1236,16 @@ app.get('/api/testimonials', (_req: Request, res: Response) => {
 // Allow ANY user to add a new real testimonial (Public POST)
 app.post('/api/testimonials', async (req: Request, res: Response) => {
   const { customer_name, content, rating, location, artwork_purchased } = req.body;
+  console.log('[server] POST /api/testimonials request body:', JSON.stringify(req.body));
 
   if (!customer_name || typeof customer_name !== 'string' || !customer_name.trim()) {
+    console.error('[server] POST /api/testimonials missing customer_name');
     res.status(400).json({ error: 'Please enter your name.' });
     return;
   }
 
   if (!content || typeof content !== 'string' || !content.trim()) {
+    console.error('[server] POST /api/testimonials missing content');
     res.status(400).json({ error: 'Please enter your review / testimonial.' });
     return;
   }
@@ -1270,17 +1273,20 @@ app.post('/api/testimonials', async (req: Request, res: Response) => {
   try {
     console.log(`[server] Calling saveFirestoreTestimonial for ${newTestimonial.id}`);
     await saveFirestoreTestimonial(newTestimonial);
+    console.log(`[server] Successfully called saveFirestoreTestimonial for ${newTestimonial.id}`);
+    
     logAudit('public_testimonial_added', 'testimonial', newTestimonial.id, {
       customer_name: newTestimonial.customer_name,
       rating: newTestimonial.rating,
     });
+    
     res.status(201).json({
       success: true,
       message: 'Thank you! Your testimonial has been published successfully.',
       testimonial: newTestimonial,
     });
   } catch (e) {
-    console.error('[server] Firestore testimonial save error', e);
+    console.error('[server] Firestore testimonial save error for', newTestimonial.id, ':', e);
     res.status(500).json({ error: 'Failed to save testimonial to database. Please try again later.' });
   }
 });
