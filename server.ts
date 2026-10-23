@@ -1268,6 +1268,7 @@ app.post('/api/testimonials', async (req: Request, res: Response) => {
   db.testimonials.unshift(newTestimonial); // Display near top
   saveDB(db);
   try {
+    console.log(`[server] Calling saveFirestoreTestimonial for ${newTestimonial.id}`);
     await saveFirestoreTestimonial(newTestimonial);
   } catch (e) {
     console.error('[server] Firestore testimonial save error', e);

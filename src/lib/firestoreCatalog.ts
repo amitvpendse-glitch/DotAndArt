@@ -502,12 +502,18 @@ export async function getFirestoreTestimonials(): Promise<Testimonial[]> {
 }
 
 export async function saveFirestoreTestimonial(testimonial: Testimonial): Promise<void> {
-  if (firestoreQuotaExceeded) return;
+  if (firestoreQuotaExceeded) {
+    console.warn('[firestoreCatalog] Quota exceeded, skipping Firestore save');
+    return;
+  }
   try {
+    console.log(`[firestoreCatalog] Attempting to save testimonial: ${testimonial.id}`);
     const docRef = doc(db, TESTIMONIALS_COLLECTION, testimonial.id);
     await setDoc(docRef, cleanFirestoreData({ ...testimonial, updated_at: new Date().toISOString() }), { merge: true });
+    console.log(`[firestoreCatalog] Successfully saved testimonial: ${testimonial.id}`);
     await saveFirestoreSyncFlag(true);
   } catch (err) {
+    console.error(`[firestoreCatalog] Failed to save testimonial ${testimonial.id}:`, err);
     checkQuotaError(err);
   }
 }
