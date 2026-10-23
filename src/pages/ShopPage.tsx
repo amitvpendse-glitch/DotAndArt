@@ -71,6 +71,28 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   }, [initialCategory]);
 
   useEffect(() => {
+    const savedFilters = sessionStorage.getItem('shop_filters');
+    if (savedFilters) {
+      const { category, search, size, price, sort } = JSON.parse(savedFilters);
+      if (category) setSelectedCategory(category);
+      if (search) setSearchQuery(search);
+      if (size) setSelectedSizeFilter(size);
+      if (price) setPriceTier(price);
+      if (sort) setSortBy(sort);
+    }
+  }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem('shop_filters', JSON.stringify({
+      category: selectedCategory,
+      search: searchQuery,
+      size: selectedSizeFilter,
+      price: priceTier,
+      sort: sortBy
+    }));
+  }, [selectedCategory, searchQuery, selectedSizeFilter, priceTier, sortBy]);
+
+  useEffect(() => {
     const loadSettingsAndCategories = () => {
       safeFetchJson<WebsiteSettings | null>('/api/settings', undefined, null).then((s) => {
         if (s) setSettings(s);
@@ -166,13 +188,21 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           );
         });
 
+    const normalizeSize = (s: string) => {
+      return s
+        .toLowerCase()
+        .replace(/inches/g, 'inch')
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
+
     const set = new Set<string>();
     relevant.forEach((p) => {
-      if (p.base_size && p.base_size.trim()) set.add(p.base_size.trim());
+      if (p.base_size && p.base_size.trim()) set.add(normalizeSize(p.base_size));
       if (p.variants && Array.isArray(p.variants)) {
         p.variants.forEach((v: any) => {
           const s = (v.size || v.size_name || '').trim();
-          if (s) set.add(s);
+          if (s) set.add(normalizeSize(s));
         });
       }
     });

@@ -285,7 +285,13 @@ export default function App() {
       return (
         <ProductDetailPage
           sku={selectedSku}
-          onBack={() => navigate('/shop')}
+          onBack={() => {
+            if (currentPath.startsWith('/admin')) {
+              setAdminTab('products');
+            } else {
+              navigate('/shop');
+            }
+          }}
           onSelectProduct={handleSelectProduct}
           onNavigate={navigate}
         />

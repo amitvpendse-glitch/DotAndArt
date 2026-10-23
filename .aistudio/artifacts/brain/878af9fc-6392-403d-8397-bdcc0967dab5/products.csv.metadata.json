@@ -1,0 +1,6 @@
+{
+  "summary":  "CSV file containing product data extracted from the provided table image. This can be used for bulk import in the Admin CMS.",
+  "updatedAt":  "2026-10-23T09:32:52.455237012Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}
