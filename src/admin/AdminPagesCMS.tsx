@@ -136,6 +136,17 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const isDirtyRef = React.useRef(isDirty);
+  const selectedSlugRef = React.useRef(selectedSlug);
+
+  React.useEffect(() => {
+    isDirtyRef.current = isDirty;
+  }, [isDirty]);
+
+  React.useEffect(() => {
+    selectedSlugRef.current = selectedSlug;
+  }, [selectedSlug]);
+  
   const [uploadingField, setUploadingField] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -232,6 +243,14 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
       
       // Update pages state
       setPages(data);
+      
+      // If we have an activePage, and it's not dirty, update it with the new data
+      if (selectedSlugRef.current && !isDirtyRef.current) {
+          const updatedPage = data.find(p => p.slug === selectedSlugRef.current);
+          if (updatedPage) {
+              setActivePage(ensurePageSections(updatedPage));
+          }
+      }
     });
 
     return () => unsubscribe();

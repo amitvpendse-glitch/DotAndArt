@@ -38,6 +38,8 @@ import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
 import { handleClientFallbackApi } from '../lib/clientFallbackApi';
 import { generateProfessionalCatalogPDF } from '../utils/pdfCatalogGenerator';
 import { deleteFirestoreProducts, updateFirestoreProducts, saveFirestoreProduct } from '../lib/firestoreCatalog';
+import { onSnapshot, collection } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import { isAwaitingPhoto } from '../utils/productUtils';
 
 interface AdminProductsProps {
@@ -581,6 +583,17 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
 
   useEffect(() => {
     fetchProductsAndCategories();
+
+    const colRef = collection(db, 'products');
+    const unsubscribe = onSnapshot(colRef, (snapshot) => {
+      const data: Product[] = [];
+      snapshot.forEach((doc) => doc.exists() && data.push(doc.data() as Product));
+      
+      // Update local state
+      setProducts(data);
+    });
+
+    return () => unsubscribe();
   }, [token]);
 
   const handleOpenCreate = () => {

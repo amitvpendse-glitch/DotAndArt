@@ -15,6 +15,7 @@ import {
   saveFirestoreSettings,
   saveFirestorePage,
   getFirestorePages,
+  getFirestoreTestimonials,
 } from './firestoreCatalog';
 
 import { isSkuBlocked } from './blockedSkus';
@@ -208,6 +209,18 @@ export async function safeFetchJson<T = any>(
       }
     } catch (fsErr) {
       console.warn('[safeFetchJson] Firestore settings error', fsErr);
+    }
+  }
+
+  // 4c. Direct Cloud Firestore Read for Testimonials
+  if (method === 'GET' && (urlString === '/api/testimonials' || urlString === '/api/admin/testimonials')) {
+    try {
+      const testimonials = await getFirestoreTestimonials();
+      if (testimonials) {
+        return testimonials as unknown as T;
+      }
+    } catch (fsErr) {
+      console.warn('[safeFetchJson] Firestore testimonials error', fsErr);
     }
   }
 
