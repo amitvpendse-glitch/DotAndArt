@@ -1253,7 +1253,7 @@ app.get('/api/testimonials', (_req: Request, res: Response) => {
 });
 
 // Allow ANY user to add a new real testimonial (Public POST)
-app.post('/api/testimonials', async (req: Request, res: Response) => {
+app.post('/api/testimonials-submit', async (req: Request, res: Response) => {
   const { customer_name, content, rating, location, artwork_purchased } = req.body;
   console.log('[server] POST /api/testimonials request body:', JSON.stringify(req.body));
 

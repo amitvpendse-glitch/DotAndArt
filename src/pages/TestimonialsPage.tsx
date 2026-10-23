@@ -143,7 +143,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
     setSubmittingPublic(true);
 
     try {
-      const res = await fetch('/api/testimonials', {
+      const res = await fetch('/api/testimonials-submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
