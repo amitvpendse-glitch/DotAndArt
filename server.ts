@@ -556,11 +556,16 @@ function saveDB(state: DBState, markChange = true) {
   }
   const content = JSON.stringify(state, null, 2);
   const tempFile = `${DB_FILE}.tmp`;
-  fs.writeFileSync(tempFile, content, 'utf-8');
-  fs.renameSync(tempFile, DB_FILE);
   try {
-    fs.writeFileSync(DATA_DB_FILE, content, 'utf-8');
-  } catch {}
+    fs.writeFileSync(tempFile, content, 'utf-8');
+    fs.renameSync(tempFile, DB_FILE);
+    console.log(`[server] Saved DB to ${DB_FILE}`);
+    try {
+      fs.writeFileSync(DATA_DB_FILE, content, 'utf-8');
+    } catch {}
+  } catch (err) {
+    console.error(`[server] Failed to save DB to ${DB_FILE}:`, err);
+  }
 }
 
 // Audit logger helper (Never logs credentials)
