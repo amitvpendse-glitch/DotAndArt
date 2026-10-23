@@ -38,13 +38,27 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     setPullMessage(null);
     try {
       const token = localStorage.getItem('dot_admin_token');
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       const res = await fetch('/api/admin/pull-sync', {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+        headers,
+        credentials: 'include',
       });
+
+      if (res.status === 401) {
+        setPullMessage('Session expired. Please sign in again.');
+        setTimeout(() => {
+          localStorage.removeItem('dot_admin_token');
+          window.location.reload();
+        }, 2000);
+        return;
+      }
+
       const data = await res.json();
       if (res.ok && data.success) {
         setPullMessage('Synced with DB!');
@@ -53,8 +67,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       } else {
         setPullMessage(data.error || 'Failed to sync');
       }
-    } catch {
-      setPullMessage('Network error');
+    } catch (err: any) {
+      setPullMessage(err?.message || 'Network error');
     } finally {
       setPulling(false);
     }

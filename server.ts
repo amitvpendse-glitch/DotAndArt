@@ -1189,7 +1189,15 @@ app.get('/api/products', async (req: Request, res: Response) => {
 });
 
 // Single Product by ID or SKU (Public)
-app.get('/api/products/:idOrSku', (req: Request, res: Response) => {
+app.get('/api/products/:idOrSku', async (req: Request, res: Response) => {
+  try {
+    const fsProducts = await getFirestoreProducts(true);
+    if (Array.isArray(fsProducts) && fsProducts.length > 0) {
+      db.products = deduplicateProducts(fsProducts);
+      saveDB(db, false);
+    }
+  } catch {}
+
   const { idOrSku } = req.params;
   const product = (db.products || []).find(
     (p) => (p.id === idOrSku || p.sku.toLowerCase() === idOrSku.toLowerCase()) && p.is_published && !isServerSkuBlocked(p.sku)
@@ -1333,7 +1341,15 @@ function mergeMissingPageSections(page: any): any {
 }
 
 // Page Content (Public CMS)
-app.get('/api/pages', (_req: Request, res: Response) => {
+app.get('/api/pages', async (_req: Request, res: Response) => {
+  try {
+    const fsPages = await getFirestorePages();
+    if (Array.isArray(fsPages) && fsPages.length > 0) {
+      db.pages = fsPages;
+      saveDB(db, false);
+    }
+  } catch {}
+
   INITIAL_PAGES.forEach((initPage) => {
     let existing = (db.pages || []).find((p) => p.slug === initPage.slug);
     if (!existing) {
@@ -1346,7 +1362,15 @@ app.get('/api/pages', (_req: Request, res: Response) => {
 });
 
 // Admin list pages
-app.get('/api/admin/pages', (_req: Request, res: Response) => {
+app.get('/api/admin/pages', async (_req: Request, res: Response) => {
+  try {
+    const fsPages = await getFirestorePages();
+    if (Array.isArray(fsPages) && fsPages.length > 0) {
+      db.pages = fsPages;
+      saveDB(db, false);
+    }
+  } catch {}
+
   INITIAL_PAGES.forEach((initPage) => {
     let existing = (db.pages || []).find((p) => p.slug === initPage.slug);
     if (!existing) {
@@ -1358,7 +1382,15 @@ app.get('/api/admin/pages', (_req: Request, res: Response) => {
   res.json(db.pages);
 });
 
-app.get('/api/pages/:slug', (req: Request, res: Response) => {
+app.get('/api/pages/:slug', async (req: Request, res: Response) => {
+  try {
+    const fsPages = await getFirestorePages();
+    if (Array.isArray(fsPages) && fsPages.length > 0) {
+      db.pages = fsPages;
+      saveDB(db, false);
+    }
+  } catch {}
+
   const { slug } = req.params;
   let page = (db.pages || []).find((p) => p.slug === slug);
   const initPage = INITIAL_PAGES.find((p) => p.slug === slug);

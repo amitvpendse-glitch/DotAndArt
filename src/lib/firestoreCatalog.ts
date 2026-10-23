@@ -446,9 +446,25 @@ export async function getFirestorePages(): Promise<WebsitePage[]> {
     if (snap.empty) {
       return INITIAL_PAGES;
     }
-    const pages: WebsitePage[] = [];
-    snap.forEach((docSnap) => pages.push(docSnap.data() as WebsitePage));
-    return pages;
+    const rawPages: WebsitePage[] = [];
+    snap.forEach((docSnap) => rawPages.push(docSnap.data() as WebsitePage));
+
+    rawPages.sort((a, b) => {
+      const timeA = new Date(a?.updated_at || a?.created_at || 0).getTime();
+      const timeB = new Date(b?.updated_at || b?.created_at || 0).getTime();
+      return timeB - timeA;
+    });
+
+    const pageMap = new Map<string, WebsitePage>();
+    for (const p of rawPages) {
+      if (!p || !p.slug) continue;
+      const slug = p.slug.toLowerCase().trim();
+      if (!pageMap.has(slug)) {
+        pageMap.set(slug, p);
+      }
+    }
+
+    return Array.from(pageMap.values());
   } catch (err) {
     checkQuotaError(err);
     return INITIAL_PAGES;
