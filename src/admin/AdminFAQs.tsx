@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, HelpCircle } from 'lucide-react';
+import { FloatingSaveButton } from './FloatingSaveButton';
 import { FAQ } from '../types';
-import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
+import { safeFetchJson } from '../lib/safeFetch';
+
 
 interface AdminFAQsProps {
   token: string;
@@ -229,22 +231,8 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
                 </label>
               </div>
 
-              <div className="pt-4 flex justify-end gap-3 border-t border-theme-glass">
-                <button
-                  type="button"
-                  onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-xl glass-button text-theme-primary cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-xl bg-theme-accent text-white font-semibold cursor-pointer"
-                >
-                  Save FAQ
-                </button>
-              </div>
-            </form>
+              </form>
+            <FloatingSaveButton onSave={() => handleSave({ preventDefault: () => {} } as React.FormEvent)} />
           </div>
         </div>
       )}

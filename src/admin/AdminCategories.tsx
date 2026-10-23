@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, X, AlertTriangle, FolderTree } from 'lucide-react';
+import { FloatingSaveButton } from './FloatingSaveButton';
 import { Category } from '../types';
-import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
+import { safeFetchJson } from '../lib/safeFetch';
 
 interface AdminCategoriesProps {
   token: string;
@@ -60,8 +61,7 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ token }) => {
     setModalOpen(true);
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSave = async () => {
     setErrorMessage('');
 
     const url = editingCategory
@@ -100,6 +100,7 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ token }) => {
       setErrorMessage('Server error while saving category.');
     }
   };
+
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -320,14 +321,9 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ token }) => {
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-xl bg-theme-accent hover:opacity-90 text-white font-semibold cursor-pointer"
-                >
-                  Save Category
-                </button>
               </div>
             </form>
+            <FloatingSaveButton onSave={handleSave} />
           </div>
         </div>
       )}

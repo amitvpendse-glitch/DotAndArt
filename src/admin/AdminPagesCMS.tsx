@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FloatingSaveButton } from './FloatingSaveButton';
 import {
   Save,
   AlertCircle,
@@ -483,6 +484,12 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
 
   return (
     <div className="space-y-6 text-theme-primary">
+      {activePage && (
+        <FloatingSaveButton 
+          onSave={() => handleSave('published')} 
+          isSaving={saving} 
+        />
+      )}
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

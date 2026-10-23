@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FloatingSaveButton } from './FloatingSaveButton';
 import { Save, CheckCircle2, AlertCircle, UploadCloud, ImageIcon, Plus, Trash2, MapPin, Sliders } from 'lucide-react';
 import { WebsiteSettings, Product, ShowcaseBannerHotspot } from '../types';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
@@ -129,6 +130,10 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
 
   return (
     <div className="space-y-6 max-w-4xl text-theme-primary">
+      <FloatingSaveButton 
+        onSave={() => handleSave()} 
+        isSaving={saving} 
+      />
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="font-serif text-2xl font-bold text-theme-primary">Website Global Settings</h2>

@@ -2512,7 +2512,7 @@ app.get('/api/admin/testimonials', requireAdmin, (_req: Request, res: Response) 
   res.json(db.testimonials);
 });
 
-app.post('/api/admin/testimonials', requireAdmin, (req: Request, res: Response) => {
+app.post('/api/admin/testimonials', requireAdmin, async (req: Request, res: Response) => {
   const { customer_name, content, rating, location, artwork_purchased, image_path, display_order, is_published } =
     req.body;
 
@@ -2537,12 +2537,16 @@ app.post('/api/admin/testimonials', requireAdmin, (req: Request, res: Response) 
 
   (db.testimonials = db.testimonials || []).push(item);
   saveDB(db);
-  saveFirestoreTestimonial(item).catch((e) => console.warn('[server] Firestore testimonial save error', e));
+  try {
+    await saveFirestoreTestimonial(item);
+  } catch (e) {
+    console.error('[server] Firestore testimonial save error', e);
+  }
   logAudit('testimonial_created', 'testimonial', item.id, { customer_name: item.customer_name });
   res.json(item);
 });
 
-app.put('/api/admin/testimonials/:id', requireAdmin, (req: Request, res: Response) => {
+app.put('/api/admin/testimonials/:id', requireAdmin, async (req: Request, res: Response) => {
   const { id } = req.params;
   const index = (db.testimonials || []).findIndex((t) => t.id === id);
   if (index === -1) {
@@ -2562,12 +2566,16 @@ app.put('/api/admin/testimonials/:id', requireAdmin, (req: Request, res: Respons
 
   db.testimonials[index].updated_at = new Date().toISOString();
   saveDB(db);
-  saveFirestoreTestimonial(db.testimonials[index]).catch((e) => console.warn('[server] Firestore testimonial update error', e));
+  try {
+    await saveFirestoreTestimonial(db.testimonials[index]);
+  } catch (e) {
+    console.error('[server] Firestore testimonial update error', e);
+  }
   logAudit('testimonial_updated', 'testimonial', id);
   res.json(db.testimonials[index]);
 });
 
-app.delete('/api/admin/testimonials/:id', requireAdmin, (req: Request, res: Response) => {
+app.delete('/api/admin/testimonials/:id', requireAdmin, async (req: Request, res: Response) => {
   const { id } = req.params;
   const index = (db.testimonials || []).findIndex((t) => t.id === id);
   if (index === -1) {
@@ -2576,7 +2584,11 @@ app.delete('/api/admin/testimonials/:id', requireAdmin, (req: Request, res: Resp
   }
   const deleted = db.testimonials.splice(index, 1)[0];
   saveDB(db);
-  deleteFirestoreTestimonial(id).catch((e) => console.warn('[server] Firestore testimonial delete error', e));
+  try {
+    await deleteFirestoreTestimonial(id);
+  } catch (e) {
+    console.error('[server] Firestore testimonial delete error', e);
+  }
   logAudit('testimonial_deleted', 'testimonial', id, { customer_name: deleted.customer_name });
   res.json({ success: true, message: 'Testimonial deleted' });
 });
