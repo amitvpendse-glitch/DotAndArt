@@ -1270,23 +1270,19 @@ app.post('/api/testimonials', async (req: Request, res: Response) => {
   try {
     console.log(`[server] Calling saveFirestoreTestimonial for ${newTestimonial.id}`);
     await saveFirestoreTestimonial(newTestimonial);
+    logAudit('public_testimonial_added', 'testimonial', newTestimonial.id, {
+      customer_name: newTestimonial.customer_name,
+      rating: newTestimonial.rating,
+    });
+    res.status(201).json({
+      success: true,
+      message: 'Thank you! Your testimonial has been published successfully.',
+      testimonial: newTestimonial,
+    });
   } catch (e) {
     console.error('[server] Firestore testimonial save error', e);
-    // Depending on whether we want to fail the request if Firestore fails:
-    // res.status(500).json({ error: 'Failed to save to database.' });
-    // return;
+    res.status(500).json({ error: 'Failed to save testimonial to database. Please try again later.' });
   }
-
-  logAudit('public_testimonial_added', 'testimonial', newTestimonial.id, {
-    customer_name: newTestimonial.customer_name,
-    rating: newTestimonial.rating,
-  });
-
-  res.status(201).json({
-    success: true,
-    message: 'Thank you! Your testimonial has been published successfully.',
-    testimonial: newTestimonial,
-  });
 });
 
 // Unauthorized public PUT/DELETE on /api/testimonials/:id - Restricted to admin only
