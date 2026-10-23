@@ -504,7 +504,7 @@ export async function getFirestoreTestimonials(): Promise<Testimonial[]> {
 export async function saveFirestoreTestimonial(testimonial: Testimonial): Promise<void> {
   if (firestoreQuotaExceeded) {
     console.warn('[firestoreCatalog] Quota exceeded, skipping Firestore save');
-    return;
+    throw new Error('Firestore quota exceeded');
   }
   try {
     console.log(`[firestoreCatalog] Attempting to save testimonial: ${testimonial.id}`);

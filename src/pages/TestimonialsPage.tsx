@@ -165,7 +165,8 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
       }
 
       if (!res.ok) {
-        throw new Error((data as any).error || 'Failed to submit testimonial.');
+        console.error('[frontend] Submission failed:', res.status, data);
+        throw new Error((data as any).error || `Server error: ${res.status}`);
       }
 
       // Prepend newly added testimonial to the list immediately
