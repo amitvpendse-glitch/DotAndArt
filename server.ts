@@ -2537,7 +2537,16 @@ app.put('/api/admin/pages/:slug', requireAdmin, (req: Request, res: Response) =>
 });
 
 // Admin Testimonials CRUD
-app.get('/api/admin/testimonials', requireAdmin, (_req: Request, res: Response) => {
+app.get('/api/admin/testimonials', requireAdmin, async (_req: Request, res: Response) => {
+  try {
+    const fsTestimonials = await getFirestoreTestimonials();
+    if (Array.isArray(fsTestimonials) && fsTestimonials.length > 0) {
+      db.testimonials = fsTestimonials;
+      saveDB(db, false);
+    }
+  } catch (e) {
+    console.error('[server] Failed to refresh testimonials from Firestore:', e);
+  }
   res.json(db.testimonials);
 });
 
