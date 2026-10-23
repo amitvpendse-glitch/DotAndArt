@@ -1234,7 +1234,7 @@ app.get('/api/testimonials', (_req: Request, res: Response) => {
 });
 
 // Allow ANY user to add a new real testimonial (Public POST)
-app.post('/api/testimonials', (req: Request, res: Response) => {
+app.post('/api/testimonials', async (req: Request, res: Response) => {
   const { customer_name, content, rating, location, artwork_purchased } = req.body;
 
   if (!customer_name || typeof customer_name !== 'string' || !customer_name.trim()) {
@@ -1267,7 +1267,14 @@ app.post('/api/testimonials', (req: Request, res: Response) => {
   db.testimonials = db.testimonials || [];
   db.testimonials.unshift(newTestimonial); // Display near top
   saveDB(db);
-  saveFirestoreTestimonial(newTestimonial).catch((e) => console.warn('[server] Firestore testimonial save error', e));
+  try {
+    await saveFirestoreTestimonial(newTestimonial);
+  } catch (e) {
+    console.error('[server] Firestore testimonial save error', e);
+    // Depending on whether we want to fail the request if Firestore fails:
+    // res.status(500).json({ error: 'Failed to save to database.' });
+    // return;
+  }
 
   logAudit('public_testimonial_added', 'testimonial', newTestimonial.id, {
     customer_name: newTestimonial.customer_name,

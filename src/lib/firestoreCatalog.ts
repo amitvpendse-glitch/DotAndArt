@@ -506,6 +506,7 @@ export async function saveFirestoreTestimonial(testimonial: Testimonial): Promis
   try {
     const docRef = doc(db, TESTIMONIALS_COLLECTION, testimonial.id);
     await setDoc(docRef, cleanFirestoreData({ ...testimonial, updated_at: new Date().toISOString() }), { merge: true });
+    await saveFirestoreSyncFlag(true);
   } catch (err) {
     checkQuotaError(err);
   }
@@ -516,6 +517,7 @@ export async function deleteFirestoreTestimonial(id: string): Promise<void> {
   try {
     const docRef = doc(db, TESTIMONIALS_COLLECTION, id);
     await deleteDoc(docRef);
+    await saveFirestoreSyncFlag(true);
   } catch (err) {
     checkQuotaError(err);
   }
