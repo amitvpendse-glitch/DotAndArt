@@ -212,7 +212,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
     }
 
     const filteredSizes = Array.from(set).filter(
-      (s) => s !== '12 inch' && s !== '12 inch diameter'
+      (s) => s !== '12 inch diameter'
     );
 
     return filteredSizes.sort((a, b) => {
