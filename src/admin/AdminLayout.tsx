@@ -10,6 +10,7 @@ import {
   X,
   CheckSquare,
   RefreshCw,
+  AlertTriangle,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
