@@ -85,6 +85,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'products', label: 'Product Catalog', icon: Package },
     { id: 'pages', label: 'Website Pages CMS', icon: FileText },
+    { id: 'logs', label: 'System Error Logs', icon: AlertTriangle },
     { id: 'tests', label: 'CMS Test Suite', icon: CheckSquare },
     { id: 'security', label: 'Security & PIN', icon: Shield },
     { id: 'view_site', label: 'View Public Website', icon: ExternalLink, isAction: true },
