@@ -798,20 +798,19 @@ export async function handleClientFallbackApi<T = any>(
   }
   if (pathname.startsWith('/api/pages/') && method === 'GET') {
     const slug = pathname.replace('/api/pages/', '').split('?')[0];
-    const pages = getStoredPages();
-    let page = (pages || []).find((p) => p.slug === slug);
-    if (!page) {
-      const initPage = INITIAL_PAGES.find((p) => p.slug === slug);
-      if (initPage) page = JSON.parse(JSON.stringify(initPage));
-    }
-    if (page) {
-      mergeMissingPageSectionsClient(page);
-      return jsonRes({
-        ...page,
-        sections: (page.sections || [])
-          .filter((s) => s.is_visible !== false)
-          .sort((a, b) => (a.display_order || 0) - (b.display_order || 0)),
-      });
+    try {
+      const pages = await getFirestorePages();
+      const found = (pages || []).find((p) => p.slug === slug);
+      if (found) {
+        return jsonRes({
+          ...found,
+          sections: (found.sections || [])
+            .filter((s) => s.is_visible !== false)
+            .sort((a, b) => (a.display_order || 0) - (b.display_order || 0)),
+        });
+      }
+    } catch (err) {
+      console.error('[clientFallbackApi] Firestore page lookup error', err);
     }
     return jsonRes(null);
   }

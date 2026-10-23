@@ -1,63 +1,45 @@
 import { useState, useEffect } from 'react';
-import { safeFetchJson } from './safeFetch';
+import { onSnapshot, collection, query, where } from 'firebase/firestore';
+import { db } from './firebase';
 import { WebsitePage } from '../types';
+import { PAGES_COLLECTION } from './firestoreCatalog';
 
 export function usePageSeo(slug: string, defaultTitle: string, defaultDesc?: string) {
   const [page, setPage] = useState<WebsitePage | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const fetchPage = () => {
-      safeFetchJson<WebsitePage | null>(`/api/pages/${slug}`, undefined, null)
-        .then((data) => {
-          if (isMounted) {
-            if (data) {
-              setPage(data);
-              if (data.seo_title) {
-                document.title = data.seo_title;
-              } else if (defaultTitle) {
-                document.title = defaultTitle;
-              }
-              if (data.meta_description) {
-                let metaDesc = document.querySelector('meta[name="description"]');
-                if (!metaDesc) {
-                  metaDesc = document.createElement('meta');
-                  metaDesc.setAttribute('name', 'description');
-                  document.head.appendChild(metaDesc);
-                }
-                metaDesc.setAttribute('content', data.meta_description);
-              }
-            } else if (defaultTitle) {
-              document.title = defaultTitle;
-            }
+    const colRef = collection(db, PAGES_COLLECTION);
+    
+    // Real-time listener
+    const unsubscribe = onSnapshot(colRef, (snapshot) => {
+      const data: WebsitePage[] = [];
+      snapshot.forEach((doc) => data.push(doc.data() as WebsitePage));
+      
+      const found = data.find((p) => p.slug === slug);
+      if (found) {
+        setPage(found);
+        if (found.seo_title) {
+          document.title = found.seo_title;
+        } else if (defaultTitle) {
+          document.title = defaultTitle;
+        }
+        if (found.meta_description) {
+          let metaDesc = document.querySelector('meta[name="description"]');
+          if (!metaDesc) {
+            metaDesc = document.createElement('meta');
+            metaDesc.setAttribute('name', 'description');
+            document.head.appendChild(metaDesc);
           }
-        })
-        .catch(() => {
-          if (isMounted && defaultTitle) {
-            document.title = defaultTitle;
-          }
-        })
-        .finally(() => {
-          if (isMounted) setLoading(false);
-        });
-    };
+          metaDesc.setAttribute('content', found.meta_description);
+        }
+      } else if (defaultTitle) {
+        document.title = defaultTitle;
+      }
+      setLoading(false);
+    });
 
-    fetchPage();
-
-    const handlePageUpdate = () => {
-      fetchPage();
-    };
-
-    window.addEventListener('app_pages_updated', handlePageUpdate);
-    window.addEventListener('app_sync_refresh', handlePageUpdate);
-
-    return () => {
-      isMounted = false;
-      window.removeEventListener('app_pages_updated', handlePageUpdate);
-      window.removeEventListener('app_sync_refresh', handlePageUpdate);
-    };
+    return () => unsubscribe();
   }, [slug, defaultTitle]);
 
   return { page, loading };

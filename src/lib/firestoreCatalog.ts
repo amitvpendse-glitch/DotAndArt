@@ -8,8 +8,8 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './firebase';
-import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SETTINGS, INITIAL_PAGES, INITIAL_TESTIMONIALS } from '../data/initialCatalog';
-import { Product, Category, WebsiteSettings, WebsitePage, Testimonial } from '../types';
+import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SETTINGS, INITIAL_PAGES, INITIAL_TESTIMONIALS, INITIAL_FAQS } from '../data/initialCatalog';
+import { Product, Category, WebsiteSettings, WebsitePage, Testimonial, FAQ } from '../types';
 import { isSkuBlocked } from './blockedSkus';
 
 /**
@@ -35,7 +35,7 @@ export function cleanFirestoreData<T>(obj: T): T {
 const PRODUCTS_COLLECTION = 'products';
 const CATEGORIES_COLLECTION = 'categories';
 const SETTINGS_COLLECTION = 'settings';
-const PAGES_COLLECTION = 'pages';
+export const PAGES_COLLECTION = 'pages';
 const TESTIMONIALS_COLLECTION = 'testimonials';
 const CATALOG_STATE_COLLECTION = 'catalog_state';
 
@@ -567,3 +567,39 @@ export async function saveFirestoreSyncFlag(changed: boolean): Promise<void> {
   }
 }
 
+export async function getFirestoreFAQs(): Promise<FAQ[]> {
+  if (firestoreQuotaExceeded) return INITIAL_FAQS;
+  try {
+    const colRef = collection(db, 'faqs');
+    const snap = await getDocs(colRef);
+    if (snap.empty) return INITIAL_FAQS;
+    const list: FAQ[] = [];
+    snap.forEach((docSnap) => list.push(docSnap.data() as FAQ));
+    return list.sort((a, b) => a.display_order - b.display_order);
+  } catch (err) {
+    checkQuotaError(err);
+    return INITIAL_FAQS;
+  }
+}
+
+export async function saveFirestoreFAQ(faq: FAQ): Promise<void> {
+  if (firestoreQuotaExceeded) return;
+  try {
+    const docRef = doc(db, 'faqs', faq.id);
+    await setDoc(docRef, cleanFirestoreData({ ...faq, updated_at: new Date().toISOString() }), { merge: true });
+    await saveFirestoreSyncFlag(true);
+  } catch (err) {
+    checkQuotaError(err);
+  }
+}
+
+export async function deleteFirestoreFAQ(id: string): Promise<void> {
+  if (firestoreQuotaExceeded) return;
+  try {
+    const docRef = doc(db, 'faqs', id);
+    await deleteDoc(docRef);
+    await saveFirestoreSyncFlag(true);
+  } catch (err) {
+    checkQuotaError(err);
+  }
+}

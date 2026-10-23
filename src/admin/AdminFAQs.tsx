@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, HelpCircle } from 'lucide-react';
 import { FloatingSaveButton } from './FloatingSaveButton';
 import { FAQ } from '../types';
-import { safeFetchJson } from '../lib/safeFetch';
-
+import { getFirestoreFAQs, saveFirestoreFAQ, deleteFirestoreFAQ } from '../lib/firestoreCatalog';
 
 interface AdminFAQsProps {
   token: string;
@@ -20,12 +19,17 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
   const [category, setCategory] = useState('Ordering');
   const [isPublished, setIsPublished] = useState(true);
 
-  const fetchFaqs = () => {
+  const fetchFaqs = async () => {
     setLoading(true);
-    safeFetchJson<FAQ[]>('/api/faqs')
-      .then((data) => setFaqs(Array.isArray(data) ? data : []))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
+    try {
+      const data = await getFirestoreFAQs();
+      setFaqs(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error(err);
+      setFaqs([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -52,23 +56,20 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = editing ? `/api/admin/faqs/${editing.id}` : '/api/admin/faqs';
-    const method = editing ? 'PUT' : 'POST';
-
     try {
-      await safeFetchJson(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          question,
-          answer,
-          category,
-          is_published: isPublished,
-        }),
-      });
+      const faq: FAQ = {
+        ...editing,
+        id: editing?.id || `faq-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        question,
+        answer,
+        category,
+        is_published: isPublished,
+        display_order: editing?.display_order || 0,
+        created_at: editing?.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      await saveFirestoreFAQ(faq);
 
       setModalOpen(false);
       fetchFaqs();
@@ -80,11 +81,7 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this FAQ entry?')) return;
     try {
-      await safeFetchJson(`/api/admin/faqs/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      await deleteFirestoreFAQ(id);
       fetchFaqs();
     } catch (err) {
       console.error(err);

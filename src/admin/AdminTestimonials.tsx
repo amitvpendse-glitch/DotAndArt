@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Star } from 'lucide-react';
 import { Testimonial } from '../types';
-import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
+import { getFirestoreTestimonials, saveFirestoreTestimonial, deleteFirestoreTestimonial } from '../lib/firestoreCatalog';
 
 interface AdminTestimonialsProps {
   token: string;
@@ -20,17 +20,17 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
   const [rating, setRating] = useState(5);
   const [isPublished, setIsPublished] = useState(true);
 
-  const fetchItems = () => {
+  const fetchItems = async () => {
     setLoading(true);
-    safeFetchJson<Testimonial[]>('/api/admin/testimonials', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((data) => setItems(Array.isArray(data) ? data : []))
-      .catch(() => {
-        safeFetchJson<Testimonial[]>('/api/testimonials')
-          .then((data) => setItems(Array.isArray(data) ? data : []));
-      })
-      .finally(() => setLoading(false));
+    try {
+      const data = await getFirestoreTestimonials();
+      setItems(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error(err);
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -61,25 +61,22 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = editing ? `/api/admin/testimonials/${editing.id}` : '/api/admin/testimonials';
-    const method = editing ? 'PUT' : 'POST';
-
     try {
-      await safeFetchJson(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          customer_name: name,
-          location,
-          artwork_purchased: artwork,
-          content,
-          rating,
-          is_published: isPublished,
-        }),
-      });
+      const testimonial: Testimonial = {
+        ...editing,
+        id: editing?.id || `test-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        customer_name: name,
+        location,
+        artwork_purchased: artwork,
+        content,
+        rating,
+        is_published: isPublished,
+        display_order: editing?.display_order || 0,
+        created_at: editing?.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      await saveFirestoreTestimonial(testimonial);
 
       setModalOpen(false);
       fetchItems();
@@ -91,11 +88,7 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this testimonial?')) return;
     try {
-      await safeFetchJson(`/api/admin/testimonials/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      await deleteFirestoreTestimonial(id);
       fetchItems();
     } catch (err) {
       console.error(err);

@@ -19,6 +19,7 @@ import { createWhatsAppUrl, getDisplayWhatsAppNumber, openExternalLink } from '.
 import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 import { INITIAL_TESTIMONIALS } from '../data/initialCatalog';
+import { saveFirestoreTestimonial } from '../lib/firestoreCatalog';
 
 interface TestimonialsPageProps {
   onNavigate?: (path: string) => void;
@@ -143,38 +144,22 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
     setSubmittingPublic(true);
 
     try {
-      const res = await fetch('/api/testimonials-submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customer_name: publicName.trim(),
-          content: publicContent.trim(),
-          rating: publicRating,
-          location: publicLocation.trim(),
-          artwork_purchased: publicArtwork.trim(),
-        }),
-      });
+      const newTestimonial: Testimonial = {
+        id: `test-user-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        customer_name: publicName.trim(),
+        content: publicContent.trim(),
+        rating: publicRating,
+        location: publicLocation.trim(),
+        artwork_purchased: publicArtwork.trim(),
+        is_published: true,
+        display_order: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
 
-      const text = await res.text();
-      let data = {};
-      try {
-        data = text ? JSON.parse(text) : {};
-      } catch (e) {
-        console.error('[frontend] Failed to parse JSON response:', text);
-        throw new Error('Server returned invalid response.');
-      }
+      await saveFirestoreTestimonial(newTestimonial);
 
-      if (!res.ok) {
-        console.error('[frontend] Submission failed:', res.status, data);
-        throw new Error((data as any).error || `Server error: ${res.status}`);
-      }
-
-      // Prepend newly added testimonial to the list immediately
-      if ((data as any).testimonial) {
-        setTestimonials((prev) => [(data as any).testimonial, ...prev]);
-      } else {
-        fetchTestimonials();
-      }
+      setTestimonials((prev) => [newTestimonial, ...prev]);
 
       setPublicSubmitSuccess('Thank you! Your testimonial has been shared and published.');
       setPublicName('');

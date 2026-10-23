@@ -39,6 +39,8 @@ import {
   getFirestoreSyncFlag,
   getFirestoreProductById,
   getFirestoreCategories,
+  saveFirestoreFAQ,
+  deleteFirestoreFAQ,
 } from './src/lib/firestoreCatalog.ts';
 
 const app = express();
@@ -307,6 +309,10 @@ function loadDB(): DBState {
         created_at: new Date().toISOString(),
       },
     ],
+    sync_flag: {
+      changed: false,
+      updated_at: new Date().toISOString(),
+    },
   };
 
   saveDB(initialDB, false);
@@ -2575,11 +2581,7 @@ app.post('/api/admin/testimonials', requireAdmin, async (req: Request, res: Resp
 
   (db.testimonials = db.testimonials || []).push(item);
   saveDB(db);
-  try {
-    await saveFirestoreTestimonial(item);
-  } catch (e) {
-    console.error('[server] Firestore testimonial save error', e);
-  }
+  saveFirestoreTestimonial(item).catch((e) => console.warn('[server] Firestore testimonial save error', e));
   logAudit('testimonial_created', 'testimonial', item.id, { customer_name: item.customer_name });
   res.json(item);
 });
@@ -2604,11 +2606,7 @@ app.put('/api/admin/testimonials/:id', requireAdmin, async (req: Request, res: R
 
   db.testimonials[index].updated_at = new Date().toISOString();
   saveDB(db);
-  try {
-    await saveFirestoreTestimonial(db.testimonials[index]);
-  } catch (e) {
-    console.error('[server] Firestore testimonial update error', e);
-  }
+  saveFirestoreTestimonial(db.testimonials[index]).catch((e) => console.warn('[server] Firestore testimonial update error', e));
   logAudit('testimonial_updated', 'testimonial', id);
   res.json(db.testimonials[index]);
 });
@@ -2622,11 +2620,7 @@ app.delete('/api/admin/testimonials/:id', requireAdmin, async (req: Request, res
   }
   const deleted = db.testimonials.splice(index, 1)[0];
   saveDB(db);
-  try {
-    await deleteFirestoreTestimonial(id);
-  } catch (e) {
-    console.error('[server] Firestore testimonial delete error', e);
-  }
+  deleteFirestoreTestimonial(id).catch((e) => console.warn('[server] Firestore testimonial delete error', e));
   logAudit('testimonial_deleted', 'testimonial', id, { customer_name: deleted.customer_name });
   res.json({ success: true, message: 'Testimonial deleted' });
 });
@@ -2656,6 +2650,7 @@ app.post('/api/admin/faqs', requireAdmin, (req: Request, res: Response) => {
 
   (db.faqs = db.faqs || []).push(faq);
   saveDB(db);
+  saveFirestoreFAQ(faq).catch((e) => console.warn('[server] Firestore FAQ save error', e));
   logAudit('faq_created', 'faq', faq.id, { question: faq.question });
   res.json(faq);
 });
@@ -2677,6 +2672,7 @@ app.put('/api/admin/faqs/:id', requireAdmin, (req: Request, res: Response) => {
 
   db.faqs[index].updated_at = new Date().toISOString();
   saveDB(db);
+  saveFirestoreFAQ(db.faqs[index]).catch((e) => console.warn('[server] Firestore FAQ update error', e));
   logAudit('faq_updated', 'faq', id);
   res.json(db.faqs[index]);
 });
@@ -2690,6 +2686,7 @@ app.delete('/api/admin/faqs/:id', requireAdmin, (req: Request, res: Response) =>
   }
   const deleted = db.faqs.splice(index, 1)[0];
   saveDB(db);
+  deleteFirestoreFAQ(id).catch((e) => console.warn('[server] Firestore FAQ delete error', e));
   logAudit('faq_deleted', 'faq', id, { question: deleted.question });
   res.json({ success: true, message: 'FAQ deleted' });
 });
