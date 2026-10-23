@@ -9,8 +9,6 @@ import {
   Menu,
   X,
   CheckSquare,
-  RefreshCw,
-  AlertTriangle,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -31,62 +29,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   children,
 }) => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [pulling, setPulling] = useState(false);
-  const [pullMessage, setPullMessage] = useState<string | null>(null);
 
-  const handlePullFromDb = async () => {
-    setPulling(true);
-    setPullMessage(null);
-    try {
-      const token = localStorage.getItem('dot_admin_token');
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-      const res = await fetch('/api/admin/pull-sync', {
-        method: 'POST',
-        headers,
-        credentials: 'include',
-      });
-
-      if (res.status === 401) {
-        setPullMessage('Session expired. Please sign in again.');
-        setTimeout(() => {
-          localStorage.removeItem('dot_admin_token');
-          window.location.reload();
-        }, 2000);
-        return;
-      }
-
-      const text = await res.text();
-      let data: any = {};
-      try {
-        data = text ? JSON.parse(text) : {};
-      } catch {
-        data = { error: text || 'Invalid response from server' };
-      }
-
-      if (res.ok && (data.success !== false)) {
-        setPullMessage('Synced with DB!');
-        window.dispatchEvent(new CustomEvent('app_sync_refresh'));
-        setTimeout(() => setPullMessage(null), 3000);
-      } else {
-        setPullMessage(data.error || 'Failed to sync');
-      }
-    } catch (err: any) {
-      setPullMessage(err?.message || 'Network error');
-    } finally {
-      setPulling(false);
-    }
-  };
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'products', label: 'Product Catalog', icon: Package },
     { id: 'pages', label: 'Website Pages CMS', icon: FileText },
-    { id: 'logs', label: 'System Error Logs', icon: AlertTriangle },
     { id: 'tests', label: 'CMS Test Suite', icon: CheckSquare },
     { id: 'security', label: 'Security & PIN', icon: Shield },
     { id: 'view_site', label: 'View Public Website', icon: ExternalLink, isAction: true },
@@ -204,20 +152,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
           </div>
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={handlePullFromDb}
-              disabled={pulling}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-theme-accent/20 text-theme-accent hover:bg-theme-accent/30 border border-theme-accent/40 transition-all cursor-pointer disabled:opacity-50"
-              title="Pull latest changes from Firestore database and sync local cache"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${pulling ? 'animate-spin' : ''}`} />
-              <span>{pulling ? 'Pulling...' : 'Pull Latest from DB'}</span>
-            </button>
-            {pullMessage && (
-              <span className="text-[11px] font-medium text-emerald-400 bg-emerald-950/40 px-2 py-1 rounded-lg border border-emerald-900/50">
-                {pullMessage}
-              </span>
-            )}
           </div>
 
           {/* Top Right Corner Brand Logo */}

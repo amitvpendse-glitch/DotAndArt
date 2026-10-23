@@ -262,11 +262,6 @@ export default function App() {
           />
         )}
         {adminTab === 'pages' && <AdminPagesCMS token={adminToken} />}
-        {adminTab === 'logs' && (
-          <div className="p-6 glass-card border border-theme-glass rounded-2xl">
-            <AdminErrorLogs logs={stats?.recentLogs || []} />
-          </div>
-        )}
         {adminTab === 'tests' && <AdminTestRunner token={adminToken} />}
         {adminTab === 'testimonials' && <AdminTestimonials token={adminToken} />}
         {adminTab === 'faqs' && <AdminFAQs token={adminToken} />}
