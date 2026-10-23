@@ -9,6 +9,7 @@ import {
   Menu,
   X,
   CheckSquare,
+  RefreshCw,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -29,6 +30,35 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   children,
 }) => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [pulling, setPulling] = useState(false);
+  const [pullMessage, setPullMessage] = useState<string | null>(null);
+
+  const handlePullFromDb = async () => {
+    setPulling(true);
+    setPullMessage(null);
+    try {
+      const token = localStorage.getItem('dot_admin_token');
+      const res = await fetch('/api/admin/pull-sync', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setPullMessage('Synced with DB!');
+        window.dispatchEvent(new CustomEvent('app_sync_refresh'));
+        setTimeout(() => setPullMessage(null), 3000);
+      } else {
+        setPullMessage(data.error || 'Failed to sync');
+      }
+    } catch {
+      setPullMessage('Network error');
+    } finally {
+      setPulling(false);
+    }
+  };
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -142,12 +172,29 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       {/* Main Content Area */}
       <main className="flex-1 p-4 sm:p-8 lg:p-10 overflow-y-auto max-w-7xl bg-theme-page text-theme-primary flex flex-col">
         {/* Admin Console Top-Right Brand Bar */}
-        <div className="flex items-center justify-between pb-6 mb-6 border-b border-theme-glass">
+        <div className="flex items-center justify-between pb-6 mb-6 border-b border-theme-glass flex-wrap gap-4">
           <div className="flex items-center gap-2 text-xs text-theme-muted font-medium">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>Admin Console</span>
             <span className="opacity-40">•</span>
             <span className="font-mono text-theme-accent">Signed in as {username || 'admin'}</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handlePullFromDb}
+              disabled={pulling}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-theme-accent/20 text-theme-accent hover:bg-theme-accent/30 border border-theme-accent/40 transition-all cursor-pointer disabled:opacity-50"
+              title="Pull latest changes from Firestore database and sync local cache"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${pulling ? 'animate-spin' : ''}`} />
+              <span>{pulling ? 'Pulling...' : 'Pull Latest from DB'}</span>
+            </button>
+            {pullMessage && (
+              <span className="text-[11px] font-medium text-emerald-400 bg-emerald-950/40 px-2 py-1 rounded-lg border border-emerald-900/50">
+                {pullMessage}
+              </span>
+            )}
           </div>
 
           {/* Top Right Corner Brand Logo */}

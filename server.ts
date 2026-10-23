@@ -38,6 +38,7 @@ import {
   saveFirestoreSyncFlag,
   getFirestoreSyncFlag,
   getFirestoreProductById,
+  getFirestoreCategories,
 } from './src/lib/firestoreCatalog.ts';
 
 const app = express();
@@ -45,12 +46,14 @@ const PORT = process.env.PORT || 3000;
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 // Ensure data and uploads directories exist
+const ROOT_DB_FILE = path.resolve(process.cwd(), 'db.json');
 const DATA_DIR = path.resolve(process.cwd(), 'data');
+const DATA_DB_FILE = path.join(DATA_DIR, 'db.json');
 const UPLOADS_DIR = path.resolve(process.cwd(), 'uploads');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
-const DB_FILE = path.join(DATA_DIR, 'db.json');
+const DB_FILE = ROOT_DB_FILE;
 
 // Memory DB with atomic disk persistence
 interface DBState {
@@ -189,15 +192,26 @@ function deduplicateProducts(products: Product[]): Product[] {
     'DA-AP-10-0001', 'DA-AP-10-0002', 'DA-AP-10-0003', 'DA-AP-10-0004', 'DA-AP-10-0005'
   ]);
   const deletedIds = new Set<string>([
-    'prod-da-ap-10-0001', 'prod-da-ap-10-0002', 'prod-da-ap-10-0003', 'prod-da-ap-10-0004', 'prod-da-ap-10-0005'
+    'prod-da-ap-10-0001', 'prod-da-ap-10-0002', 'prod-da-ap-10-0003', 'prod-da-ap-10-0004', 'prod-da-ap-10-0005',
+    'prod-1792707793419'
   ]);
 
   const seenIds = new Set<string>();
   const seenSkus = new Set<string>();
   const result: Product[] = [];
 
-  // Sort so more detailed items (with images & variants) take precedence
+  // Sort by updated_at descending, penalizing legacy timestamp IDs so clean prod-da- IDs take absolute precedence
   const sorted = [...products].sort((a, b) => {
+    const idA = (a.id || '');
+    const idB = (b.id || '');
+    const isLegacyA = idA.includes('1792') || /^prod-\d+$/.test(idA);
+    const isLegacyB = idB.includes('1792') || /^prod-\d+$/.test(idB);
+    if (isLegacyA && !isLegacyB) return 1;
+    if (!isLegacyA && isLegacyB) return -1;
+
+    const timeA = new Date(a.updated_at || a.created_at || 0).getTime();
+    const timeB = new Date(b.updated_at || b.created_at || 0).getTime();
+    if (timeA !== timeB) return timeB - timeA;
     const scoreA = (a.images?.length || 0) + (a.variants?.length || 0) + (a.description ? 1 : 0);
     const scoreB = (b.images?.length || 0) + (b.variants?.length || 0) + (b.description ? 1 : 0);
     return scoreB - scoreA;
@@ -207,7 +221,7 @@ function deduplicateProducts(products: Product[]): Product[] {
     if (!p) continue;
     const pid = (p.id || '').trim();
     const psku = (p.sku || '').trim().toUpperCase();
-    if (deletedIds.has(pid) || deletedSkus.has(psku)) continue;
+    if (deletedIds.has(pid) || deletedSkus.has(psku) || /^prod-\d+$/.test(pid)) continue;
     if (pid && seenIds.has(pid)) continue;
     if (psku && seenSkus.has(psku)) continue;
     if (pid) seenIds.add(pid);
@@ -236,7 +250,12 @@ function loadDB(): DBState {
     try {
       const data = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
       data.pages = INITIAL_PAGES.length === 0 ? [] : INITIAL_PAGES;
-      data.products = INITIAL_PRODUCTS.length === 0 ? [] : deduplicateProducts(INITIAL_PRODUCTS);
+      const originalProducts = data.products || [];
+      const cleanedProducts = deduplicateProducts(originalProducts);
+      data.products = cleanedProducts;
+      if (cleanedProducts.length !== originalProducts.length) {
+        saveDB(data, false);
+      }
       if (!Array.isArray(data.testimonials) || data.testimonials.length === 0) {
         data.testimonials = [...INITIAL_TESTIMONIALS];
       }
@@ -299,25 +318,18 @@ let db = loadDB();
 // Smart Firestore Synchronization: Load persisted Firestore records on boot with zero runtime read penalty
 async function syncFromFirestoreOnBoot() {
   try {
-    const [fsPages, fsSettings, fsProducts, fsTestimonials] = await Promise.all([
+    const [fsPages, fsSettings, fsProducts, fsTestimonials, fsCategories] = await Promise.all([
       getFirestorePages().catch(() => null),
       getFirestoreSettings().catch(() => null),
-      getFirestoreProducts().catch(() => null),
+      getFirestoreProducts(true).catch(() => null),
       getFirestoreTestimonials().catch(() => null),
+      getFirestoreCategories().catch(() => null),
     ]);
 
     let changed = false;
 
     if (Array.isArray(fsPages) && fsPages.length > 0) {
-      fsPages.forEach((fp) => {
-        const idx = (db.pages || []).findIndex((p) => p.slug === fp.slug);
-        const mergedFp = mergeMissingPageSections(fp);
-        if (idx >= 0) {
-          db.pages[idx] = mergeMissingPageSections({ ...db.pages[idx], ...mergedFp });
-        } else {
-          (db.pages = db.pages || []).push(mergedFp);
-        }
-      });
+      db.pages = fsPages;
       changed = true;
     }
 
@@ -327,38 +339,22 @@ async function syncFromFirestoreOnBoot() {
     }
 
     if (Array.isArray(fsProducts) && fsProducts.length > 0) {
-      const pMap = new Map<string, Product>();
-      (db.products || []).forEach((p) => {
-        if (p?.sku) pMap.set(p.sku.toUpperCase(), p);
-      });
-      fsProducts.forEach((fp) => {
-        if (fp?.sku) {
-          const key = fp.sku.toUpperCase();
-          const existing = pMap.get(key);
-          pMap.set(key, { ...(existing || {}), ...fp });
-        }
-      });
-      db.products = Array.from(pMap.values());
+      db.products = deduplicateProducts(fsProducts);
       changed = true;
     }
 
     if (Array.isArray(fsTestimonials) && fsTestimonials.length > 0) {
-      const tMap = new Map<string, Testimonial>();
-      (db.testimonials || []).forEach((t) => {
-        if (t?.id) tMap.set(t.id, t);
-      });
-      fsTestimonials.forEach((ft) => {
-        if (ft?.id) {
-          const existing = tMap.get(ft.id);
-          tMap.set(ft.id, { ...(existing || {}), ...ft });
-        }
-      });
-      db.testimonials = Array.from(tMap.values());
+      db.testimonials = fsTestimonials;
+      changed = true;
+    }
+
+    if (Array.isArray(fsCategories) && fsCategories.length > 0) {
+      db.categories = fsCategories;
       changed = true;
     }
 
     if (changed) {
-      saveDB(db);
+      saveDB(db, false);
       console.log('[server] Initialized and synchronized from Firestore.');
     }
   } catch (e) {
@@ -558,9 +554,13 @@ function saveDB(state: DBState, markChange = true) {
     state.sync_flag.updated_at = new Date().toISOString();
     saveFirestoreSyncFlag(true).catch(() => {});
   }
+  const content = JSON.stringify(state, null, 2);
   const tempFile = `${DB_FILE}.tmp`;
-  fs.writeFileSync(tempFile, JSON.stringify(state, null, 2), 'utf-8');
+  fs.writeFileSync(tempFile, content, 'utf-8');
   fs.renameSync(tempFile, DB_FILE);
+  try {
+    fs.writeFileSync(DATA_DB_FILE, content, 'utf-8');
+  } catch {}
 }
 
 // Audit logger helper (Never logs credentials)
@@ -663,11 +663,12 @@ app.use('/api', async (_req: Request, res: Response, next: NextFunction) => {
     const fsFlag = await getFirestoreSyncFlag();
     if (fsFlag && fsFlag.changed) {
       console.log('[ServerSync] Sync flag is TRUE in Firestore! Performing direct Firestore lookup and refresh...');
-      const [fsPages, fsSettings, fsProducts, fsTestimonials] = await Promise.all([
+      const [fsPages, fsSettings, fsProducts, fsTestimonials, fsCategories] = await Promise.all([
         getFirestorePages().catch(() => null),
         getFirestoreSettings().catch(() => null),
         getFirestoreProducts(true).catch(() => null),
         getFirestoreTestimonials().catch(() => null),
+        getFirestoreCategories().catch(() => null),
       ]);
 
       let updated = false;
@@ -685,6 +686,10 @@ app.use('/api', async (_req: Request, res: Response, next: NextFunction) => {
       }
       if (Array.isArray(fsTestimonials) && fsTestimonials.length > 0) {
         db.testimonials = fsTestimonials;
+        updated = true;
+      }
+      if (Array.isArray(fsCategories) && fsCategories.length > 0) {
+        db.categories = fsCategories;
         updated = true;
       }
 
@@ -974,6 +979,54 @@ app.post('/api/admin/change-pin', requireAdmin, (req: Request, res: Response) =>
   });
 });
 
+// Admin endpoint to manually pull latest changes from Firestore and sync local cache
+app.post('/api/admin/pull-sync', requireAdmin, async (_req: Request, res: Response) => {
+  try {
+    const [fsPages, fsSettings, fsProducts, fsTestimonials, fsCategories] = await Promise.all([
+      getFirestorePages().catch(() => null),
+      getFirestoreSettings().catch(() => null),
+      getFirestoreProducts(true).catch(() => null),
+      getFirestoreTestimonials().catch(() => null),
+      getFirestoreCategories().catch(() => null),
+    ]);
+
+    let updated = false;
+    if (Array.isArray(fsProducts) && fsProducts.length > 0) {
+      db.products = deduplicateProducts(fsProducts);
+      updated = true;
+    }
+    if (Array.isArray(fsPages) && fsPages.length > 0) {
+      db.pages = fsPages;
+      updated = true;
+    }
+    if (fsSettings && fsSettings.business_name) {
+      db.settings = { ...db.settings, ...fsSettings };
+      updated = true;
+    }
+    if (Array.isArray(fsTestimonials) && fsTestimonials.length > 0) {
+      db.testimonials = fsTestimonials;
+      updated = true;
+    }
+    if (Array.isArray(fsCategories) && fsCategories.length > 0) {
+      db.categories = fsCategories;
+      updated = true;
+    }
+
+    if (updated) {
+      saveDB(db, false);
+    }
+
+    db.sync_flag = { changed: false, updated_at: new Date().toISOString() };
+    saveDB(db, false);
+    await saveFirestoreSyncFlag(false).catch(() => {});
+
+    logAudit('admin_pulled_latest_db', 'system', 'db', { message: 'Admin manually pulled latest changes from Firestore and synced local cache.' });
+    res.json({ success: true, message: 'Successfully pulled latest changes from database and synced local cache.' });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to pull latest changes from database' });
+  }
+});
+
 // Sync Flag Endpoints for Database Hit Optimization
 app.get('/api/sync-flag', async (_req: Request, res: Response) => {
   if (!db.sync_flag) {
@@ -1044,7 +1097,15 @@ function isServerSkuBlocked(sku?: string): boolean {
   return blockedSet.has(s);
 }
 
-app.get('/api/products', (req: Request, res: Response) => {
+app.get('/api/products', async (req: Request, res: Response) => {
+  try {
+    const fsProducts = await getFirestoreProducts(true);
+    if (Array.isArray(fsProducts) && fsProducts.length > 0) {
+      db.products = deduplicateProducts(fsProducts);
+      saveDB(db, false);
+    }
+  } catch {}
+
   let list = deduplicateProducts(db.products).filter((p) => p.is_published && !isServerSkuBlocked(p.sku));
 
   const { category, search, minPrice, maxPrice, size, sort, featured } = req.query;
@@ -1591,7 +1652,15 @@ app.delete('/api/admin/categories/:id', requireAdmin, (req: Request, res: Respon
 });
 
 // Admin Products CRUD
-app.get('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
+app.get('/api/admin/products', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const fsProducts = await getFirestoreProducts(true);
+    if (Array.isArray(fsProducts) && fsProducts.length > 0) {
+      db.products = deduplicateProducts(fsProducts);
+      saveDB(db, false);
+    }
+  } catch {}
+
   let list = deduplicateProducts(db.products);
   const { search, category, published, missing_images } = req.query;
 

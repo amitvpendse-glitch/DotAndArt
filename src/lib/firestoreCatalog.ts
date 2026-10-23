@@ -42,7 +42,7 @@ const CATALOG_STATE_COLLECTION = 'catalog_state';
 // In-memory cache with short TTL to avoid excessive Firestore reads while ensuring multi-device consistency
 let cachedProducts: Product[] | null = null;
 let lastProductsFetchTime = 0;
-const CACHE_TTL_MS = 2000; // 2 seconds
+const CACHE_TTL_MS = 0; // Zero cache TTL to guarantee real-time multi-browser sync
 
 // Quota safeguard flag to prevent quota error loops
 let firestoreQuotaExceeded = false;
@@ -132,9 +132,7 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
     const colRef = collection(db, PRODUCTS_COLLECTION);
     const snap = await getDocs(colRef);
 
-    const items: Product[] = [];
-    const seenIds = new Set<string>();
-    const seenSkus = new Set<string>();
+    const rawItems: Product[] = [];
 
     if (!snap.empty) {
       snap.forEach((docSnap) => {
@@ -143,11 +141,7 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
         const psku = (data.sku || '').trim().toUpperCase();
 
         if (!deletedSet.has(pid) && !deletedSet.has(psku) && !deletedSet.has(docSnap.id) && !isSkuBlocked(psku, pid)) {
-          if (pid && seenIds.has(pid)) return;
-          if (psku && seenSkus.has(psku)) return;
-          if (pid) seenIds.add(pid);
-          if (psku) seenSkus.add(psku);
-          items.push({
+          rawItems.push({
             ...data,
             id: pid,
           });
@@ -155,8 +149,39 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
       });
     }
 
-    // Ensure all INITIAL_PRODUCTS and localCustom products are included
-    const allSources = [...localCustom, ...INITIAL_PRODUCTS, ...items];
+    // Sort rawItems by updated_at descending so newest updates are processed first
+    rawItems.sort((a, b) => {
+      const timeA = new Date(a?.updated_at || a?.created_at || 0).getTime();
+      const timeB = new Date(b?.updated_at || b?.created_at || 0).getTime();
+      if (timeA !== timeB) return timeB - timeA;
+      const scoreA = (a?.images?.length || 0) + (a?.variants?.length || 0) + (a?.description ? 1 : 0);
+      const scoreB = (b?.images?.length || 0) + (b?.variants?.length || 0) + (b?.description ? 1 : 0);
+      return scoreB - scoreA;
+    });
+
+    const items: Product[] = [];
+    const seenIds = new Set<string>();
+    const seenSkus = new Set<string>();
+    for (const p of rawItems) {
+      const pid = (p.id || '').trim();
+      const psku = (p.sku || '').trim().toUpperCase();
+      if (pid && seenIds.has(pid)) continue;
+      if (psku && seenSkus.has(psku)) continue;
+      if (pid) seenIds.add(pid);
+      if (psku) seenSkus.add(psku);
+      items.push(p);
+    }
+
+    // Prioritize Firestore items over local custom and initial products
+    const allSources = [...items, ...localCustom, ...INITIAL_PRODUCTS];
+    allSources.sort((a, b) => {
+      const timeA = new Date(a?.updated_at || a?.created_at || 0).getTime();
+      const timeB = new Date(b?.updated_at || b?.created_at || 0).getTime();
+      if (timeA !== timeB) return timeB - timeA;
+      const scoreA = (a?.images?.length || 0) + (a?.variants?.length || 0);
+      const scoreB = (b?.images?.length || 0) + (b?.variants?.length || 0);
+      return scoreB - scoreA;
+    });
     const finalMap = new Map<string, Product>();
     for (const p of allSources) {
       if (!p) continue;
@@ -165,6 +190,8 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
       if (deletedSet.has(pid) || deletedSet.has(psku) || isSkuBlocked(psku, pid)) continue;
       if (pid && finalMap.has(pid)) continue;
       if (psku && finalMap.has(psku)) continue;
+      // If Firestore already has this SKU, do not let initial or local override unless newer
+      if (psku && Array.from(finalMap.values()).some(existing => (existing.sku || '').toUpperCase() === psku)) continue;
       if (pid) finalMap.set(pid, p);
       if (psku) finalMap.set(psku, p);
     }
