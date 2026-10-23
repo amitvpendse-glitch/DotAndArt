@@ -31,6 +31,8 @@ import {
 } from '../utils/whatsapp';
 import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
 import { isSkuBlocked } from '../lib/blockedSkus';
+import { onSnapshot, query, where, collection } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 interface ProductDetailPageProps {
   sku: string;
@@ -62,46 +64,56 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   }>({ msg: '', attachments: [] });
 
   useEffect(() => {
-    async function fetchDetail() {
-      setLoading(true);
-      if (isSkuBlocked(sku)) {
-        setProduct(null);
-        setRelated([]);
-        setLoading(false);
-        return;
-      }
-      try {
-        const data = await safeFetchJson<{ product: Product; related: Product[] } | null>(
+    if (isSkuBlocked(sku)) {
+      setProduct(null);
+      setRelated([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    const colRef = collection(db, 'products');
+    const q = query(colRef, where('sku', '==', sku));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (!snapshot.empty) {
+        const productDoc = snapshot.docs[0];
+        const data = productDoc.data() as Product;
+        const prod = { ...data, id: productDoc.id };
+        setProduct(prod);
+
+        // Fetch related products (keep as is or update to snapshot)
+        // Since related products depend on category_id, we can keep the simple fetch or also make it real-time
+        // For now, let's keep the related logic simple
+        safeFetchJson<{ product: Product; related: Product[] } | null>(
           `/api/products/${sku}`,
           undefined,
           null
-        );
-        if (data && data.product && !isSkuBlocked(data.product.sku, data.product.id)) {
-          setProduct(data.product);
-          const rawRel = data.related || [];
-          const seenRel = new Set<string>();
-          const uniqueRel = rawRel.filter((p) => {
-            const pid = p?.id || p?.sku;
-            if (!pid || seenRel.has(pid)) return false;
-            seenRel.add(pid);
-            return true;
-          });
-          setRelated(uniqueRel);
-          if (data.product?.variants && data.product.variants.length > 0) {
-            setSelectedVariant(data.product.variants[0]);
-          } else {
-            setSelectedVariant(undefined);
+        ).then((data) => {
+          if (data && data.related) {
+            const rawRel = data.related || [];
+            const seenRel = new Set<string>();
+            const uniqueRel = rawRel.filter((p) => {
+              const pid = p?.id || p?.sku;
+              if (!pid || seenRel.has(pid)) return false;
+              seenRel.add(pid);
+              return true;
+            });
+            setRelated(uniqueRel);
           }
+        });
+        
+        // Auto-select variant if not already selected
+        if (!selectedVariant && prod?.variants && prod.variants.length > 0) {
+            setSelectedVariant(prod.variants[0]);
         }
-      } catch (err) {
-        console.error('Failed to load product detail', err);
-      } finally {
-        setLoading(false);
+      } else {
+        setProduct(null);
       }
-    }
+      setLoading(false);
+    });
 
-    fetchDetail();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return () => unsubscribe();
   }, [sku]);
 
   if (loading) {
