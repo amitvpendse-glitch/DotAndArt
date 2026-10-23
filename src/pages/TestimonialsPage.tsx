@@ -155,15 +155,22 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
         }),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (e) {
+        console.error('[frontend] Failed to parse JSON response:', text);
+        throw new Error('Server returned invalid response.');
+      }
 
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to submit testimonial.');
+        throw new Error((data as any).error || 'Failed to submit testimonial.');
       }
 
       // Prepend newly added testimonial to the list immediately
-      if (data.testimonial) {
-        setTestimonials((prev) => [data.testimonial, ...prev]);
+      if ((data as any).testimonial) {
+        setTestimonials((prev) => [(data as any).testimonial, ...prev]);
       } else {
         fetchTestimonials();
       }

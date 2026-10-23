@@ -1076,6 +1076,20 @@ app.get('/api/debug/product/:sku', async (req: Request, res: Response) => {
   }
 });
 
+app.get('/api/debug/testimonials', requireAdmin, async (_req: Request, res: Response) => {
+  try {
+    const testimonials = await getFirestoreTestimonials();
+    res.json({
+      success: true,
+      count: testimonials.length,
+      testimonials,
+      firestoreQuotaExceeded: (global as any).firestoreQuotaExceeded || false
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 /* =========================================================
    PUBLIC WEBSITE ENDPOINTS
