@@ -22,6 +22,9 @@ import { INITIAL_PAGES } from '../data/initialCatalog';
 import { setActiveWhatsAppNumber } from '../utils/whatsapp';
 import { AdminTestimonials } from './AdminTestimonials';
 import { AdminFAQs } from './AdminFAQs';
+import { onSnapshot, collection } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { PAGES_COLLECTION } from '../lib/firestoreCatalog';
 
 interface AdminPagesCMSProps {
   token: string;
@@ -220,6 +223,18 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
 
   useEffect(() => {
     fetchPagesAndSettings();
+
+    // Add real-time listener for PAGES_COLLECTION
+    const colRef = collection(db, PAGES_COLLECTION);
+    const unsubscribe = onSnapshot(colRef, (snapshot) => {
+      const data: WebsitePage[] = [];
+      snapshot.forEach((doc) => doc.exists() && data.push(doc.data() as WebsitePage));
+      
+      // Update pages state
+      setPages(data);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleSelectPage = (slug: string) => {
