@@ -59,8 +59,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         return;
       }
 
-      const data = await res.json();
-      if (res.ok && data.success) {
+      const text = await res.text();
+      let data: any = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        data = { error: text || 'Invalid response from server' };
+      }
+
+      if (res.ok && (data.success !== false)) {
         setPullMessage('Synced with DB!');
         window.dispatchEvent(new CustomEvent('app_sync_refresh'));
         setTimeout(() => setPullMessage(null), 3000);
