@@ -70,6 +70,24 @@ export async function getFirestoreDeletedIds(): Promise<Set<string>> {
     "DA-AP-10-0001", "DA-AP-10-0002", "DA-AP-10-0003", "DA-AP-10-0004", "DA-AP-10-0005",
     "prod-da-ap-10-0001", "prod-da-ap-10-0002", "prod-da-ap-10-0003", "prod-da-ap-10-0004", "prod-da-ap-10-0005"
   ]);
+
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const delStr = localStorage.getItem('app_deleted_product_ids');
+      if (delStr) {
+        const parsed = JSON.parse(delStr);
+        if (Array.isArray(parsed)) {
+          parsed.forEach((id) => {
+            if (id) {
+              defaultDeleted.add(String(id));
+              defaultDeleted.add(String(id).toUpperCase());
+            }
+          });
+        }
+      }
+    } catch {}
+  }
+
   if (firestoreQuotaExceeded) return defaultDeleted;
 
   try {
@@ -78,7 +96,12 @@ export async function getFirestoreDeletedIds(): Promise<Set<string>> {
     if (snap.exists()) {
       const data = snap.data();
       if (Array.isArray(data?.ids)) {
-        data.ids.forEach((id: any) => defaultDeleted.add(String(id)));
+        data.ids.forEach((id: any) => {
+          if (id) {
+            defaultDeleted.add(String(id));
+            defaultDeleted.add(String(id).toUpperCase());
+          }
+        });
       }
     }
   } catch (err) {
@@ -88,10 +111,46 @@ export async function getFirestoreDeletedIds(): Promise<Set<string>> {
 }
 
 export async function addFirestoreDeletedIds(ids: string[]): Promise<void> {
-  if (!ids || ids.length === 0 || firestoreQuotaExceeded) return;
+  if (!ids || ids.length === 0) return;
+  cachedProducts = null;
+
+  // Sync localStorage immediately in browser
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const delStr = localStorage.getItem('app_deleted_product_ids');
+      const parsed = delStr ? JSON.parse(delStr) : [];
+      const set = new Set(Array.isArray(parsed) ? parsed : []);
+      ids.forEach((id) => {
+        if (id) {
+          set.add(String(id));
+          set.add(String(id).toUpperCase());
+        }
+      });
+      localStorage.setItem('app_deleted_product_ids', JSON.stringify(Array.from(set)));
+
+      const custStr = localStorage.getItem('app_custom_products');
+      if (custStr) {
+        const cust = JSON.parse(custStr);
+        if (Array.isArray(cust)) {
+          const filtered = cust.filter(
+            (p) => !set.has(p.id) && !set.has(p.sku) && !set.has(String(p.sku || '').toUpperCase())
+          );
+          localStorage.setItem('app_custom_products', JSON.stringify(filtered));
+        }
+      }
+    } catch {}
+  }
+
+  if (firestoreQuotaExceeded) return;
+
   try {
     const existing = await getFirestoreDeletedIds();
-    ids.forEach((id) => existing.add(id));
+    ids.forEach((id) => {
+      if (id) {
+        existing.add(String(id));
+        existing.add(String(id).toUpperCase());
+      }
+    });
     const docRef = doc(db, CATALOG_STATE_COLLECTION, 'deleted_items');
     await setDoc(docRef, { ids: Array.from(existing), updated_at: new Date().toISOString() }, { merge: true });
   } catch (err) {
@@ -100,21 +159,41 @@ export async function addFirestoreDeletedIds(ids: string[]): Promise<void> {
 }
 
 export async function removeFirestoreDeletedIds(ids: string[]): Promise<void> {
-  if (!ids || ids.length === 0 || firestoreQuotaExceeded) return;
+  if (!ids || ids.length === 0) return;
+  cachedProducts = null;
+
+  // Sync localStorage in browser
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const delStr = localStorage.getItem('app_deleted_product_ids');
+      if (delStr) {
+        const parsed = JSON.parse(delStr);
+        if (Array.isArray(parsed)) {
+          const idSet = new Set(ids.map((i) => String(i)));
+          ids.forEach((i) => idSet.add(String(i).toUpperCase()));
+          const filtered = parsed.filter((item) => !idSet.has(String(item)) && !idSet.has(String(item).toUpperCase()));
+          localStorage.setItem('app_deleted_product_ids', JSON.stringify(filtered));
+        }
+      }
+    } catch {}
+  }
+
+  if (firestoreQuotaExceeded) return;
+
   try {
     const existing = await getFirestoreDeletedIds();
     let changed = false;
     ids.forEach((id) => {
-      if (existing.has(id)) {
-        existing.delete(id);
+      if (!id) return;
+      const strId = String(id);
+      const upper = strId.toUpperCase();
+      if (existing.has(strId)) {
+        existing.delete(strId);
         changed = true;
       }
-      if (typeof id === 'string') {
-        const upper = id.toUpperCase();
-        if (existing.has(upper)) {
-          existing.delete(upper);
-          changed = true;
-        }
+      if (existing.has(upper)) {
+        existing.delete(upper);
+        changed = true;
       }
     });
     if (changed) {
@@ -262,49 +341,85 @@ export async function getFirestoreProductById(idOrSku: string): Promise<Product 
  * Saves or updates a single product in Firestore.
  */
 export async function saveFirestoreProduct(product: Product): Promise<void> {
-  if (firestoreQuotaExceeded) {
-    cachedProducts = null;
-    return;
+  cachedProducts = null; // Invalidate cache immediately
+
+  const targetSku = (product.sku || '').trim().toUpperCase();
+  const targetId = (product.id || '').trim();
+
+  // Determine doc ID in Firestore, resolving if a document already exists with this SKU or ID
+  let docId = targetId;
+  if (!docId || !docId.startsWith('prod-')) {
+    if (targetSku) {
+      docId = `prod-${targetSku.toLowerCase()}`;
+    } else {
+      docId = `prod-${Date.now()}`;
+    }
   }
+
+  // Sync localStorage immediately in browser environment
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const unDeleteIds = [docId, targetId, targetSku, product.sku].filter(Boolean) as string[];
+      const delStr = localStorage.getItem('app_deleted_product_ids');
+      if (delStr) {
+        const parsed = JSON.parse(delStr);
+        if (Array.isArray(parsed)) {
+          const idSet = new Set(unDeleteIds.map((i) => String(i)));
+          unDeleteIds.forEach((i) => idSet.add(String(i).toUpperCase()));
+          const filtered = parsed.filter((item) => !idSet.has(String(item)) && !idSet.has(String(item).toUpperCase()));
+          localStorage.setItem('app_deleted_product_ids', JSON.stringify(filtered));
+        }
+      }
+      const customStr = localStorage.getItem('app_custom_products');
+      let customArr: Product[] = [];
+      if (customStr) {
+        try {
+          customArr = JSON.parse(customStr);
+        } catch {}
+      }
+      if (!Array.isArray(customArr)) customArr = [];
+      const matchIdx = customArr.findIndex(
+        (p) =>
+          p.id === docId ||
+          p.id === targetId ||
+          (p.sku && targetSku && p.sku.toUpperCase() === targetSku)
+      );
+      const cleanProd = { ...product, id: docId, sku: targetSku || product.sku, updated_at: new Date().toISOString() };
+      if (matchIdx >= 0) {
+        customArr[matchIdx] = cleanProd;
+      } else {
+        customArr.unshift(cleanProd);
+      }
+      localStorage.setItem('app_custom_products', JSON.stringify(customArr));
+    } catch {}
+  }
+
+  if (firestoreQuotaExceeded) return;
+
   try {
-    cachedProducts = null; // Invalidate cache
-    const docId = product.id || `prod-${Date.now()}`;
+    // If updating, find if an existing doc has this SKU with a different doc ID
+    try {
+      const colRef = collection(db, PRODUCTS_COLLECTION);
+      const snap = await getDocs(colRef);
+      snap.forEach((d) => {
+        const dData = d.data() as Product;
+        if (
+          d.id === targetId ||
+          (targetSku && ((dData.sku && dData.sku.toUpperCase() === targetSku) || d.id.toUpperCase() === targetSku))
+        ) {
+          docId = d.id;
+        }
+      });
+    } catch {}
+
     const docRef = doc(db, PRODUCTS_COLLECTION, docId);
-    await setDoc(docRef, cleanFirestoreData({ ...product, id: docId, updated_at: new Date().toISOString() }), { merge: true });
+    const cleaned = cleanFirestoreData({ ...product, id: docId, updated_at: new Date().toISOString() });
+    await setDoc(docRef, cleaned, { merge: true });
     console.log(`[firestoreCatalog] Successfully saved product: ${docId}`);
 
-    // Immediately remove from deleted_items so saved artwork is never filtered out
-    const unDeleteIds = [docId, product.id, product.sku].filter(Boolean) as string[];
+    // Immediately remove from deleted_items so saved artwork is visible everywhere
+    const unDeleteIds = [docId, targetId, product.sku, targetSku].filter(Boolean) as string[];
     await removeFirestoreDeletedIds(unDeleteIds);
-
-    // Sync localStorage if running in browser environment
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        const delStr = localStorage.getItem('app_deleted_product_ids');
-        if (delStr) {
-          const parsed = JSON.parse(delStr);
-          if (Array.isArray(parsed)) {
-            const filtered = parsed.filter((i) => !unDeleteIds.includes(i) && !unDeleteIds.includes(String(i).toUpperCase()));
-            localStorage.setItem('app_deleted_product_ids', JSON.stringify(filtered));
-          }
-        }
-        const customStr = localStorage.getItem('app_custom_products');
-        let customArr: Product[] = [];
-        if (customStr) {
-          try { customArr = JSON.parse(customStr); } catch {}
-        }
-        if (!Array.isArray(customArr)) customArr = [];
-        const matchIdx = customArr.findIndex(
-          (p) => p.id === docId || p.id === product.id || (p.sku && product.sku && p.sku.toUpperCase() === product.sku.toUpperCase())
-        );
-        if (matchIdx >= 0) {
-          customArr[matchIdx] = { ...product, id: docId };
-        } else {
-          customArr.unshift({ ...product, id: docId });
-        }
-        localStorage.setItem('app_custom_products', JSON.stringify(customArr));
-      } catch {}
-    }
 
     await saveFirestoreSyncFlag(true);
   } catch (err) {
@@ -330,10 +445,43 @@ export async function deleteFirestoreProducts(ids: string[], skus: string[]): Pr
   const allIdentifiers = [...matchIds, ...matchSkus].filter(Boolean);
 
   if (allIdentifiers.length === 0) return 0;
+
+  const normalized = new Set<string>();
+  allIdentifiers.forEach((item) => {
+    const s = String(item).trim();
+    if (s) {
+      normalized.add(s);
+      normalized.add(s.toUpperCase());
+      normalized.add(s.toLowerCase());
+    }
+  });
+
+  // 1. Immediately mark as deleted in state & localStorage
+  await addFirestoreDeletedIds(Array.from(normalized));
+
+  // Sync localStorage immediately in browser
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const customStr = localStorage.getItem('app_custom_products');
+      if (customStr) {
+        const customArr = JSON.parse(customStr);
+        if (Array.isArray(customArr)) {
+          const filtered = customArr.filter(
+            (p) =>
+              !normalized.has(p.id) &&
+              !normalized.has(String(p.id).toUpperCase()) &&
+              !normalized.has(p.sku) &&
+              !normalized.has(String(p.sku || '').toUpperCase())
+          );
+          localStorage.setItem('app_custom_products', JSON.stringify(filtered));
+        }
+      }
+    } catch {}
+  }
+
   if (firestoreQuotaExceeded) return allIdentifiers.length;
 
   try {
-    await addFirestoreDeletedIds(allIdentifiers);
     const colRef = collection(db, PRODUCTS_COLLECTION);
     const snap = await getDocs(colRef);
     let deletedCount = 0;
@@ -342,14 +490,17 @@ export async function deleteFirestoreProducts(ids: string[], skus: string[]): Pr
     snap.forEach((docSnap) => {
       const data = docSnap.data() as Product;
       const docId = docSnap.id;
-      if (
-        matchIds.includes(docId) ||
-        matchIds.includes(data.id) ||
-        matchSkus.includes(data.sku) ||
-        matchIds.includes(data.sku) ||
-        matchSkus.includes(data.id) ||
-        matchSkus.includes(docId)
-      ) {
+      const dSku = (data.sku || '').trim().toUpperCase();
+      const dId = (data.id || '').trim();
+
+      const matches =
+        normalized.has(docId) ||
+        normalized.has(docId.toUpperCase()) ||
+        normalized.has(docId.toLowerCase()) ||
+        (dId && (normalized.has(dId) || normalized.has(dId.toUpperCase()) || normalized.has(dId.toLowerCase()))) ||
+        (dSku && (normalized.has(dSku) || normalized.has(dSku.toUpperCase()) || normalized.has(dSku.toLowerCase())));
+
+      if (matches) {
         batch.delete(docSnap.ref);
         deletedCount++;
       }
@@ -380,6 +531,41 @@ export async function updateFirestoreProducts(
   const matchSkus = Array.isArray(skus) ? skus : [];
 
   if (matchIds.length === 0 && matchSkus.length === 0) return 0;
+
+  const normalized = new Set<string>();
+  [...matchIds, ...matchSkus].forEach((item) => {
+    if (item) {
+      const s = String(item).trim();
+      normalized.add(s);
+      normalized.add(s.toUpperCase());
+      normalized.add(s.toLowerCase());
+    }
+  });
+
+  // Sync localStorage in browser
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const customStr = localStorage.getItem('app_custom_products');
+      if (customStr) {
+        const customArr = JSON.parse(customStr);
+        if (Array.isArray(customArr)) {
+          const updated = customArr.map((p) => {
+            if (
+              normalized.has(p.id) ||
+              normalized.has(String(p.id).toUpperCase()) ||
+              normalized.has(p.sku) ||
+              normalized.has(String(p.sku || '').toUpperCase())
+            ) {
+              return { ...p, ...fields, updated_at: new Date().toISOString() };
+            }
+            return p;
+          });
+          localStorage.setItem('app_custom_products', JSON.stringify(updated));
+        }
+      }
+    } catch {}
+  }
+
   if (firestoreQuotaExceeded) return matchIds.length + matchSkus.length;
 
   try {
@@ -394,13 +580,17 @@ export async function updateFirestoreProducts(
     snap.forEach((docSnap) => {
       const data = docSnap.data() as Product;
       const docId = docSnap.id;
-      if (
-        matchIds.includes(docId) ||
-        matchIds.includes(data.id) ||
-        matchSkus.includes(data.sku) ||
-        matchIds.includes(data.sku) ||
-        matchSkus.includes(data.id)
-      ) {
+      const dSku = (data.sku || '').trim().toUpperCase();
+      const dId = (data.id || '').trim();
+
+      const matches =
+        normalized.has(docId) ||
+        normalized.has(docId.toUpperCase()) ||
+        normalized.has(docId.toLowerCase()) ||
+        (dId && (normalized.has(dId) || normalized.has(dId.toUpperCase()) || normalized.has(dId.toLowerCase()))) ||
+        (dSku && (normalized.has(dSku) || normalized.has(dSku.toUpperCase()) || normalized.has(dSku.toLowerCase())));
+
+      if (matches) {
         batch.set(docSnap.ref, cleanFields, { merge: true });
         updatedCount++;
       }

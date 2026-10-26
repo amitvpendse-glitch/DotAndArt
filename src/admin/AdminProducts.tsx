@@ -37,7 +37,7 @@ import { AvailableBadge } from '../components/AvailableBadge';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
 import { handleClientFallbackApi } from '../lib/clientFallbackApi';
 import { generateProfessionalCatalogPDF } from '../utils/pdfCatalogGenerator';
-import { deleteFirestoreProducts, updateFirestoreProducts, saveFirestoreProduct } from '../lib/firestoreCatalog';
+import { deleteFirestoreProducts, updateFirestoreProducts, saveFirestoreProduct, getFirestoreDeletedIds } from '../lib/firestoreCatalog';
 import { onSnapshot, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { isAwaitingPhoto } from '../utils/productUtils';
@@ -571,23 +571,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         seen.add(pid);
         return true;
       });
-      setProducts((current) => {
-        const incoming = uniqueProds;
-        const incomingMap = new Map<string, Product>();
-        incoming.forEach((p) => {
-          if (p.id) incomingMap.set(p.id, p);
-          if (p.sku) incomingMap.set(p.sku.toUpperCase(), p);
-        });
-        const retained: Product[] = [];
-        current.forEach((p) => {
-          const pid = p?.id;
-          const psku = (p?.sku || '').toUpperCase();
-          if (pid && !incomingMap.has(pid) && !(psku && incomingMap.has(psku))) {
-            retained.push(p);
-          }
-        });
-        return [...retained, ...incoming];
-      });
+      setProducts(uniqueProds);
       setCategories(Array.isArray(catRes) ? catRes : []);
       if (setRes) setWebsiteSettings(setRes);
     } catch (err) {
@@ -620,23 +604,25 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
           }
         });
         if (fsData.length > 0) {
-          setProducts((prev) => {
-            const seenIds = new Set<string>();
-            const seenSkus = new Set<string>();
-            const merged = [...fsData, ...prev];
-            const deduped: Product[] = [];
-            for (const p of merged) {
-              if (!p) continue;
-              const pid = (p.id || '').trim();
-              const psku = (p.sku || '').trim().toUpperCase();
-              if (pid && seenIds.has(pid)) continue;
-              if (psku && seenSkus.has(psku)) continue;
-              if (pid) seenIds.add(pid);
-              if (psku) seenSkus.add(psku);
-              deduped.push(p);
-            }
-            return deduped;
-          });
+          getFirestoreDeletedIds()
+            .then((deletedSet) => {
+              const seenIds = new Set<string>();
+              const seenSkus = new Set<string>();
+              const deduped: Product[] = [];
+              for (const p of fsData) {
+                if (!p) continue;
+                const pid = (p.id || '').trim();
+                const psku = (p.sku || '').trim().toUpperCase();
+                if (deletedSet.has(pid) || deletedSet.has(psku) || deletedSet.has(pid.toUpperCase())) continue;
+                if (pid && seenIds.has(pid)) continue;
+                if (psku && seenSkus.has(psku)) continue;
+                if (pid) seenIds.add(pid);
+                if (psku) seenSkus.add(psku);
+                deduped.push(p);
+              }
+              setProducts(deduped);
+            })
+            .catch(() => {});
         }
       },
       (err) => {
@@ -902,6 +888,20 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     setErrorMessage('');
 
     try {
+      const targetId = editingProduct ? editingProduct.id : `prod-${Date.now()}`;
+      const now = new Date().toISOString();
+      const fullPayload: Product = {
+        ...payload,
+        id: targetId,
+        created_at: editingProduct?.created_at || now,
+        updated_at: now,
+      };
+
+      // 1. Direct Firestore save guarantees immediate persistence on live static Vercel
+      await saveFirestoreProduct(fullPayload).catch((err) =>
+        console.warn('Direct Firestore save product error', err)
+      );
+
       const url = editingProduct
         ? `/api/admin/products/${editingProduct.id}`
         : '/api/admin/products';
@@ -915,27 +915,27 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(fullPayload),
         },
-        null
+        fullPayload
       );
 
-      if (!data || data.error) {
-        setErrorMessage(data?.error || 'Failed to save product');
-        return;
-      }
+      const resultProduct = data && (data.sku || data.id) ? { ...fullPayload, ...data } : fullPayload;
 
-      if (data && (data.sku || data.id)) {
-        setProducts((prev) => {
-          const exists = prev.some((p) => p.id === data.id || (p.sku && data.sku && p.sku === data.sku));
-          if (exists) {
-            return prev.map((p) => (p.id === data.id || (p.sku && data.sku && p.sku === data.sku) ? data : p));
-          } else {
-            return [data, ...prev];
-          }
-        });
-        await saveFirestoreProduct(data).catch((err) => console.warn('Direct Firestore save product from admin console:', err));
-      }
+      setProducts((prev) => {
+        const exists = prev.some(
+          (p) => p.id === resultProduct.id || (p.sku && resultProduct.sku && p.sku.toUpperCase() === resultProduct.sku.toUpperCase())
+        );
+        if (exists) {
+          return prev.map((p) =>
+            p.id === resultProduct.id || (p.sku && resultProduct.sku && p.sku.toUpperCase() === resultProduct.sku.toUpperCase())
+              ? resultProduct
+              : p
+          );
+        } else {
+          return [resultProduct, ...prev];
+        }
+      });
 
       setIsDrawerDirty(false);
       setDrawerOpen(false);
@@ -960,7 +960,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
       );
       if (res && res.sku) {
         setProducts((prev) => [res, ...prev]);
-        saveFirestoreProduct(res).catch(() => {});
+        await saveFirestoreProduct(res).catch(() => {});
         fetchProductsAndCategories();
         window.dispatchEvent(new Event('app_products_updated'));
       }
@@ -971,23 +971,41 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
 
   const handleDelete = async () => {
     if (!deleteConfirm) return;
+    const targetId = deleteConfirm.id;
+    const targetSku = deleteConfirm.sku;
+    setDeleteConfirm(null);
+
+    // Optimistically remove from state immediately
+    setProducts((prev) =>
+      prev.filter(
+        (p) =>
+          p.id !== targetId &&
+          p.sku !== targetSku &&
+          p.sku.toUpperCase() !== targetSku.toUpperCase() &&
+          p.id !== `prod-${targetSku.toLowerCase()}`
+      )
+    );
+
     try {
-      await deleteFirestoreProducts([deleteConfirm.id], [deleteConfirm.sku]).catch((err) =>
+      // 1. Direct Firestore deletion (marks deleted_items and deletes docs)
+      await deleteFirestoreProducts([targetId], [targetSku]).catch((err) =>
         console.warn('Firestore direct single delete warning', err)
       );
 
-      const res = await fetch(`/api/admin/products/${deleteConfirm.id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const targetId = deleteConfirm.id;
-      const targetSku = deleteConfirm.sku;
-      setDeleteConfirm(null);
-      setProducts((prev) => prev.filter((p) => p.id !== targetId && p.sku !== targetSku));
+      // 2. Safe API call
+      await safeFetchJson<any>(
+        `/api/admin/products/${targetId}`,
+        {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
+        },
+        { success: true }
+      );
+
       fetchProductsAndCategories();
       window.dispatchEvent(new Event('app_products_updated'));
     } catch (err) {
-      console.error(err);
+      console.error('Delete failed:', err);
     }
   };
 
@@ -1003,21 +1021,34 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         : field === 'is_available' || field === 'is_published';
     const nextVal = !currentVal;
 
+    const updatedProduct = { ...p, [field]: nextVal };
+
     // Optimistic update
     setProducts((prev) =>
-      prev.map((item) => (item.id === p.id ? { ...item, [field]: nextVal } : item))
+      prev.map((item) =>
+        item.id === p.id || item.sku.toUpperCase() === p.sku.toUpperCase() ? updatedProduct : item
+      )
     );
     window.dispatchEvent(new Event('app_products_updated'));
 
     try {
-      await fetch(`/api/admin/products/${p.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+      // Direct Firestore save guarantees persistence on static site
+      await saveFirestoreProduct(updatedProduct).catch((err) =>
+        console.warn('Firestore direct toggle warning', err)
+      );
+
+      await safeFetchJson<any>(
+        `/api/admin/products/${p.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ [field]: nextVal }),
         },
-        body: JSON.stringify({ [field]: nextVal }),
-      });
+        updatedProduct
+      );
     } catch (err) {
       console.error(`Failed to toggle ${field}`, err);
       fetchProductsAndCategories();

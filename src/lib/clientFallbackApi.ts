@@ -82,15 +82,12 @@ function getStoredProducts(): Product[] {
     if (del) {
       const parsed = JSON.parse(del);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        const validInitialSkus = new Set(INITIAL_PRODUCTS.map((p) => (p.sku || '').toUpperCase()));
-        const validInitialIds = new Set(INITIAL_PRODUCTS.map((p) => p.id));
-        const cleanedDel = parsed.filter(
-          (id) => !validInitialSkus.has(String(id).toUpperCase()) && !validInitialIds.has(String(id))
-        );
-        if (cleanedDel.length !== parsed.length) {
-          localStorage.setItem('app_deleted_product_ids', JSON.stringify(cleanedDel));
-        }
-        cleanedDel.forEach((item) => deletedSet.add(String(item)));
+        parsed.forEach((item) => {
+          if (item) {
+            deletedSet.add(String(item));
+            deletedSet.add(String(item).toUpperCase());
+          }
+        });
       }
     }
   } catch {}
@@ -625,7 +622,19 @@ export async function handleClientFallbackApi<T = any>(
       const products = getStoredProducts() || [];
       const categories = getStoredCategories() || [];
 
-      let index = products.findIndex((p) => p.id === rawId || p.id === decodedId || p.sku === rawId || p.sku === decodedId || encodeURIComponent(p.sku) === rawId);
+      const rawIdLower = rawId.toLowerCase();
+      const decodedIdLower = decodedId.toLowerCase();
+
+      let index = products.findIndex(
+        (p) =>
+          p.id === rawId ||
+          p.id === decodedId ||
+          p.sku === rawId ||
+          p.sku === decodedId ||
+          encodeURIComponent(p.sku) === rawId ||
+          (p.id && (p.id.toLowerCase() === rawIdLower || p.id.toLowerCase() === decodedIdLower)) ||
+          (p.sku && (p.sku.toLowerCase() === rawIdLower || p.sku.toLowerCase() === decodedIdLower))
+      );
       
       const cat = body.category_id ? categories.find((c) => c.id === body.category_id) : undefined;
 
@@ -638,7 +647,7 @@ export async function handleClientFallbackApi<T = any>(
         };
         products[index] = updatedProd;
         localStorage.setItem('app_custom_products', JSON.stringify(products));
-        saveFirestoreProduct(updatedProd).catch((e) => console.warn('[clientFallbackApi] Firestore update error', e));
+        await saveFirestoreProduct(updatedProd).catch((e) => console.warn('[clientFallbackApi] Firestore update error', e));
         return jsonRes(updatedProd);
       } else {
         // Upsert if not found by index
@@ -653,7 +662,7 @@ export async function handleClientFallbackApi<T = any>(
         };
         products.unshift(newProd);
         localStorage.setItem('app_custom_products', JSON.stringify(products));
-        saveFirestoreProduct(newProd).catch((e) => console.warn('[clientFallbackApi] Firestore upsert error', e));
+        await saveFirestoreProduct(newProd).catch((e) => console.warn('[clientFallbackApi] Firestore upsert error', e));
         return jsonRes(newProd);
       }
     } catch (err) {
@@ -665,28 +674,60 @@ export async function handleClientFallbackApi<T = any>(
   // 1d. DELETE /api/admin/products/:id
   if (pathname.startsWith('/api/admin/products/') && method === 'DELETE') {
     const id = pathname.replace('/api/admin/products/', '');
+    const decodedId = decodeURIComponent(id);
+    const idLower = id.toLowerCase();
+    const decodedLower = decodedId.toLowerCase();
+
     const products = getStoredProducts();
-    const target = (products || []).find((p) => p.id === id || p.sku === id);
+    const target = (products || []).find(
+      (p) =>
+        p.id === id ||
+        p.id === decodedId ||
+        p.sku === id ||
+        p.sku === decodedId ||
+        (p.id && (p.id.toLowerCase() === idLower || p.id.toLowerCase() === decodedLower)) ||
+        (p.sku && (p.sku.toLowerCase() === idLower || p.sku.toLowerCase() === decodedLower))
+    );
 
     let deletedIdsSet = new Set<string>();
     try {
       const del = localStorage.getItem('app_deleted_product_ids');
       if (del) {
         const parsed = JSON.parse(del);
-        if (Array.isArray(parsed)) parsed.forEach(i => deletedIdsSet.add(String(i)));
+        if (Array.isArray(parsed)) parsed.forEach((i) => {
+          if (i) {
+            deletedIdsSet.add(String(i));
+            deletedIdsSet.add(String(i).toUpperCase());
+          }
+        });
       }
     } catch {}
 
     if (target) {
       deletedIdsSet.add(target.id);
-      if (target.sku) deletedIdsSet.add(target.sku);
+      deletedIdsSet.add(target.id.toUpperCase());
+      if (target.sku) {
+        deletedIdsSet.add(target.sku);
+        deletedIdsSet.add(target.sku.toUpperCase());
+      }
     }
     deletedIdsSet.add(id);
+    deletedIdsSet.add(id.toUpperCase());
+    deletedIdsSet.add(decodedId);
+    deletedIdsSet.add(decodedId.toUpperCase());
     localStorage.setItem('app_deleted_product_ids', JSON.stringify(Array.from(deletedIdsSet)));
 
-    const filtered = products.filter((p) => p.id !== id && p.sku !== id);
+    const filtered = products.filter(
+      (p) =>
+        !deletedIdsSet.has(p.id) &&
+        !deletedIdsSet.has(p.id.toUpperCase()) &&
+        !deletedIdsSet.has(p.sku) &&
+        !deletedIdsSet.has(p.sku.toUpperCase())
+    );
     localStorage.setItem('app_custom_products', JSON.stringify(filtered));
-    deleteFirestoreProducts([id], [target?.sku || id]).catch((e) => console.warn('[clientFallbackApi] Firestore delete error', e));
+    await deleteFirestoreProducts([id, target?.id || id], [target?.sku || id, id]).catch((e) =>
+      console.warn('[clientFallbackApi] Firestore delete error', e)
+    );
     return jsonRes({ success: true, message: 'Product deleted successfully' });
   }
 

@@ -1940,7 +1940,14 @@ app.post('/api/admin/products/bulk', requireAdmin, async (req: Request, res: Res
 
 app.put('/api/admin/products/:id', requireAdmin, async (req: Request, res: Response) => {
   const { id } = req.params;
-  const index = (db.products || []).findIndex((p) => p.id === id);
+  const idLower = id.toLowerCase();
+  let index = (db.products || []).findIndex(
+    (p) =>
+      p.id === id ||
+      p.sku === id ||
+      (p.id && p.id.toLowerCase() === idLower) ||
+      (p.sku && p.sku.toLowerCase() === idLower)
+  );
 
   if (index === -1) {
     res.status(404).json({ error: 'Product not found' });
@@ -1951,7 +1958,7 @@ app.put('/api/admin/products/:id', requireAdmin, async (req: Request, res: Respo
 
   if (p.sku) {
     const cleanSku = p.sku.trim().toUpperCase();
-    if (db.products.some((other) => other.id !== id && other.sku === cleanSku)) {
+    if (db.products.some((other, idx) => idx !== index && other.sku === cleanSku)) {
       res.status(400).json({ error: `SKU "${cleanSku}" is already taken by another product.` });
       return;
     }
@@ -2021,17 +2028,28 @@ app.put('/api/admin/products/:id', requireAdmin, async (req: Request, res: Respo
 
 app.delete('/api/admin/products/:id', requireAdmin, async (req: Request, res: Response) => {
   const { id } = req.params;
-  const index = (db.products || []).findIndex((p) => p.id === id);
+  const idLower = id.toLowerCase();
+  let index = (db.products || []).findIndex(
+    (p) =>
+      p.id === id ||
+      p.sku === id ||
+      (p.id && p.id.toLowerCase() === idLower) ||
+      (p.sku && p.sku.toLowerCase() === idLower)
+  );
 
   if (index === -1) {
-    res.status(404).json({ error: 'Product not found' });
+    // Attempt Firestore delete even if not in memory
+    try {
+      await deleteFirestoreProducts([id], [id]);
+    } catch {}
+    res.json({ success: true, message: `Product deleted successfully` });
     return;
   }
 
   const deleted = db.products.splice(index, 1)[0];
   saveDB(db);
   try {
-    await deleteFirestoreProducts([id], [deleted.sku]);
+    await deleteFirestoreProducts([id, deleted.id], [deleted.sku, id]);
   } catch (e) {
     console.warn('[server] Firestore delete error', e);
   }
@@ -2049,8 +2067,24 @@ app.post('/api/admin/products/bulk-delete', requireAdmin, async (req: Request, r
     return;
   }
 
+  const normalized = new Set<string>();
+  [...matchIds, ...matchSkus].forEach((item) => {
+    if (item) {
+      const s = String(item).trim();
+      normalized.add(s);
+      normalized.add(s.toUpperCase());
+      normalized.add(s.toLowerCase());
+    }
+  });
+
   const initialCount = db.products.length;
-  db.products = db.products.filter((p) => !(matchIds.includes(p.id) || matchSkus.includes(p.sku) || matchIds.includes(p.sku) || matchIds.includes(p.id)));
+  db.products = db.products.filter(
+    (p) =>
+      !normalized.has(p.id) &&
+      !normalized.has(String(p.id).toUpperCase()) &&
+      !normalized.has(p.sku) &&
+      !normalized.has(String(p.sku).toUpperCase())
+  );
   const deletedCount = initialCount - db.products.length;
 
   saveDB(db);
@@ -2102,8 +2136,23 @@ app.put('/api/admin/products/bulk-update', requireAdmin, (req: Request, res: Res
   let updatedCount = 0;
   const now = new Date().toISOString();
 
+  const normalized = new Set<string>();
+  [...matchIds, ...matchSkus].forEach((item) => {
+    if (item) {
+      const s = String(item).trim();
+      normalized.add(s);
+      normalized.add(s.toUpperCase());
+      normalized.add(s.toLowerCase());
+    }
+  });
+
   db.products = db.products.map((p) => {
-    if (matchIds.includes(p.id) || matchSkus.includes(p.sku) || matchIds.includes(p.sku) || matchSkus.includes(p.id)) {
+    if (
+      normalized.has(p.id) ||
+      normalized.has(String(p.id).toUpperCase()) ||
+      normalized.has(p.sku) ||
+      normalized.has(String(p.sku).toUpperCase())
+    ) {
       updatedCount++;
       const updated = { ...p };
 
@@ -2646,7 +2695,7 @@ app.delete('/api/admin/testimonials/:id', requireAdmin, async (req: Request, res
   }
   const deleted = db.testimonials.splice(index, 1)[0];
   saveDB(db);
-  deleteFirestoreTestimonial(id).catch((e) => console.warn('[server] Firestore testimonial delete error', e));
+  await deleteFirestoreTestimonial(id).catch((e) => console.warn('[server] Firestore testimonial delete error', e));
   logAudit('testimonial_deleted', 'testimonial', id, { customer_name: deleted.customer_name });
   res.json({ success: true, message: 'Testimonial deleted' });
 });

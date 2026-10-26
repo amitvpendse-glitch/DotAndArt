@@ -248,9 +248,12 @@ export async function safeFetchJson<T = any>(
       const body = typeof init?.body === 'string' ? JSON.parse(init.body) : init?.body || {};
       const matchIds = Array.isArray(body.ids) ? body.ids : [];
       const matchSkus = Array.isArray(body.skus) ? body.skus : [];
-      deleteFirestoreProducts(matchIds, matchSkus).catch((e) =>
+      await deleteFirestoreProducts(matchIds, matchSkus).catch((e) =>
         console.error('[safeFetchJson] Firestore bulk delete sync error', e)
       );
+      const clientFallback = await handleClientFallbackApi<T>(urlString, init);
+      if (clientFallback) return clientFallback;
+      return { success: true, count: matchIds.length } as unknown as T;
     } catch (err) {
       console.error('[safeFetchJson] Error parsing bulk delete payload', err);
     }
@@ -263,9 +266,12 @@ export async function safeFetchJson<T = any>(
       const matchIds = Array.isArray(body.ids) ? body.ids : [];
       const matchSkus = Array.isArray(body.skus) ? body.skus : [];
       const fields = body.fields || {};
-      updateFirestoreProducts(matchIds, matchSkus, fields).catch((e) =>
+      await updateFirestoreProducts(matchIds, matchSkus, fields).catch((e) =>
         console.error('[safeFetchJson] Firestore bulk update sync error', e)
       );
+      const clientFallback = await handleClientFallbackApi<T>(urlString, init);
+      if (clientFallback) return clientFallback;
+      return { success: true, count: matchIds.length } as unknown as T;
     } catch (err) {
       console.error('[safeFetchJson] Error parsing bulk update payload', err);
     }
@@ -274,9 +280,13 @@ export async function safeFetchJson<T = any>(
   // 7. Intercept Single Product Delete
   if (method === 'DELETE' && urlString.startsWith('/api/admin/products/')) {
     const id = urlString.replace('/api/admin/products/', '').split('?')[0];
-    deleteFirestoreProducts([id], [id]).catch((e) =>
+    const decodedId = decodeURIComponent(id);
+    await deleteFirestoreProducts([id, decodedId], [id, decodedId]).catch((e) =>
       console.error('[safeFetchJson] Firestore delete sync error', e)
     );
+    const clientFallback = await handleClientFallbackApi<T>(urlString, init);
+    if (clientFallback) return clientFallback;
+    return { success: true, message: 'Product deleted successfully' } as unknown as T;
   }
 
   // 7a. Intercept Single Product CREATE
@@ -287,9 +297,12 @@ export async function safeFetchJson<T = any>(
         const id = body.id || `prod-${Date.now()}`;
         const sku = (body.sku || '').trim().toUpperCase() || `DA-ART-${Date.now()}`;
         const newProduct = { ...body, id, sku };
-        saveFirestoreProduct(newProduct).catch((e) =>
+        await saveFirestoreProduct(newProduct).catch((e) =>
           console.error('[safeFetchJson] Firestore product create sync error', e)
         );
+        const clientFallback = await handleClientFallbackApi<T>(urlString, init);
+        if (clientFallback) return clientFallback;
+        return newProduct as unknown as T;
       }
     } catch (err) {
       console.error('[safeFetchJson] Error parsing create product payload', err);
@@ -301,10 +314,17 @@ export async function safeFetchJson<T = any>(
     try {
       const body = typeof init?.body === 'string' ? JSON.parse(init.body) : init?.body || {};
       const id = urlString.replace('/api/admin/products/', '').split('?')[0];
-      if (body && typeof body === 'object' && (body.id || id)) {
-        saveFirestoreProduct({ ...body, id: body.id || id }).catch((e) =>
+      const decodedId = decodeURIComponent(id);
+      if (body && typeof body === 'object' && (body.id || id || decodedId)) {
+        const targetId = body.id || decodedId || id;
+        const targetSku = (body.sku || '').trim().toUpperCase() || decodedId || id;
+        const updatedObj = { ...body, id: targetId, sku: targetSku };
+        await saveFirestoreProduct(updatedObj).catch((e) =>
           console.error('[safeFetchJson] Firestore product save sync error', e)
         );
+        const clientFallback = await handleClientFallbackApi<T>(urlString, init);
+        if (clientFallback) return clientFallback;
+        return updatedObj as unknown as T;
       }
     } catch (err) {
       console.error('[safeFetchJson] Error parsing product payload', err);
