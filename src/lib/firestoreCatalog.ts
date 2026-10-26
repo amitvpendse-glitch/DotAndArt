@@ -747,9 +747,14 @@ export async function saveFirestorePage(page: WebsitePage): Promise<void> {
   if (firestoreQuotaExceeded) return;
   try {
     const docRef = doc(db, PAGES_COLLECTION, page.slug);
-    await setDoc(docRef, cleanFirestoreData({ ...page, updated_at: new Date().toISOString() }), { merge: true });
+    const cleaned = cleanFirestoreData({ ...page, updated_at: new Date().toISOString() });
+    const payloadStr = JSON.stringify(cleaned);
+    console.log(`[firestoreCatalog] Saving page "${page.slug}" to Firestore. Payload size: ${(payloadStr.length / 1024).toFixed(1)}KB`);
+    await setDoc(docRef, cleaned, { merge: true });
+    console.log(`[firestoreCatalog] Successfully saved page "${page.slug}" to Firestore.`);
     await saveFirestoreSyncFlag(true);
   } catch (err) {
+    console.error(`[firestoreCatalog] Failed to save page "${page.slug}" to Firestore:`, err);
     checkQuotaError(err);
   }
 }

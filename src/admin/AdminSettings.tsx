@@ -4,6 +4,7 @@ import { Save, CheckCircle2, AlertCircle, UploadCloud, ImageIcon, Plus, Trash2, 
 import { WebsiteSettings, Product, ShowcaseBannerHotspot } from '../types';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
 import { setActiveWhatsAppNumber } from '../utils/whatsapp';
+import { compressImageFile } from '../utils/imageCompressor';
 
 interface AdminSettingsProps {
   token: string;
@@ -91,8 +92,9 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
     setSuccessMsg('');
 
     try {
+      const compressed = await compressImageFile(file);
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', compressed);
       const res = await fetch('/api/uploads', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
@@ -100,12 +102,14 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
       });
 
       const data = await safeResponseJson(res, {});
-      if (res.ok && data.url) {
+      const filePath = data.file_path || data.url;
+      if (res.ok && filePath) {
         setSettings({
           ...settings,
-          featured_3d_image: data.url,
+          featured_3d_image: filePath,
         });
-        setSuccessMsg('New 3D Banner Image uploaded! Click "Save All Settings" to apply globally.');
+        setIsDirty(true);
+        setSuccessMsg('New 3D Banner Image compressed & uploaded! Click "Save All Settings" to apply globally.');
       } else {
         setErrorMsg(data?.error || 'Failed to upload banner image file.');
       }
@@ -133,6 +137,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
       <FloatingSaveButton 
         onSave={() => handleSave()} 
         isSaving={saving} 
+        isDirty={isDirty}
       />
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

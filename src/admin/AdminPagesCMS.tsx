@@ -25,6 +25,7 @@ import { AdminFAQs } from './AdminFAQs';
 import { onSnapshot, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { PAGES_COLLECTION } from '../lib/firestoreCatalog';
+import { compressImageFile, compressDataUrl } from '../utils/imageCompressor';
 
 interface AdminPagesCMSProps {
   token: string;
@@ -402,8 +403,10 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
     setErrorMsg('');
 
     try {
+      // Compress image client-side before upload to guarantee ultra-fast processing
+      const compressedFile = await compressImageFile(file);
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', compressedFile);
       const data = await safeFetchJson<{ success?: boolean; file_path?: string; error?: string }>(
         '/api/uploads',
         {
@@ -416,7 +419,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
 
       if (data && data.file_path) {
         onDone(data.file_path);
-        setSuccessMsg('Image uploaded successfully!');
+        setSuccessMsg('Image compressed & uploaded successfully!');
       } else {
         setErrorMsg(data?.error || 'Failed to upload image.');
       }
@@ -461,7 +464,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
     setIsDirty(true);
   };
 
-  // Save changes to backend
+  // Save changes to backend & Cloud Firestore
   const handleSave = async (status: 'draft' | 'published' = 'published') => {
     if (!activePage) return;
     setSaving(true);
@@ -469,6 +472,67 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
     setErrorMsg('');
 
     try {
+      // Clean and compress any Data URLs in section content_json before saving
+      const cleanedSections = await Promise.all(
+        (activePage.sections || []).map(async (sec) => {
+          if (!sec.content_json) return sec;
+          const contentCopy = { ...sec.content_json };
+
+          // Compress slides
+          if (Array.isArray(contentCopy.slides)) {
+            contentCopy.slides = await Promise.all(
+              contentCopy.slides.map(async (slide: any) => {
+                if (slide.image && typeof slide.image === 'string' && slide.image.startsWith('data:image/')) {
+                  return { ...slide, image: await compressDataUrl(slide.image) };
+                }
+                return slide;
+              })
+            );
+          }
+
+          // Compress portals
+          if (Array.isArray(contentCopy.portals)) {
+            contentCopy.portals = await Promise.all(
+              contentCopy.portals.map(async (portal: any) => {
+                if (portal.image && typeof portal.image === 'string' && portal.image.startsWith('data:image/')) {
+                  return { ...portal, image: await compressDataUrl(portal.image) };
+                }
+                return portal;
+              })
+            );
+          }
+
+          // Compress plates
+          if (Array.isArray(contentCopy.plates)) {
+            contentCopy.plates = await Promise.all(
+              contentCopy.plates.map(async (plate: any) => {
+                if (plate.src && typeof plate.src === 'string' && plate.src.startsWith('data:image/')) {
+                  return { ...plate, src: await compressDataUrl(plate.src) };
+                }
+                return plate;
+              })
+            );
+          }
+
+          // Compress individual image fields
+          for (const key of Object.keys(contentCopy)) {
+            if (typeof contentCopy[key] === 'string' && contentCopy[key].startsWith('data:image/')) {
+              contentCopy[key] = await compressDataUrl(contentCopy[key]);
+            }
+          }
+
+          return { ...sec, content_json: contentCopy };
+        })
+      );
+
+      const pagePayload = {
+        title: activePage.title,
+        seo_title: activePage.seo_title,
+        meta_description: activePage.meta_description,
+        status,
+        sections: cleanedSections,
+      };
+
       const updated = await safeFetchJson<WebsitePage | null>(
         `/api/admin/pages/${activePage.slug}`,
         {
@@ -477,29 +541,34 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            title: activePage.title,
-            seo_title: activePage.seo_title,
-            meta_description: activePage.meta_description,
-            status,
-            sections: activePage.sections || [],
-          }),
+          body: JSON.stringify(pagePayload),
         },
         null
       );
 
-      if (updated && updated.slug) {
-        setPages((prev) => prev.map((p) => (p.slug === updated.slug ? updated : p)));
-        setActivePage(updated);
-        setIsDirty(false);
-        setSuccessMsg(`Page "${updated.title}" updated & published successfully!`);
-        window.dispatchEvent(new Event('app_pages_updated'));
-      } else {
-        // Fallback: local activePage updated successfully
-        setIsDirty(false);
-        setSuccessMsg(`Page "${activePage.title}" updated & published successfully!`);
-        window.dispatchEvent(new Event('app_pages_updated'));
-      }
+      const finalPage: WebsitePage =
+        updated && updated.slug ? updated : { ...activePage, sections: cleanedSections, updated_at: new Date().toISOString() };
+
+      setPages((prev) => prev.map((p) => (p.slug === finalPage.slug ? finalPage : p)));
+      setActivePage(finalPage);
+      setIsDirty(false);
+
+      // Immediately sync localStorage
+      try {
+        const pagesCustom = localStorage.getItem('app_custom_pages');
+        let pagesArr: WebsitePage[] = pagesCustom ? JSON.parse(pagesCustom) : [];
+        if (!Array.isArray(pagesArr)) pagesArr = [];
+        const idx = pagesArr.findIndex((p) => p.slug === finalPage.slug);
+        if (idx >= 0) {
+          pagesArr[idx] = finalPage;
+        } else {
+          pagesArr.push(finalPage);
+        }
+        localStorage.setItem('app_custom_pages', JSON.stringify(pagesArr));
+      } catch {}
+
+      setSuccessMsg(`Page "${finalPage.title}" updated & saved to database successfully!`);
+      window.dispatchEvent(new Event('app_pages_updated'));
     } catch (err: any) {
       setErrorMsg(err.message || 'Error saving page changes.');
     } finally {
@@ -522,6 +591,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
         <FloatingSaveButton 
           onSave={() => handleSave('published')} 
           isSaving={saving} 
+          isDirty={isDirty}
         />
       )}
       {/* Top Header */}

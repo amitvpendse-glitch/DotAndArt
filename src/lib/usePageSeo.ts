@@ -76,7 +76,19 @@ export function usePageSeo(slug: string, defaultTitle: string, defaultDesc?: str
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    const handlePagesUpdated = () => {
+      const refreshed = getInitialPage(slug);
+      if (refreshed) {
+        setPage(refreshed);
+      }
+    };
+
+    window.addEventListener('app_pages_updated', handlePagesUpdated);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('app_pages_updated', handlePagesUpdated);
+    };
   }, [slug, defaultTitle]);
 
   return { page, loading };
