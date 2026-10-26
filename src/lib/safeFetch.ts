@@ -336,7 +336,7 @@ export async function safeFetchJson<T = any>(
     try {
       const body = typeof init?.body === 'string' ? JSON.parse(init.body) : init?.body || {};
       if (body && typeof body === 'object') {
-        saveFirestoreSettings(body).catch((e) =>
+        await saveFirestoreSettings(body).catch((e) =>
           console.error('[safeFetchJson] Firestore settings save sync error', e)
         );
       }
@@ -351,7 +351,7 @@ export async function safeFetchJson<T = any>(
     try {
       const body = typeof init?.body === 'string' ? JSON.parse(init.body) : init?.body || {};
       if (body && typeof body === 'object') {
-        saveFirestorePage({ ...body, slug }).catch((e) =>
+        await saveFirestorePage({ ...body, slug }).catch((e) =>
           console.error('[safeFetchJson] Firestore page save sync error', e)
         );
       }
