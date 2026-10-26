@@ -42,7 +42,7 @@ const CATALOG_STATE_COLLECTION = 'catalog_state';
 // In-memory cache with short TTL to avoid excessive Firestore reads while ensuring multi-device consistency
 let cachedProducts: Product[] | null = null;
 let lastProductsFetchTime = 0;
-const CACHE_TTL_MS = 0; // Zero cache TTL to guarantee real-time multi-browser sync
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache TTL to drastically reduce Firestore reads
 
 // Quota safeguard flag to prevent quota error loops
 let firestoreQuotaExceeded = false;
@@ -182,21 +182,21 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
       const scoreB = (b?.images?.length || 0) + (b?.variants?.length || 0);
       return scoreB - scoreA;
     });
-    const finalMap = new Map<string, Product>();
+    const finalItems: Product[] = [];
+    const seenFinalIds = new Set<string>();
+    const seenFinalSkus = new Set<string>();
     for (const p of allSources) {
       if (!p) continue;
       const pid = (p.id || '').trim();
       const psku = (p.sku || '').trim().toUpperCase();
       if (deletedSet.has(pid) || deletedSet.has(psku) || isSkuBlocked(psku, pid)) continue;
-      if (pid && finalMap.has(pid)) continue;
-      if (psku && finalMap.has(psku)) continue;
-      // If Firestore already has this SKU, do not let initial or local override unless newer
-      if (psku && Array.from(finalMap.values()).some(existing => (existing.sku || '').toUpperCase() === psku)) continue;
-      if (pid) finalMap.set(pid, p);
-      if (psku) finalMap.set(psku, p);
+      if (pid && seenFinalIds.has(pid)) continue;
+      if (psku && seenFinalSkus.has(psku)) continue;
+      if (pid) seenFinalIds.add(pid);
+      if (psku) seenFinalSkus.add(psku);
+      finalItems.push(p);
     }
 
-    const finalItems = Array.from(finalMap.values());
     cachedProducts = finalItems;
     lastProductsFetchTime = now;
     return finalItems;
@@ -244,7 +244,31 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
     const docId = product.id || `prod-${Date.now()}`;
     const docRef = doc(db, PRODUCTS_COLLECTION, docId);
     await setDoc(docRef, cleanFirestoreData({ ...product, id: docId, updated_at: new Date().toISOString() }), { merge: true });
+    console.log(`[firestoreCatalog] Successfully saved product: ${docId}`);
+    await saveFirestoreSyncFlag(true);
   } catch (err) {
+    console.error(`[firestoreCatalog] Failed to save product ${product.id}:`, err);
+    checkQuotaError(err);
+  }
+}
+
+/**
+ * Saves or updates a single product in Firestore, ensuring sync flag is updated.
+ */
+export async function saveFirestoreProductWithSync(product: Product): Promise<void> {
+  if (firestoreQuotaExceeded) {
+    cachedProducts = null;
+    return;
+  }
+  try {
+    cachedProducts = null; // Invalidate cache
+    const docId = product.id || `prod-${Date.now()}`;
+    const docRef = doc(db, PRODUCTS_COLLECTION, docId);
+    await setDoc(docRef, cleanFirestoreData({ ...product, id: docId, updated_at: new Date().toISOString() }), { merge: true });
+    console.log(`[firestoreCatalog] Successfully saved product: ${docId}`);
+    await saveFirestoreSyncFlag(true);
+  } catch (err) {
+    console.error(`[firestoreCatalog] Failed to save product ${product.id}:`, err);
     checkQuotaError(err);
   }
 }
@@ -286,6 +310,7 @@ export async function deleteFirestoreProducts(ids: string[], skus: string[]): Pr
 
     if (deletedCount > 0) {
       await batch.commit();
+      await saveFirestoreSyncFlag(true);
     }
 
     return deletedCount > 0 ? deletedCount : allIdentifiers.length;
@@ -336,6 +361,7 @@ export async function updateFirestoreProducts(
 
     if (updatedCount > 0) {
       await batch.commit();
+      await saveFirestoreSyncFlag(true);
     }
 
     return updatedCount;
@@ -363,6 +389,7 @@ export async function bulkImportFirestoreProducts(products: Product[]): Promise<
       count++;
     }
     await batch.commit();
+    await saveFirestoreSyncFlag(true);
     return count;
   } catch (err) {
     checkQuotaError(err);
@@ -430,6 +457,7 @@ export async function saveFirestoreSettings(settings: WebsiteSettings): Promise<
   try {
     const docRef = doc(db, SETTINGS_COLLECTION, 'main');
     await setDoc(docRef, cleanFirestoreData(settings), { merge: true });
+    await saveFirestoreSyncFlag(true);
   } catch (err) {
     checkQuotaError(err);
   }
@@ -476,6 +504,7 @@ export async function saveFirestorePage(page: WebsitePage): Promise<void> {
   try {
     const docRef = doc(db, PAGES_COLLECTION, page.slug);
     await setDoc(docRef, cleanFirestoreData({ ...page, updated_at: new Date().toISOString() }), { merge: true });
+    await saveFirestoreSyncFlag(true);
   } catch (err) {
     checkQuotaError(err);
   }

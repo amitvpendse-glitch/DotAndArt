@@ -223,7 +223,7 @@ function deduplicateProducts(products: Product[]): Product[] {
     if (!p) continue;
     const pid = (p.id || '').trim();
     const psku = (p.sku || '').trim().toUpperCase();
-    if (deletedIds.has(pid) || deletedSkus.has(psku) || /^prod-\d+$/.test(pid)) continue;
+    if (deletedIds.has(pid) || deletedSkus.has(psku)) continue;
     if (pid && seenIds.has(pid)) continue;
     if (psku && seenSkus.has(psku)) continue;
     if (pid) seenIds.add(pid);
@@ -684,7 +684,7 @@ app.use('/api', async (_req: Request, res: Response, next: NextFunction) => {
 
       let updated = false;
       if (Array.isArray(fsProducts) && fsProducts.length > 0) {
-        db.products = deduplicateProducts(fsProducts);
+        db.products = deduplicateProducts([...db.products, ...fsProducts]);
         updated = true;
       }
       if (Array.isArray(fsPages) && fsPages.length > 0) {
@@ -1126,9 +1126,9 @@ function isServerSkuBlocked(sku?: string): boolean {
 
 app.get('/api/products', async (req: Request, res: Response) => {
   try {
-    const fsProducts = await getFirestoreProducts(true);
+    const fsProducts = await getFirestoreProducts(false);
     if (Array.isArray(fsProducts) && fsProducts.length > 0) {
-      db.products = deduplicateProducts(fsProducts);
+      db.products = deduplicateProducts([...db.products, ...fsProducts]);
       saveDB(db, false);
     }
   } catch {}
@@ -1218,7 +1218,7 @@ app.get('/api/products', async (req: Request, res: Response) => {
 // Single Product by ID or SKU (Public)
 app.get('/api/products/:idOrSku', async (req: Request, res: Response) => {
   try {
-    const fsProducts = await getFirestoreProducts(true);
+    const fsProducts = await getFirestoreProducts(false);
     if (Array.isArray(fsProducts) && fsProducts.length > 0) {
       db.products = deduplicateProducts(fsProducts);
       saveDB(db, false);
@@ -1723,9 +1723,9 @@ app.delete('/api/admin/categories/:id', requireAdmin, (req: Request, res: Respon
 // Admin Products CRUD
 app.get('/api/admin/products', requireAdmin, async (req: Request, res: Response) => {
   try {
-    const fsProducts = await getFirestoreProducts(true);
+    const fsProducts = await getFirestoreProducts(false);
     if (Array.isArray(fsProducts) && fsProducts.length > 0) {
-      db.products = deduplicateProducts(fsProducts);
+      db.products = deduplicateProducts([...db.products, ...fsProducts]);
       saveDB(db, false);
     }
   } catch {}
@@ -1771,7 +1771,8 @@ app.get('/api/admin/products', requireAdmin, async (req: Request, res: Response)
   res.json({ total: list.length, products: list });
 });
 
-app.post('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
+app.post('/api/admin/products', requireAdmin, async (req: Request, res: Response) => {
+  console.log('[server] Adding product:', JSON.stringify(req.body, null, 2));
   const {
     sku,
     name,
@@ -1801,7 +1802,7 @@ app.post('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
 
   const resolvedCatId = category_id || (req.body.category_slug === 'lippan-wall-hangings' ? 'cat-lippan' : 'cat-mandala');
 
-  if (!name || !sku || !base_price === undefined) {
+  if (!name || !sku || base_price === undefined || base_price === null) {
     res.status(400).json({ error: 'Name, unique SKU, and base price are required' });
     return;
   }
@@ -1849,12 +1850,16 @@ app.post('/api/admin/products', requireAdmin, (req: Request, res: Response) => {
 
   db.products.unshift(newProd);
   saveDB(db);
-  saveFirestoreProduct(newProd).catch((e) => console.warn('[server] Firestore save error', e));
+  try {
+    await saveFirestoreProduct(newProd);
+  } catch (e) {
+    console.warn('[server] Firestore save error', e);
+  }
   logAudit('product_created', 'product', newProd.id, { sku: newProd.sku, name: newProd.name });
   res.json(newProd);
 });
 
-app.post('/api/admin/products/bulk', requireAdmin, (req: Request, res: Response) => {
+app.post('/api/admin/products/bulk', requireAdmin, async (req: Request, res: Response) => {
   const { products } = req.body;
   if (!Array.isArray(products) || products.length === 0) {
     res.status(400).json({ error: 'Array of products required in request body' });
@@ -1924,12 +1929,16 @@ app.post('/api/admin/products/bulk', requireAdmin, (req: Request, res: Response)
   }
 
   saveDB(db);
-  bulkImportFirestoreProducts(createdProducts).catch((e) => console.warn('[server] Firestore bulk import error', e));
+  try {
+    await bulkImportFirestoreProducts(createdProducts);
+  } catch (e) {
+    console.warn('[server] Firestore bulk import error', e);
+  }
   logAudit('products_bulk_created', 'product', `bulk-${createdProducts.length}`, { count: createdProducts.length });
   res.json({ success: true, count: createdProducts.length, products: createdProducts });
 });
 
-app.put('/api/admin/products/:id', requireAdmin, (req: Request, res: Response) => {
+app.put('/api/admin/products/:id', requireAdmin, async (req: Request, res: Response) => {
   const { id } = req.params;
   const index = (db.products || []).findIndex((p) => p.id === id);
 
@@ -2001,12 +2010,16 @@ app.put('/api/admin/products/:id', requireAdmin, (req: Request, res: Response) =
 
   db.products[index].updated_at = new Date().toISOString();
   saveDB(db);
-  saveFirestoreProduct(db.products[index]).catch((e) => console.warn('[server] Firestore update error', e));
+  try {
+    await saveFirestoreProduct(db.products[index]);
+  } catch (e) {
+    console.warn('[server] Firestore update error', e);
+  }
   logAudit('product_updated', 'product', id, { sku: db.products[index].sku, name: db.products[index].name });
   res.json(db.products[index]);
 });
 
-app.delete('/api/admin/products/:id', requireAdmin, (req: Request, res: Response) => {
+app.delete('/api/admin/products/:id', requireAdmin, async (req: Request, res: Response) => {
   const { id } = req.params;
   const index = (db.products || []).findIndex((p) => p.id === id);
 
@@ -2017,13 +2030,17 @@ app.delete('/api/admin/products/:id', requireAdmin, (req: Request, res: Response
 
   const deleted = db.products.splice(index, 1)[0];
   saveDB(db);
-  deleteFirestoreProducts([id], [deleted.sku]).catch((e) => console.warn('[server] Firestore delete error', e));
+  try {
+    await deleteFirestoreProducts([id], [deleted.sku]);
+  } catch (e) {
+    console.warn('[server] Firestore delete error', e);
+  }
   logAudit('product_deleted', 'product', id, { sku: deleted.sku, name: deleted.name });
   res.json({ success: true, message: `Product "${deleted.name}" deleted successfully` });
 });
 
 // Bulk Delete Products
-app.post('/api/admin/products/bulk-delete', requireAdmin, (req: Request, res: Response) => {
+app.post('/api/admin/products/bulk-delete', requireAdmin, async (req: Request, res: Response) => {
   const { ids, skus } = req.body;
   const matchIds = Array.isArray(ids) ? ids : [];
   const matchSkus = Array.isArray(skus) ? skus : [];
@@ -2033,11 +2050,15 @@ app.post('/api/admin/products/bulk-delete', requireAdmin, (req: Request, res: Re
   }
 
   const initialCount = db.products.length;
-  db.products = db.products.filter((p) => !(matchIds.includes(p.id) || matchSkus.includes(p.sku) || matchIds.includes(p.sku) || matchSkus.includes(p.id)));
+  db.products = db.products.filter((p) => !(matchIds.includes(p.id) || matchSkus.includes(p.sku) || matchIds.includes(p.sku) || matchIds.includes(p.id)));
   const deletedCount = initialCount - db.products.length;
 
   saveDB(db);
-  deleteFirestoreProducts(matchIds, matchSkus).catch((e) => console.warn('[server] Firestore bulk delete error', e));
+  try {
+    await deleteFirestoreProducts(matchIds, matchSkus);
+  } catch (e) {
+    console.warn('[server] Firestore bulk delete error', e);
+  }
   logAudit('products_bulk_deleted', 'product', `bulk-del-${deletedCount}`, { count: deletedCount });
   res.json({ success: true, count: deletedCount, message: `Successfully deleted ${deletedCount} product(s)` });
 });
@@ -2147,9 +2168,9 @@ app.put('/api/admin/products/bulk-update', requireAdmin, (req: Request, res: Res
   res.json({ success: true, count: updatedCount, message: `Successfully updated ${updatedCount} product(s)` });
 });
 
-app.post('/api/admin/products/:id/duplicate', requireAdmin, (req: Request, res: Response) => {
+app.post('/api/admin/products/:id/duplicate', requireAdmin, async (req: Request, res: Response) => {
   const { id } = req.params;
-  const original = (db.products || []).find((p) => p.id === id);
+  const original = (db.products || []).find((p) => p.id === id || p.sku === id);
 
   if (!original) {
     res.status(404).json({ error: 'Original product not found' });
@@ -2169,6 +2190,11 @@ app.post('/api/admin/products/:id/duplicate', requireAdmin, (req: Request, res: 
 
   db.products.unshift(copy);
   saveDB(db);
+  try {
+    await saveFirestoreProduct(copy);
+  } catch (e) {
+    console.warn('[server] Firestore duplicate save error', e);
+  }
   logAudit('product_duplicated', 'product', copy.id, { from_sku: original.sku, new_sku: copy.sku });
   res.json(copy);
 });
@@ -2798,12 +2824,24 @@ async function startServer() {
     });
   }
 
-  app.listen(Number(PORT), '0.0.0.0', () => {
+  const server = app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`Dot & Art Server running on http://0.0.0.0:${PORT}`);
+  });
+
+  server.on('error', (err: any) => {
+    console.error('[server] HTTP listen error:', err);
   });
 }
 
+process.on('uncaughtException', (err) => {
+  console.error('[server] Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('[server] Unhandled Rejection:', reason);
+});
+
 startServer().catch((err) => {
   console.error('Failed to start server:', err);
-  process.exit(1);
 });
+

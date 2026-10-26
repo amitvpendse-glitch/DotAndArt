@@ -48,8 +48,8 @@ async function syncProducts() {
     handleFirestoreError(error, OperationType.LIST, 'products');
   }
   
-  const existingProducts = new Map(snapshot.docs.map(doc => [doc.id, doc.data()]));
-  const initialProductMap = new Map(INITIAL_PRODUCTS.map(p => [p.id, p]));
+  const existingProducts = new Map(snapshot.docs.map((d) => [d.id, d.data()]));
+  const initialProductMap = new Map(INITIAL_PRODUCTS.map((p) => [p.id, p]));
 
   console.log(`Found ${existingProducts.size} existing products in Firestore.`);
   console.log(`Expected ${initialProductMap.size} products from catalog.`);
@@ -63,7 +63,7 @@ async function syncProducts() {
     if (!existingProducts.has(id)) {
       console.log(`Adding product: ${id}`);
       try {
-        await setDoc(doc(db, 'products', id), product);
+        await setDoc(doc(productsCollection, id), product);
         addedCount++;
       } catch (error) {
         handleFirestoreError(error, OperationType.CREATE, `products/${id}`);
@@ -71,7 +71,7 @@ async function syncProducts() {
     } else {
       console.log(`Updating product: ${id}`);
       try {
-        await setDoc(doc(db, 'products', id), product); // Using setDoc for full overwrite
+        await setDoc(doc(productsCollection, id), product); // Using setDoc for full overwrite
         updatedCount++;
       } catch (error) {
         handleFirestoreError(error, OperationType.UPDATE, `products/${id}`);
@@ -84,7 +84,7 @@ async function syncProducts() {
     if (!initialProductMap.has(id)) {
       console.log(`Deleting obsolete product: ${id}`);
       try {
-        await deleteDoc(doc(db, 'products', id));
+        await deleteDoc(doc(productsCollection, String(id)));
         deletedCount++;
       } catch (error) {
         handleFirestoreError(error, OperationType.DELETE, `products/${id}`);

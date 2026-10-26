@@ -584,16 +584,55 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
   useEffect(() => {
     fetchProductsAndCategories();
 
-    const colRef = collection(db, 'products');
-    const unsubscribe = onSnapshot(colRef, (snapshot) => {
-      const data: Product[] = [];
-      snapshot.forEach((doc) => doc.exists() && data.push(doc.data() as Product));
-      
-      // Update local state
-      setProducts(data);
-    });
+    const handleProductsRefresh = () => {
+      fetchProductsAndCategories();
+    };
 
-    return () => unsubscribe();
+    window.addEventListener('app_products_updated', handleProductsRefresh);
+    window.addEventListener('app_sync_refresh', handleProductsRefresh);
+
+    const colRef = collection(db, 'products');
+    const unsubscribe = onSnapshot(
+      colRef,
+      (snapshot) => {
+        const fsData: Product[] = [];
+        snapshot.forEach((docSnap) => {
+          if (docSnap.exists()) {
+            const item = docSnap.data() as Product;
+            const pid = item.id || docSnap.id;
+            fsData.push({ ...item, id: pid });
+          }
+        });
+        if (fsData.length > 0) {
+          setProducts((prev) => {
+            const seenIds = new Set<string>();
+            const seenSkus = new Set<string>();
+            const merged = [...fsData, ...prev];
+            const deduped: Product[] = [];
+            for (const p of merged) {
+              if (!p) continue;
+              const pid = (p.id || '').trim();
+              const psku = (p.sku || '').trim().toUpperCase();
+              if (pid && seenIds.has(pid)) continue;
+              if (psku && seenSkus.has(psku)) continue;
+              if (pid) seenIds.add(pid);
+              if (psku) seenSkus.add(psku);
+              deduped.push(p);
+            }
+            return deduped;
+          });
+        }
+      },
+      (err) => {
+        console.warn('[AdminProducts] Firestore snapshot notice:', err);
+      }
+    );
+
+    return () => {
+      window.removeEventListener('app_products_updated', handleProductsRefresh);
+      window.removeEventListener('app_sync_refresh', handleProductsRefresh);
+      unsubscribe();
+    };
   }, [token]);
 
   const handleOpenCreate = () => {
@@ -630,7 +669,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     ]);
     setBadgeTag('');
     setPhotosAvailableNote('');
-    setIsDrawerDirty(false);
+    setIsDrawerDirty(true);
     setErrorMessage('');
     setDrawerOpen(true);
   };
@@ -870,6 +909,18 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         return;
       }
 
+      if (data && data.sku) {
+        setProducts((prev) => {
+          const exists = prev.some((p) => p.id === data.id || p.sku === data.sku);
+          if (exists) {
+            return prev.map((p) => (p.id === data.id || p.sku === data.sku ? data : p));
+          } else {
+            return [data, ...prev];
+          }
+        });
+        saveFirestoreProduct(data).catch((err) => console.warn('Direct Firestore save product from admin console:', err));
+      }
+
       setIsDrawerDirty(false);
       setDrawerOpen(false);
       fetchProductsAndCategories();
@@ -883,11 +934,17 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
 
   const handleDuplicate = async (p: Product) => {
     try {
-      const res = await fetch(`/api/admin/products/${p.id}/duplicate`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
+      const res = await safeFetchJson<Product>(
+        `/api/admin/products/${p.id}/duplicate`,
+        {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        },
+        null
+      );
+      if (res && res.sku) {
+        setProducts((prev) => [res, ...prev]);
+        saveFirestoreProduct(res).catch(() => {});
         fetchProductsAndCategories();
         window.dispatchEvent(new Event('app_products_updated'));
       }
@@ -2480,7 +2537,9 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
               {/* Submit Buttons */}
               <div className="pt-6 border-t border-[#F0E5D8] flex items-center justify-between">
                 <span className="text-[11px] text-[#8C7667]">
-                  {isDrawerDirty ? 'Unsaved edits detected' : 'All changes saved to database'}
+                  {!editingProduct
+                    ? 'Enter artwork details and save to catalog'
+                    : (isDrawerDirty ? 'Unsaved edits detected' : 'All changes saved to database')}
                 </span>
                 <div className="flex items-center gap-3">
                   <button
@@ -2490,33 +2549,38 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                   >
                     Close
                   </button>
-                  <button
-                    type="submit"
-                    disabled={!isDrawerDirty || savingProduct}
-                    className={`px-6 py-2.5 rounded-xl text-xs font-semibold shadow-xs flex items-center gap-2 transition-all ${
-                      !isDrawerDirty
-                        ? 'bg-stone-500/20 text-stone-400 cursor-not-allowed border border-[#D8C7B5]'
-                        : 'bg-[#C85A32] hover:bg-[#A03E1B] text-white cursor-pointer shadow-md transform hover:-translate-y-0.5'
-                    }`}
-                    title={!isDrawerDirty ? 'No unsaved edits' : 'Click to save artwork to database'}
-                  >
-                    {savingProduct ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>Saving to Cloud...</span>
-                      </>
-                    ) : !isDrawerDirty ? (
-                      <>
-                        <Check className="w-4 h-4 text-emerald-600" />
-                        <span>Saved</span>
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4" />
-                        <span>Save Artwork</span>
-                      </>
-                    )}
-                  </button>
+                  {(() => {
+                    const canSave = (!editingProduct ? Boolean(name.trim() && sku.trim()) : isDrawerDirty) && !savingProduct;
+                    return (
+                      <button
+                        type="submit"
+                        disabled={!canSave}
+                        className={`px-6 py-2.5 rounded-xl text-xs font-semibold shadow-xs flex items-center gap-2 transition-all ${
+                          !canSave
+                            ? 'bg-stone-500/20 text-stone-400 cursor-not-allowed border border-[#D8C7B5]'
+                            : 'bg-[#C85A32] hover:bg-[#A03E1B] text-white cursor-pointer shadow-md transform hover:-translate-y-0.5'
+                        }`}
+                        title={!canSave ? 'Please enter artwork name and Product Code' : 'Click to save artwork to database'}
+                      >
+                        {savingProduct ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>Saving to Cloud...</span>
+                          </>
+                        ) : !canSave && editingProduct && !isDrawerDirty ? (
+                          <>
+                            <Check className="w-4 h-4 text-emerald-600" />
+                            <span>Saved</span>
+                          </>
+                        ) : (
+                          <>
+                            <Save className="w-4 h-4" />
+                            <span>{editingProduct ? 'Save Artwork' : 'Create Artwork'}</span>
+                          </>
+                        )}
+                      </button>
+                    );
+                  })()}
                 </div>
               </div>
             </form>

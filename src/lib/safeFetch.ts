@@ -279,12 +279,13 @@ export async function safeFetchJson<T = any>(
     );
   }
 
-  // 7b. Intercept Single Product Save/Update
-  if ((method === 'POST' || method === 'PUT') && urlString.startsWith('/api/admin/products') && !urlString.includes('bulk') && !urlString.includes('duplicate')) {
+  // 7b. Intercept Single Product Update
+  if (method === 'PUT' && urlString.startsWith('/api/admin/products/') && !urlString.includes('bulk') && !urlString.includes('duplicate')) {
     try {
       const body = typeof init?.body === 'string' ? JSON.parse(init.body) : init?.body || {};
-      if (body && typeof body === 'object' && body.name) {
-        saveFirestoreProduct(body).catch((e) =>
+      const id = urlString.replace('/api/admin/products/', '').split('?')[0];
+      if (body && typeof body === 'object' && (body.id || id)) {
+        saveFirestoreProduct({ ...body, id: body.id || id }).catch((e) =>
           console.error('[safeFetchJson] Firestore product save sync error', e)
         );
       }

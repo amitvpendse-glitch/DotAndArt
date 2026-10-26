@@ -341,7 +341,7 @@ export async function handleClientFallbackApi<T = any>(
       const categories = getStoredCategories();
 
       const sku = (body.sku || '').trim().toUpperCase();
-      const cat = (categories || []).find((c) => c.id === body.category_id);
+      const cat = (categories || []).find((c) => c.id === body.category_id || c.slug === body.category_slug) || categories[0];
       const isLippan = cat?.slug === 'lippan-wall-hangings' || (body.name || '').toLowerCase().includes('lippan');
 
       const newProd: Product = {
@@ -350,7 +350,7 @@ export async function handleClientFallbackApi<T = any>(
         name: (body.name || 'Untitled Art').trim(),
         short_description: body.short_description || '',
         description: body.description || '',
-        category_id: body.category_id || categories[0]?.id || 'cat-mandala',
+        category_id: cat?.id || body.category_id || 'cat-mandala',
         category_name: cat?.name || 'Mandala Wall Hangings',
         category_slug: cat?.slug || 'mandala-wall-hangings',
         material: body.material || 'MDF Wood, Acrylics',
@@ -375,7 +375,11 @@ export async function handleClientFallbackApi<T = any>(
 
       const updatedList = [newProd, ...products];
       localStorage.setItem('app_custom_products', JSON.stringify(updatedList));
-      saveFirestoreProduct(newProd).catch((e) => console.warn('[clientFallbackApi] Firestore save error', e));
+      try {
+        await saveFirestoreProduct(newProd);
+      } catch (e) {
+        console.warn('[clientFallbackApi] Firestore save error', e);
+      }
       return jsonRes(newProd);
     } catch (err) {
       console.error('[clientFallbackApi] Failed to create product', err);

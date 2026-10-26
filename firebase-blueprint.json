@@ -46,6 +46,8 @@
         "badge_tag": { "type": "string" },
         "base_price": { "type": "number" },
         "base_size": { "type": "string" },
+        "images": { "type": "array" },
+        "variants": { "type": "array" },
         "created_at": { "type": "string" },
         "updated_at": { "type": "string" }
       },
