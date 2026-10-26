@@ -36,15 +36,36 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     category_slug === 'lippan-wall-hangings' ||
     name.toLowerCase().includes('lippan');
 
+  const EXACT_SKU_FILE_MAP: Record<string, string> = {
+    'DA-LP-24X48-0001': 'DA-LP-24x48-0001.jpg',
+    'DA-LP-24x48-0001': 'DA-LP-24x48-0001.jpg',
+    'DA-LP-SET-0001': 'DA-LP-Set-0001.jpg',
+    'DA-LP-Set-0001': 'DA-LP-Set-0001.jpg',
+    'DA-LP-SET-0002': 'DA-LP-Set-0002.jpg',
+    'DA-LP-Set-0002': 'DA-LP-Set-0002.jpg',
+    'DA-LP-SET-0003': 'DA-LP-Set-0003.jpg',
+    'DA-LP-Set-0003': 'DA-LP-Set-0003.jpg',
+    'DA-MD-SET-0001': 'DA-MD-Set-0001.jpg',
+    'DA-MD-Set-0001': 'DA-MD-Set-0001.jpg',
+    'DA-MD-SET-7CHAKRA': 'DA-MD-Set-7Chakra.jpg',
+    'DA-MD-Set-7Chakra': 'DA-MD-Set-7Chakra.jpg',
+  };
+
   const appendCacheBuster = (url?: string) => {
     if (!url) return url;
     if (url.startsWith('data:') || url.startsWith('blob:') || url.includes('?')) return url;
-    return `${url}?v=20261026_v4`;
+    return `${url}?v=20261026_v5`;
   };
 
   const cleanSku = (sku || '').trim().toUpperCase();
-  const staticArtPath = cleanSku ? appendCacheBuster(`/static/assets/images/${cleanSku}.jpg`) : undefined;
-  const thumbnailPath = cleanSku ? appendCacheBuster(`/static/assets/thumbnails/${cleanSku}.jpg`) : undefined;
+  const rawSku = (sku || '').trim();
+  const mappedFilename = EXACT_SKU_FILE_MAP[cleanSku] || EXACT_SKU_FILE_MAP[rawSku] || (cleanSku ? `${cleanSku}.jpg` : undefined);
+  const uppercaseFilename = cleanSku ? `${cleanSku}.jpg` : undefined;
+
+  const staticArtPath = mappedFilename ? appendCacheBuster(`/static/assets/images/${mappedFilename}`) : undefined;
+  const thumbnailPath = mappedFilename ? appendCacheBuster(`/static/assets/thumbnails/${mappedFilename}`) : undefined;
+  const uppercaseStaticArtPath = uppercaseFilename ? appendCacheBuster(`/static/assets/images/${uppercaseFilename}`) : undefined;
+  const uppercaseThumbnailPath = uppercaseFilename ? appendCacheBuster(`/static/assets/thumbnails/${uppercaseFilename}`) : undefined;
 
   let initialCleanSrc = src;
   if (!initialCleanSrc && cleanSku) {
@@ -71,24 +92,35 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
 
   initialCleanSrc = appendCacheBuster(initialCleanSrc);
 
-  const [activeSrc, setActiveSrc] = useState<string | undefined>(() => {
-    if (size === 'sm' && useThumbnail && thumbnailPath) {
-      return thumbnailPath;
+  // Build candidate fallback chain in priority order
+  const candidates: string[] = [];
+  const addCandidate = (c?: string) => {
+    if (c && !candidates.includes(c)) {
+      candidates.push(c);
     }
-    return initialCleanSrc || staticArtPath || thumbnailPath;
-  });
+  };
 
-  const [attemptCount, setAttemptCount] = useState<number>(0);
+  if (size === 'sm' && useThumbnail) {
+    addCandidate(thumbnailPath);
+    addCandidate(initialCleanSrc);
+    addCandidate(staticArtPath);
+    addCandidate(uppercaseThumbnailPath);
+    addCandidate(uppercaseStaticArtPath);
+  } else {
+    addCandidate(initialCleanSrc);
+    addCandidate(staticArtPath);
+    addCandidate(thumbnailPath);
+    addCandidate(uppercaseStaticArtPath);
+    addCandidate(uppercaseThumbnailPath);
+  }
+
+  const [candidateIndex, setCandidateIndex] = useState<number>(0);
+  const activeSrc = candidates[candidateIndex] || candidates[0];
 
   useEffect(() => {
     setHasError(false);
     setIsLoaded(false);
-    setAttemptCount(0);
-    if (size === 'sm' && useThumbnail && thumbnailPath) {
-      setActiveSrc(thumbnailPath);
-    } else {
-      setActiveSrc(initialCleanSrc || staticArtPath || thumbnailPath);
-    }
+    setCandidateIndex(0);
   }, [src, cleanSku, size]);
 
   // For lg (zoom view), start with thumbnail instantly (0ms), then load full-res in background and switch instantly
@@ -129,12 +161,8 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
       onContextMenu={(e) => e.preventDefault()}
       onDragStart={(e) => e.preventDefault()}
       onError={() => {
-        if (attemptCount === 0 && staticArtPath && activeSrc !== staticArtPath) {
-          setAttemptCount(1);
-          setActiveSrc(staticArtPath);
-        } else if (attemptCount <= 1 && thumbnailPath && activeSrc !== thumbnailPath) {
-          setAttemptCount(2);
-          setActiveSrc(thumbnailPath);
+        if (candidateIndex + 1 < candidates.length) {
+          setCandidateIndex((prev) => prev + 1);
         } else {
           setHasError(true);
         }
