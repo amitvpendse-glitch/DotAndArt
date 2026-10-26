@@ -23,7 +23,15 @@ import { isAwaitingPhoto } from '../utils/productUtils';
 import { isSkuBlocked } from './blockedSkus';
 
 function normalizeProduct(p: Product): Product {
-  const cleanImg = (path?: string) => (path?.startsWith('/public/') ? path.replace(/^\/public/, '') : path);
+  const cleanImg = (path?: string) => {
+    if (!path) return '';
+    let res = path.startsWith('/public/') ? path.replace(/^\/public/, '') : path;
+    if (res.startsWith('/uploads/') && p?.sku && (p.sku.startsWith('DA-') || p.sku.startsWith('DNA-'))) {
+      res = `/static/assets/images/${p.sku}.jpg`;
+    }
+    return res;
+  };
+
   const targetSkus = new Set(['DA-MD-10-0013', 'DA-MD-10-0016', 'DA-MD-10-0017', 'DA-MD-10-0018', 'DA-MD-10-0019']);
   if (p?.sku && targetSkus.has(p.sku)) {
     const updated: Product = {

@@ -39,43 +39,71 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
   const appendCacheBuster = (url?: string) => {
     if (!url) return url;
     if (url.startsWith('data:') || url.startsWith('blob:') || url.includes('?')) return url;
-    return `${url}?v=20261020_v3`;
+    return `${url}?v=20261026_v4`;
   };
 
-  let cleanSrc = src;
-  if (!cleanSrc && sku) {
-    cleanSrc = `/static/assets/images/${sku}.jpg`;
+  const cleanSku = (sku || '').trim().toUpperCase();
+  const staticArtPath = cleanSku ? appendCacheBuster(`/static/assets/images/${cleanSku}.jpg`) : undefined;
+  const thumbnailPath = cleanSku ? appendCacheBuster(`/static/assets/thumbnails/${cleanSku}.jpg`) : undefined;
+
+  let initialCleanSrc = src;
+  if (!initialCleanSrc && cleanSku) {
+    initialCleanSrc = staticArtPath;
   }
-  if (cleanSrc && cleanSrc.startsWith('/public/')) {
-    cleanSrc = cleanSrc.replace(/^\/public/, '');
+  if (initialCleanSrc && initialCleanSrc.startsWith('/public/')) {
+    initialCleanSrc = initialCleanSrc.replace(/^\/public/, '');
+  }
+
+  // If src is a local container /uploads/ path for an authentic catalog SKU, prefer static asset which is available on live Vercel
+  if (
+    initialCleanSrc &&
+    initialCleanSrc.startsWith('/uploads/') &&
+    cleanSku &&
+    (cleanSku.startsWith('DA-') || cleanSku.startsWith('DNA-'))
+  ) {
+    initialCleanSrc = staticArtPath;
   }
 
   // Direct explicit mapping for requested SKUs
-  if (sku && ['DA-MD-10-0013', 'DA-MD-10-0016', 'DA-MD-10-0017', 'DA-MD-10-0018', 'DA-MD-10-0019'].includes(sku)) {
-    cleanSrc = `/static/assets/images/${sku}.jpg`;
+  if (cleanSku && ['DA-MD-10-0013', 'DA-MD-10-0016', 'DA-MD-10-0017', 'DA-MD-10-0018', 'DA-MD-10-0019'].includes(cleanSku)) {
+    initialCleanSrc = staticArtPath;
   }
 
-  const thumbnailPath = sku ? appendCacheBuster(`/static/assets/thumbnails/${sku}.jpg`) : undefined;
-  cleanSrc = appendCacheBuster(cleanSrc);
+  initialCleanSrc = appendCacheBuster(initialCleanSrc);
+
+  const [activeSrc, setActiveSrc] = useState<string | undefined>(() => {
+    if (size === 'sm' && useThumbnail && thumbnailPath) {
+      return thumbnailPath;
+    }
+    return initialCleanSrc || staticArtPath || thumbnailPath;
+  });
+
+  const [attemptCount, setAttemptCount] = useState<number>(0);
+
+  useEffect(() => {
+    setHasError(false);
+    setIsLoaded(false);
+    setAttemptCount(0);
+    if (size === 'sm' && useThumbnail && thumbnailPath) {
+      setActiveSrc(thumbnailPath);
+    } else {
+      setActiveSrc(initialCleanSrc || staticArtPath || thumbnailPath);
+    }
+  }, [src, cleanSku, size]);
 
   // For lg (zoom view), start with thumbnail instantly (0ms), then load full-res in background and switch instantly
   useEffect(() => {
-    if (size === 'lg' && cleanSrc) {
+    if (size === 'lg' && activeSrc) {
       setUseFullRes(false);
       const img = new Image();
-      img.src = cleanSrc;
+      img.src = activeSrc;
       img.onload = () => {
         setUseFullRes(true);
       };
     }
-  }, [cleanSrc, size]);
+  }, [activeSrc, size]);
 
-  let activeSrc = cleanSrc;
-  if (!cleanSrc && useThumbnail && thumbnailPath) {
-    activeSrc = thumbnailPath;
-  }
-
-  if ((!activeSrc && !cleanSrc) || hasError) {
+  if ((!activeSrc && !initialCleanSrc) || hasError) {
     return (
       <ArtworkPlaceholder
         name={name}
@@ -101,8 +129,12 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
       onContextMenu={(e) => e.preventDefault()}
       onDragStart={(e) => e.preventDefault()}
       onError={() => {
-        if (activeSrc === thumbnailPath && cleanSrc) {
-          setUseFullRes(true);
+        if (attemptCount === 0 && staticArtPath && activeSrc !== staticArtPath) {
+          setAttemptCount(1);
+          setActiveSrc(staticArtPath);
+        } else if (attemptCount <= 1 && thumbnailPath && activeSrc !== thumbnailPath) {
+          setAttemptCount(2);
+          setActiveSrc(thumbnailPath);
         } else {
           setHasError(true);
         }
