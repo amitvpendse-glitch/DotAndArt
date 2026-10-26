@@ -672,6 +672,24 @@ export async function getFirestoreCategories(): Promise<Category[]> {
   }
 }
 
+export async function saveFirestoreCategory(category: Category): Promise<void> {
+  if (firestoreQuotaExceeded || !category || !category.id) return;
+  try {
+    const docRef = doc(db, CATEGORIES_COLLECTION, category.id);
+    await setDoc(
+      docRef,
+      cleanFirestoreData({
+        ...category,
+        updated_at: new Date().toISOString(),
+      }),
+      { merge: true }
+    );
+    await saveFirestoreSyncFlag(true);
+  } catch (err) {
+    checkQuotaError(err);
+  }
+}
+
 /**
  * Retrieves website settings from Firestore.
  */

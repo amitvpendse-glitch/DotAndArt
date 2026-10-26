@@ -29,8 +29,24 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ token }) => {
 
   const fetchCategories = () => {
     setLoading(true);
-    safeFetchJson<{ categories: Category[] }>('/api/categories')
-      .then((data) => setCategories(data.categories || []))
+    safeFetchJson<any>('/api/categories')
+      .then((data) => {
+        const rawCats = Array.isArray(data) ? data : (data?.categories || []);
+        const seenCatIds = new Set<string>();
+        const seenCatNames = new Set<string>();
+        const uniqueCats: Category[] = [];
+        for (const c of rawCats) {
+          if (!c || !c.name) continue;
+          const cid = c.id || c.slug;
+          const cnameLower = c.name.toLowerCase().trim();
+          if (cid && seenCatIds.has(cid)) continue;
+          if (seenCatNames.has(cnameLower)) continue;
+          if (cid) seenCatIds.add(cid);
+          seenCatNames.add(cnameLower);
+          uniqueCats.push(c);
+        }
+        setCategories(uniqueCats);
+      })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   };

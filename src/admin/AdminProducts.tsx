@@ -572,7 +572,21 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         return true;
       });
       setProducts(uniqueProds);
-      setCategories(Array.isArray(catRes) ? catRes : []);
+      const rawCats = Array.isArray(catRes) ? catRes : (catRes as any)?.categories || [];
+      const seenCatIds = new Set<string>();
+      const seenCatNames = new Set<string>();
+      const uniqueCats: Category[] = [];
+      for (const c of rawCats) {
+        if (!c || !c.name) continue;
+        const cid = c.id || c.slug;
+        const cnameLower = c.name.toLowerCase().trim();
+        if (cid && seenCatIds.has(cid)) continue;
+        if (seenCatNames.has(cnameLower)) continue;
+        if (cid) seenCatIds.add(cid);
+        seenCatNames.add(cnameLower);
+        uniqueCats.push(c);
+      }
+      setCategories(uniqueCats);
       if (setRes) setWebsiteSettings(setRes);
     } catch (err) {
       console.error(err);

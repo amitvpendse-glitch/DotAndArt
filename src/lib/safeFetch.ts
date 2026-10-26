@@ -289,6 +289,14 @@ export async function safeFetchJson<T = any>(
     return { success: true, message: 'Product deleted successfully' } as unknown as T;
   }
 
+  // 7e. Intercept Product Duplication
+  if (method === 'POST' && urlString.includes('/duplicate')) {
+    const clientFallback = await handleClientFallbackApi<T>(urlString, init);
+    if (clientFallback !== null) {
+      return clientFallback;
+    }
+  }
+
   // 7a. Intercept Single Product CREATE
   if (method === 'POST' && urlString.startsWith('/api/admin/products') && !urlString.includes('bulk') && !urlString.includes('clear') && !urlString.includes('duplicate')) {
     try {

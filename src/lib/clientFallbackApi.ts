@@ -19,6 +19,7 @@ import {
   getFirestoreSettings,
   getFirestorePages,
   saveFirestoreMediaAsset,
+  saveFirestoreCategory,
 } from './firestoreCatalog';
 import { isAwaitingPhoto } from '../utils/productUtils';
 import { isSkuBlocked } from './blockedSkus';
@@ -747,13 +748,15 @@ export async function handleClientFallbackApi<T = any>(
 
   // 1e. POST /api/admin/products/:id/duplicate
   if (pathname.includes('/duplicate') && method === 'POST') {
-    const id = pathname.replace('/api/admin/products/', '').replace('/duplicate', '');
+    const rawId = decodeURIComponent(pathname.replace('/api/admin/products/', '').replace('/duplicate', '').replace(/\/$/, ''));
     const products = getStoredProducts();
-    const original = (products || []).find((p) => p.id === id);
+    const original = (products || []).find(
+      (p) => p.id === rawId || p.sku?.toUpperCase() === rawId.toUpperCase() || encodeURIComponent(p.sku) === rawId
+    );
     if (original) {
       const copy: Product = {
-        ...original,
-        id: `prod-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        ...JSON.parse(JSON.stringify(original)),
+        id: `prod-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
         sku: `${original.sku}-COPY-${Math.floor(100 + Math.random() * 900)}`,
         name: `${original.name} (Copy)`,
         created_at: new Date().toISOString(),
@@ -761,6 +764,11 @@ export async function handleClientFallbackApi<T = any>(
       };
       const updatedList = [copy, ...products];
       localStorage.setItem('app_custom_products', JSON.stringify(updatedList));
+      try {
+        await saveFirestoreProduct(copy);
+      } catch (err) {
+        console.warn('[clientFallbackApi] Failed to save duplicated product to Firestore', err);
+      }
       return jsonRes(copy);
     }
   }
@@ -804,6 +812,7 @@ export async function handleClientFallbackApi<T = any>(
       };
       const updated = [...categories, newCat];
       localStorage.setItem('app_custom_categories', JSON.stringify(updated));
+      await saveFirestoreCategory(newCat).catch((e) => console.warn('[clientFallbackApi] Firestore save category error', e));
       return jsonRes(newCat);
     } catch {}
   }
@@ -818,6 +827,7 @@ export async function handleClientFallbackApi<T = any>(
       if (index !== -1) {
         categories[index] = { ...categories[index], ...body, updated_at: new Date().toISOString() };
         localStorage.setItem('app_custom_categories', JSON.stringify(categories));
+        await saveFirestoreCategory(categories[index]).catch((e) => console.warn('[clientFallbackApi] Firestore save category error', e));
         return jsonRes(categories[index]);
       }
     } catch {}

@@ -1,7 +1,18 @@
 // Suppress noisy Firestore idle stream disconnect logs and quota notices
 const originalConsoleError = console.error;
 console.error = (...args: any[]) => {
-  if (args.some(arg => typeof arg === 'string' && (arg.includes('GrpcConnection') || arg.includes('Disconnecting idle stream') || arg.includes('Quota limit exceeded')))) {
+  if (
+    args.some(
+      (arg) =>
+        typeof arg === 'string' &&
+        (arg.includes('GrpcConnection') ||
+          arg.includes('Disconnecting idle stream') ||
+          arg.includes('Quota limit exceeded') ||
+          arg.includes('Could not reach Cloud Firestore backend') ||
+          arg.includes('Connection failed') ||
+          arg.includes('unavailable'))
+    )
+  ) {
     return;
   }
   originalConsoleError(...args);
@@ -9,7 +20,18 @@ console.error = (...args: any[]) => {
 
 const originalConsoleWarn = console.warn;
 console.warn = (...args: any[]) => {
-  if (args.some(arg => typeof arg === 'string' && (arg.includes('GrpcConnection') || arg.includes('Disconnecting idle stream') || arg.includes('Quota limit exceeded')))) {
+  if (
+    args.some(
+      (arg) =>
+        typeof arg === 'string' &&
+        (arg.includes('GrpcConnection') ||
+          arg.includes('Disconnecting idle stream') ||
+          arg.includes('Quota limit exceeded') ||
+          arg.includes('Could not reach Cloud Firestore backend') ||
+          arg.includes('Connection failed') ||
+          arg.includes('unavailable'))
+    )
+  ) {
     return;
   }
   originalConsoleWarn(...args);
