@@ -279,6 +279,23 @@ export async function safeFetchJson<T = any>(
     );
   }
 
+  // 7a. Intercept Single Product CREATE
+  if (method === 'POST' && urlString.startsWith('/api/admin/products') && !urlString.includes('bulk') && !urlString.includes('clear') && !urlString.includes('duplicate')) {
+    try {
+      const body = typeof init?.body === 'string' ? JSON.parse(init.body) : init?.body || {};
+      if (body && typeof body === 'object' && body.name) {
+        const id = body.id || `prod-${Date.now()}`;
+        const sku = (body.sku || '').trim().toUpperCase() || `DA-ART-${Date.now()}`;
+        const newProduct = { ...body, id, sku };
+        saveFirestoreProduct(newProduct).catch((e) =>
+          console.error('[safeFetchJson] Firestore product create sync error', e)
+        );
+      }
+    } catch (err) {
+      console.error('[safeFetchJson] Error parsing create product payload', err);
+    }
+  }
+
   // 7b. Intercept Single Product Update
   if (method === 'PUT' && urlString.startsWith('/api/admin/products/') && !urlString.includes('bulk') && !urlString.includes('duplicate')) {
     try {

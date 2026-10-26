@@ -99,6 +99,33 @@ export async function addFirestoreDeletedIds(ids: string[]): Promise<void> {
   }
 }
 
+export async function removeFirestoreDeletedIds(ids: string[]): Promise<void> {
+  if (!ids || ids.length === 0 || firestoreQuotaExceeded) return;
+  try {
+    const existing = await getFirestoreDeletedIds();
+    let changed = false;
+    ids.forEach((id) => {
+      if (existing.has(id)) {
+        existing.delete(id);
+        changed = true;
+      }
+      if (typeof id === 'string') {
+        const upper = id.toUpperCase();
+        if (existing.has(upper)) {
+          existing.delete(upper);
+          changed = true;
+        }
+      }
+    });
+    if (changed) {
+      const docRef = doc(db, CATALOG_STATE_COLLECTION, 'deleted_items');
+      await setDoc(docRef, { ids: Array.from(existing), updated_at: new Date().toISOString() }, { merge: true });
+    }
+  } catch (err) {
+    checkQuotaError(err);
+  }
+}
+
 /**
  * Retrieves all products from Firestore.
  * Automatically seeds initial catalog on first run if Firestore collection is empty.
@@ -245,6 +272,40 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
     const docRef = doc(db, PRODUCTS_COLLECTION, docId);
     await setDoc(docRef, cleanFirestoreData({ ...product, id: docId, updated_at: new Date().toISOString() }), { merge: true });
     console.log(`[firestoreCatalog] Successfully saved product: ${docId}`);
+
+    // Immediately remove from deleted_items so saved artwork is never filtered out
+    const unDeleteIds = [docId, product.id, product.sku].filter(Boolean) as string[];
+    await removeFirestoreDeletedIds(unDeleteIds);
+
+    // Sync localStorage if running in browser environment
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const delStr = localStorage.getItem('app_deleted_product_ids');
+        if (delStr) {
+          const parsed = JSON.parse(delStr);
+          if (Array.isArray(parsed)) {
+            const filtered = parsed.filter((i) => !unDeleteIds.includes(i) && !unDeleteIds.includes(String(i).toUpperCase()));
+            localStorage.setItem('app_deleted_product_ids', JSON.stringify(filtered));
+          }
+        }
+        const customStr = localStorage.getItem('app_custom_products');
+        let customArr: Product[] = [];
+        if (customStr) {
+          try { customArr = JSON.parse(customStr); } catch {}
+        }
+        if (!Array.isArray(customArr)) customArr = [];
+        const matchIdx = customArr.findIndex(
+          (p) => p.id === docId || p.id === product.id || (p.sku && product.sku && p.sku.toUpperCase() === product.sku.toUpperCase())
+        );
+        if (matchIdx >= 0) {
+          customArr[matchIdx] = { ...product, id: docId };
+        } else {
+          customArr.unshift({ ...product, id: docId });
+        }
+        localStorage.setItem('app_custom_products', JSON.stringify(customArr));
+      } catch {}
+    }
+
     await saveFirestoreSyncFlag(true);
   } catch (err) {
     console.error(`[firestoreCatalog] Failed to save product ${product.id}:`, err);
@@ -256,21 +317,7 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
  * Saves or updates a single product in Firestore, ensuring sync flag is updated.
  */
 export async function saveFirestoreProductWithSync(product: Product): Promise<void> {
-  if (firestoreQuotaExceeded) {
-    cachedProducts = null;
-    return;
-  }
-  try {
-    cachedProducts = null; // Invalidate cache
-    const docId = product.id || `prod-${Date.now()}`;
-    const docRef = doc(db, PRODUCTS_COLLECTION, docId);
-    await setDoc(docRef, cleanFirestoreData({ ...product, id: docId, updated_at: new Date().toISOString() }), { merge: true });
-    console.log(`[firestoreCatalog] Successfully saved product: ${docId}`);
-    await saveFirestoreSyncFlag(true);
-  } catch (err) {
-    console.error(`[firestoreCatalog] Failed to save product ${product.id}:`, err);
-    checkQuotaError(err);
-  }
+  return saveFirestoreProduct(product);
 }
 
 /**
@@ -389,6 +436,12 @@ export async function bulkImportFirestoreProducts(products: Product[]): Promise<
       count++;
     }
     await batch.commit();
+    const importedIdentifiers: string[] = [];
+    for (const p of products) {
+      if (p.id) importedIdentifiers.push(p.id);
+      if (p.sku) importedIdentifiers.push(p.sku);
+    }
+    await removeFirestoreDeletedIds(importedIdentifiers);
     await saveFirestoreSyncFlag(true);
     return count;
   } catch (err) {

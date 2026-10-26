@@ -571,7 +571,23 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         seen.add(pid);
         return true;
       });
-      setProducts(uniqueProds);
+      setProducts((current) => {
+        const incoming = uniqueProds;
+        const incomingMap = new Map<string, Product>();
+        incoming.forEach((p) => {
+          if (p.id) incomingMap.set(p.id, p);
+          if (p.sku) incomingMap.set(p.sku.toUpperCase(), p);
+        });
+        const retained: Product[] = [];
+        current.forEach((p) => {
+          const pid = p?.id;
+          const psku = (p?.sku || '').toUpperCase();
+          if (pid && !incomingMap.has(pid) && !(psku && incomingMap.has(psku))) {
+            retained.push(p);
+          }
+        });
+        return [...retained, ...incoming];
+      });
       setCategories(Array.isArray(catRes) ? catRes : []);
       if (setRes) setWebsiteSettings(setRes);
     } catch (err) {
@@ -909,21 +925,21 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         return;
       }
 
-      if (data && data.sku) {
+      if (data && (data.sku || data.id)) {
         setProducts((prev) => {
-          const exists = prev.some((p) => p.id === data.id || p.sku === data.sku);
+          const exists = prev.some((p) => p.id === data.id || (p.sku && data.sku && p.sku === data.sku));
           if (exists) {
-            return prev.map((p) => (p.id === data.id || p.sku === data.sku ? data : p));
+            return prev.map((p) => (p.id === data.id || (p.sku && data.sku && p.sku === data.sku) ? data : p));
           } else {
             return [data, ...prev];
           }
         });
-        saveFirestoreProduct(data).catch((err) => console.warn('Direct Firestore save product from admin console:', err));
+        await saveFirestoreProduct(data).catch((err) => console.warn('Direct Firestore save product from admin console:', err));
       }
 
       setIsDrawerDirty(false);
       setDrawerOpen(false);
-      fetchProductsAndCategories();
+      await fetchProductsAndCategories();
       window.dispatchEvent(new Event('app_products_updated'));
     } catch {
       setErrorMessage('Network error while saving product.');

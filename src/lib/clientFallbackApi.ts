@@ -82,8 +82,15 @@ function getStoredProducts(): Product[] {
     if (del) {
       const parsed = JSON.parse(del);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        parsed.forEach(item => deletedSet.add(String(item)));
-        addFirestoreDeletedIds(parsed).catch(() => {});
+        const validInitialSkus = new Set(INITIAL_PRODUCTS.map((p) => (p.sku || '').toUpperCase()));
+        const validInitialIds = new Set(INITIAL_PRODUCTS.map((p) => p.id));
+        const cleanedDel = parsed.filter(
+          (id) => !validInitialSkus.has(String(id).toUpperCase()) && !validInitialIds.has(String(id))
+        );
+        if (cleanedDel.length !== parsed.length) {
+          localStorage.setItem('app_deleted_product_ids', JSON.stringify(cleanedDel));
+        }
+        cleanedDel.forEach((item) => deletedSet.add(String(item)));
       }
     }
   } catch {}
