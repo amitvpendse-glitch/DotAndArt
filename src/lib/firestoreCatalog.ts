@@ -9,7 +9,7 @@ import {
 } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './firebase';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SETTINGS, INITIAL_PAGES, INITIAL_TESTIMONIALS, INITIAL_FAQS } from '../data/initialCatalog';
-import { Product, Category, WebsiteSettings, WebsitePage, Testimonial, FAQ } from '../types';
+import { Product, Category, WebsiteSettings, WebsitePage, Testimonial, FAQ, MediaAsset } from '../types';
 import { isSkuBlocked } from './blockedSkus';
 
 /**
@@ -37,6 +37,7 @@ const CATEGORIES_COLLECTION = 'categories';
 const SETTINGS_COLLECTION = 'settings';
 export const PAGES_COLLECTION = 'pages';
 const TESTIMONIALS_COLLECTION = 'testimonials';
+export const MEDIA_ASSETS_COLLECTION = 'media_assets';
 const CATALOG_STATE_COLLECTION = 'catalog_state';
 
 // In-memory cache with short TTL to avoid excessive Firestore reads while ensuring multi-device consistency
@@ -870,6 +871,39 @@ export async function deleteFirestoreFAQ(id: string): Promise<void> {
   try {
     const docRef = doc(db, 'faqs', id);
     await deleteDoc(docRef);
+    await saveFirestoreSyncFlag(true);
+  } catch (err) {
+    checkQuotaError(err);
+  }
+}
+
+export async function getFirestoreMediaAssets(): Promise<MediaAsset[]> {
+  if (firestoreQuotaExceeded) return [];
+  try {
+    const colRef = collection(db, MEDIA_ASSETS_COLLECTION);
+    const snap = await getDocs(colRef);
+    if (snap.empty) return [];
+    const list: MediaAsset[] = [];
+    snap.forEach((docSnap) => list.push(docSnap.data() as MediaAsset));
+    return list;
+  } catch (err) {
+    checkQuotaError(err);
+    return [];
+  }
+}
+
+export async function saveFirestoreMediaAsset(asset: MediaAsset): Promise<void> {
+  if (firestoreQuotaExceeded || !asset || !asset.id) return;
+  try {
+    const docRef = doc(db, MEDIA_ASSETS_COLLECTION, asset.id);
+    await setDoc(
+      docRef,
+      cleanFirestoreData({
+        ...asset,
+        updated_at: new Date().toISOString(),
+      }),
+      { merge: true }
+    );
     await saveFirestoreSyncFlag(true);
   } catch (err) {
     checkQuotaError(err);

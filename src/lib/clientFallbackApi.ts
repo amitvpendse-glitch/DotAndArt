@@ -6,7 +6,7 @@ import {
   INITIAL_SETTINGS,
   INITIAL_PAGES,
 } from '../data/initialCatalog';
-import { Product, Category, WebsiteSettings, WebsitePage, PageSection, Testimonial, FAQ } from '../types';
+import { Product, Category, WebsiteSettings, WebsitePage, PageSection, Testimonial, FAQ, MediaAsset } from '../types';
 import {
   getFirestoreProducts,
   saveFirestoreProduct,
@@ -18,6 +18,7 @@ import {
   saveFirestorePage,
   getFirestoreSettings,
   getFirestorePages,
+  saveFirestoreMediaAsset,
 } from './firestoreCatalog';
 import { isAwaitingPhoto } from '../utils/productUtils';
 import { isSkuBlocked } from './blockedSkus';
@@ -234,10 +235,10 @@ export async function handleClientFallbackApi<T = any>(
       if (file) {
         return new Promise((resolve) => {
           const reader = new FileReader();
-          reader.onload = () => {
+          reader.onload = async () => {
             const dataUrl = reader.result as string;
             const filename = file?.name || `upload-${Date.now()}.png`;
-            const asset = {
+            const asset: MediaAsset = {
               id: `media-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
               storage_path: dataUrl,
               media_type: 'image',
@@ -247,6 +248,11 @@ export async function handleClientFallbackApi<T = any>(
               file_size: file?.size || 0,
               created_at: new Date().toISOString(),
             };
+            try {
+              await saveFirestoreMediaAsset(asset);
+            } catch (fsErr) {
+              console.warn('[clientFallbackApi] Failed to persist uploaded media asset in Firestore', fsErr);
+            }
             resolve(jsonRes({ success: true, file_path: dataUrl, asset }));
           };
           reader.onerror = () => {

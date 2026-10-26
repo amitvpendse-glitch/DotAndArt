@@ -41,6 +41,7 @@ import {
   getFirestoreCategories,
   saveFirestoreFAQ,
   deleteFirestoreFAQ,
+  saveFirestoreMediaAsset,
 } from './src/lib/firestoreCatalog.ts';
 
 const app = express();
@@ -251,7 +252,19 @@ function loadDB(): DBState {
   if (fs.existsSync(DB_FILE)) {
     try {
       const data = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
-      data.pages = INITIAL_PAGES.length === 0 ? [] : INITIAL_PAGES;
+      if (!Array.isArray(data.pages) || data.pages.length === 0) {
+        data.pages = JSON.parse(JSON.stringify(INITIAL_PAGES));
+      } else {
+        // Ensure any missing initial pages or sections exist
+        INITIAL_PAGES.forEach((initP) => {
+          let existing = data.pages.find((p) => p.slug === initP.slug);
+          if (!existing) {
+            data.pages.push(JSON.parse(JSON.stringify(initP)));
+          } else {
+            mergeMissingPageSections(existing);
+          }
+        });
+      }
       const originalProducts = data.products || [];
       const cleanedProducts = deduplicateProducts(originalProducts);
       data.products = cleanedProducts;
@@ -2438,6 +2451,7 @@ app.post('/api/uploads', requireAdmin, upload.single('file'), (req: Request, res
 
   db.media.unshift(asset);
   saveDB(db);
+  saveFirestoreMediaAsset(asset).catch((err) => console.warn('[server] Failed to save media asset to Firestore:', err));
   logAudit('media_uploaded', 'media', asset.id, { filename: asset.filename, path: asset.storage_path });
 
   res.json({
