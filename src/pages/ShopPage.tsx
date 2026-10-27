@@ -16,6 +16,7 @@ import {
 } from '../utils/whatsapp';
 import { usePageSeo } from '../lib/usePageSeo';
 import { isSkuBlocked } from '../lib/blockedSkus';
+import { isProductHighDemand } from '../utils/productUtils';
 
 interface ShopPageProps {
   initialCategory?: string;
@@ -130,7 +131,9 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
 
   useEffect(() => {
     async function fetchProducts() {
-      setLoading(true);
+      if (products.length === 0) {
+        setLoading(true);
+      }
       try {
         const queryParams = new URLSearchParams();
         if (selectedCategory !== 'all') queryParams.append('category', selectedCategory);
@@ -266,14 +269,14 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   const displayedProducts = useMemo(() => {
     let list = [...products];
     if (highDemandOnly) {
-      list = list.filter((p) => p.is_high_demand === true);
+      list = list.filter((p) => isProductHighDemand(p));
     }
     if (sortBy === 'price_asc') {
       list.sort((a, b) => (Number(a.base_price) || 0) - (Number(b.base_price) || 0));
     } else if (sortBy === 'price_desc') {
       list.sort((a, b) => (Number(b.base_price) || 0) - (Number(a.base_price) || 0));
     } else if (sortBy === 'high_demand') {
-      list.sort((a, b) => (b.is_high_demand ? 1 : 0) - (a.is_high_demand ? 1 : 0));
+      list.sort((a, b) => (isProductHighDemand(b) ? 1 : 0) - (isProductHighDemand(a) ? 1 : 0));
     } else if (sortBy === 'name_asc') {
       list.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     } else if (sortBy === 'newest') {
@@ -487,7 +490,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
             <div key={i} className="h-60 sm:h-80 rounded-xl sm:rounded-2xl bg-theme-accent/10 animate-pulse" />
           ))}
         </div>
-      ) : products.length === 0 ? (
+      ) : displayedProducts.length === 0 ? (
         <div className="text-center py-20 glass-panel rounded-2xl border border-theme-glass p-8 space-y-4">
           <p className="font-serif text-xl text-theme-primary">No artworks match your search filters</p>
           <p className="text-xs text-theme-muted">
@@ -499,6 +502,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
               setSelectedSizeFilter('all');
               setPriceTier('all');
               setSearchQuery('');
+              setHighDemandOnly(false);
             }}
             className="px-5 py-2 rounded-full bg-theme-accent text-white text-xs font-semibold cursor-pointer"
           >
@@ -512,7 +516,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
               product.category_slug === 'lippan-wall-hangings' ||
               product.name.toLowerCase().includes('lippan') ||
               product.sku.startsWith('DA-LP');
-            const isHighDemand = product.is_high_demand !== undefined ? product.is_high_demand : isLippan;
+            const isHighDemand = isProductHighDemand(product);
             const extraDays = product.extra_delivery_days !== undefined ? product.extra_delivery_days : 5;
             const primaryImg = product?.images?.find((img) => img.is_primary) || product?.images?.[0];
 

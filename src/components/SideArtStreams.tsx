@@ -50,14 +50,10 @@ export const SideArtStreams: React.FC<SideArtStreamsProps> = ({ side = 'both', o
 
     window.addEventListener('resize', updateHeight);
 
-    // Fallback polling for asynchronous image / font layout shifts
-    const timer = setInterval(updateHeight, 1000);
-
     return () => {
       cancelAnimationFrame(rafId);
       if (observer) observer.disconnect();
       window.removeEventListener('resize', updateHeight);
-      clearInterval(timer);
     };
   }, []);
 

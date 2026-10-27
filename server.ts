@@ -144,8 +144,40 @@ function getAdminSalt(): string {
   return db.admin.salt;
 }
 
+function isProductHighDemand(p: any): boolean {
+  if (!p) return false;
+  if (typeof p.is_high_demand === 'boolean') {
+    return p.is_high_demand;
+  }
+  const categorySlug = (p.category_slug || '').toLowerCase();
+  const categoryId = (p.category_id || '').toLowerCase();
+  const categoryName = (p.category_name || '').toLowerCase();
+  const name = (p.name || '').toLowerCase();
+  const sku = (p.sku || '').toUpperCase();
+
+  const isLippan =
+    categorySlug.includes('lippan') ||
+    categoryId.includes('lippan') ||
+    categoryName.includes('lippan') ||
+    name.includes('lippan') ||
+    sku.startsWith('DA-LP');
+
+  return Boolean(isLippan);
+}
+
 function sanitizeProductImages(p: Product): Product {
   if (!p) return p;
+
+  const isHighDemand = isProductHighDemand(p);
+  if (p.is_high_demand === undefined) {
+    p.is_high_demand = isHighDemand;
+  }
+  if (isHighDemand && (p.extra_delivery_days === undefined || p.extra_delivery_days === null)) {
+    p.extra_delivery_days = 5;
+  }
+  if (isHighDemand && !p.high_demand_message) {
+    p.high_demand_message = 'Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.';
+  }
 
   if (!Array.isArray(p.images) || p.images.length === 0) {
     const cleanSku = (p.sku || '').trim().toUpperCase();
@@ -673,58 +705,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.use('/api', async (_req: Request, res: Response, next: NextFunction) => {
+app.use('/api', (_req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
   db = loadDB();
-
-  try {
-    const fsFlag = await getFirestoreSyncFlag();
-    if (fsFlag && fsFlag.changed) {
-      console.log('[ServerSync] Sync flag is TRUE in Firestore! Performing direct Firestore lookup and refresh...');
-      const [fsPages, fsSettings, fsProducts, fsTestimonials, fsCategories] = await Promise.all([
-        getFirestorePages().catch(() => null),
-        getFirestoreSettings().catch(() => null),
-        getFirestoreProducts(true).catch(() => null),
-        getFirestoreTestimonials().catch(() => null),
-        getFirestoreCategories().catch(() => null),
-      ]);
-
-      let updated = false;
-      if (Array.isArray(fsProducts) && fsProducts.length > 0) {
-        db.products = deduplicateProducts([...db.products, ...fsProducts]);
-        updated = true;
-      }
-      if (Array.isArray(fsPages) && fsPages.length > 0) {
-        db.pages = fsPages;
-        updated = true;
-      }
-      if (fsSettings && fsSettings.business_name) {
-        db.settings = { ...db.settings, ...fsSettings };
-        updated = true;
-      }
-      if (Array.isArray(fsTestimonials) && fsTestimonials.length > 0) {
-        db.testimonials = fsTestimonials;
-        updated = true;
-      }
-      if (Array.isArray(fsCategories) && fsCategories.length > 0) {
-        db.categories = fsCategories;
-        updated = true;
-      }
-
-      if (updated) {
-        saveDB(db, false);
-      }
-
-      db.sync_flag = { changed: false, updated_at: new Date().toISOString() };
-      saveDB(db, false);
-      await saveFirestoreSyncFlag(false).catch(() => {});
-    }
-  } catch (err) {
-    // Ignore network hiccups during sync check
-  }
-
   next();
 });
 
@@ -1050,16 +1035,10 @@ app.post('/api/admin/pull-sync', requireAdmin, async (_req: Request, res: Respon
 });
 
 // Sync Flag Endpoints for Database Hit Optimization
-app.get('/api/sync-flag', async (_req: Request, res: Response) => {
+app.get('/api/sync-flag', (_req: Request, res: Response) => {
   if (!db.sync_flag) {
     db.sync_flag = { changed: false, updated_at: new Date().toISOString() };
   }
-  try {
-    const fsFlag = await getFirestoreSyncFlag();
-    if (fsFlag && typeof fsFlag.changed === 'boolean') {
-      db.sync_flag.changed = db.sync_flag.changed || fsFlag.changed;
-    }
-  } catch {}
   res.json(db.sync_flag);
 });
 
@@ -1232,7 +1211,7 @@ app.get('/api/products', async (req: Request, res: Response) => {
   }
 
   if (highDemand === 'true') {
-    list = list.filter((p) => p.is_high_demand === true);
+    list = list.filter((p) => isProductHighDemand(p));
   }
 
   if (featured === 'true') {
@@ -1277,6 +1256,8 @@ app.get('/api/products', async (req: Request, res: Response) => {
     list.sort((a, b) => (Number(a.base_price) || 0) - (Number(b.base_price) || 0));
   } else if (sort === 'price_desc') {
     list.sort((a, b) => (Number(b.base_price) || 0) - (Number(a.base_price) || 0));
+  } else if (sort === 'high_demand') {
+    list.sort((a, b) => (isProductHighDemand(b) ? 1 : 0) - (isProductHighDemand(a) ? 1 : 0));
   } else if (sort === 'name_asc') {
     list.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
   } else if (sort === 'newest') {

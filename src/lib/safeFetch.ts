@@ -19,6 +19,7 @@ import {
 } from './firestoreCatalog';
 
 import { isSkuBlocked } from './blockedSkus';
+import { isProductHighDemand } from '../utils/productUtils';
 
 export async function safeResponseJson<T = any>(
   res: Response,
@@ -111,6 +112,11 @@ export async function safeFetchJson<T = any>(
           });
         }
 
+        const highDemand = urlObj.searchParams.get('highDemand');
+        if (highDemand === 'true') {
+          list = list.filter((p) => isProductHighDemand(p));
+        }
+
         const featured = urlObj.searchParams.get('featured');
         if (featured === 'true') {
           list = list.filter((p) => p.featured);
@@ -147,6 +153,8 @@ export async function safeFetchJson<T = any>(
           list.sort((a, b) => (Number(a.base_price) || 0) - (Number(b.base_price) || 0));
         } else if (sort === 'price_desc' || sort === 'price-high') {
           list.sort((a, b) => (Number(b.base_price) || 0) - (Number(a.base_price) || 0));
+        } else if (sort === 'high_demand') {
+          list.sort((a, b) => (isProductHighDemand(b) ? 1 : 0) - (isProductHighDemand(a) ? 1 : 0));
         } else if (sort === 'name_asc') {
           list.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
         } else if (sort === 'newest') {

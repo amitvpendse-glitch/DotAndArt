@@ -21,7 +21,7 @@ import {
   saveFirestoreMediaAsset,
   saveFirestoreCategory,
 } from './firestoreCatalog';
-import { isAwaitingPhoto } from '../utils/productUtils';
+import { isAwaitingPhoto, isProductHighDemand } from '../utils/productUtils';
 import { isSkuBlocked } from './blockedSkus';
 
 function normalizeProduct(p: Product): Product {
@@ -301,6 +301,11 @@ export async function handleClientFallbackApi<T = any>(
       });
     }
 
+    const highDemand = searchParams.get('highDemand');
+    if (highDemand === 'true') {
+      list = list.filter((p) => isProductHighDemand(p));
+    }
+
     const featured = searchParams.get('featured');
     if (featured === 'true') {
       list = list.filter((p) => p.featured);
@@ -337,6 +342,8 @@ export async function handleClientFallbackApi<T = any>(
       list.sort((a, b) => (Number(a.base_price) || 0) - (Number(b.base_price) || 0));
     } else if (sort === 'price_desc' || sort === 'price-high') {
       list.sort((a, b) => (Number(b.base_price) || 0) - (Number(a.base_price) || 0));
+    } else if (sort === 'high_demand') {
+      list.sort((a, b) => (isProductHighDemand(b) ? 1 : 0) - (isProductHighDemand(a) ? 1 : 0));
     } else if (sort === 'name_asc') {
       list.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     } else if (sort === 'newest') {

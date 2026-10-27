@@ -5702,7 +5702,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-lp-14-0001",
@@ -5737,7 +5740,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-lp-18-0001",
@@ -5772,7 +5778,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-lp-18-0002",
@@ -5807,7 +5816,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-lp-18-0003",
@@ -5842,7 +5854,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-lp-18-0004",
@@ -5877,7 +5892,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-lp-18-0005",
@@ -5912,7 +5930,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-lp-24x48-0001",
@@ -5947,7 +5968,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-lp-36-0001",
@@ -5982,7 +6006,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-lp-set-0001",
@@ -6017,7 +6044,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-lp-set-0002",
@@ -6052,7 +6082,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-lp-set-0003",
@@ -6087,7 +6120,10 @@ export const INITIAL_PRODUCTS: any[] = [
     ],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
-    "updated_at": "2026-10-20T12:48:39.694Z"
+    "updated_at": "2026-10-20T12:48:39.694Z",
+    "is_high_demand": true,
+    "extra_delivery_days": 5,
+    "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece."
   },
   {
     "id": "prod-da-tc-cs-0001",

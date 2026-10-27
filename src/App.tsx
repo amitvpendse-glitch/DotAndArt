@@ -166,27 +166,6 @@ export default function App() {
     };
   }, []);
 
-  // Poll sync flag every 5 seconds (Only hits DB if admin flag is set)
-  useEffect(() => {
-    const checkSyncFlag = async () => {
-      try {
-        const flagData = await safeFetchJson<{ changed: boolean; updated_at: string }>('/api/sync-flag', undefined, { changed: false });
-        if (flagData && flagData.changed) {
-          console.log('[SyncPoll] Admin change flag is set! Fetching latest changes from database...');
-          window.dispatchEvent(new CustomEvent('app_sync_refresh'));
-          await fetch('/api/sync-reset', { method: 'POST' }).catch(() => {});
-        } else {
-          // Flag is reset, no DB hit needed!
-        }
-      } catch (err) {
-        // Ignore network hiccups during polling
-      }
-    };
-
-    const intervalId = setInterval(checkSyncFlag, 5000);
-    return () => clearInterval(intervalId);
-  }, []);
-
   // Check admin session on mount
   useEffect(() => {
     if (adminToken) {

@@ -8,6 +8,7 @@ import { AvailableBadge } from '../components/AvailableBadge';
 import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 import { isSkuBlocked } from '../lib/blockedSkus';
+import { isProductHighDemand } from '../utils/productUtils';
 
 interface GalleryPageProps {
   onSelectProduct: (sku: string) => void;
@@ -95,7 +96,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
   }, [categories, products]);
 
   const filtered = products.filter((p) => {
-    if (highDemandOnly && !p.is_high_demand) return false;
+    if (highDemandOnly && !isProductHighDemand(p)) return false;
 
     if (selectedCategory === 'all') return true;
 

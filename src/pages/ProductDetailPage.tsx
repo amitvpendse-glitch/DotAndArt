@@ -31,6 +31,7 @@ import {
 } from '../utils/whatsapp';
 import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
 import { isSkuBlocked } from '../lib/blockedSkus';
+import { isProductHighDemand } from '../utils/productUtils';
 import { onSnapshot, query, where, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import {
@@ -287,7 +288,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     product.category_slug === 'lippan-wall-hangings' ||
     product.name.toLowerCase().includes('lippan') ||
     product.sku.startsWith('DA-LP');
-  const isHighDemand = product.is_high_demand !== undefined ? product.is_high_demand : isLippan;
+  const isHighDemand = isProductHighDemand(product);
   const extraDays = product.extra_delivery_days !== undefined ? product.extra_delivery_days : 5;
   const highDemandNotice =
     product.high_demand_message ||
