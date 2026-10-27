@@ -1116,7 +1116,7 @@ app.get('/api/debug/testimonials', requireAdmin, async (_req: Request, res: Resp
 ========================================================= */
 
 // Categories (Public)
-app.get('/api/categories', async (_req: Request, res: Response) => {
+app.get('/api/categories', async (req: Request, res: Response) => {
   try {
     const fsCats = await getFirestoreCategories().catch(() => null);
     if (Array.isArray(fsCats) && fsCats.length > 0) {
@@ -1124,6 +1124,8 @@ app.get('/api/categories', async (_req: Request, res: Response) => {
       saveDB(db, false);
     }
   } catch {}
+
+  const includeEmpty = req.query.includeEmpty === 'true';
 
   const existingSlugs = new Set(db.categories.map(c => (c.slug || '').toLowerCase()));
   const existingIds = new Set(db.categories.map(c => (c.id || '').toLowerCase()));
@@ -1160,9 +1162,32 @@ app.get('/api/categories', async (_req: Request, res: Response) => {
     }
   }
 
+  const publishedProducts = (db.products || []).filter(p => p.is_published && !isServerSkuBlocked(p.sku));
+  
   const activeCategories = db.categories
     .filter((c) => c.is_active !== false)
+    .map(cat => {
+      const count = publishedProducts.filter(p => {
+        const pSlug = (p.category_slug || '').toLowerCase();
+        const pId = (p.category_id || '').toLowerCase();
+        const pName = (p.category_name || '').toLowerCase();
+        const cSlug = (cat.slug || '').toLowerCase();
+        const cId = (cat.id || '').toLowerCase();
+        const cName = (cat.name || '').toLowerCase();
+        return (
+          pSlug === cSlug ||
+          pId === cId ||
+          (pName && pName === cName) ||
+          (cSlug && pSlug.includes(cSlug)) ||
+          (pSlug && cSlug.includes(pSlug)) ||
+          (cSlug.includes('tea-light') && pSlug.includes('tea-light'))
+        );
+      }).length;
+      return { ...cat, product_count: count };
+    })
+    .filter(cat => includeEmpty || cat.product_count > 0)
     .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+
   res.json(activeCategories);
 });
 
@@ -1192,7 +1217,7 @@ app.get('/api/products', async (req: Request, res: Response) => {
 
   let list = deduplicateProducts(db.products).filter((p) => p.is_published && !isServerSkuBlocked(p.sku));
 
-  const { category, search, minPrice, maxPrice, size, sort, featured } = req.query;
+  const { category, search, minPrice, maxPrice, size, sort, featured, highDemand } = req.query;
 
   if (category && typeof category === 'string' && category !== 'all') {
     const catLower = category.toLowerCase();
@@ -1205,9 +1230,14 @@ app.get('/api/products', async (req: Request, res: Response) => {
         pSlug.includes(catLower) ||
         pId.includes(catLower) ||
         (catLower.includes('mandala') && pSlug.includes('mandala')) ||
-        (catLower.includes('lippan') && pSlug.includes('lippan'))
+        (catLower.includes('lippan') && pSlug.includes('lippan')) ||
+        ((catLower.includes('tea-light') || catLower.includes('candle')) && (pSlug.includes('tea-light') || pSlug.includes('candle')))
       );
     });
+  }
+
+  if (highDemand === 'true') {
+    list = list.filter((p) => p.is_high_demand === true);
   }
 
   if (featured === 'true') {

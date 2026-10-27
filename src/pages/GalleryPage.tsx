@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, ZoomIn, Eye } from 'lucide-react';
-import { Product } from '../types';
+import { X, ZoomIn, Eye, Flame, Check } from 'lucide-react';
+import { Product, Category } from '../types';
 import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
 import { SafeProductImage } from '../components/SafeProductImage';
 import { ImageZoomModal } from '../components/ImageZoomModal';
@@ -16,28 +16,100 @@ interface GalleryPageProps {
 export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => {
   usePageSeo('gallery', 'High-Definition Artwork Gallery — Dot And Art');
   const [products, setProducts] = useState<Product[]>([]);
-  const [filter, setFilter] = useState<'all' | 'mandala' | 'lippan'>('all');
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [highDemandOnly, setHighDemandOnly] = useState<boolean>(false);
   const [activeLightbox, setActiveLightbox] = useState<Product | null>(null);
   const [zoomedProduct, setZoomedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    const loadGalleryProducts = () => {
+    const loadGalleryData = () => {
       safeFetchJson<{ products: Product[] }>('/api/products', undefined, { products: [] })
         .then((data) => {
           const list = (data.products || []).filter((p) => !isSkuBlocked(p?.sku, p?.id));
           setProducts(list);
         });
-    };
-    loadGalleryProducts();
 
-    window.addEventListener('app_products_updated', loadGalleryProducts);
-    return () => window.removeEventListener('app_products_updated', loadGalleryProducts);
+      safeFetchJson<any>('/api/categories', undefined, null).then((catRes) => {
+        const catList = Array.isArray(catRes) ? catRes : (catRes?.categories || []);
+        if (Array.isArray(catList) && catList.length > 0) {
+          setCategories(catList);
+        }
+      });
+    };
+    loadGalleryData();
+
+    window.addEventListener('app_products_updated', loadGalleryData);
+    window.addEventListener('app_categories_updated', loadGalleryData);
+    return () => {
+      window.removeEventListener('app_products_updated', loadGalleryData);
+      window.removeEventListener('app_categories_updated', loadGalleryData);
+    };
   }, []);
 
+  // Compute active categories that actually have products (vanish categories with 0 products)
+  const activeCategories = React.useMemo(() => {
+    const map = new Map<string, Category>();
+    
+    // Add categories from API
+    categories.forEach((cat) => {
+      if (cat && cat.slug) {
+        map.set(cat.slug.toLowerCase(), cat);
+      }
+    });
+
+    // Auto discover from products
+    products.forEach((p) => {
+      const pSlug = (p.category_slug || p.category_id || '').toLowerCase();
+      const pName = p.category_name || p.category_slug || '';
+      if (pSlug && pName && !map.has(pSlug)) {
+        map.set(pSlug, {
+          id: p.category_id || `cat-${pSlug}`,
+          name: pName,
+          slug: pSlug,
+          description: `Handcrafted ${pName}`,
+          display_order: map.size + 1,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
+      }
+    });
+
+    // Filter to only categories that have at least 1 published product
+    return Array.from(map.values()).filter((cat) => {
+      const cSlug = (cat.slug || '').toLowerCase();
+      const cId = (cat.id || '').toLowerCase();
+      return products.some((p) => {
+        const pSlug = (p.category_slug || '').toLowerCase();
+        const pId = (p.category_id || '').toLowerCase();
+        return (
+          pSlug === cSlug ||
+          pId === cId ||
+          (cSlug.includes('mandala') && pSlug.includes('mandala')) ||
+          (cSlug.includes('lippan') && pSlug.includes('lippan')) ||
+          ((cSlug.includes('tea-light') || cSlug.includes('candle')) && (pSlug.includes('tea-light') || pSlug.includes('candle')))
+        );
+      });
+    });
+  }, [categories, products]);
+
   const filtered = products.filter((p) => {
-    if (filter === 'mandala') return p.category_slug === 'mandala-wall-hangings';
-    if (filter === 'lippan') return p.category_slug === 'lippan-wall-hangings';
-    return true;
+    if (highDemandOnly && !p.is_high_demand) return false;
+
+    if (selectedCategory === 'all') return true;
+
+    const sel = selectedCategory.toLowerCase();
+    const pSlug = (p.category_slug || '').toLowerCase();
+    const pId = (p.category_id || '').toLowerCase();
+
+    return (
+      pSlug === sel ||
+      pId === sel ||
+      (sel.includes('mandala') && pSlug.includes('mandala')) ||
+      (sel.includes('lippan') && pSlug.includes('lippan')) ||
+      ((sel.includes('tea-light') || sel.includes('candle')) && (pSlug.includes('tea-light') || pSlug.includes('candle')))
+    );
   });
 
   return (
@@ -53,37 +125,56 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
           High-definition visual archive of our handmade mandalas and Kutch Lippan mud-mirror pieces. Click any artwork to view details or enquire.
         </p>
 
-        {/* Filter Buttons */}
-        <div className="flex items-center justify-center gap-2 pt-4">
+        {/* Dynamic Category & High Demand Filter Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
           <button
-            onClick={() => setFilter('all')}
+            onClick={() => setSelectedCategory('all')}
             className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-              filter === 'all'
-                ? 'bg-theme-accent text-white shadow-xs'
+              selectedCategory === 'all'
+                ? 'bg-theme-accent text-white shadow-xs ring-2 ring-theme-accent/30'
                 : 'glass-button text-theme-primary border border-theme-glass hover:bg-theme-accent/10'
             }`}
           >
             All Works
           </button>
+
+          {activeCategories.map((cat) => {
+            const catSlug = (cat.slug || '').toLowerCase();
+            const selCat = (selectedCategory || '').toLowerCase();
+            const isSelected =
+              selCat !== 'all' &&
+              (selCat === catSlug ||
+                (catSlug.includes('mandala') && selCat.includes('mandala')) ||
+                (catSlug.includes('lippan') && selCat.includes('lippan')) ||
+                ((catSlug.includes('tea-light') || catSlug.includes('candle')) && (selCat.includes('tea-light') || selCat.includes('candle'))));
+
+            return (
+              <button
+                key={cat.id || cat.slug}
+                onClick={() => setSelectedCategory(cat.slug)}
+                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-theme-accent text-white shadow-xs ring-2 ring-theme-accent/30'
+                    : 'glass-button text-theme-primary border border-theme-glass hover:bg-theme-accent/10'
+                }`}
+              >
+                {cat.name}
+              </button>
+            );
+          })}
+
+          {/* High Demand Toggle */}
           <button
-            onClick={() => setFilter('mandala')}
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-              filter === 'mandala'
-                ? 'bg-theme-accent text-white shadow-xs'
-                : 'glass-button text-theme-primary border border-theme-glass hover:bg-theme-accent/10'
+            onClick={() => setHighDemandOnly(!highDemandOnly)}
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+              highDemandOnly
+                ? 'bg-amber-600 text-white shadow-md ring-2 ring-amber-400'
+                : 'glass-button text-amber-700 border border-amber-300/60 hover:bg-amber-500/10'
             }`}
           >
-            Mandala Art
-          </button>
-          <button
-            onClick={() => setFilter('lippan')}
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-              filter === 'lippan'
-                ? 'bg-theme-accent text-white shadow-xs'
-                : 'glass-button text-theme-primary border border-theme-glass hover:bg-theme-accent/10'
-            }`}
-          >
-            Lippan Kaam
+            <Flame className={`w-3.5 h-3.5 ${highDemandOnly ? 'text-white fill-white' : 'text-amber-600 fill-amber-500'}`} />
+            <span>High Demand</span>
+            {highDemandOnly && <Check className="w-3 h-3 ml-0.5" />}
           </button>
         </div>
       </div>

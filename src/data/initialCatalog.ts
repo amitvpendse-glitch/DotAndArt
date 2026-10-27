@@ -6088,6 +6088,42 @@ export const INITIAL_PRODUCTS: any[] = [
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
     "updated_at": "2026-10-20T12:48:39.694Z"
+  },
+  {
+    "id": "prod-da-tc-cs-0001",
+    "sku": "DA-TC-CS-0001",
+    "name": "Tea Light Candle Holder - Coaster Set",
+    "short_description": "Handcrafted Tea Light Candle Holder & Coaster Set",
+    "description": "Authentic hand-painted Tea Light Candle Holder featuring fine mandala patterns and protective lacquer finish.",
+    "category_id": "cat-tea-light-candle-holders",
+    "category_name": "Tea Light Candle Holders",
+    "category_slug": "tea-light-candle-holders",
+    "material": "Moisture-resistant MDF board, Artist Acrylics, Varnish",
+    "framing": "Flat placement",
+    "customizable": true,
+    "creation_time": "3-5 Days",
+    "shipping_info": "Worldwide insured shipping available",
+    "special_information": "Clean gently with a soft dry microfiber cloth.",
+    "featured": true,
+    "is_published": true,
+    "is_available": true,
+    "is_high_demand": true,
+    "base_price": 1200,
+    "base_size": "4 Inches",
+    "images": [
+      {
+        "id": "img-prod-da-tc-cs-0001-1",
+        "product_id": "prod-da-tc-cs-0001",
+        "storage_path": "/static/assets/images/DA-TC-CS-0001.jpg",
+        "alt_text": "Tea Light Candle Holder (DA-TC-CS-0001)",
+        "caption": "Tea Light Candle Holder",
+        "display_order": 1,
+        "is_primary": true
+      }
+    ],
+    "variants": [],
+    "created_at": "2026-10-20T10:06:11.947Z",
+    "updated_at": "2026-10-20T12:48:39.694Z"
   }
 ];
 

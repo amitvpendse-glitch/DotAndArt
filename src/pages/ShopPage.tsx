@@ -63,6 +63,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   const [selectedSizeFilter, setSelectedSizeFilter] = useState<string>('all');
   const [priceTier, setPriceTier] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('featured');
+  const [highDemandOnly, setHighDemandOnly] = useState<boolean>(false);
 
   useEffect(() => {
     if (initialCategory) {
@@ -73,12 +74,13 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   useEffect(() => {
     const savedFilters = sessionStorage.getItem('shop_filters');
     if (savedFilters) {
-      const { category, search, size, price, sort } = JSON.parse(savedFilters);
+      const { category, search, size, price, sort, highDemand } = JSON.parse(savedFilters);
       if (category) setSelectedCategory(category);
       if (search) setSearchQuery(search);
       if (size) setSelectedSizeFilter(size);
       if (price) setPriceTier(price);
       if (sort) setSortBy(sort);
+      if (highDemand !== undefined) setHighDemandOnly(highDemand);
     }
   }, []);
 
@@ -88,9 +90,10 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
       search: searchQuery,
       size: selectedSizeFilter,
       price: priceTier,
-      sort: sortBy
+      sort: sortBy,
+      highDemand: highDemandOnly
     }));
-  }, [selectedCategory, searchQuery, selectedSizeFilter, priceTier, sortBy]);
+  }, [selectedCategory, searchQuery, selectedSizeFilter, priceTier, sortBy, highDemandOnly]);
 
   useEffect(() => {
     const loadSettingsAndCategories = () => {
@@ -118,7 +121,11 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
     };
 
     window.addEventListener('app_settings_updated', handleSettingsUpdate);
-    return () => window.removeEventListener('app_settings_updated', handleSettingsUpdate);
+    window.addEventListener('app_categories_updated', loadSettingsAndCategories);
+    return () => {
+      window.removeEventListener('app_settings_updated', handleSettingsUpdate);
+      window.removeEventListener('app_categories_updated', loadSettingsAndCategories);
+    };
   }, []);
 
   useEffect(() => {
@@ -129,6 +136,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
         if (selectedCategory !== 'all') queryParams.append('category', selectedCategory);
         if (searchQuery.trim()) queryParams.append('search', searchQuery.trim());
         if (sortBy) queryParams.append('sort', sortBy);
+        if (highDemandOnly) queryParams.append('highDemand', 'true');
 
         if (priceTier === 'under-2000') {
           queryParams.append('maxPrice', '2000');
@@ -157,6 +165,30 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           return true;
         });
         setProducts(unique);
+
+        // Auto-discover unique categories from fetched products if not in categories list
+        setCategories((prevCats) => {
+          const catSlugs = new Set(prevCats.map((c) => (c.slug || '').toLowerCase()));
+          const newAdded = [...prevCats];
+          unique.forEach((p) => {
+            const pSlug = (p.category_slug || p.category_id || '').toLowerCase();
+            const pName = p.category_name || p.category_slug || '';
+            if (pSlug && pName && !catSlugs.has(pSlug)) {
+              catSlugs.add(pSlug);
+              newAdded.push({
+                id: p.category_id || `cat-${pSlug}`,
+                name: pName,
+                slug: pSlug,
+                description: `Handcrafted ${pName}`,
+                display_order: newAdded.length + 1,
+                is_active: true,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              });
+            }
+          });
+          return newAdded;
+        });
       } catch (err) {
         console.error('Error fetching shop data', err);
       } finally {
@@ -168,7 +200,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
 
     window.addEventListener('app_products_updated', fetchProducts);
     return () => window.removeEventListener('app_products_updated', fetchProducts);
-  }, [selectedCategory, searchQuery, selectedSizeFilter, priceTier, sortBy]);
+  }, [selectedCategory, searchQuery, selectedSizeFilter, priceTier, sortBy, highDemandOnly]);
 
   // Dynamic sizes according to selected category (Item 3)
   const availableSizes = useMemo(() => {
@@ -230,13 +262,18 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
     }
   }, [availableSizes, selectedSizeFilter]);
 
-  // Price wise sorting & filtering client-side for immediate responsiveness (Item 7)
+  // Price wise sorting & filtering client-side for immediate responsiveness
   const displayedProducts = useMemo(() => {
-    const list = [...products];
+    let list = [...products];
+    if (highDemandOnly) {
+      list = list.filter((p) => p.is_high_demand === true);
+    }
     if (sortBy === 'price_asc') {
       list.sort((a, b) => (Number(a.base_price) || 0) - (Number(b.base_price) || 0));
     } else if (sortBy === 'price_desc') {
       list.sort((a, b) => (Number(b.base_price) || 0) - (Number(a.base_price) || 0));
+    } else if (sortBy === 'high_demand') {
+      list.sort((a, b) => (b.is_high_demand ? 1 : 0) - (a.is_high_demand ? 1 : 0));
     } else if (sortBy === 'name_asc') {
       list.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     } else if (sortBy === 'newest') {
@@ -249,7 +286,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
       });
     }
     return list;
-  }, [products, sortBy]);
+  }, [products, sortBy, highDemandOnly]);
 
   const handleDirectArtworkEnquiry = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
@@ -307,6 +344,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
               className="text-xs px-3 py-2 rounded-lg bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary cursor-pointer"
             >
               <option value="featured">Featured First</option>
+              <option value="high_demand">🔥 High Demand First</option>
               <option value="newest">Newest Additions</option>
               <option value="price_asc">Price: Low to High</option>
               <option value="price_desc">Price: High to Low</option>
@@ -315,33 +353,42 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           </div>
         </div>
 
-        {/* Row 2: Category Filter Buttons */}
+        {/* Row 2: Category & High Demand Filter Buttons */}
         <div className="pt-2 border-t border-theme-glass flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-theme-muted mr-2">Category:</span>
+          
+          {/* Product Catalog / All Artworks button — STRICTLY highlighted ONLY if selectedCategory === 'all' */}
           <button
             onClick={() => setSelectedCategory('all')}
             className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
               selectedCategory === 'all'
-                ? 'bg-theme-accent text-white font-semibold shadow-xs'
+                ? 'bg-theme-accent text-white font-semibold shadow-xs ring-2 ring-theme-accent/30'
                 : 'bg-theme-page text-theme-primary hover:bg-theme-accent/10 border border-theme-glass'
             }`}
           >
             Product Catalog
           </button>
+
           {(categories && categories.length > 0 ? categories : DEFAULT_CATEGORIES).map((cat) => {
+            const catSlug = (cat.slug || '').toLowerCase();
+            const catId = (cat.id || '').toLowerCase();
+            const selCat = (selectedCategory || '').toLowerCase();
+
             const isSelected =
-              selectedCategory === cat.slug ||
-              selectedCategory === cat.id ||
-              (cat.slug.includes('mandala') && selectedCategory === 'mandala') ||
-              (cat.slug.includes('lippan') && selectedCategory === 'lippan');
+              selCat !== 'all' &&
+              (selCat === catSlug ||
+                selCat === catId ||
+                (catSlug.includes('mandala') && selCat.includes('mandala')) ||
+                (catSlug.includes('lippan') && selCat.includes('lippan')) ||
+                ((catSlug.includes('tea-light') || catSlug.includes('candle')) && (selCat.includes('tea-light') || selCat.includes('candle'))));
 
             return (
               <button
-                key={cat.id}
+                key={cat.id || cat.slug}
                 onClick={() => setSelectedCategory(cat.slug)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-theme-accent text-white font-semibold shadow-xs'
+                    ? 'bg-theme-accent text-white font-semibold shadow-xs ring-2 ring-theme-accent/30'
                     : 'bg-theme-page text-theme-primary hover:bg-theme-accent/10 border border-theme-glass'
                 }`}
               >
@@ -349,6 +396,21 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
               </button>
             );
           })}
+
+          {/* High Demand Items Toggle Pill */}
+          <button
+            onClick={() => setHighDemandOnly(!highDemandOnly)}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 ml-auto sm:ml-2 ${
+              highDemandOnly
+                ? 'bg-amber-600 text-white font-semibold shadow-md ring-2 ring-amber-400'
+                : 'bg-theme-page text-amber-700 hover:bg-amber-500/10 border border-amber-300/60'
+            }`}
+            title="Filter high demand handmade artworks"
+          >
+            <Flame className={`w-3.5 h-3.5 ${highDemandOnly ? 'text-white fill-white' : 'text-amber-600 fill-amber-500'}`} />
+            <span>High Demand</span>
+            {highDemandOnly && <Check className="w-3 h-3 ml-0.5" />}
+          </button>
         </div>
 
         {/* Row 3: Secondary Filters (Size & Price Range) */}
