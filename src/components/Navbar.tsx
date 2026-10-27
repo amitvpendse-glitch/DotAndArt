@@ -3,6 +3,8 @@ import { Menu, X, ShoppingBag, MessageCircle, ChevronDown, Palette, ShieldCheck,
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
 import { createWhatsAppUrl, openExternalLink, DISPLAY_WHATSAPP_NUMBER } from '../utils/whatsapp';
+import { safeFetchJson } from '../lib/safeFetch';
+import { Category } from '../types';
 
 interface NavbarProps {
   currentPath: string;
@@ -18,6 +20,26 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [artDropdownOpen, setArtDropdownOpen] = useState(false);
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
+
+  // Dynamic Categories State
+  const [navCategories, setNavCategories] = useState<Category[]>([
+    { id: 'cat-mandala', name: 'Mandala Wall Hangings', slug: 'mandala-wall-hangings', description: '', display_order: 1, is_active: true, created_at: '', updated_at: '' },
+    { id: 'cat-lippan', name: 'Lippan Wall Hangings', slug: 'lippan-wall-hangings', description: '', display_order: 2, is_active: true, created_at: '', updated_at: '' }
+  ]);
+
+  useEffect(() => {
+    const fetchCats = () => {
+      safeFetchJson<any>('/api/categories', undefined, null).then((res) => {
+        const list = Array.isArray(res) ? res : (res?.categories || []);
+        if (Array.isArray(list) && list.length > 0) {
+          setNavCategories(list.filter(c => c.is_active !== false));
+        }
+      }).catch(() => {});
+    };
+    fetchCats();
+    window.addEventListener('app_categories_updated', fetchCats);
+    return () => window.removeEventListener('app_categories_updated', fetchCats);
+  }, []);
 
   // Mobile accordion states
   const [mobileArtExpanded, setMobileArtExpanded] = useState(true);
@@ -173,20 +195,16 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
                       <span className="font-semibold">All Artworks</span>
                       <span className="text-[10px] text-theme-muted">Full Catalog</span>
                     </button>
-                    <button
-                      onClick={() => handleLinkClick('/shop?category=mandala-wall-hangings')}
-                      className="w-full text-left px-4 py-2.5 text-xs text-theme-primary hover:bg-[#C85A32]/10 hover:text-[#C85A32] transition-colors flex items-center justify-between cursor-pointer"
-                    >
-                      <span>Mandala Wall Hangings</span>
-                      <span className="text-[10px] text-theme-muted">Harmonic Dots</span>
-                    </button>
-                    <button
-                      onClick={() => handleLinkClick('/shop?category=lippan-wall-hangings')}
-                      className="w-full text-left px-4 py-2.5 text-xs text-theme-primary hover:bg-[#C85A32]/10 hover:text-[#C85A32] transition-colors flex items-center justify-between cursor-pointer"
-                    >
-                      <span>Lippan Mud-Mirror Art</span>
-                      <span className="text-[10px] text-theme-muted">Kutch Kaam</span>
-                    </button>
+                    {navCategories.map((cat) => (
+                      <button
+                        key={cat.id || cat.slug}
+                        onClick={() => handleLinkClick(`/shop?category=${cat.slug}`)}
+                        className="w-full text-left px-4 py-2.5 text-xs text-theme-primary hover:bg-[#C85A32]/10 hover:text-[#C85A32] transition-colors flex items-center justify-between cursor-pointer"
+                      >
+                        <span>{cat.name}</span>
+                        <span className="text-[10px] text-theme-muted">Collection</span>
+                      </button>
+                    ))}
                     <div className="border-t border-theme-glass my-1" />
                     <button
                       onClick={() => handleLinkClick('/gallery')}
@@ -377,18 +395,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
                   >
                     • All Handcrafted Artworks
                   </button>
-                  <button
-                    onClick={() => handleLinkClick('/shop?category=mandala-wall-hangings')}
-                    className="w-full text-left px-3 py-2 text-xs font-medium text-theme-primary hover:text-[#C85A32] rounded-lg hover:bg-theme-glass"
-                  >
-                    • Mandala Wall Hangings
-                  </button>
-                  <button
-                    onClick={() => handleLinkClick('/shop?category=lippan-wall-hangings')}
-                    className="w-full text-left px-3 py-2 text-xs font-medium text-theme-primary hover:text-[#C85A32] rounded-lg hover:bg-theme-glass"
-                  >
-                    • Lippan Mud-Mirror Art
-                  </button>
+                  {navCategories.map((cat) => (
+                    <button
+                      key={cat.id || cat.slug}
+                      onClick={() => handleLinkClick(`/shop?category=${cat.slug}`)}
+                      className="w-full text-left px-3 py-2 text-xs font-medium text-theme-primary hover:text-[#C85A32] rounded-lg hover:bg-theme-glass"
+                    >
+                      • {cat.name}
+                    </button>
+                  ))}
                   <button
                     onClick={() => handleLinkClick('/gallery')}
                     className="w-full text-left px-3 py-2 text-xs font-medium text-theme-primary hover:text-[#C85A32] rounded-lg hover:bg-theme-glass"

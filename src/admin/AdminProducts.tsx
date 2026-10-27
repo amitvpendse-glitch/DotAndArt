@@ -184,6 +184,39 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({
   const [bulkSuccessMsg, setBulkSuccessMsg] = useState('');
   const [bulkErrorMsg, setBulkErrorMsg] = useState('');
 
+  // Clear All Catalog Modal State
+  const [clearCatalogModalOpen, setClearCatalogModalOpen] = useState(false);
+  const [clearingCatalog, setClearingCatalog] = useState(false);
+
+  const handleConfirmClearCatalog = async () => {
+    setClearingCatalog(true);
+    try {
+      await deleteFirestoreProducts(
+        products.map((p) => p.id),
+        products.map((p) => p.sku).filter(Boolean)
+      ).catch(() => {});
+
+      await fetch('/api/admin/products/clear-all', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      localStorage.setItem('app_custom_products', JSON.stringify([]));
+      localStorage.setItem('app_deleted_product_ids', JSON.stringify([]));
+      setProducts([]);
+      setSelectedIds([]);
+      setClearCatalogModalOpen(false);
+      setBulkSuccessMsg('🎉 Successfully cleared all products from catalog!');
+      setTimeout(() => setBulkSuccessMsg(''), 5000);
+      fetchProductsAndCategories();
+      window.dispatchEvent(new Event('app_products_updated'));
+    } catch (err) {
+      console.error('Error clearing catalog:', err);
+    } finally {
+      setClearingCatalog(false);
+    }
+  };
+
   const handleDownloadSampleCsv = () => {
     const sampleCsvContent = `Product Code,Name,Category,Price,Size,Material,Description,Framing,Creation Time
 DA-MD-10-0001,Authentic Mandala Harmony,Mandala Wall Hangings,2800,12 inches,MDF Wood & Acrylics,Hand-painted dot mandala with gold accents,Ready to hang,5-7 days
@@ -870,12 +903,18 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
       return;
     }
 
+    const selectedCatObj = categories.find((c) => c.id === categoryId);
+    const catName = selectedCatObj ? selectedCatObj.name : (categoryId || 'Mandala Wall Hangings');
+    const catSlug = selectedCatObj ? selectedCatObj.slug : (categoryId ? categoryId.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'mandala-wall-hangings');
+
     const payload = {
       sku: skuVal.toUpperCase(),
       name: nameVal,
       short_description: safeTrim(shortDesc),
       description: safeTrim(description),
       category_id: categoryId,
+      category_name: catName,
+      category_slug: catSlug,
       base_price: Number(basePrice) || 0,
       base_size: safeTrim(baseSize),
       material: safeTrim(material),
@@ -1163,27 +1202,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
 
           <button
             type="button"
-            onClick={async () => {
-              if (window.confirm('Are you sure you want to remove ALL items from the product catalog? This will permanently remove all product details and images from the database.')) {
-                try {
-                  await deleteFirestoreProducts(products.map(p => p.id), products.map(p => p.sku).filter(Boolean)).catch(() => {});
-                  await fetch('/api/admin/products/clear-all', {
-                    method: 'POST',
-                    headers: { Authorization: `Bearer ${token}` },
-                  });
-                  localStorage.setItem('app_custom_products', JSON.stringify([]));
-                  localStorage.setItem('app_deleted_product_ids', JSON.stringify([]));
-                  setProducts([]);
-                  setSelectedIds([]);
-                  setBulkSuccessMsg('🎉 Successfully cleared all products from catalog!');
-                  setTimeout(() => setBulkSuccessMsg(''), 5000);
-                  fetchProductsAndCategories();
-                  window.dispatchEvent(new Event('app_products_updated'));
-                } catch (err) {
-                  console.error(err);
-                }
-              }
-            }}
+            onClick={() => setClearCatalogModalOpen(true)}
             disabled={products.length === 0}
             className="px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
             title="Remove all items and details from database"
@@ -2967,7 +2986,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
           <div className="max-w-md w-full bg-white rounded-3xl border border-[#E3D4C4] craft-shadow p-6 space-y-4 text-xs">
             <h3 className="font-serif text-lg font-bold text-red-600 flex items-center gap-2">
               <AlertTriangle className="w-5 h-5" />
-              <span>Delete Artwork "{deleteConfirm.name}"?</span>
+              <span>Delete Artwork &quot;{deleteConfirm.name}&quot;?</span>
             </h3>
             <p className="text-[#66574D]">
               This will remove artwork with Product Code <strong>{deleteConfirm.sku}</strong> from your catalog. This action cannot be reversed.
@@ -2986,6 +3005,65 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                 className="px-5 py-2 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700"
               >
                 Delete Forever
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Clear All Catalog Confirmation Dialog Box */}
+      {clearCatalogModalOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="max-w-md w-full bg-white rounded-3xl border border-red-200 craft-shadow p-6 space-y-5 text-xs shadow-2xl">
+            <div className="flex items-center gap-3 border-b border-red-100 pb-3">
+              <div className="w-10 h-10 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-serif text-lg font-bold text-red-700">
+                  Clear Entire Product Catalog?
+                </h3>
+                <p className="text-[11px] text-[#7D6B5D]">
+                  Product Catalog Management Admin Console
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-red-50/80 border border-red-200 space-y-2 text-[#5B331A]">
+              <p className="font-semibold text-red-900 text-xs">
+                ⚠️ Are you sure you want to delete the whole catalog?
+              </p>
+              <p className="text-[11px] leading-relaxed text-red-800">
+                This will permanently delete all <strong>{products.length}</strong> items and artwork details from the database. <strong>The action won&apos;t be reversible once done.</strong>
+              </p>
+            </div>
+
+            <div className="pt-3 flex items-center justify-end gap-3 border-t border-[#F0E5D8]">
+              <button
+                type="button"
+                onClick={() => setClearCatalogModalOpen(false)}
+                disabled={clearingCatalog}
+                className="px-5 py-2.5 rounded-xl border border-[#D4A373] text-[#5B331A] font-semibold hover:bg-[#FAF0E6] cursor-pointer transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={clearingCatalog}
+                onClick={handleConfirmClearCatalog}
+                className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shadow-md cursor-pointer flex items-center gap-1.5 transition-colors disabled:opacity-50"
+              >
+                {clearingCatalog ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Clearing Catalog...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    <span>OK</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

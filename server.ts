@@ -39,6 +39,7 @@ import {
   getFirestoreSyncFlag,
   getFirestoreProductById,
   getFirestoreCategories,
+  saveFirestoreCategory,
   saveFirestoreFAQ,
   deleteFirestoreFAQ,
   saveFirestoreMediaAsset,
@@ -1115,10 +1116,53 @@ app.get('/api/debug/testimonials', requireAdmin, async (_req: Request, res: Resp
 ========================================================= */
 
 // Categories (Public)
-app.get('/api/categories', (_req: Request, res: Response) => {
+app.get('/api/categories', async (_req: Request, res: Response) => {
+  try {
+    const fsCats = await getFirestoreCategories().catch(() => null);
+    if (Array.isArray(fsCats) && fsCats.length > 0) {
+      db.categories = fsCats;
+      saveDB(db, false);
+    }
+  } catch {}
+
+  const existingSlugs = new Set(db.categories.map(c => (c.slug || '').toLowerCase()));
+  const existingIds = new Set(db.categories.map(c => (c.id || '').toLowerCase()));
+  
+  let addedNew = false;
+  (db.products || []).forEach(p => {
+    if (!p) return;
+    const catName = (p.category_name || '').trim();
+    const catSlug = (p.category_slug || p.category_id || '').trim().toLowerCase();
+    const catId = (p.category_id || '').trim();
+    
+    if (catName && catSlug && !existingSlugs.has(catSlug) && !existingIds.has(catId)) {
+      const newCat: Category = {
+        id: catId || `cat-${catSlug}`,
+        name: catName,
+        slug: catSlug,
+        description: `Handcrafted ${catName}`,
+        display_order: db.categories.length + 1,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      db.categories.push(newCat);
+      existingSlugs.add(catSlug);
+      existingIds.add(newCat.id.toLowerCase());
+      addedNew = true;
+    }
+  });
+
+  if (addedNew) {
+    saveDB(db, false);
+    for (const cat of db.categories) {
+      saveFirestoreCategory(cat).catch(() => {});
+    }
+  }
+
   const activeCategories = db.categories
-    .filter((c) => c.is_active)
-    .sort((a, b) => a.display_order - b.display_order);
+    .filter((c) => c.is_active !== false)
+    .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
   res.json(activeCategories);
 });
 
