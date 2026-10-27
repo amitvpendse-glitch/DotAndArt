@@ -6,6 +6,9 @@ import {
   setDoc,
   deleteDoc,
   writeBatch,
+  query,
+  where,
+  limit,
 } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './firebase';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SETTINGS, INITIAL_PAGES, INITIAL_TESTIMONIALS, INITIAL_FAQS } from '../data/initialCatalog';
@@ -315,23 +318,34 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
 }
 
 export async function getFirestoreProductById(idOrSku: string): Promise<Product | null> {
-  if (firestoreQuotaExceeded) return null;
+  if (firestoreQuotaExceeded || !idOrSku) return null;
+
+  // 1. Check in-memory cache first (0 Reads!)
+  if (cachedProducts && cachedProducts.length > 0) {
+    const target = idOrSku.trim().toUpperCase();
+    const match = cachedProducts.find(
+      (p) => p.id === idOrSku || p.sku?.toUpperCase() === target || p.id?.toUpperCase() === target
+    );
+    if (match) return match;
+  }
+
   try {
+    // 2. Direct document ID lookup (1 Read)
     const docRef = doc(db, PRODUCTS_COLLECTION, idOrSku);
     const snap = await getDoc(docRef);
     if (snap.exists()) {
       return snap.data() as Product;
     }
+
+    // 3. Targeted query by SKU (1 Read instead of scanning all 175 documents)
     const colRef = collection(db, PRODUCTS_COLLECTION);
-    const allSnap = await getDocs(colRef);
-    let found: Product | null = null;
-    allSnap.forEach((d) => {
-      const data = d.data() as Product;
-      if (d.id === idOrSku || data.id === idOrSku || data.sku?.toUpperCase() === idOrSku.toUpperCase()) {
-        found = data;
-      }
-    });
-    return found;
+    const q = query(colRef, where('sku', '==', idOrSku.trim().toUpperCase()), limit(1));
+    const skuSnap = await getDocs(q);
+    if (!skuSnap.empty) {
+      return skuSnap.docs[0].data() as Product;
+    }
+
+    return null;
   } catch (err) {
     checkQuotaError(err);
     return null;
@@ -398,19 +412,16 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
   if (firestoreQuotaExceeded) return;
 
   try {
-    // If updating, find if an existing doc has this SKU with a different doc ID
+    // If updating, check if an existing doc has this SKU with a targeted query (1 Read max instead of 175 Reads)
     try {
-      const colRef = collection(db, PRODUCTS_COLLECTION);
-      const snap = await getDocs(colRef);
-      snap.forEach((d) => {
-        const dData = d.data() as Product;
-        if (
-          d.id === targetId ||
-          (targetSku && ((dData.sku && dData.sku.toUpperCase() === targetSku) || d.id.toUpperCase() === targetSku))
-        ) {
-          docId = d.id;
+      if (targetSku) {
+        const colRef = collection(db, PRODUCTS_COLLECTION);
+        const q = query(colRef, where('sku', '==', targetSku), limit(1));
+        const qSnap = await getDocs(q);
+        if (!qSnap.empty) {
+          docId = qSnap.docs[0].id;
         }
-      });
+      }
     } catch {}
 
     const docRef = doc(db, PRODUCTS_COLLECTION, docId);
