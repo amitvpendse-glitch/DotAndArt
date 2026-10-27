@@ -6103,6 +6103,12 @@ export const INITIAL_CATEGORIES: any[] = [
     "name": "Lippan Wall Hangings",
     "slug": "lippan-wall-hangings",
     "description": "Traditional Kutch mud and mirror art"
+  },
+  {
+    "id": "cat-tea-light-candle-holders",
+    "name": "Tea Light Candle Holders",
+    "slug": "tea-light-candle-holders",
+    "description": "Handcrafted Tea Light Candle Holders"
   }
 ];
 
