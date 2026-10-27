@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArtworkPlaceholder } from './ArtworkPlaceholder';
+import { getLocalArtworkImage } from '../utils/localImageCache';
 
 interface SafeProductImageProps {
   src?: string;
@@ -95,13 +96,37 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
   addCandidate(uppercaseThumbnailPath);
 
   const [candidateIndex, setCandidateIndex] = useState<number>(0);
-  const activeSrc = candidates[candidateIndex] || candidates[0];
+  const [localSrc, setLocalSrc] = useState<string | null>(null);
 
   useEffect(() => {
+    let active = true;
     setHasError(false);
     setIsLoaded(false);
     setCandidateIndex(0);
+    setLocalSrc(null);
+
+    const checkLocal = async () => {
+      let cached: string | null = null;
+      if (src && (src.startsWith('/uploads/') || src.startsWith('data:') || src.startsWith('blob:'))) {
+        cached = await getLocalArtworkImage(src);
+      }
+      if (!cached && cleanSku) {
+        cached = await getLocalArtworkImage(cleanSku);
+      }
+      if (!cached && src) {
+        cached = await getLocalArtworkImage(src);
+      }
+      if (active && cached) {
+        setLocalSrc(cached);
+      }
+    };
+    checkLocal();
+    return () => {
+      active = false;
+    };
   }, [src, cleanSku, size]);
+
+  const activeSrc = localSrc || candidates[candidateIndex] || candidates[0];
 
   // For lg (zoom view), start with thumbnail instantly (0ms), then load full-res in background and switch instantly
   useEffect(() => {
@@ -115,7 +140,7 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     }
   }, [activeSrc, size]);
 
-  if ((!activeSrc && !initialCleanSrc) || hasError) {
+  if ((!activeSrc && !initialCleanSrc && !localSrc) || hasError) {
     return (
       <ArtworkPlaceholder
         name={name}
@@ -140,7 +165,17 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
       draggable={false}
       onContextMenu={(e) => e.preventDefault()}
       onDragStart={(e) => e.preventDefault()}
-      onError={() => {
+      onError={async () => {
+        if (!localSrc) {
+          const cached =
+            (src ? await getLocalArtworkImage(src) : null) ||
+            (cleanSku ? await getLocalArtworkImage(cleanSku) : null);
+          if (cached) {
+            setLocalSrc(cached);
+            setHasError(false);
+            return;
+          }
+        }
         if (candidateIndex + 1 < candidates.length) {
           setCandidateIndex((prev) => prev + 1);
         } else {

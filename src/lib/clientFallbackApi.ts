@@ -23,6 +23,8 @@ import {
 } from './firestoreCatalog';
 import { isAwaitingPhoto, isProductHighDemand } from '../utils/productUtils';
 import { isSkuBlocked } from './blockedSkus';
+import { compressImageFile } from '../utils/imageCompressor';
+import { saveLocalArtworkImage } from '../utils/localImageCache';
 
 function normalizeProduct(p: Product): Product {
   const cleanImg = (path?: string) => {
@@ -234,33 +236,42 @@ export async function handleClientFallbackApi<T = any>(
       }
 
       if (file) {
-        return new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = async () => {
-            const dataUrl = reader.result as string;
-            const filename = file?.name || `upload-${Date.now()}.png`;
+        return (async () => {
+          try {
+            const compressed = await compressImageFile(file, 1200, 1200, 0.8);
+            const dataUrl = await new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result as string);
+              reader.onerror = () => reject(new Error('Failed to read file'));
+              reader.readAsDataURL(compressed);
+            });
+
+            const assetId = `media-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+            const filename = file.name || `upload-${Date.now()}.jpg`;
+
+            // Store in persistent IndexedDB + Cache API
+            const virtualPath = await saveLocalArtworkImage(assetId, dataUrl, filename);
+
             const asset: MediaAsset = {
-              id: `media-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-              storage_path: dataUrl,
+              id: assetId,
+              storage_path: virtualPath,
               media_type: 'image',
               filename,
               title: filename,
               alt_text: altText,
-              file_size: file?.size || 0,
+              file_size: compressed.size || file.size || 0,
               created_at: new Date().toISOString(),
             };
-            try {
-              await saveFirestoreMediaAsset(asset);
-            } catch (fsErr) {
-              console.warn('[clientFallbackApi] Failed to persist uploaded media asset in Firestore', fsErr);
-            }
-            resolve(jsonRes({ success: true, file_path: dataUrl, asset }));
-          };
-          reader.onerror = () => {
-            resolve(jsonRes({ success: false, error: 'Failed to read file' }) as T);
-          };
-          reader.readAsDataURL(file);
-        }) as Promise<T>;
+
+            // Non-blocking firestore attempt
+            saveFirestoreMediaAsset(asset).catch(() => {});
+
+            return jsonRes({ success: true, file_path: virtualPath, data_url: dataUrl, asset });
+          } catch (readErr) {
+            console.error('[clientFallbackApi] Image compression or read failed', readErr);
+            return jsonRes({ success: false, error: 'Failed to process image' });
+          }
+        })() as Promise<T>;
       }
     } catch (err) {
       console.error('[clientFallbackApi] Upload failed', err);

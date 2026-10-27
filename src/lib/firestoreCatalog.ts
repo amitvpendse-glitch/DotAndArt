@@ -14,6 +14,7 @@ import { db, handleFirestoreError, OperationType } from './firebase';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SETTINGS, INITIAL_PAGES, INITIAL_TESTIMONIALS, INITIAL_FAQS } from '../data/initialCatalog';
 import { Product, Category, WebsiteSettings, WebsitePage, Testimonial, FAQ, MediaAsset } from '../types';
 import { isSkuBlocked } from './blockedSkus';
+import { saveLocalArtworkImage, saveLocalCustomProduct, getAllLocalCustomProducts } from '../utils/localImageCache';
 
 /**
  * Strips undefined properties recursively so Firestore does not reject payloads.
@@ -252,9 +253,21 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
   }
 
   const localCustom = getLocalCustomProducts();
+  let idbCustom: Product[] = [];
+  try {
+    idbCustom = await getAllLocalCustomProducts();
+  } catch {}
+  
+  const customMap = new Map<string, Product>();
+  [...localCustom, ...idbCustom].forEach((p) => {
+    if (p && (p.id || p.sku)) {
+      customMap.set(p.id || p.sku, p);
+    }
+  });
+  const mergedCustom = Array.from(customMap.values());
 
   if (firestoreQuotaExceeded) {
-    return [...localCustom, ...INITIAL_PRODUCTS].filter((p) => !isSkuBlocked(p?.sku, p?.id));
+    return [...mergedCustom, ...INITIAL_PRODUCTS].filter((p) => !isSkuBlocked(p?.sku, p?.id));
   }
 
   try {
@@ -303,7 +316,7 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
     }
 
     // Prioritize Firestore items over local custom and initial products
-    const allSources = [...localCustom, ...items, ...INITIAL_PRODUCTS];
+    const allSources = [...mergedCustom, ...items, ...INITIAL_PRODUCTS];
     allSources.sort((a, b) => {
       const timeA = new Date(a?.updated_at || a?.created_at || 0).getTime();
       const timeB = new Date(b?.updated_at || b?.created_at || 0).getTime();
@@ -420,12 +433,41 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
           (p.sku && targetSku && p.sku.toUpperCase() === targetSku)
       );
       const cleanProd = { ...product, id: docId, sku: targetSku || product.sku, updated_at: new Date().toISOString() };
+      
+      // Save to unlimited IndexedDB store and Service Worker Cache API
+      saveLocalCustomProduct(cleanProd).catch(() => {});
+
+      if (Array.isArray(cleanProd.images)) {
+        for (let i = 0; i < cleanProd.images.length; i++) {
+          const img = cleanProd.images[i];
+          if (img && img.storage_path && img.storage_path.startsWith('data:')) {
+            saveLocalArtworkImage(`${docId}-${i + 1}`, img.storage_path, targetSku).catch(() => {});
+          }
+        }
+      }
+
       if (matchIdx >= 0) {
         customArr[matchIdx] = cleanProd;
       } else {
         customArr.unshift(cleanProd);
       }
-      localStorage.setItem('app_custom_products', JSON.stringify(customArr));
+      try {
+        localStorage.setItem('app_custom_products', JSON.stringify(customArr));
+      } catch (lsErr) {
+        // If localStorage is full, save light version without heavy base64 images
+        const lightArr = customArr.map((p) => ({
+          ...p,
+          images: (p.images || []).map((img, i) => ({
+            ...img,
+            storage_path: (img.storage_path || '').startsWith('data:') && (img.storage_path || '').length > 50000
+              ? `/uploads/local-${p.id || docId}-${i + 1}.jpg`
+              : img.storage_path,
+          })),
+        }));
+        try {
+          localStorage.setItem('app_custom_products', JSON.stringify(lightArr));
+        } catch {}
+      }
     } catch {}
   }
 

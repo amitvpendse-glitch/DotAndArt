@@ -109,20 +109,26 @@ self.addEventListener('fetch', (event) => {
 
   if (isImageOrFont) {
     event.respondWith(
-      caches.match(request).then((cachedResponse) => {
+      caches.match(request, { ignoreSearch: true }).then((cachedResponse) => {
         if (cachedResponse) {
           return cachedResponse;
         }
-        return fetch(request).then((response) => {
-          if (response && response.status === 200) {
-            const responseToCache = response.clone();
-            caches.open(RUNTIME_CACHE).then((cache) => {
-              cache.put(request, responseToCache).catch(() => {});
-            });
+        return caches.match(url.pathname).then((pathMatch) => {
+          if (pathMatch) {
+            return pathMatch;
           }
-          return response;
-        }).catch(() => {
-          return new Response('', { status: 404 });
+          return fetch(request).then((response) => {
+            if (response && response.status === 200) {
+              const responseToCache = response.clone();
+              caches.open(RUNTIME_CACHE).then((cache) => {
+                cache.put(request, responseToCache).catch(() => {});
+                cache.put(url.pathname, responseToCache.clone()).catch(() => {});
+              });
+            }
+            return response;
+          }).catch(() => {
+            return new Response('', { status: 404 });
+          });
         });
       })
     );

@@ -41,6 +41,8 @@ import { deleteFirestoreProducts, updateFirestoreProducts, saveFirestoreProduct,
 import { onSnapshot, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { isAwaitingPhoto } from '../utils/productUtils';
+import { compressImageFile } from '../utils/imageCompressor';
+import { saveLocalArtworkImage, saveLocalCustomProduct, exportLocalCatalogBackup, importLocalCatalogBackup } from '../utils/localImageCache';
 
 interface AdminProductsProps {
   token: string;
@@ -123,6 +125,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<Product | null>(null);
+  const backupFileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Download Catalog (PDF / CSV) State for Admin Console
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -778,42 +781,65 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     }
 
     for (let i = 0; i < filesArray.length; i++) {
-      const file = filesArray[i];
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('alt_text', `${name || 'Artwork'} photo`);
+      const rawFile = filesArray[i];
 
       try {
-        const data = await safeFetchJson<any>(
-          '/api/uploads',
-          {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-            body: formData,
-          },
-          null
-        );
+        // 1. Client-side compress before storing (drops 5MB-10MB photo down to ~60KB)
+        const compressedFile = await compressImageFile(rawFile, 1200, 1200, 0.8);
+        const dataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = () => reject(new Error('Failed to read image file'));
+          reader.readAsDataURL(compressedFile);
+        });
 
-        if (data && (data.success || data.file_path)) {
-          const filePath = data.file_path || data.asset?.storage_path;
-          setImages((prev) => {
-            const isFirst = prev.length === 0;
-            const newImg: ProductImage = {
-              id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-              product_id: editingProduct?.id || '',
-              storage_path: filePath,
-              alt_text: file.name,
-              display_order: prev.length + 1,
-              is_primary: isFirst,
-            };
-            return [...prev, newImg];
-          });
-        } else {
-          setErrorMessage(data?.error || 'Upload failed');
+        const cleanSku = (sku || '').trim().toUpperCase();
+        const localImgKey = `${cleanSku || 'artwork'}-${Date.now()}-${i + 1}`;
+
+        // 2. Persist immediately into IndexedDB and Service Worker Cache API
+        const localVirtualPath = await saveLocalArtworkImage(localImgKey, dataUrl, cleanSku);
+        let finalPath = localVirtualPath;
+
+        // 3. Attempt server/firestore upload in background if available
+        try {
+          const formData = new FormData();
+          formData.append('file', compressedFile);
+          formData.append('alt_text', `${name || 'Artwork'} photo`);
+
+          const data = await safeFetchJson<any>(
+            '/api/uploads',
+            {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${token}` },
+              body: formData,
+            },
+            null
+          );
+
+          if (data && (data.success || data.file_path)) {
+            finalPath = data.file_path || data.asset?.storage_path || localVirtualPath;
+          }
+        } catch {
+          // Keep localVirtualPath - already safely persisted in local cache!
         }
+
+        setImages((prev) => {
+          const isFirst = prev.length === 0;
+          const newImg: ProductImage = {
+            id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+            product_id: editingProduct?.id || '',
+            storage_path: finalPath,
+            alt_text: rawFile.name,
+            display_order: prev.length + 1,
+            is_primary: isFirst,
+          };
+          return [...prev, newImg];
+        });
+
+        setIsDrawerDirty(true);
       } catch (err) {
-        console.error('Failed to upload file', err);
-        setErrorMessage('Failed to upload file.');
+        console.error('Failed to process and store image', err);
+        setErrorMessage('Failed to process image file.');
       }
     }
 
@@ -864,6 +890,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
       }
       return updated;
     });
+    setIsDrawerDirty(true);
   };
 
   const handleAddVariant = () => {
@@ -950,7 +977,12 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         updated_at: now,
       };
 
-      // 1. Direct Firestore save guarantees immediate persistence on live static Vercel
+      // 1. Immediately guarantee persistent local storage in IndexedDB & Cache API (unaffected by Firestore quota)
+      await saveLocalCustomProduct(fullPayload).catch((err) =>
+        console.warn('Local custom product save notice', err)
+      );
+
+      // 2. Direct Firestore save attempt
       await saveFirestoreProduct(fullPayload).catch((err) =>
         console.warn('Direct Firestore save product error', err)
       );
@@ -1013,12 +1045,44 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
       );
       if (res && res.sku) {
         setProducts((prev) => [res, ...prev]);
+        await saveLocalCustomProduct(res).catch(() => {});
         await saveFirestoreProduct(res).catch(() => {});
         fetchProductsAndCategories();
         window.dispatchEvent(new Event('app_products_updated'));
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleExportLocalCache = async () => {
+    try {
+      const json = await exportLocalCatalogBackup();
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `dotandart-artworks-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Failed to export backup', err);
+    }
+  };
+
+  const handleImportLocalCache = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const res = await importLocalCatalogBackup(text);
+      setBulkSuccessMsg(`🎉 Successfully imported ${res.productsCount} artwork(s) and ${res.imagesCount} image(s) from backup!`);
+      setTimeout(() => setBulkSuccessMsg(''), 6000);
+      fetchProductsAndCategories();
+    } catch (err) {
+      console.error('Failed to import backup', err);
+      setBulkErrorMsg('Failed to import backup file. Please ensure it is a valid Dot And Art backup JSON.');
+      setTimeout(() => setBulkErrorMsg(''), 6000);
     }
   };
 
@@ -1185,6 +1249,36 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
             <Download className="w-4 h-4 text-[#C85A32]" />
             <span>Export CSV</span>
           </button>
+
+          {/* Export Artworks Backup (JSON with embedded local images for cross-browser sync) */}
+          <button
+            type="button"
+            onClick={handleExportLocalCache}
+            disabled={products.length === 0}
+            className="px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] hover:bg-[#FAF0E6] text-[#5B331A] border border-[#D8C7B5] text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+            title="Download complete JSON backup with all artworks, custom details and uploaded photos to transfer across devices/browsers"
+          >
+            <Download className="w-4 h-4 text-[#166534]" />
+            <span>Export Artworks Backup</span>
+          </button>
+
+          {/* Import Artworks Backup (Restore from JSON) */}
+          <button
+            type="button"
+            onClick={() => backupFileInputRef.current?.click()}
+            className="px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] hover:bg-[#FAF0E6] text-[#5B331A] border border-[#D8C7B5] text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+            title="Restore or import artworks and uploaded photos from an exported backup file"
+          >
+            <Upload className="w-4 h-4 text-[#166534]" />
+            <span>Import Artworks Backup</span>
+          </button>
+          <input
+            type="file"
+            ref={backupFileInputRef}
+            onChange={handleImportLocalCache}
+            accept=".json,application/json"
+            className="hidden"
+          />
 
           <button
             type="button"
