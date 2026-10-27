@@ -425,13 +425,6 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
           customArr = JSON.parse(customStr);
         } catch {}
       }
-      if (!Array.isArray(customArr)) customArr = [];
-      const matchIdx = customArr.findIndex(
-        (p) =>
-          p.id === docId ||
-          p.id === targetId ||
-          (p.sku && targetSku && p.sku.toUpperCase() === targetSku)
-      );
       const cleanProd = { ...product, id: docId, sku: targetSku || product.sku, updated_at: new Date().toISOString() };
       
       // Save to unlimited IndexedDB store and Service Worker Cache API
@@ -446,16 +439,20 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
         }
       }
 
-      if (matchIdx >= 0) {
-        customArr[matchIdx] = cleanProd;
-      } else {
-        customArr.unshift(cleanProd);
-      }
+      // Filter out any existing items with matching ID or SKU to prevent ghost duplicates
+      const filteredCustomArr = customArr.filter(
+        (p) =>
+          p.id !== docId &&
+          p.id !== targetId &&
+          (!p.sku || !targetSku || p.sku.toUpperCase() !== targetSku)
+      );
+      filteredCustomArr.unshift(cleanProd);
+      const customArrToSave = filteredCustomArr;
       try {
-        localStorage.setItem('app_custom_products', JSON.stringify(customArr));
+        localStorage.setItem('app_custom_products', JSON.stringify(customArrToSave));
       } catch (lsErr) {
         // If localStorage is full, save light version without heavy base64 images
-        const lightArr = customArr.map((p) => ({
+        const lightArr = customArrToSave.map((p) => ({
           ...p,
           images: (p.images || []).map((img, i) => ({
             ...img,

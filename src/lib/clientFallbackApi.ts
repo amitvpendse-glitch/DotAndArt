@@ -104,13 +104,38 @@ function getStoredProducts(): Product[] {
     }
   } catch {}
 
+  // Deduplicate customList by SKU and ID first, prioritizing items with updated_at / created_at or images
+  customList.sort((a, b) => {
+    const timeA = new Date(a?.updated_at || a?.created_at || 0).getTime();
+    const timeB = new Date(b?.updated_at || b?.created_at || 0).getTime();
+    if (timeA !== timeB) return timeB - timeA;
+    const scoreA = (a?.images?.length || 0) + (a?.variants?.length || 0);
+    const scoreB = (b?.images?.length || 0) + (b?.variants?.length || 0);
+    return scoreB - scoreA;
+  });
+
+  const uniqueCustom: Product[] = [];
+  const seenCustomIds = new Set<string>();
+  const seenCustomSkus = new Set<string>();
+  for (const p of customList) {
+    if (!p) continue;
+    const pid = (p.id || '').trim();
+    const psku = (p.sku || '').trim().toUpperCase();
+    if (deletedSet.has(pid) || deletedSet.has(psku) || isSkuBlocked(psku, pid)) continue;
+    if (pid && seenCustomIds.has(pid)) continue;
+    if (psku && seenCustomSkus.has(psku)) continue;
+    if (pid) seenCustomIds.add(pid);
+    if (psku) seenCustomSkus.add(psku);
+    uniqueCustom.push(p);
+  }
+
   const initial = INITIAL_PRODUCTS.map(normalizeProduct);
-  const customIds = new Set(customList.map(p => p.id));
-  const customSkus = new Set(customList.map(p => p.sku));
+  const customIds = new Set(uniqueCustom.map(p => p.id));
+  const customSkus = new Set(uniqueCustom.map(p => (p.sku || '').toUpperCase()));
 
   const merged = [
-    ...customList.filter(p => !deletedSet.has(p.id) && !deletedSet.has(p.sku) && !isSkuBlocked(p.sku, p.id)),
-    ...initial.filter(p => !customIds.has(p.id) && !customSkus.has(p.sku) && !deletedSet.has(p.id) && !deletedSet.has(p.sku) && !isSkuBlocked(p.sku, p.id))
+    ...uniqueCustom,
+    ...initial.filter(p => !customIds.has(p.id) && !customSkus.has((p.sku || '').toUpperCase()) && !deletedSet.has(p.id) && !deletedSet.has(p.sku) && !isSkuBlocked(p.sku, p.id))
   ];
 
   const seenIds = new Set<string>();
@@ -120,6 +145,7 @@ function getStoredProducts(): Product[] {
     if (!p || isSkuBlocked(p.sku, p.id)) continue;
     const pid = (p.id || '').trim();
     const psku = (p.sku || '').trim().toUpperCase();
+    if (deletedSet.has(pid) || deletedSet.has(psku)) continue;
     if (pid && seenIds.has(pid)) continue;
     if (psku && seenSkus.has(psku)) continue;
     if (pid) seenIds.add(pid);
@@ -381,8 +407,12 @@ export async function handleClientFallbackApi<T = any>(
       const cat = (categories || []).find((c) => c.id === body.category_id || c.slug === body.category_slug) || categories[0];
       const isLippan = cat?.slug === 'lippan-wall-hangings' || (body.name || '').toLowerCase().includes('lippan');
 
+      const targetId = (body.id && typeof body.id === 'string' && body.id.startsWith('prod-'))
+        ? body.id
+        : `prod-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+
       const newProd: Product = {
-        id: `prod-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        id: targetId,
         sku: sku || `SKU-${Date.now()}`,
         name: (body.name || 'Untitled Art').trim(),
         short_description: body.short_description || '',
@@ -406,11 +436,19 @@ export async function handleClientFallbackApi<T = any>(
         base_size: body.base_size || '12 inches diameter',
         images: Array.isArray(body.images) ? body.images : [],
         variants: Array.isArray(body.variants) ? body.variants : [],
-        created_at: new Date().toISOString(),
+        created_at: body.created_at || new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
 
-      const updatedList = [newProd, ...products];
+      const existingIndex = products.findIndex((p) => p.id === targetId || (p.sku && p.sku.toUpperCase() === sku));
+      let updatedList: Product[];
+      if (existingIndex >= 0) {
+        products[existingIndex] = newProd;
+        updatedList = products;
+      } else {
+        updatedList = [newProd, ...products];
+      }
+
       localStorage.setItem('app_custom_products', JSON.stringify(updatedList));
       try {
         await saveFirestoreProduct(newProd);

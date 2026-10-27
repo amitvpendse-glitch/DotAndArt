@@ -1906,16 +1906,13 @@ app.post('/api/admin/products', requireAdmin, async (req: Request, res: Response
   }
 
   const cleanSku = sku.trim().toUpperCase();
-  if (db.products.some((p) => p.sku === cleanSku)) {
-    res.status(400).json({ error: `Product SKU "${cleanSku}" is already in use.` });
-    return;
-  }
+  const targetId = (req.body.id && typeof req.body.id === 'string' && req.body.id.startsWith('prod-')) ? req.body.id : `prod-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
 
   const cat = (db.categories || []).find((c) => c.id === resolvedCatId || c.slug === req.body.category_slug) || db.categories[0];
   const isLippanCategory = cat?.slug === 'lippan-wall-hangings' || name.toLowerCase().includes('lippan');
 
   const newProd: Product = {
-    id: `prod-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
+    id: targetId,
     sku: cleanSku,
     name: name.trim(),
     short_description: short_description || '',
@@ -1942,18 +1939,24 @@ app.post('/api/admin/products', requireAdmin, async (req: Request, res: Response
     base_size: base_size || '12 inches diameter',
     images: Array.isArray(images) ? images : [],
     variants: Array.isArray(variants) ? variants : [],
-    created_at: new Date().toISOString(),
+    created_at: req.body.created_at || new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
 
-  db.products.unshift(newProd);
+  const existingIndex = db.products.findIndex((p) => p.id === targetId || (p.sku && p.sku.toUpperCase() === cleanSku));
+  if (existingIndex >= 0) {
+    db.products[existingIndex] = newProd;
+  } else {
+    db.products.unshift(newProd);
+  }
+
   saveDB(db);
   try {
     await saveFirestoreProduct(newProd);
   } catch (e) {
     console.warn('[server] Firestore save error', e);
   }
-  logAudit('product_created', 'product', newProd.id, { sku: newProd.sku, name: newProd.name });
+  logAudit('product_saved', 'product', newProd.id, { sku: newProd.sku, name: newProd.name });
   res.json(newProd);
 });
 
