@@ -33,6 +33,13 @@ import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
 import { isSkuBlocked } from '../lib/blockedSkus';
 import { onSnapshot, query, where, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import {
+  getFirestoreProducts,
+  getLocalCustomProducts,
+  firestoreQuotaExceeded,
+  checkQuotaError,
+} from '../lib/firestoreCatalog';
+import { INITIAL_PRODUCTS } from '../data/initialCatalog';
 
 interface ProductDetailPageProps {
   sku: string;
@@ -48,12 +55,56 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   onNavigate,
 }) => {
   const { addToCart, getItemQuantity, decrementItem } = useCart();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [related, setRelated] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const cleanSku = (sku || '').trim();
+
+  // Helper to match product by SKU or ID (case-insensitive)
+  const findProductMatch = (list: Product[], targetSkuOrId: string): Product | undefined => {
+    if (!targetSkuOrId || !Array.isArray(list)) return undefined;
+    const cleanTarget = targetSkuOrId.trim().toUpperCase();
+    const cleanRaw = targetSkuOrId.trim();
+    return list.find(
+      (p) =>
+        p &&
+        !isSkuBlocked(p.sku, p.id) &&
+        (p.sku?.toUpperCase() === cleanTarget ||
+          p.id?.toUpperCase() === cleanTarget ||
+          p.sku === cleanRaw ||
+          p.id === cleanRaw)
+    );
+  };
+
+  // Immediate synchronous lookup from local cache & initial catalog
+  const synchronousProduct = React.useMemo(() => {
+    if (!cleanSku || isSkuBlocked(cleanSku)) return null;
+    const pool = [...getLocalCustomProducts(), ...INITIAL_PRODUCTS];
+    return findProductMatch(pool, cleanSku) || null;
+  }, [cleanSku]);
+
+  const [product, setProduct] = useState<Product | null>(synchronousProduct);
+  const [related, setRelated] = useState<Product[]>(() => {
+    if (!synchronousProduct) return [];
+    const pool = [...getLocalCustomProducts(), ...INITIAL_PRODUCTS];
+    return pool
+      .filter(
+        (p) =>
+          p &&
+          p.category_id === synchronousProduct.category_id &&
+          p.id !== synchronousProduct.id &&
+          p.sku !== synchronousProduct.sku &&
+          p.is_published !== false &&
+          !isSkuBlocked(p.sku, p.id)
+      )
+      .slice(0, 4);
+  });
+  // If we already have the product synchronously, loading starts as false!
+  const [loading, setLoading] = useState<boolean>(!synchronousProduct);
 
   // User Interactive Selections
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(undefined);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(() => {
+    return synchronousProduct?.variants && synchronousProduct.variants.length > 0
+      ? synchronousProduct.variants[0]
+      : undefined;
+  });
   const [customizationNotes, setCustomizationNotes] = useState('');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
@@ -64,80 +115,170 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   }>({ msg: '', attachments: [] });
 
   useEffect(() => {
-    if (isSkuBlocked(sku)) {
+    if (!cleanSku || isSkuBlocked(cleanSku)) {
       setProduct(null);
       setRelated([]);
       setLoading(false);
       return;
     }
 
-    setLoading(true);
-    const colRef = collection(db, 'products');
-    const q = query(colRef, where('sku', '==', sku));
+    let isMounted = true;
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      if (!snapshot.empty) {
-        const productDoc = snapshot.docs[0];
-        const data = productDoc.data() as Product;
-        const prod = { ...data, id: productDoc.id };
-        setProduct(prod);
+    // Hard fallback timer: Never allow spinner to spin indefinitely (max 600ms)
+    const safetyTimer = setTimeout(() => {
+      if (isMounted) {
+        setLoading(false);
+      }
+    }, 600);
 
-        // Fetch related products (keep as is or update to snapshot)
-        // Since related products depend on category_id, we can keep the simple fetch or also make it real-time
-        // For now, let's keep the related logic simple
-        safeFetchJson<{ product: Product; related: Product[] } | null>(
-          `/api/products/${sku}`,
+    // Asynchronous loader (safe against Firestore quota exhaustion)
+    async function loadArtworkDetails() {
+      try {
+        // 1. Fetch via safeFetchJson (handles cache, server, and local fallback)
+        const data = await safeFetchJson<{ product: Product; related: Product[] } | null>(
+          `/api/products/${encodeURIComponent(cleanSku)}`,
           undefined,
           null
-        ).then((data) => {
-          if (data && data.related) {
-            const rawRel = data.related || [];
-            const seenRel = new Set<string>();
+        );
+        if (!isMounted) return;
+
+        if (data && data.product && !isSkuBlocked(data.product.sku, data.product.id)) {
+          setProduct(data.product);
+          if (data.product.variants && data.product.variants.length > 0) {
+            setSelectedVariant((prev) => prev || data.product.variants![0]);
+          }
+          if (Array.isArray(data.related) && data.related.length > 0) {
+            const rawRel = data.related;
+            const seen = new Set<string>();
             const uniqueRel = rawRel.filter((p) => {
               const pid = p?.id || p?.sku;
-              if (!pid || seenRel.has(pid)) return false;
-              seenRel.add(pid);
+              if (!pid || seen.has(pid) || isSkuBlocked(p.sku, p.id)) return false;
+              seen.add(pid);
               return true;
             });
             setRelated(uniqueRel);
           }
-        });
-        
-        // Auto-select variant if not already selected
-        if (!selectedVariant && prod?.variants && prod.variants.length > 0) {
-            setSelectedVariant(prod.variants[0]);
+          setLoading(false);
+          return;
         }
-      } else {
-        setProduct(null);
-      }
-      setLoading(false);
-    });
 
-    return () => unsubscribe();
-  }, [sku]);
+        // 2. Direct local & catalog check
+        const pool = [...getLocalCustomProducts(), ...INITIAL_PRODUCTS];
+        const matched = findProductMatch(pool, cleanSku);
+        if (matched) {
+          setProduct(matched);
+          if (matched.variants && matched.variants.length > 0) {
+            setSelectedVariant((prev) => prev || matched.variants![0]);
+          }
+          const rel = pool
+            .filter(
+              (p) =>
+                p &&
+                p.category_id === matched.category_id &&
+                p.id !== matched.id &&
+                p.sku !== matched.sku &&
+                p.is_published !== false &&
+                !isSkuBlocked(p.sku, p.id)
+            )
+            .slice(0, 4);
+          setRelated(rel);
+          setLoading(false);
+          return;
+        }
+
+        // If not found in any sources, ensure product is cleared
+        if (!synchronousProduct) {
+          setProduct(null);
+        }
+      } catch (err) {
+        console.warn('[ProductDetailPage] Failed to load artwork details:', err);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadArtworkDetails();
+
+    // 3. Optional real-time Firestore listener in background (never blocks loading)
+    let unsubscribeFirestore = () => {};
+    if (!firestoreQuotaExceeded) {
+      try {
+        const colRef = collection(db, 'products');
+        const q = query(colRef, where('sku', '==', cleanSku.toUpperCase()));
+        unsubscribeFirestore = onSnapshot(
+          q,
+          (snapshot) => {
+            if (!isMounted) return;
+            if (!snapshot.empty) {
+              const productDoc = snapshot.docs[0];
+              const docData = productDoc.data() as Product;
+              const prod = { ...docData, id: productDoc.id };
+              if (!isSkuBlocked(prod.sku, prod.id)) {
+                setProduct(prod);
+              }
+            }
+          },
+          (error) => {
+            checkQuotaError(error);
+          }
+        );
+      } catch (err) {
+        // Silent catch
+      }
+    }
+
+    return () => {
+      isMounted = false;
+      clearTimeout(safetyTimer);
+      unsubscribeFirestore();
+    };
+  }, [cleanSku, synchronousProduct]);
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center bg-theme-page text-theme-primary">
-        <div className="w-12 h-12 border-4 border-theme-accent border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center bg-theme-page text-theme-primary space-y-4">
+        <div className="w-12 h-12 border-4 border-theme-accent border-t-transparent rounded-full animate-spin mx-auto" />
         <p className="text-xs text-theme-muted">Loading artwork details...</p>
+        <div>
+          <button
+            onClick={() => setLoading(false)}
+            className="text-xs text-theme-accent hover:underline cursor-pointer"
+          >
+            Show Artwork Catalog
+          </button>
+        </div>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-20 text-center space-y-4 bg-theme-page text-theme-primary">
-        <h2 className="font-serif text-2xl font-bold text-theme-primary">Artwork Not Found</h2>
-        <p className="text-xs text-theme-muted">
-          The product code you requested may have been moved or updated.
-        </p>
-        <button
-          onClick={onBack}
-          className="px-6 py-2.5 rounded-full bg-theme-accent text-white text-xs font-semibold cursor-pointer"
-        >
-          Return to Shop Catalog
-        </button>
+      <div className="max-w-3xl mx-auto px-4 py-20 text-center space-y-6 bg-theme-page text-theme-primary">
+        <div className="space-y-2">
+          <span className="text-xs font-mono text-theme-muted bg-theme-accent/10 px-3 py-1 rounded-full border border-theme-glass">
+            Product Code: {cleanSku || 'Unknown'}
+          </span>
+          <h2 className="font-serif text-3xl font-bold text-theme-primary">Artwork Not Found</h2>
+          <p className="text-xs text-theme-muted max-w-md mx-auto leading-relaxed">
+            The artwork code requested may have been updated or moved. You can return to our shop catalog to browse all available hand-painted creations.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <button
+            onClick={onBack}
+            className="px-6 py-2.5 rounded-full bg-theme-accent hover:opacity-90 text-white text-xs font-semibold cursor-pointer transition-all shadow-sm"
+          >
+            Return to Shop Catalog
+          </button>
+          <button
+            onClick={() => onNavigate('/gallery')}
+            className="px-6 py-2.5 rounded-full border border-theme-glass text-theme-primary hover:bg-theme-accent/10 text-xs font-semibold cursor-pointer transition-all"
+          >
+            Browse Collector Gallery
+          </button>
+        </div>
       </div>
     );
   }
@@ -167,7 +308,22 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     addToCart(product, selectedVariant, customizationNotes);
   };
 
-  const imagesList = product?.images && product?.images.length > 0 ? product?.images : [];
+  const rawProduct = product as (Product & { image_url?: string; image_path?: string }) | null;
+  const fallbackImg = rawProduct?.image_url || rawProduct?.image_path;
+  const imagesList =
+    product?.images && product.images.length > 0
+      ? product.images
+      : fallbackImg
+      ? [
+          {
+            id: 'main-img',
+            storage_path: fallbackImg,
+            alt_text: product.name,
+            is_primary: true,
+            display_order: 0,
+          },
+        ]
+      : [];
   const currentActiveImage = imagesList[activeImageIndex];
 
   return (

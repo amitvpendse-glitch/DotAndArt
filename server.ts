@@ -1308,9 +1308,31 @@ app.get('/api/products/:idOrSku', async (req: Request, res: Response) => {
   } catch {}
 
   const { idOrSku } = req.params;
-  const product = (db.products || []).find(
-    (p) => (p.id === idOrSku || p.sku.toLowerCase() === idOrSku.toLowerCase()) && p.is_published && !isServerSkuBlocked(p.sku)
+  const rawTarget = decodeURIComponent(idOrSku || '').trim();
+  const cleanTarget = rawTarget.toLowerCase();
+
+  let product = (db.products || []).find(
+    (p) =>
+      (p.id?.toLowerCase() === cleanTarget ||
+        p.sku?.toLowerCase() === cleanTarget ||
+        p.id === rawTarget ||
+        p.sku === rawTarget) &&
+      p.is_published !== false &&
+      !isServerSkuBlocked(p.sku)
   );
+
+  // If not found in db.products, search INITIAL_PRODUCTS as robust fallback
+  if (!product) {
+    product = (INITIAL_PRODUCTS || []).find(
+      (p) =>
+        (p.id?.toLowerCase() === cleanTarget ||
+          p.sku?.toLowerCase() === cleanTarget ||
+          p.id === rawTarget ||
+          p.sku === rawTarget) &&
+        p.is_published !== false &&
+        !isServerSkuBlocked(p.sku)
+    );
+  }
 
   if (!product || isServerSkuBlocked(product.sku)) {
     res.status(404).json({ error: 'Product not found' });
@@ -1318,8 +1340,21 @@ app.get('/api/products/:idOrSku', async (req: Request, res: Response) => {
   }
 
   // Related products from the same category
-  const related = db.products
-    .filter((p) => p.is_published && p.id !== product.id && p.category_id === product.category_id && !isServerSkuBlocked(p.sku))
+  const pool = [...(db.products || []), ...(INITIAL_PRODUCTS || [])];
+  const seenIds = new Set<string>();
+  const related = pool
+    .filter((p) => {
+      const pid = p?.id || p?.sku;
+      if (!pid || seenIds.has(pid)) return false;
+      seenIds.add(pid);
+      return (
+        p.is_published !== false &&
+        p.id !== product.id &&
+        p.sku !== product.sku &&
+        p.category_id === product.category_id &&
+        !isServerSkuBlocked(p.sku)
+      );
+    })
     .slice(0, 4);
 
   res.json({

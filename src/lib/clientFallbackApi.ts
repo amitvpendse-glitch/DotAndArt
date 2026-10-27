@@ -775,13 +775,32 @@ export async function handleClientFallbackApi<T = any>(
 
   // 2. GET /api/products/:sku or /api/products/:id
   if (pathname.startsWith('/api/products/') && method === 'GET') {
-    const skuOrId = pathname.replace('/api/products/', '');
+    const rawSkuOrId = decodeURIComponent(pathname.replace('/api/products/', '').split('?')[0]);
+    const target = (rawSkuOrId || '').trim().toUpperCase();
     const products = getStoredProducts();
     const found = (products || []).find(
-      (p) => p.sku === skuOrId || p.id === skuOrId || encodeURIComponent(p.sku) === skuOrId
+      (p) =>
+        p &&
+        !isSkuBlocked(p.sku, p.id) &&
+        (p.sku?.toUpperCase() === target ||
+          p.id?.toUpperCase() === target ||
+          p.id === rawSkuOrId ||
+          p.sku === rawSkuOrId)
     );
     if (found) {
-      return jsonRes({ product: found, related: products.filter((p) => p.category_id === found.category_id && p.id !== found.id).slice(0, 4) });
+      return jsonRes({
+        product: found,
+        related: (products || [])
+          .filter(
+            (p) =>
+              p &&
+              !isSkuBlocked(p.sku, p.id) &&
+              p.category_id === found.category_id &&
+              p.id !== found.id &&
+              p.sku !== found.sku
+          )
+          .slice(0, 4),
+      });
     }
   }
 

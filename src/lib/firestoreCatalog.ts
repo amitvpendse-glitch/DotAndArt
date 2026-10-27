@@ -49,9 +49,9 @@ let lastProductsFetchTime = 0;
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache TTL to drastically reduce Firestore reads
 
 // Quota safeguard flag to prevent quota error loops
-let firestoreQuotaExceeded = false;
+export let firestoreQuotaExceeded = false;
 
-function checkQuotaError(err: unknown) {
+export function checkQuotaError(err: unknown) {
   const msg = err instanceof Error ? err.message : String(err);
   if (
     msg.includes('Quota limit exceeded') ||
@@ -60,13 +60,33 @@ function checkQuotaError(err: unknown) {
     msg.includes('Permission denied') ||
     msg.includes('offline') ||
     msg.includes('Could not reach Cloud Firestore backend') ||
-    msg.includes('Backend didn\'t respond within')
+    msg.includes('Backend didn\'t respond within') ||
+    msg.includes('timeout')
   ) {
     if (!firestoreQuotaExceeded) {
       firestoreQuotaExceeded = true;
       console.warn('[firestoreCatalog] Firestore offline or unreachable. Operating in lightning-fast local fallback mode.');
     }
   }
+}
+
+export function withTimeout<T>(promise: Promise<T>, ms: number, fallbackValue: T): Promise<T> {
+  let timer: any;
+  const timeoutPromise = new Promise<T>((resolve) => {
+    timer = setTimeout(() => {
+      resolve(fallbackValue);
+    }, ms);
+  });
+  return Promise.race([
+    promise.then((res) => {
+      clearTimeout(timer);
+      return res;
+    }).catch((err) => {
+      clearTimeout(timer);
+      throw err;
+    }),
+    timeoutPromise,
+  ]);
 }
 
 export async function getFirestoreDeletedIds(): Promise<Set<string>> {
@@ -96,8 +116,8 @@ export async function getFirestoreDeletedIds(): Promise<Set<string>> {
 
   try {
     const docRef = doc(db, CATALOG_STATE_COLLECTION, 'deleted_items');
-    const snap = await getDoc(docRef);
-    if (snap.exists()) {
+    const snap = await withTimeout(getDoc(docRef), 800, null as any);
+    if (snap && snap.exists && snap.exists()) {
       const data = snap.data();
       if (Array.isArray(data?.ids)) {
         data.ids.forEach((id: any) => {
@@ -213,7 +233,7 @@ export async function removeFirestoreDeletedIds(ids: string[]): Promise<void> {
  * Retrieves all products from Firestore.
  * Automatically seeds initial catalog on first run if Firestore collection is empty.
  */
-function getLocalCustomProducts(): Product[] {
+export function getLocalCustomProducts(): Product[] {
   if (INITIAL_PRODUCTS.length === 0) return [];
   try {
     const custom = localStorage.getItem('app_custom_products');
@@ -240,11 +260,11 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
   try {
     const deletedSet = await getFirestoreDeletedIds();
     const colRef = collection(db, PRODUCTS_COLLECTION);
-    const snap = await getDocs(colRef);
+    const snap = await withTimeout(getDocs(colRef), 1200, null as any);
 
     const rawItems: Product[] = [];
 
-    if (!snap.empty) {
+    if (snap && !snap.empty) {
       snap.forEach((docSnap) => {
         const data = docSnap.data() as Product;
         const pid = (data.id || docSnap.id || '').trim();

@@ -173,13 +173,30 @@ export async function safeFetchJson<T = any>(
 
   // 2. Direct Cloud Firestore Read for Single Product
   if (method === 'GET' && urlString.startsWith('/api/products/') && !urlString.includes('bulk')) {
-    const skuOrId = decodeURIComponent(urlString.replace('/api/products/', '').split('?')[0]);
+    const rawSkuOrId = decodeURIComponent(urlString.replace('/api/products/', '').split('?')[0]);
+    const target = (rawSkuOrId || '').trim().toUpperCase();
     try {
       const allProds = await getFirestoreProducts();
-      const found = (allProds || []).find((p) => p.sku === skuOrId || p.id === skuOrId);
+      const found = (allProds || []).find(
+        (p) =>
+          p &&
+          !isSkuBlocked(p.sku, p.id) &&
+          (p.sku?.toUpperCase() === target ||
+            p.id?.toUpperCase() === target ||
+            p.id === rawSkuOrId ||
+            p.sku === rawSkuOrId)
+      );
       if (found) {
-        const related = allProds
-          .filter((p) => p.category_id === found.category_id && p.id !== found.id && p.is_published)
+        const related = (allProds || [])
+          .filter(
+            (p) =>
+              p &&
+              p.category_id === found.category_id &&
+              p.id !== found.id &&
+              p.sku !== found.sku &&
+              p.is_published !== false &&
+              !isSkuBlocked(p.sku, p.id)
+          )
           .slice(0, 4);
         return { product: found, related } as unknown as T;
       }

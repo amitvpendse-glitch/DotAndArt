@@ -43,7 +43,14 @@ export default function App() {
     return window.location.pathname || '/';
   });
 
-  const [selectedSku, setSelectedSku] = useState<string | null>(null);
+  const [selectedSku, setSelectedSku] = useState<string | null>(() => {
+    const p = window.location.pathname || '';
+    if (p.startsWith('/product/')) {
+      const raw = p.replace('/product/', '').split('?')[0].split('#')[0].replace(/\/$/, '').trim();
+      return decodeURIComponent(raw) || null;
+    }
+    return null;
+  });
   const [shopCategoryFilter, setShopCategoryFilter] = useState<string>('all');
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
 
@@ -78,8 +85,8 @@ export default function App() {
     setCurrentPath(path);
 
     if (path.startsWith('/product/')) {
-      const sku = path.replace('/product/', '');
-      setSelectedSku(sku);
+      const raw = path.replace('/product/', '').split('?')[0].split('#')[0].replace(/\/$/, '').trim();
+      setSelectedSku(decodeURIComponent(raw));
     } else {
       setSelectedSku(null);
     }
@@ -98,7 +105,8 @@ export default function App() {
       const p = window.location.pathname;
       setCurrentPath(p);
       if (p.startsWith('/product/')) {
-        setSelectedSku(p.replace('/product/', ''));
+        const raw = p.replace('/product/', '').split('?')[0].split('#')[0].replace(/\/$/, '').trim();
+        setSelectedSku(decodeURIComponent(raw));
       } else {
         setSelectedSku(null);
       }
@@ -281,10 +289,17 @@ export default function App() {
 
   // Customer-facing rendering
   const renderCurrentPage = () => {
-    if (selectedSku) {
+    const activeSku =
+      selectedSku ||
+      (currentPath.startsWith('/product/')
+        ? decodeURIComponent(currentPath.replace('/product/', '').split('?')[0].split('#')[0].replace(/\/$/, '').trim())
+        : null);
+
+    if (activeSku) {
       return (
         <ProductDetailPage
-          sku={selectedSku}
+          key={activeSku}
+          sku={activeSku}
           onBack={() => {
             if (currentPath.startsWith('/admin')) {
               setAdminTab('products');
