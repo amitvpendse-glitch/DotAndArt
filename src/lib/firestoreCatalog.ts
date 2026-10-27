@@ -234,7 +234,7 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
   const localCustom = getLocalCustomProducts();
 
   if (firestoreQuotaExceeded) {
-    return [...INITIAL_PRODUCTS, ...localCustom].filter((p) => !isSkuBlocked(p?.sku, p?.id));
+    return [...localCustom, ...INITIAL_PRODUCTS].filter((p) => !isSkuBlocked(p?.sku, p?.id));
   }
 
   try {
@@ -283,7 +283,7 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
     }
 
     // Prioritize Firestore items over local custom and initial products
-    const allSources = [...items, ...localCustom, ...INITIAL_PRODUCTS];
+    const allSources = [...localCustom, ...items, ...INITIAL_PRODUCTS];
     allSources.sort((a, b) => {
       const timeA = new Date(a?.updated_at || a?.created_at || 0).getTime();
       const timeB = new Date(b?.updated_at || b?.created_at || 0).getTime();
@@ -313,7 +313,7 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
   } catch (err) {
     checkQuotaError(err);
     if (cachedProducts) return cachedProducts.filter((p) => !isSkuBlocked(p?.sku, p?.id));
-    return [...INITIAL_PRODUCTS, ...getLocalCustomProducts()].filter((p) => !isSkuBlocked(p?.sku, p?.id));
+    return [...getLocalCustomProducts(), ...INITIAL_PRODUCTS].filter((p) => !isSkuBlocked(p?.sku, p?.id));
   }
 }
 

@@ -147,43 +147,38 @@ function getAdminSalt(): string {
 function sanitizeProductImages(p: Product): Product {
   if (!p) return p;
 
-  if (Array.isArray(p.images) && p.images.length > 0) {
-    p.images = p.images.filter((img) => {
-      if (!img || !img.storage_path) return false;
-      const sp = img.storage_path.trim();
-      if (!sp) return false;
-      if (sp.startsWith('data:') || sp.startsWith('/uploads/')) return true;
-      let relPath = sp.startsWith('/') ? sp.slice(1) : sp;
-      const fullPathPublic = path.resolve(process.cwd(), 'public', relPath);
-      const fullPathRoot = path.resolve(process.cwd(), relPath);
-      return fs.existsSync(fullPathPublic) || fs.existsSync(fullPathRoot);
-    });
-  }
-
-  const targetSkus = new Set(['DA-MD-10-0013', 'DA-MD-10-0016', 'DA-MD-10-0017', 'DA-MD-10-0018', 'DA-MD-10-0019']);
-  const cleanSku = (p.sku || '').toUpperCase();
-  if (cleanSku && targetSkus.has(cleanSku)) {
+  if (!Array.isArray(p.images) || p.images.length === 0) {
+    const cleanSku = (p.sku || '').trim().toUpperCase();
+    const fallbackImg = cleanSku ? `/static/assets/images/${cleanSku}.jpg` : '/static/assets/images/DA-MD-10-0001.jpg';
     p.images = [
       {
-        id: `img-${p.id}-1`,
-        product_id: p.id,
-        storage_path: `/static/assets/images/${p.sku}.jpg`,
-        alt_text: `${p.name} (${p.sku})`,
-        caption: p.name,
+        id: `img-${p.id || 'gen'}-1`,
+        product_id: p.id || 'prod',
+        storage_path: fallbackImg,
+        alt_text: `${p.name || 'Artwork'} (${p.sku || 'DA'})`,
+        caption: p.name || 'Artwork',
         display_order: 1,
         is_primary: true,
       },
     ];
-    (p as any).image_url = `/static/assets/images/${p.sku}.jpg`;
-    return p;
-  }
-
-  if (cleanSku === 'DA-MD-12-0001' && (!p.images || p.images.length === 0)) {
-    const init1 = INITIAL_PRODUCTS.find((initP) => initP.sku === 'DA-MD-12-0001');
-    if (init1 && init1.images) {
-      p.images = [...init1.images];
-      (p as any).image_url = init1.images[0]?.storage_path || (p as any).image_url;
-    }
+    (p as any).image_url = fallbackImg;
+  } else {
+    // Ensure storage path is valid
+    p.images = p.images.map((img, idx) => {
+      if (!img || !img.storage_path) {
+        const cleanSku = (p.sku || '').trim().toUpperCase();
+        return {
+          id: `img-${p.id}-${idx + 1}`,
+          product_id: p.id,
+          storage_path: cleanSku ? `/static/assets/images/${cleanSku}.jpg` : '/static/assets/images/DA-MD-10-0001.jpg',
+          alt_text: `${p.name} (${p.sku})`,
+          caption: p.name,
+          display_order: idx + 1,
+          is_primary: idx === 0,
+        };
+      }
+      return img;
+    });
   }
 
   return p;

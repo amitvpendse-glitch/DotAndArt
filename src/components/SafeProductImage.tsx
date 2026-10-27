@@ -68,25 +68,10 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
   const uppercaseThumbnailPath = uppercaseFilename ? appendCacheBuster(`/static/assets/thumbnails/${uppercaseFilename}`) : undefined;
 
   let initialCleanSrc = src;
-  if (!initialCleanSrc && cleanSku) {
-    initialCleanSrc = staticArtPath;
-  }
   if (initialCleanSrc && initialCleanSrc.startsWith('/public/')) {
     initialCleanSrc = initialCleanSrc.replace(/^\/public/, '');
   }
-
-  // If src is a local container /uploads/ path for an authentic catalog SKU, prefer static asset which is available on live Vercel
-  if (
-    initialCleanSrc &&
-    initialCleanSrc.startsWith('/uploads/') &&
-    cleanSku &&
-    (cleanSku.startsWith('DA-') || cleanSku.startsWith('DNA-'))
-  ) {
-    initialCleanSrc = staticArtPath;
-  }
-
-  // Direct explicit mapping for requested SKUs
-  if (cleanSku && ['DA-MD-10-0013', 'DA-MD-10-0016', 'DA-MD-10-0017', 'DA-MD-10-0018', 'DA-MD-10-0019'].includes(cleanSku)) {
+  if (!initialCleanSrc && cleanSku) {
     initialCleanSrc = staticArtPath;
   }
 
@@ -100,19 +85,14 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     }
   };
 
-  if (size === 'sm' && useThumbnail) {
-    addCandidate(thumbnailPath);
-    addCandidate(initialCleanSrc);
-    addCandidate(staticArtPath);
-    addCandidate(uppercaseThumbnailPath);
-    addCandidate(uppercaseStaticArtPath);
-  } else {
-    addCandidate(initialCleanSrc);
-    addCandidate(staticArtPath);
-    addCandidate(thumbnailPath);
-    addCandidate(uppercaseStaticArtPath);
-    addCandidate(uppercaseThumbnailPath);
-  }
+  // User-provided or uploaded image ALWAYS takes top priority
+  addCandidate(initialCleanSrc);
+
+  // Fallbacks if primary image fails to load
+  addCandidate(staticArtPath);
+  addCandidate(thumbnailPath);
+  addCandidate(uppercaseStaticArtPath);
+  addCandidate(uppercaseThumbnailPath);
 
   const [candidateIndex, setCandidateIndex] = useState<number>(0);
   const activeSrc = candidates[candidateIndex] || candidates[0];
