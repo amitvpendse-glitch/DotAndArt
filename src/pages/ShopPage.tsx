@@ -159,12 +159,16 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
 
         const prodRes = await safeFetchJson<{ products: Product[] }>(`/api/products?${queryParams.toString()}`, undefined, { products: [] });
         const prods = prodRes?.products || [];
-        const seen = new Set<string>();
+        const seenIds = new Set<string>();
+        const seenSkus = new Set<string>();
         const unique = prods.filter((p) => {
           if (!p || isSkuBlocked(p?.sku, p?.id)) return false;
-          const pid = p?.id || p?.sku;
-          if (!pid || seen.has(pid)) return false;
-          seen.add(pid);
+          const pid = (p.id || '').trim();
+          const psku = (p.sku || '').trim().toUpperCase();
+          if (pid && seenIds.has(pid)) return false;
+          if (psku && seenSkus.has(psku)) return false;
+          if (pid) seenIds.add(pid);
+          if (psku) seenSkus.add(psku);
           return true;
         });
         setProducts(unique);

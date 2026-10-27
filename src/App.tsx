@@ -160,9 +160,15 @@ export default function App() {
     };
     window.addEventListener('app_sync_refresh', handleSyncRefresh);
 
+    // Periodic cross-browser background sync interval (polls central server if Firestore is quota-limited)
+    const syncInterval = setInterval(() => {
+      window.dispatchEvent(new CustomEvent('app_products_updated'));
+    }, 20000);
+
     return () => {
       window.removeEventListener('app_settings_updated', handleSettingsUpdate);
       window.removeEventListener('app_sync_refresh', handleSyncRefresh);
+      clearInterval(syncInterval);
     };
   }, []);
 

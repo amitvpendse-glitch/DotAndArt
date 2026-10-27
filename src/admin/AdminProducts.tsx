@@ -37,7 +37,7 @@ import { AvailableBadge } from '../components/AvailableBadge';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
 import { handleClientFallbackApi } from '../lib/clientFallbackApi';
 import { generateProfessionalCatalogPDF } from '../utils/pdfCatalogGenerator';
-import { deleteFirestoreProducts, updateFirestoreProducts, saveFirestoreProduct, getFirestoreDeletedIds } from '../lib/firestoreCatalog';
+import { deleteFirestoreProducts, updateFirestoreProducts, saveFirestoreProduct, getFirestoreDeletedIds, syncLocalCustomProductsToFirestore } from '../lib/firestoreCatalog';
 import { onSnapshot, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { isAwaitingPhoto } from '../utils/productUtils';
@@ -629,6 +629,8 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
       }
       setCategories(uniqueCats);
       if (setRes) setWebsiteSettings(setRes);
+      // Auto-sync any local custom products to Cloud Firestore so all browsers (Opera, Chrome, etc.) stay updated
+      syncLocalCustomProductsToFirestore().catch(() => {});
     } catch (err) {
       console.error(err);
     } finally {
@@ -675,7 +677,24 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                 if (psku) seenSkus.add(psku);
                 deduped.push(p);
               }
-              setProducts(deduped);
+              setProducts((prev) => {
+                const combined = [...deduped, ...prev];
+                const finalIds = new Set<string>();
+                const finalSkus = new Set<string>();
+                const finalMerged: Product[] = [];
+                for (const p of combined) {
+                  if (!p) continue;
+                  const pid = (p.id || '').trim();
+                  const psku = (p.sku || '').trim().toUpperCase();
+                  if (deletedSet.has(pid) || deletedSet.has(psku) || deletedSet.has(pid.toUpperCase())) continue;
+                  if (pid && finalIds.has(pid)) continue;
+                  if (psku && finalSkus.has(psku)) continue;
+                  if (pid) finalIds.add(pid);
+                  if (psku) finalSkus.add(psku);
+                  finalMerged.push(p);
+                }
+                return finalMerged;
+              });
             })
             .catch(() => {});
         }

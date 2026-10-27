@@ -166,8 +166,6 @@ export async function addFirestoreDeletedIds(ids: string[]): Promise<void> {
     } catch {}
   }
 
-  if (firestoreQuotaExceeded) return;
-
   try {
     const existing = await getFirestoreDeletedIds();
     ids.forEach((id) => {
@@ -178,6 +176,7 @@ export async function addFirestoreDeletedIds(ids: string[]): Promise<void> {
     });
     const docRef = doc(db, CATALOG_STATE_COLLECTION, 'deleted_items');
     await setDoc(docRef, { ids: Array.from(existing), updated_at: new Date().toISOString() }, { merge: true });
+    firestoreQuotaExceeded = false;
   } catch (err) {
     checkQuotaError(err);
   }
@@ -468,8 +467,6 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
     } catch {}
   }
 
-  if (firestoreQuotaExceeded) return;
-
   try {
     // If updating, check if an existing doc has this SKU with a targeted query (1 Read max instead of 175 Reads)
     try {
@@ -486,7 +483,8 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
     const docRef = doc(db, PRODUCTS_COLLECTION, docId);
     const cleaned = cleanFirestoreData({ ...product, id: docId, updated_at: new Date().toISOString() });
     await setDoc(docRef, cleaned, { merge: true });
-    console.log(`[firestoreCatalog] Successfully saved product: ${docId}`);
+    firestoreQuotaExceeded = false;
+    console.log(`[firestoreCatalog] Successfully saved product across all devices: ${docId}`);
 
     // Immediately remove from deleted_items so saved artwork is visible everywhere
     const unDeleteIds = [docId, targetId, product.sku, targetSku].filter(Boolean) as string[];
@@ -1000,5 +998,23 @@ export async function saveFirestoreMediaAsset(asset: MediaAsset): Promise<void> 
     await saveFirestoreSyncFlag(true);
   } catch (err) {
     checkQuotaError(err);
+  }
+}
+
+export async function syncLocalCustomProductsToFirestore(): Promise<number> {
+  try {
+    const localProds = getLocalCustomProducts();
+    if (!localProds || localProds.length === 0) return 0;
+    let synced = 0;
+    for (const p of localProds) {
+      if (p && p.sku && !isSkuBlocked(p.sku, p.id)) {
+        await saveFirestoreProduct(p).catch(() => {});
+        synced++;
+      }
+    }
+    return synced;
+  } catch (err) {
+    console.warn('[firestoreCatalog] Background auto-sync notice:', err);
+    return 0;
   }
 }
