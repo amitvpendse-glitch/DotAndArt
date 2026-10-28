@@ -429,13 +429,32 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
         updated_at: new Date().toISOString(),
       };
 
-      console.log(`[SupabaseCatalog] Executing Supabase upsert for SKU: ${sku}, base_price: ${payload.base_price}`);
-      const { data, error: upsertErr } = await sb.from('products').upsert(payload, { onConflict: 'sku' }).select();
+      console.log(`[SupabaseCatalog] Executing Supabase sync for SKU: ${sku}, base_price: ${payload.base_price}`);
+      let upsertErr = null;
+      let data = null;
+
+      const { data: existingCheck } = await sb.from('products').select('id').eq('sku', sku).maybeSingle();
+      if (existingCheck && existingCheck.id) {
+        payload.id = existingCheck.id;
+        const res = await sb.from('products').update(payload).eq('id', existingCheck.id).select();
+        upsertErr = res.error;
+        data = res.data;
+      } else {
+        const res = await sb.from('products').insert(payload).select();
+        upsertErr = res.error;
+        data = res.data;
+        if (upsertErr && (upsertErr.code === '23505' || upsertErr.message?.includes('violates unique constraint'))) {
+          const resFallback = await sb.from('products').update(payload).eq('sku', sku).select();
+          upsertErr = resFallback.error;
+          data = resFallback.data;
+        }
+      }
+
       if (upsertErr) {
         if (upsertErr.code === '42501' || upsertErr.message?.includes('row-level security')) {
           console.warn(`[SupabaseCatalog] RLS Policy Notice (Error 42501): Supabase Row-Level Security is blocking writes from the anon key for SKU ${sku}. Saved successfully to local cache.`);
         } else {
-          console.warn('[SupabaseCatalog] Upsert warning for SKU', sku, ':', upsertErr);
+          console.warn('[SupabaseCatalog] Sync warning for SKU', sku, ':', upsertErr);
         }
       } else {
         console.log('[SupabaseCatalog] Successfully synced SKU', sku, 'to Supabase database:', data);

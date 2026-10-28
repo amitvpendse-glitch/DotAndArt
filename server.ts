@@ -2331,7 +2331,7 @@ app.post('/api/admin/products/:id/duplicate', requireAdmin, async (req: Request,
   res.status(201).json(duplicatedProduct);
 });
 
-app.delete('/api/admin/products/:id', requireAdmin, async (req: Request, res: Response) => {
+const handleProductDelete = async (req: Request, res: Response) => {
   const { id } = req.params;
   const idLower = id.toLowerCase();
   let index = (db.products || []).findIndex(
@@ -2360,7 +2360,11 @@ app.delete('/api/admin/products/:id', requireAdmin, async (req: Request, res: Re
   }
   logAudit('product_deleted', 'product', id, { sku: deleted.sku, name: deleted.name });
   res.json({ success: true, message: `Product "${deleted.name}" deleted successfully` });
-});
+};
+
+app.delete('/api/admin/products/:id', requireAdmin, handleProductDelete);
+app.post('/api/admin/products/:id', requireAdmin, handleProductDelete);
+app.post('/api/admin/products/:id/delete', requireAdmin, handleProductDelete);
 
 // Bulk Delete Products
 app.post('/api/admin/products/bulk-delete', requireAdmin, async (req: Request, res: Response) => {
