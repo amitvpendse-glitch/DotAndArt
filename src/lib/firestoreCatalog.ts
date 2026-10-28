@@ -351,10 +351,11 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
   console.log(`[SupabaseCatalog] saveFirestoreProduct called for SKU: ${product.sku}, name: ${product.name}, price: ${product.base_price}`);
   invalidateProductsCache();
 
-  // Remove from deleted set if previously marked deleted
-  const idsToRemove = [product.id, product.sku].filter(Boolean) as string[];
-  if (idsToRemove.length > 0) {
-    await removeFirestoreDeletedIds(idsToRemove).catch(() => {});
+  // Check if product is in deleted set, if so, abort save
+  const deletedSet = await getFirestoreDeletedIds();
+  if (deletedSet.has(product.id) || (product.sku && deletedSet.has(product.sku.toUpperCase()))) {
+      console.warn(`[SupabaseCatalog] Product ${product.sku} is marked as deleted. Skipping sync.`);
+      return;
   }
 
   // 1. Local Storage Cache
