@@ -390,8 +390,16 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
   if (sb) {
     try {
       const sku = (product.sku || '').trim().toUpperCase();
+      let recordId = product.id;
+      try {
+        const { data: existingRow } = await sb.from('products').select('id').eq('sku', sku).maybeSingle();
+        if (existingRow && existingRow.id) {
+          recordId = existingRow.id;
+        }
+      } catch {}
+
       const payload: Record<string, any> = {
-        id: product.id || `prod-${sku.toLowerCase()}`,
+        id: recordId || `prod-${sku.toLowerCase()}`,
         sku,
         name: product.name,
         short_description: product.short_description || '',
