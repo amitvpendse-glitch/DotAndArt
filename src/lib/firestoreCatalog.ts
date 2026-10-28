@@ -440,7 +440,13 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
       } catch {}
 
       console.log(`[SupabaseCatalog] Executing Supabase upsert for SKU: ${sku}, base_price: ${payload.base_price}`);
-      const { data, error: upsertErr } = await sb.from('products').upsert(payload, { onConflict: 'id' }).select();
+      let { data, error: upsertErr } = await sb.from('products').upsert(payload, { onConflict: 'id' }).select();
+      if (upsertErr && (upsertErr.code === '23505' || upsertErr.message?.includes('products_sku_key') || upsertErr.message?.includes('unique constraint'))) {
+        const fallbackRes = await sb.from('products').update(payload).eq('sku', sku).select();
+        upsertErr = fallbackRes.error;
+        data = fallbackRes.data;
+      }
+
       if (upsertErr) {
         if (upsertErr.code === '42501' || upsertErr.message?.includes('row-level security')) {
           console.warn(`[SupabaseCatalog] RLS Policy Notice (Error 42501): Supabase Row-Level Security is blocking writes from the anon key for SKU ${sku}. Saved successfully to local cache.`);
