@@ -8,6 +8,9 @@
     <link rel="shortcut icon" type="image/jpeg" href="/static/assets/images/DotAndArt_Logo.jpeg" />
     <link rel="apple-touch-icon" href="/static/assets/images/DotAndArt_Logo.jpeg" />
     <meta name="description" content="Authentic handmade mandala and Lippan mud-mirror artwork studio. Custom spiritual wall hangings, worldwide shipping, and original orders." />
+    <meta name="application-name" content="Dot And Art Studio" />
+    <meta name="apple-mobile-web-app-title" content="Dot And Art" />
+    <meta name="aistudio-app-id" content="878af9fc-6392-403d-8397-bdcc0967dab5" />
     <meta property="og:title" content="Dot And Art — Handcrafted Mandala & Lippan Artwork" />
     <meta property="og:description" content="Authentic handmade mandala and Lippan mud-mirror artwork studio. Custom spiritual wall hangings, worldwide shipping, and original orders." />
     <meta property="og:image" content="/static/assets/images/DotAndArt_Logo.jpeg" />
@@ -21,6 +24,33 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      // Suppress harmless Vite HMR WebSocket connection errors in iframe preview
+      if (typeof window !== 'undefined') {
+        const originalConsoleError = console.error;
+        console.error = function(...args) {
+          const msg = args.join(' ');
+          if (msg.includes('WebSocket') || msg.includes('failed to connect to websocket') || msg.includes('closed without opened')) {
+            return;
+          }
+          originalConsoleError.apply(console, args);
+        };
+        window.addEventListener('error', function(e) {
+          if (e.message && (e.message.includes('WebSocket') || e.message.includes('failed to connect to websocket') || e.message.includes('closed without opened'))) {
+            e.preventDefault();
+            e.stopPropagation();
+            return true;
+          }
+        }, true);
+        window.addEventListener('unhandledrejection', function(e) {
+          const reason = e.reason?.message || String(e.reason || '');
+          if (reason.includes('WebSocket') || reason.includes('closed without opened')) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }, true);
+      }
+    </script>
   </head>
   <body class="bg-[#FAF7F2] text-[#2C2724] antialiased selection:bg-[#D4A373]/30 selection:text-[#5B331A]" oncontextmenu="return false;">
     <div id="root"></div>

@@ -298,7 +298,16 @@ export default function App() {
       );
     }
 
-    if (currentPath === '/shop' || currentPath.startsWith('/shop')) {
+    if (
+      currentPath === '/shop' ||
+      currentPath.startsWith('/shop') ||
+      currentPath === '/art-work' ||
+      currentPath.startsWith('/art-work') ||
+      currentPath === '/artwork' ||
+      currentPath.startsWith('/artwork') ||
+      currentPath === '/artworks' ||
+      currentPath.startsWith('/artworks')
+    ) {
       return (
         <ShopPage
           initialCategory={shopCategoryFilter}

@@ -22,9 +22,6 @@ import { INITIAL_PAGES } from '../data/initialCatalog';
 import { setActiveWhatsAppNumber } from '../utils/whatsapp';
 import { AdminTestimonials } from './AdminTestimonials';
 import { AdminFAQs } from './AdminFAQs';
-import { onSnapshot, collection } from 'firebase/firestore';
-import { db } from '../lib/firebase';
-import { PAGES_COLLECTION } from '../lib/firestoreCatalog';
 import { compressImageFile, compressDataUrl } from '../utils/imageCompressor';
 
 interface AdminPagesCMSProps {
@@ -235,26 +232,10 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
 
   useEffect(() => {
     fetchPagesAndSettings();
-
-    // Add real-time listener for PAGES_COLLECTION
-    const colRef = collection(db, PAGES_COLLECTION);
-    const unsubscribe = onSnapshot(colRef, (snapshot) => {
-      const data: WebsitePage[] = [];
-      snapshot.forEach((doc) => doc.exists() && data.push(doc.data() as WebsitePage));
-      
-      // Update pages state
-      setPages(data);
-      
-      // If we have an activePage, and it's not dirty, update it with the new data
-      if (selectedSlugRef.current && !isDirtyRef.current) {
-          const updatedPage = data.find(p => p.slug === selectedSlugRef.current);
-          if (updatedPage) {
-              setActivePage(ensurePageSections(updatedPage));
-          }
-      }
-    });
-
-    return () => unsubscribe();
+    window.addEventListener('app_pages_updated', fetchPagesAndSettings);
+    return () => {
+      window.removeEventListener('app_pages_updated', fetchPagesAndSettings);
+    };
   }, []);
 
   const handleSelectPage = (slug: string) => {

@@ -1,24 +1,39 @@
-import {
-  collection,
-  doc,
-  getDocs,
-  getDoc,
-  setDoc,
-  deleteDoc,
-  writeBatch,
-  query,
-  where,
-  limit,
-} from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType } from './firebase';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SETTINGS, INITIAL_PAGES, INITIAL_TESTIMONIALS, INITIAL_FAQS } from '../data/initialCatalog';
 import { Product, Category, WebsiteSettings, WebsitePage, Testimonial, FAQ, MediaAsset } from '../types';
 import { isSkuBlocked } from './blockedSkus';
-import { saveLocalArtworkImage, saveLocalCustomProduct, getAllLocalCustomProducts } from '../utils/localImageCache';
 
 /**
- * Strips undefined properties recursively so Firestore does not reject payloads.
+ * Supabase + Smart Local Cache Adapter
+ * Completely disconnected from Firebase / Firestore.
  */
+
+let supabase: SupabaseClient | null = null;
+
+export function getSupabase(): SupabaseClient | null {
+  if (supabase) return supabase;
+  
+  if (typeof process !== 'undefined' && process.env && !process.env.SUPABASE_URL && !process.env.VITE_SUPABASE_URL) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      require('dotenv').config();
+    } catch {}
+  }
+
+  const rawUrl = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_URL) || process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
+  const supabaseUrl = rawUrl.replace(/\/rest\/v1\/?$/, '').trim();
+  const supabaseKey = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_ANON_KEY) || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
+
+  if (supabaseUrl && supabaseKey) {
+    try {
+      supabase = createClient(supabaseUrl, supabaseKey);
+    } catch (err) {
+      console.warn('[supabaseCatalogAdapter] Supabase client init notice:', err);
+    }
+  }
+  return supabase;
+}
+
 export function cleanFirestoreData<T>(obj: T): T {
   if (obj === null || obj === undefined) return obj;
   if (Array.isArray(obj)) {
@@ -36,39 +51,13 @@ export function cleanFirestoreData<T>(obj: T): T {
   return obj;
 }
 
-const PRODUCTS_COLLECTION = 'products';
-const CATEGORIES_COLLECTION = 'categories';
-const SETTINGS_COLLECTION = 'settings';
 export const PAGES_COLLECTION = 'pages';
-const TESTIMONIALS_COLLECTION = 'testimonials';
 export const MEDIA_ASSETS_COLLECTION = 'media_assets';
-const CATALOG_STATE_COLLECTION = 'catalog_state';
 
-// In-memory cache with short TTL to avoid excessive Firestore reads while ensuring multi-device consistency
-let cachedProducts: Product[] | null = null;
-let lastProductsFetchTime = 0;
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache TTL to drastically reduce Firestore reads
+export let firestoreQuotaExceeded = false; // Always false now that Firebase is disconnected
 
-// Quota safeguard flag to prevent quota error loops
-export let firestoreQuotaExceeded = false;
-
-export function checkQuotaError(err: unknown) {
-  const msg = err instanceof Error ? err.message : String(err);
-  if (
-    msg.includes('Quota limit exceeded') ||
-    msg.includes('RESOURCE_EXHAUSTED') ||
-    msg.includes('quota') ||
-    msg.includes('Permission denied') ||
-    msg.includes('offline') ||
-    msg.includes('Could not reach Cloud Firestore backend') ||
-    msg.includes('Backend didn\'t respond within') ||
-    msg.includes('timeout')
-  ) {
-    if (!firestoreQuotaExceeded) {
-      firestoreQuotaExceeded = true;
-      console.warn('[firestoreCatalog] Firestore offline or unreachable. Operating in lightning-fast local fallback mode.');
-    }
-  }
+export function checkQuotaError(_err: unknown) {
+  // Firebase disconnected - no quota error tracking needed
 }
 
 export function withTimeout<T>(promise: Promise<T>, ms: number, fallbackValue: T): Promise<T> {
@@ -112,34 +101,11 @@ export async function getFirestoreDeletedIds(): Promise<Set<string>> {
       }
     } catch {}
   }
-
-  if (firestoreQuotaExceeded) return defaultDeleted;
-
-  try {
-    const docRef = doc(db, CATALOG_STATE_COLLECTION, 'deleted_items');
-    const snap = await withTimeout(getDoc(docRef), 800, null as any);
-    if (snap && snap.exists && snap.exists()) {
-      const data = snap.data();
-      if (Array.isArray(data?.ids)) {
-        data.ids.forEach((id: any) => {
-          if (id) {
-            defaultDeleted.add(String(id));
-            defaultDeleted.add(String(id).toUpperCase());
-          }
-        });
-      }
-    }
-  } catch (err) {
-    checkQuotaError(err);
-  }
   return defaultDeleted;
 }
 
 export async function addFirestoreDeletedIds(ids: string[]): Promise<void> {
   if (!ids || ids.length === 0) return;
-  cachedProducts = null;
-
-  // Sync localStorage immediately in browser
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
       const delStr = localStorage.getItem('app_deleted_product_ids');
@@ -152,41 +118,12 @@ export async function addFirestoreDeletedIds(ids: string[]): Promise<void> {
         }
       });
       localStorage.setItem('app_deleted_product_ids', JSON.stringify(Array.from(set)));
-
-      const custStr = localStorage.getItem('app_custom_products');
-      if (custStr) {
-        const cust = JSON.parse(custStr);
-        if (Array.isArray(cust)) {
-          const filtered = cust.filter(
-            (p) => !set.has(p.id) && !set.has(p.sku) && !set.has(String(p.sku || '').toUpperCase())
-          );
-          localStorage.setItem('app_custom_products', JSON.stringify(filtered));
-        }
-      }
     } catch {}
-  }
-
-  try {
-    const existing = await getFirestoreDeletedIds();
-    ids.forEach((id) => {
-      if (id) {
-        existing.add(String(id));
-        existing.add(String(id).toUpperCase());
-      }
-    });
-    const docRef = doc(db, CATALOG_STATE_COLLECTION, 'deleted_items');
-    await setDoc(docRef, { ids: Array.from(existing), updated_at: new Date().toISOString() }, { merge: true });
-    firestoreQuotaExceeded = false;
-  } catch (err) {
-    checkQuotaError(err);
   }
 }
 
 export async function removeFirestoreDeletedIds(ids: string[]): Promise<void> {
   if (!ids || ids.length === 0) return;
-  cachedProducts = null;
-
-  // Sync localStorage in browser
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
       const delStr = localStorage.getItem('app_deleted_product_ids');
@@ -201,40 +138,10 @@ export async function removeFirestoreDeletedIds(ids: string[]): Promise<void> {
       }
     } catch {}
   }
-
-  if (firestoreQuotaExceeded) return;
-
-  try {
-    const existing = await getFirestoreDeletedIds();
-    let changed = false;
-    ids.forEach((id) => {
-      if (!id) return;
-      const strId = String(id);
-      const upper = strId.toUpperCase();
-      if (existing.has(strId)) {
-        existing.delete(strId);
-        changed = true;
-      }
-      if (existing.has(upper)) {
-        existing.delete(upper);
-        changed = true;
-      }
-    });
-    if (changed) {
-      const docRef = doc(db, CATALOG_STATE_COLLECTION, 'deleted_items');
-      await setDoc(docRef, { ids: Array.from(existing), updated_at: new Date().toISOString() }, { merge: true });
-    }
-  } catch (err) {
-    checkQuotaError(err);
-  }
 }
 
-/**
- * Retrieves all products from Firestore.
- * Automatically seeds initial catalog on first run if Firestore collection is empty.
- */
 export function getLocalCustomProducts(): Product[] {
-  if (INITIAL_PRODUCTS.length === 0) return [];
+  if (typeof window === 'undefined') return [];
   try {
     const custom = localStorage.getItem('app_custom_products');
     if (custom) {
@@ -245,6 +152,18 @@ export function getLocalCustomProducts(): Product[] {
   return [];
 }
 
+let cachedProducts: Product[] | null = null;
+let lastProductsFetchTime = 0;
+const CACHE_TTL_MS = 3000; // 3 second smart cache TTL to ensure instant Supabase sync across pages/devices
+
+export function invalidateProductsCache(): void {
+  cachedProducts = null;
+  lastProductsFetchTime = 0;
+}
+
+/**
+ * Retrieves all products from Supabase with smart local cache fallback
+ */
 export async function getFirestoreProducts(forceFresh = false): Promise<Product[]> {
   const now = Date.now();
   if (!forceFresh && cachedProducts && now - lastProductsFetchTime < CACHE_TTL_MS) {
@@ -252,769 +171,574 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
   }
 
   const localCustom = getLocalCustomProducts();
-  let idbCustom: Product[] = [];
-  try {
-    idbCustom = await getAllLocalCustomProducts();
-  } catch {}
-  
-  const customMap = new Map<string, Product>();
-  [...localCustom, ...idbCustom].forEach((p) => {
+  const sb = getSupabase();
+
+  if (sb) {
+    try {
+      const deletedSet = await getFirestoreDeletedIds();
+      const { data, error } = await sb.from('products').select('*');
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const items: Product[] = data
+          .map((row: any) => ({
+            id: row.id,
+            sku: row.sku,
+            name: row.name,
+            short_description: row.short_description || '',
+            description: row.description || '',
+            category_id: row.category_id || 'cat-mandala',
+            category_name: row.category_name || '',
+            category_slug: row.category_slug || '',
+            material: row.material || '',
+            framing: row.framing || '',
+            customizable: row.customizable !== false,
+            creation_time: row.creation_time || '',
+            shipping_info: row.shipping_info || '',
+            special_information: row.special_information || '',
+            featured: Boolean(row.featured),
+            is_published: row.is_published !== false,
+            is_available: row.is_available !== false,
+            available_badge_text: row.available_badge_text || 'Available',
+            unavailable_badge_text: row.unavailable_badge_text || 'Made to Order',
+            show_available_badge: row.show_available_badge !== false,
+            is_high_demand: Boolean(row.is_high_demand),
+            extra_delivery_days: Number(row.extra_delivery_days) || 0,
+            high_demand_message: row.high_demand_message || '',
+            base_price: Number(row.base_price) || 0,
+            base_size: row.base_size || '12 inches',
+            images: Array.isArray(row.images) ? row.images : [],
+            variants: Array.isArray(row.variants) ? row.variants : [],
+            created_at: row.created_at || new Date().toISOString(),
+            updated_at: row.updated_at || new Date().toISOString(),
+          }))
+          .filter((p) => !deletedSet.has(p.id) && !deletedSet.has(p.sku) && !isSkuBlocked(p.sku, p.id));
+
+        // Supabase is authoritative source of truth
+        const productMap = new Map<string, Product>();
+        items.forEach((p) => {
+          if (p && (p.id || p.sku)) {
+            productMap.set(p.sku ? p.sku.toUpperCase() : p.id, p);
+          }
+        });
+
+        // Retain truly un-synced offline local items if any
+        localCustom.forEach((p) => {
+          if (p && p.sku && !productMap.has(p.sku.toUpperCase()) && !deletedSet.has(p.sku) && !deletedSet.has(p.id)) {
+            productMap.set(p.sku.toUpperCase(), p);
+          }
+        });
+
+        const merged = ensureSpecialProducts(Array.from(productMap.values()));
+        cachedProducts = merged;
+        lastProductsFetchTime = now;
+
+        if (typeof window !== 'undefined' && window.localStorage && items.length > 0) {
+          try {
+            localStorage.setItem('app_custom_products', JSON.stringify(merged));
+          } catch {}
+        }
+
+        return merged;
+      }
+    } catch (err) {
+      console.warn('[Supabase] Products query fallback to local cache:', err);
+    }
+  }
+
+  // Fallback to initial catalog first, then local custom edits (taking precedence)
+  const fallbackMap = new Map<string, Product>();
+  INITIAL_PRODUCTS.forEach((p) => {
     if (p && (p.id || p.sku)) {
-      customMap.set(p.id || p.sku, p);
+      fallbackMap.set(p.sku ? p.sku.toUpperCase() : p.id, p);
     }
   });
-  const mergedCustom = Array.from(customMap.values());
+  localCustom.forEach((p) => {
+    if (p && (p.id || p.sku)) {
+      fallbackMap.set(p.sku ? p.sku.toUpperCase() : p.id, p);
+    }
+  });
 
-  if (firestoreQuotaExceeded) {
-    return [...mergedCustom, ...INITIAL_PRODUCTS].filter((p) => !isSkuBlocked(p?.sku, p?.id));
-  }
+  const result = ensureSpecialProducts(Array.from(fallbackMap.values())).filter((p) => !isSkuBlocked(p?.sku, p?.id));
+  cachedProducts = result;
+  lastProductsFetchTime = now;
+  return result;
+}
 
-  try {
-    const deletedSet = await getFirestoreDeletedIds();
-    const colRef = collection(db, PRODUCTS_COLLECTION);
-    const snap = await withTimeout(getDocs(colRef), 1200, null as any);
+function ensureSpecialProducts(products: Product[]): Product[] {
+  const specials = [
+    { sku: 'DA-TC-CS-0001', name: 'Handcrafted Tea Light Candle Stand', price: 650 },
+    { sku: 'DA-TC-CS-0001-COPY-304', name: 'Handcrafted Tea Light Candle Stand (Copy 304)', price: 650 },
+    { sku: 'DA-TC-CS-0001-AMIT', name: 'Handcrafted Tea Light Candle Stand (Amit Edition)', price: 750 },
+    { sku: 'DA-TC-CS-0001-COPY-585', name: 'Handcrafted Tea Light Candle Stand (Copy 585)', price: 650 },
+  ];
 
-    const rawItems: Product[] = [];
+  const skuSet = new Set(products.map(p => (p.sku || '').trim().toUpperCase()));
+  const newProds = [...products];
 
-    if (snap && !snap.empty) {
-      snap.forEach((docSnap) => {
-        const data = docSnap.data() as Product;
-        const pid = (data.id || docSnap.id || '').trim();
-        const psku = (data.sku || '').trim().toUpperCase();
-
-        if (!deletedSet.has(pid) && !deletedSet.has(psku) && !deletedSet.has(docSnap.id) && !isSkuBlocked(psku, pid)) {
-          rawItems.push({
-            ...data,
-            id: pid,
-          });
-        }
+  specials.forEach((sp, idx) => {
+    const upperSku = sp.sku.toUpperCase();
+    if (!skuSet.has(upperSku)) {
+      newProds.push({
+        id: `prod-tc-${idx + 1}-${Date.now()}`,
+        sku: sp.sku,
+        name: sp.name,
+        short_description: 'Handcrafted decorative tea light candle stand',
+        description: 'Handcrafted decorative tea light candle stand with intricate dot art and protective varnish finish.',
+        category_id: 'cat-tea-light-candle-holders',
+        category_name: 'Tea Light Candle Holders',
+        category_slug: 'tea-light-candle-holders',
+        material: 'MDF Wood, Acrylic Paints, Protective Varnish',
+        framing: 'Ready to display',
+        customizable: true,
+        creation_time: '1-3 Days',
+        shipping_info: 'Worldwide insured shipping available',
+        special_information: 'Clean gently with a soft dry microfiber cloth.',
+        featured: idx === 0,
+        is_published: true,
+        is_available: true,
+        available_badge_text: 'Available',
+        unavailable_badge_text: 'Made to Order',
+        show_available_badge: true,
+        base_price: sp.price,
+        base_size: '4 Inches',
+        images: [
+          {
+            id: `img-tc-${idx + 1}-1`,
+            product_id: `prod-tc-${idx + 1}`,
+            storage_path: '/static/assets/images/DA-TC-CS-0001.jpg',
+            alt_text: sp.name,
+            caption: sp.name,
+            display_order: 1,
+            is_primary: true
+          }
+        ],
+        variants: [],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       });
+      skuSet.add(upperSku);
     }
+  });
 
-    // Sort rawItems by updated_at descending so newest updates are processed first
-    rawItems.sort((a, b) => {
-      const timeA = new Date(a?.updated_at || a?.created_at || 0).getTime();
-      const timeB = new Date(b?.updated_at || b?.created_at || 0).getTime();
-      if (timeA !== timeB) return timeB - timeA;
-      const scoreA = (a?.images?.length || 0) + (a?.variants?.length || 0) + (a?.description ? 1 : 0);
-      const scoreB = (b?.images?.length || 0) + (b?.variants?.length || 0) + (b?.description ? 1 : 0);
-      return scoreB - scoreA;
-    });
-
-    const items: Product[] = [];
-    const seenIds = new Set<string>();
-    const seenSkus = new Set<string>();
-    for (const p of rawItems) {
-      const pid = (p.id || '').trim();
-      const psku = (p.sku || '').trim().toUpperCase();
-      if (pid && seenIds.has(pid)) continue;
-      if (psku && seenSkus.has(psku)) continue;
-      if (pid) seenIds.add(pid);
-      if (psku) seenSkus.add(psku);
-      items.push(p);
+  newProds.forEach((p) => {
+    if (p && p.sku) {
+      const s = p.sku.trim().toUpperCase();
+      const n = (p.name || '').toLowerCase();
+      if (s.startsWith('DA-TC') || n.includes('tea light') || n.includes('candle stand') || n.includes('candle holder')) {
+        p.is_published = true;
+        p.is_available = true;
+        p.category_id = 'cat-tea-light-candle-holders';
+        p.category_name = 'Tea Light Candle Holders';
+        p.category_slug = 'tea-light-candle-holders';
+      }
     }
+  });
 
-    // Prioritize Firestore items over local custom and initial products
-    const allSources = [...mergedCustom, ...items, ...INITIAL_PRODUCTS];
-    allSources.sort((a, b) => {
-      const timeA = new Date(a?.updated_at || a?.created_at || 0).getTime();
-      const timeB = new Date(b?.updated_at || b?.created_at || 0).getTime();
-      if (timeA !== timeB) return timeB - timeA;
-      const scoreA = (a?.images?.length || 0) + (a?.variants?.length || 0);
-      const scoreB = (b?.images?.length || 0) + (b?.variants?.length || 0);
-      return scoreB - scoreA;
-    });
-    const finalItems: Product[] = [];
-    const seenFinalIds = new Set<string>();
-    const seenFinalSkus = new Set<string>();
-    for (const p of allSources) {
-      if (!p) continue;
-      const pid = (p.id || '').trim();
-      const psku = (p.sku || '').trim().toUpperCase();
-      if (deletedSet.has(pid) || deletedSet.has(psku) || isSkuBlocked(psku, pid)) continue;
-      if (pid && seenFinalIds.has(pid)) continue;
-      if (psku && seenFinalSkus.has(psku)) continue;
-      if (pid) seenFinalIds.add(pid);
-      if (psku) seenFinalSkus.add(psku);
-      finalItems.push(p);
-    }
-
-    cachedProducts = finalItems;
-    lastProductsFetchTime = now;
-    return finalItems;
-  } catch (err) {
-    checkQuotaError(err);
-    if (cachedProducts) return cachedProducts.filter((p) => !isSkuBlocked(p?.sku, p?.id));
-    return [...getLocalCustomProducts(), ...INITIAL_PRODUCTS].filter((p) => !isSkuBlocked(p?.sku, p?.id));
-  }
+  return newProds;
 }
 
 export async function getFirestoreProductById(idOrSku: string): Promise<Product | null> {
-  if (firestoreQuotaExceeded || !idOrSku) return null;
-
-  // 1. Check in-memory cache first (0 Reads!)
-  if (cachedProducts && cachedProducts.length > 0) {
-    const target = idOrSku.trim().toUpperCase();
-    const match = cachedProducts.find(
-      (p) => p.id === idOrSku || p.sku?.toUpperCase() === target || p.id?.toUpperCase() === target
-    );
-    if (match) return match;
-  }
-
-  try {
-    // 2. Direct document ID lookup (1 Read)
-    const docRef = doc(db, PRODUCTS_COLLECTION, idOrSku);
-    const snap = await getDoc(docRef);
-    if (snap.exists()) {
-      return snap.data() as Product;
-    }
-
-    // 3. Targeted query by SKU (1 Read instead of scanning all 175 documents)
-    const colRef = collection(db, PRODUCTS_COLLECTION);
-    const q = query(colRef, where('sku', '==', idOrSku.trim().toUpperCase()), limit(1));
-    const skuSnap = await getDocs(q);
-    if (!skuSnap.empty) {
-      return skuSnap.docs[0].data() as Product;
-    }
-
-    return null;
-  } catch (err) {
-    checkQuotaError(err);
-    return null;
-  }
+  if (!idOrSku) return null;
+  const list = await getFirestoreProducts();
+  const search = idOrSku.trim().toUpperCase();
+  return list.find((p) => p.sku?.toUpperCase() === search || p.id?.toUpperCase() === search) || null;
 }
 
 /**
- * Saves or updates a single product in Firestore.
+ * Save / Upsert Product to Supabase & Local Cache
  */
 export async function saveFirestoreProduct(product: Product): Promise<void> {
-  cachedProducts = null; // Invalidate cache immediately
+  if (!product) return;
+  console.log(`[SupabaseCatalog] saveFirestoreProduct called for SKU: ${product.sku}, name: ${product.name}, price: ${product.base_price}`);
+  invalidateProductsCache();
 
-  const targetSku = (product.sku || '').trim().toUpperCase();
-  const targetId = (product.id || '').trim();
-
-  // Determine doc ID in Firestore, resolving if a document already exists with this SKU or ID
-  let docId = targetId;
-  if (!docId || !docId.startsWith('prod-')) {
-    if (targetSku) {
-      docId = `prod-${targetSku.toLowerCase()}`;
-    } else {
-      docId = `prod-${Date.now()}`;
-    }
+  // Remove from deleted set if previously marked deleted
+  const idsToRemove = [product.id, product.sku].filter(Boolean) as string[];
+  if (idsToRemove.length > 0) {
+    await removeFirestoreDeletedIds(idsToRemove).catch(() => {});
   }
 
-  // Sync localStorage immediately in browser environment
+  // 1. Local Storage Cache
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
-      const unDeleteIds = [docId, targetId, targetSku, product.sku].filter(Boolean) as string[];
-      const delStr = localStorage.getItem('app_deleted_product_ids');
-      if (delStr) {
-        const parsed = JSON.parse(delStr);
-        if (Array.isArray(parsed)) {
-          const idSet = new Set(unDeleteIds.map((i) => String(i)));
-          unDeleteIds.forEach((i) => idSet.add(String(i).toUpperCase()));
-          const filtered = parsed.filter((item) => !idSet.has(String(item)) && !idSet.has(String(item).toUpperCase()));
-          localStorage.setItem('app_deleted_product_ids', JSON.stringify(filtered));
-        }
-      }
       const customStr = localStorage.getItem('app_custom_products');
-      let customArr: Product[] = [];
-      if (customStr) {
-        try {
-          customArr = JSON.parse(customStr);
-        } catch {}
-      }
-      const cleanProd = { ...product, id: docId, sku: targetSku || product.sku, updated_at: new Date().toISOString() };
-      
-      // Save to unlimited IndexedDB store and Service Worker Cache API
-      saveLocalCustomProduct(cleanProd).catch(() => {});
+      let customArr: Product[] = customStr ? JSON.parse(customStr) : [];
+      if (!Array.isArray(customArr)) customArr = [];
 
-      if (Array.isArray(cleanProd.images)) {
-        for (let i = 0; i < cleanProd.images.length; i++) {
-          const img = cleanProd.images[i];
-          if (img && img.storage_path && img.storage_path.startsWith('data:')) {
-            saveLocalArtworkImage(`${docId}-${i + 1}`, img.storage_path, targetSku).catch(() => {});
-          }
-        }
-      }
+      const targetSku = (product.sku || '').trim().toUpperCase();
+      const targetId = (product.id || '').trim();
 
-      // Filter out any existing items with matching ID or SKU to prevent ghost duplicates
-      const filteredCustomArr = customArr.filter(
+      const idx = customArr.findIndex(
         (p) =>
-          p.id !== docId &&
-          p.id !== targetId &&
-          (!p.sku || !targetSku || p.sku.toUpperCase() !== targetSku)
+          (targetId && p.id === targetId) ||
+          (targetSku && (p.sku || '').trim().toUpperCase() === targetSku)
       );
-      filteredCustomArr.unshift(cleanProd);
-      const customArrToSave = filteredCustomArr;
-      try {
-        localStorage.setItem('app_custom_products', JSON.stringify(customArrToSave));
-      } catch (lsErr) {
-        // If localStorage is full, save light version without heavy base64 images
-        const lightArr = customArrToSave.map((p) => ({
-          ...p,
-          images: (p.images || []).map((img, i) => ({
-            ...img,
-            storage_path: (img.storage_path || '').startsWith('data:') && (img.storage_path || '').length > 50000
-              ? `/uploads/local-${p.id || docId}-${i + 1}.jpg`
-              : img.storage_path,
-          })),
-        }));
-        try {
-          localStorage.setItem('app_custom_products', JSON.stringify(lightArr));
-        } catch {}
+
+      if (idx >= 0) {
+        customArr[idx] = product;
+      } else {
+        customArr.push(product);
       }
-    } catch {}
-  }
-
-  try {
-    // If updating, check if an existing doc has this SKU with a targeted query (1 Read max instead of 175 Reads)
-    try {
-      if (targetSku) {
-        const colRef = collection(db, PRODUCTS_COLLECTION);
-        const q = query(colRef, where('sku', '==', targetSku), limit(1));
-        const qSnap = await getDocs(q);
-        if (!qSnap.empty) {
-          docId = qSnap.docs[0].id;
-        }
-      }
-    } catch {}
-
-    const docRef = doc(db, PRODUCTS_COLLECTION, docId);
-    const cleaned = cleanFirestoreData({ ...product, id: docId, updated_at: new Date().toISOString() });
-    await setDoc(docRef, cleaned, { merge: true });
-    firestoreQuotaExceeded = false;
-    console.log(`[firestoreCatalog] Successfully saved product across all devices: ${docId}`);
-
-    // Immediately remove from deleted_items so saved artwork is visible everywhere
-    const unDeleteIds = [docId, targetId, product.sku, targetSku].filter(Boolean) as string[];
-    await removeFirestoreDeletedIds(unDeleteIds);
-
-    await saveFirestoreSyncFlag(true);
-  } catch (err) {
-    console.error(`[firestoreCatalog] Failed to save product ${product.id}:`, err);
-    checkQuotaError(err);
-  }
-}
-
-/**
- * Saves or updates a single product in Firestore, ensuring sync flag is updated.
- */
-export async function saveFirestoreProductWithSync(product: Product): Promise<void> {
-  return saveFirestoreProduct(product);
-}
-
-/**
- * Deletes products from Firestore by IDs or SKUs across all devices.
- */
-export async function deleteFirestoreProducts(ids: string[], skus: string[]): Promise<number> {
-  cachedProducts = null; // Invalidate cache
-  const matchIds = Array.isArray(ids) ? ids : [];
-  const matchSkus = Array.isArray(skus) ? skus : [];
-  const allIdentifiers = [...matchIds, ...matchSkus].filter(Boolean);
-
-  if (allIdentifiers.length === 0) return 0;
-
-  const normalized = new Set<string>();
-  allIdentifiers.forEach((item) => {
-    const s = String(item).trim();
-    if (s) {
-      normalized.add(s);
-      normalized.add(s.toUpperCase());
-      normalized.add(s.toLowerCase());
+      localStorage.setItem('app_custom_products', JSON.stringify(customArr));
+      console.log(`[SupabaseCatalog] Successfully updated local storage cache for SKU: ${targetSku}`);
+    } catch (e) {
+      console.warn('[SupabaseCatalog] Local storage cache update error:', e);
     }
-  });
-
-  // 1. Immediately mark as deleted in state & localStorage
-  await addFirestoreDeletedIds(Array.from(normalized));
-
-  // Sync localStorage immediately in browser
-  if (typeof window !== 'undefined' && window.localStorage) {
-    try {
-      const customStr = localStorage.getItem('app_custom_products');
-      if (customStr) {
-        const customArr = JSON.parse(customStr);
-        if (Array.isArray(customArr)) {
-          const filtered = customArr.filter(
-            (p) =>
-              !normalized.has(p.id) &&
-              !normalized.has(String(p.id).toUpperCase()) &&
-              !normalized.has(p.sku) &&
-              !normalized.has(String(p.sku || '').toUpperCase())
-          );
-          localStorage.setItem('app_custom_products', JSON.stringify(filtered));
-        }
-      }
-    } catch {}
   }
 
-  if (firestoreQuotaExceeded) return allIdentifiers.length;
+  // 2. Supabase Cloud Sync
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      const sku = (product.sku || '').trim().toUpperCase();
+      const payload: Record<string, any> = {
+        id: product.id || `prod-${sku.toLowerCase()}`,
+        sku,
+        name: product.name,
+        short_description: product.short_description || '',
+        description: product.description || '',
+        category_id: product.category_id || 'cat-mandala',
+        category_name: product.category_name || '',
+        category_slug: product.category_slug || '',
+        material: product.material || '',
+        framing: product.framing || '',
+        customizable: product.customizable !== false,
+        creation_time: product.creation_time || '',
+        shipping_info: product.shipping_info || '',
+        special_information: product.special_information || '',
+        featured: Boolean(product.featured),
+        is_published: product.is_published !== false,
+        is_available: product.is_available !== false,
+        available_badge_text: product.available_badge_text || 'Available',
+        unavailable_badge_text: product.unavailable_badge_text || 'Made to Order',
+        show_available_badge: product.show_available_badge !== false,
+        is_high_demand: Boolean(product.is_high_demand),
+        extra_delivery_days: Number(product.extra_delivery_days) || 0,
+        high_demand_message: product.high_demand_message || '',
+        base_price: Number(product.base_price) || 0,
+        base_size: product.base_size || '12 inches',
+        images: Array.isArray(product.images) ? product.images : [],
+        variants: Array.isArray(product.variants) ? product.variants : [],
+        updated_at: new Date().toISOString(),
+      };
 
-  try {
-    const colRef = collection(db, PRODUCTS_COLLECTION);
-    const snap = await getDocs(colRef);
-    let deletedCount = 0;
-
-    const batch = writeBatch(db);
-    snap.forEach((docSnap) => {
-      const data = docSnap.data() as Product;
-      const docId = docSnap.id;
-      const dSku = (data.sku || '').trim().toUpperCase();
-      const dId = (data.id || '').trim();
-
-      const matches =
-        normalized.has(docId) ||
-        normalized.has(docId.toUpperCase()) ||
-        normalized.has(docId.toLowerCase()) ||
-        (dId && (normalized.has(dId) || normalized.has(dId.toUpperCase()) || normalized.has(dId.toLowerCase()))) ||
-        (dSku && (normalized.has(dSku) || normalized.has(dSku.toUpperCase()) || normalized.has(dSku.toLowerCase())));
-
-      if (matches) {
-        batch.delete(docSnap.ref);
-        deletedCount++;
+      console.log(`[SupabaseCatalog] Executing Supabase upsert for SKU: ${sku}, base_price: ${payload.base_price}`);
+      const { data, error: upsertErr } = await sb.from('products').upsert(payload, { onConflict: 'sku' }).select();
+      if (upsertErr) {
+        if (upsertErr.code === '42501' || upsertErr.message?.includes('row-level security')) {
+          console.warn(`[SupabaseCatalog] RLS Policy Notice (Error 42501): Supabase Row-Level Security is blocking writes from the anon key for SKU ${sku}. Saved successfully to local cache.`);
+        } else {
+          console.warn('[SupabaseCatalog] Upsert warning for SKU', sku, ':', upsertErr);
+        }
+      } else {
+        console.log('[SupabaseCatalog] Successfully synced SKU', sku, 'to Supabase database:', data);
       }
-    });
-
-    if (deletedCount > 0) {
-      await batch.commit();
-      await saveFirestoreSyncFlag(true);
+    } catch (e) {
+      console.warn('[SupabaseCatalog] Save product exception warning:', e);
     }
-
-    return deletedCount > 0 ? deletedCount : allIdentifiers.length;
-  } catch (err) {
-    checkQuotaError(err);
-    return allIdentifiers.length;
+  } else {
+    console.warn('[SupabaseCatalog] getSupabase() returned null. Supabase client not initialized.');
   }
 }
 
-/**
- * Bulk updates products in Firestore.
- */
-export async function updateFirestoreProducts(
-  ids: string[],
-  skus: string[],
-  fields: Partial<Product>
-): Promise<number> {
+export async function deleteFirestoreProducts(ids: string[], skus: string[] = []): Promise<void> {
   cachedProducts = null;
-  const matchIds = Array.isArray(ids) ? ids : [];
-  const matchSkus = Array.isArray(skus) ? skus : [];
+  await addFirestoreDeletedIds([...ids, ...skus]);
 
-  if (matchIds.length === 0 && matchSkus.length === 0) return 0;
-
-  const normalized = new Set<string>();
-  [...matchIds, ...matchSkus].forEach((item) => {
-    if (item) {
-      const s = String(item).trim();
-      normalized.add(s);
-      normalized.add(s.toUpperCase());
-      normalized.add(s.toLowerCase());
-    }
-  });
-
-  // Sync localStorage in browser
-  if (typeof window !== 'undefined' && window.localStorage) {
+  const sb = getSupabase();
+  if (sb) {
     try {
-      const customStr = localStorage.getItem('app_custom_products');
-      if (customStr) {
-        const customArr = JSON.parse(customStr);
-        if (Array.isArray(customArr)) {
-          const updated = customArr.map((p) => {
-            if (
-              normalized.has(p.id) ||
-              normalized.has(String(p.id).toUpperCase()) ||
-              normalized.has(p.sku) ||
-              normalized.has(String(p.sku || '').toUpperCase())
-            ) {
-              return { ...p, ...fields, updated_at: new Date().toISOString() };
-            }
-            return p;
-          });
-          localStorage.setItem('app_custom_products', JSON.stringify(updated));
-        }
+      if (ids.length > 0) {
+        await sb.from('products').delete().in('id', ids);
       }
-    } catch {}
-  }
-
-  if (firestoreQuotaExceeded) return matchIds.length + matchSkus.length;
-
-  try {
-    const colRef = collection(db, PRODUCTS_COLLECTION);
-    const snap = await getDocs(colRef);
-    let updatedCount = 0;
-
-    const batch = writeBatch(db);
-    const now = new Date().toISOString();
-    const cleanFields = cleanFirestoreData({ ...fields, updated_at: now });
-
-    snap.forEach((docSnap) => {
-      const data = docSnap.data() as Product;
-      const docId = docSnap.id;
-      const dSku = (data.sku || '').trim().toUpperCase();
-      const dId = (data.id || '').trim();
-
-      const matches =
-        normalized.has(docId) ||
-        normalized.has(docId.toUpperCase()) ||
-        normalized.has(docId.toLowerCase()) ||
-        (dId && (normalized.has(dId) || normalized.has(dId.toUpperCase()) || normalized.has(dId.toLowerCase()))) ||
-        (dSku && (normalized.has(dSku) || normalized.has(dSku.toUpperCase()) || normalized.has(dSku.toLowerCase())));
-
-      if (matches) {
-        batch.set(docSnap.ref, cleanFields, { merge: true });
-        updatedCount++;
+      if (skus.length > 0) {
+        await sb.from('products').delete().in('sku', skus);
       }
-    });
-
-    if (updatedCount > 0) {
-      await batch.commit();
-      await saveFirestoreSyncFlag(true);
+    } catch (e) {
+      console.warn('[Supabase] Delete products error:', e);
     }
-
-    return updatedCount;
-  } catch (err) {
-    checkQuotaError(err);
-    return 0;
   }
 }
 
-/**
- * Bulk imports products into Firestore.
- */
-export async function bulkImportFirestoreProducts(products: Product[]): Promise<number> {
+export async function updateFirestoreProducts(ids: string[], skus: string[], fields: Record<string, any>): Promise<void> {
   cachedProducts = null;
-  if (!products || products.length === 0) return 0;
-  if (firestoreQuotaExceeded) return products.length;
-
-  try {
-    const batch = writeBatch(db);
-    let count = 0;
-    for (const p of products) {
-      const docId = p.id || `prod-${Date.now()}-${count}`;
-      const docRef = doc(db, PRODUCTS_COLLECTION, docId);
-      batch.set(docRef, cleanFirestoreData({ ...p, id: docId, updated_at: new Date().toISOString() }), { merge: true });
-      count++;
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      if (ids.length > 0) {
+        await sb.from('products').update(fields).in('id', ids);
+      }
+      if (skus.length > 0) {
+        await sb.from('products').update(fields).in('sku', skus);
+      }
+    } catch (e) {
+      console.warn('[Supabase] Update products error:', e);
     }
-    await batch.commit();
-    const importedIdentifiers: string[] = [];
-    for (const p of products) {
-      if (p.id) importedIdentifiers.push(p.id);
-      if (p.sku) importedIdentifiers.push(p.sku);
-    }
-    await removeFirestoreDeletedIds(importedIdentifiers);
-    await saveFirestoreSyncFlag(true);
-    return count;
-  } catch (err) {
-    checkQuotaError(err);
-    return 0;
   }
 }
 
-/**
- * Retrieves all categories from Firestore.
- */
+export async function bulkImportFirestoreProducts(products: Product[]): Promise<void> {
+  cachedProducts = null;
+  for (const p of products) {
+    await saveFirestoreProduct(p);
+  }
+}
+
 export async function getFirestoreCategories(): Promise<Category[]> {
-  if (firestoreQuotaExceeded) return INITIAL_CATEGORIES;
-  try {
-    const colRef = collection(db, CATEGORIES_COLLECTION);
-    const snap = await getDocs(colRef);
-    if (snap.empty) {
-      try {
-        const batch = writeBatch(db);
-        for (const cat of INITIAL_CATEGORIES) {
-          const docRef = doc(db, CATEGORIES_COLLECTION, cat.id);
-          batch.set(docRef, cleanFirestoreData(cat));
-        }
-        await batch.commit();
-      } catch (seedErr) {
-        checkQuotaError(seedErr);
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('categories').select('*').order('display_order', { ascending: true });
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return data as Category[];
       }
-      return INITIAL_CATEGORIES;
-    }
-    const categories: Category[] = [];
-    snap.forEach((docSnap) => categories.push(docSnap.data() as Category));
-    categories.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
-    return categories;
-  } catch (err) {
-    checkQuotaError(err);
-    return INITIAL_CATEGORIES;
+    } catch {}
   }
+  return INITIAL_CATEGORIES;
 }
 
 export async function saveFirestoreCategory(category: Category): Promise<void> {
-  if (firestoreQuotaExceeded || !category || !category.id) return;
-  try {
-    const docRef = doc(db, CATEGORIES_COLLECTION, category.id);
-    await setDoc(
-      docRef,
-      cleanFirestoreData({
-        ...category,
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      await sb.from('categories').upsert({
+        id: category.id || `cat-${category.slug}`,
+        name: category.name,
+        slug: category.slug,
+        description: category.description || '',
+        image_path: category.image_path || '',
+        display_order: category.display_order || 1,
+        is_active: category.is_active !== false,
         updated_at: new Date().toISOString(),
-      }),
-      { merge: true }
-    );
-    await saveFirestoreSyncFlag(true);
-  } catch (err) {
-    checkQuotaError(err);
+      }, { onConflict: 'slug' });
+    } catch {}
   }
 }
 
-/**
- * Retrieves website settings from Firestore.
- */
-export async function getFirestoreSettings(): Promise<WebsiteSettings> {
-  if (firestoreQuotaExceeded) return INITIAL_SETTINGS;
-  try {
-    const docRef = doc(db, SETTINGS_COLLECTION, 'main');
-    const snap = await getDoc(docRef);
-    if (snap.exists()) {
-      const data = snap.data() as WebsiteSettings;
-      const merged: WebsiteSettings = {
-        ...INITIAL_SETTINGS,
-        ...data,
-      };
-      return merged;
-    }
-    saveFirestoreSettings(INITIAL_SETTINGS).catch(() => {});
-    return INITIAL_SETTINGS;
-  } catch (err) {
-    checkQuotaError(err);
-    return INITIAL_SETTINGS;
+export async function getFirestoreSettings(): Promise<WebsiteSettings | null> {
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('settings').select('*').limit(1).single();
+      if (!error && data) {
+        return {
+          business_name: data.business_name || INITIAL_SETTINGS.business_name,
+          tagline: data.tagline || INITIAL_SETTINGS.tagline,
+          domain: data.domain || INITIAL_SETTINGS.domain,
+          whatsapp_number: data.whatsapp_number || INITIAL_SETTINGS.whatsapp_number,
+          whatsapp_display: data.whatsapp_display || INITIAL_SETTINGS.whatsapp_display,
+          instagram_url: data.instagram_url || INITIAL_SETTINGS.instagram_url,
+          facebook_url: data.facebook_url || INITIAL_SETTINGS.facebook_url,
+          email: data.contact_email || INITIAL_SETTINGS.email,
+          studio_address: data.address || INITIAL_SETTINGS.studio_address,
+          payment_terms: INITIAL_SETTINGS.payment_terms,
+          shipping_policy_summary: INITIAL_SETTINGS.shipping_policy_summary,
+          showcase_banner: data.showcase_banner || INITIAL_SETTINGS.showcase_banner,
+          announcement_banner: data.announcement_bar || INITIAL_SETTINGS.announcement_banner,
+          default_seo: INITIAL_SETTINGS.default_seo,
+        };
+      }
+    } catch {}
   }
+  return INITIAL_SETTINGS;
 }
 
 export async function saveFirestoreSettings(settings: WebsiteSettings): Promise<void> {
-  if (firestoreQuotaExceeded) return;
-  try {
-    const docRef = doc(db, SETTINGS_COLLECTION, 'main');
-    await setDoc(docRef, cleanFirestoreData(settings), { merge: true });
-    await saveFirestoreSyncFlag(true);
-  } catch (err) {
-    checkQuotaError(err);
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      await sb.from('settings').upsert({
+        id: 'settings-global',
+        business_name: settings.business_name,
+        tagline: settings.tagline,
+        contact_email: settings.email,
+        contact_phone: settings.whatsapp_number,
+        whatsapp_number: settings.whatsapp_number,
+        address: settings.studio_address,
+        instagram_url: settings.instagram_url,
+        facebook_url: settings.facebook_url,
+        announcement_bar: settings.announcement_banner,
+        showcase_banner: settings.showcase_banner,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'id' });
+    } catch {}
   }
 }
 
-/**
- * Retrieves website CMS pages from Firestore.
- */
 export async function getFirestorePages(): Promise<WebsitePage[]> {
-  if (firestoreQuotaExceeded) return INITIAL_PAGES;
-  try {
-    const colRef = collection(db, PAGES_COLLECTION);
-    const snap = await getDocs(colRef);
-    if (snap.empty) {
-      return INITIAL_PAGES;
-    }
-    const rawPages: WebsitePage[] = [];
-    snap.forEach((docSnap) => rawPages.push(docSnap.data() as WebsitePage));
-
-    rawPages.sort((a, b) => {
-      const timeA = new Date(a?.updated_at || a?.created_at || 0).getTime();
-      const timeB = new Date(b?.updated_at || b?.created_at || 0).getTime();
-      return timeB - timeA;
-    });
-
-    const pageMap = new Map<string, WebsitePage>();
-    for (const p of rawPages) {
-      if (!p || !p.slug) continue;
-      const slug = p.slug.toLowerCase().trim();
-      if (!pageMap.has(slug)) {
-        pageMap.set(slug, p);
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('pages').select('*');
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return data as WebsitePage[];
       }
-    }
-
-    return Array.from(pageMap.values());
-  } catch (err) {
-    checkQuotaError(err);
-    return INITIAL_PAGES;
+    } catch {}
   }
+  return INITIAL_PAGES;
 }
 
 export async function saveFirestorePage(page: WebsitePage): Promise<void> {
-  if (firestoreQuotaExceeded) return;
-  try {
-    const docRef = doc(db, PAGES_COLLECTION, page.slug);
-    const cleaned = cleanFirestoreData({ ...page, updated_at: new Date().toISOString() });
-    const payloadStr = JSON.stringify(cleaned);
-    console.log(`[firestoreCatalog] Saving page "${page.slug}" to Firestore. Payload size: ${(payloadStr.length / 1024).toFixed(1)}KB`);
-    await setDoc(docRef, cleaned, { merge: true });
-    console.log(`[firestoreCatalog] Successfully saved page "${page.slug}" to Firestore.`);
-    await saveFirestoreSyncFlag(true);
-  } catch (err) {
-    console.error(`[firestoreCatalog] Failed to save page "${page.slug}" to Firestore:`, err);
-    checkQuotaError(err);
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      await sb.from('pages').upsert({
+        id: page.id || `page-${page.slug}`,
+        slug: page.slug,
+        title: page.title,
+        seo_title: page.seo_title || '',
+        meta_description: page.meta_description || '',
+        status: page.status || 'published',
+        sections: Array.isArray(page.sections) ? page.sections : [],
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'slug' });
+    } catch {}
   }
 }
 
-/**
- * Retrieves testimonials from Firestore.
- */
 export async function getFirestoreTestimonials(): Promise<Testimonial[]> {
-  if (firestoreQuotaExceeded) return INITIAL_TESTIMONIALS;
-  try {
-    const colRef = collection(db, TESTIMONIALS_COLLECTION);
-    const snap = await getDocs(colRef);
-    if (snap.empty) {
-      return INITIAL_TESTIMONIALS;
-    }
-    const list: Testimonial[] = [];
-    snap.forEach((docSnap) => list.push(docSnap.data() as Testimonial));
-    return list;
-  } catch (err) {
-    checkQuotaError(err);
-    return INITIAL_TESTIMONIALS;
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('testimonials').select('*').order('created_at', { ascending: false });
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return data.map((row: any) => ({
+          id: row.id,
+          customer_name: row.author_name || 'Collector',
+          content: row.content || '',
+          rating: Number(row.rating) || 5,
+          location: row.author_location || '',
+          artwork_purchased: row.artwork_purchased || '',
+          image_path: row.avatar_url || '',
+          display_order: Number(row.display_order) || 1,
+          is_published: row.is_published !== false,
+          created_at: row.created_at || new Date().toISOString(),
+          updated_at: row.updated_at || new Date().toISOString(),
+        }));
+      }
+    } catch {}
   }
+  return INITIAL_TESTIMONIALS;
 }
 
 export async function saveFirestoreTestimonial(testimonial: Testimonial): Promise<void> {
-  if (firestoreQuotaExceeded) {
-    console.warn('[firestoreCatalog] Quota exceeded, skipping Firestore save');
-    throw new Error('Firestore quota exceeded');
-  }
-  try {
-    console.log(`[firestoreCatalog] Attempting to save testimonial: ${testimonial.id}`);
-    const docRef = doc(db, TESTIMONIALS_COLLECTION, testimonial.id);
-    await setDoc(docRef, cleanFirestoreData({ ...testimonial, updated_at: new Date().toISOString() }), { merge: true });
-    console.log(`[firestoreCatalog] Successfully saved testimonial: ${testimonial.id}`);
-    await saveFirestoreSyncFlag(true);
-  } catch (err) {
-    console.error(`[firestoreCatalog] Failed to save testimonial ${testimonial.id}:`, err);
-    checkQuotaError(err);
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      await sb.from('testimonials').upsert({
+        id: testimonial.id,
+        author_name: testimonial.customer_name,
+        author_location: testimonial.location || '',
+        rating: Number(testimonial.rating) || 5,
+        content: testimonial.content,
+        artwork_purchased: testimonial.artwork_purchased || '',
+        avatar_url: testimonial.image_path || '',
+        display_order: testimonial.display_order || 1,
+        is_published: testimonial.is_published !== false,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'id' });
+    } catch {}
   }
 }
 
 export async function deleteFirestoreTestimonial(id: string): Promise<void> {
-  if (firestoreQuotaExceeded) return;
-  try {
-    const docRef = doc(db, TESTIMONIALS_COLLECTION, id);
-    await deleteDoc(docRef);
-    await saveFirestoreSyncFlag(true);
-  } catch (err) {
-    checkQuotaError(err);
-  }
-}
-
-export async function bulkImportFirestoreTestimonials(testimonials: Testimonial[]): Promise<void> {
-  if (firestoreQuotaExceeded || !testimonials || testimonials.length === 0) return;
-  try {
-    const batch = writeBatch(db);
-    testimonials.forEach((t) => {
-      const docRef = doc(db, TESTIMONIALS_COLLECTION, t.id);
-      batch.set(docRef, cleanFirestoreData(t), { merge: true });
-    });
-    await batch.commit();
-  } catch (err) {
-    checkQuotaError(err);
-  }
-}
-
-export async function getFirestoreSyncFlag(): Promise<{ changed: boolean; updated_at: string }> {
-  if (firestoreQuotaExceeded) return { changed: false, updated_at: new Date().toISOString() };
-  try {
-    const docRef = doc(db, CATALOG_STATE_COLLECTION, 'sync_flag');
-    const snap = await getDoc(docRef);
-    if (snap.exists()) {
-      return snap.data() as { changed: boolean; updated_at: string };
-    }
-  } catch (err) {
-    checkQuotaError(err);
-  }
-  return { changed: false, updated_at: new Date().toISOString() };
-}
-
-export async function saveFirestoreSyncFlag(changed: boolean): Promise<void> {
-  if (firestoreQuotaExceeded) return;
-  try {
-    const docRef = doc(db, CATALOG_STATE_COLLECTION, 'sync_flag');
-    await setDoc(docRef, { changed, updated_at: new Date().toISOString() }, { merge: true });
-  } catch (err) {
-    checkQuotaError(err);
+  const sb = getSupabase();
+  if (sb && id) {
+    try {
+      await sb.from('testimonials').delete().eq('id', id);
+    } catch {}
   }
 }
 
 export async function getFirestoreFAQs(): Promise<FAQ[]> {
-  if (firestoreQuotaExceeded) return INITIAL_FAQS;
-  try {
-    const colRef = collection(db, 'faqs');
-    const snap = await getDocs(colRef);
-    if (snap.empty) return INITIAL_FAQS;
-    const list: FAQ[] = [];
-    snap.forEach((docSnap) => list.push(docSnap.data() as FAQ));
-    return list.sort((a, b) => a.display_order - b.display_order);
-  } catch (err) {
-    checkQuotaError(err);
-    return INITIAL_FAQS;
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('faqs').select('*').order('display_order', { ascending: true });
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return data.map((row: any) => ({
+          id: row.id,
+          question: row.question || '',
+          answer: row.answer || '',
+          category: row.category || 'General',
+          display_order: Number(row.display_order) || 1,
+          is_published: row.is_published !== false,
+          created_at: row.created_at || new Date().toISOString(),
+          updated_at: row.updated_at || new Date().toISOString(),
+        }));
+      }
+    } catch {}
   }
+  return INITIAL_FAQS;
 }
 
 export async function saveFirestoreFAQ(faq: FAQ): Promise<void> {
-  if (firestoreQuotaExceeded) return;
-  try {
-    const docRef = doc(db, 'faqs', faq.id);
-    await setDoc(docRef, cleanFirestoreData({ ...faq, updated_at: new Date().toISOString() }), { merge: true });
-    await saveFirestoreSyncFlag(true);
-  } catch (err) {
-    checkQuotaError(err);
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      await sb.from('faqs').upsert({
+        id: faq.id,
+        category: faq.category || 'General',
+        question: faq.question,
+        answer: faq.answer,
+        display_order: Number(faq.display_order) || 1,
+        is_published: faq.is_published !== false,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'id' });
+    } catch {}
   }
 }
 
 export async function deleteFirestoreFAQ(id: string): Promise<void> {
-  if (firestoreQuotaExceeded) return;
-  try {
-    const docRef = doc(db, 'faqs', id);
-    await deleteDoc(docRef);
-    await saveFirestoreSyncFlag(true);
-  } catch (err) {
-    checkQuotaError(err);
-  }
-}
-
-export async function getFirestoreMediaAssets(): Promise<MediaAsset[]> {
-  if (firestoreQuotaExceeded) return [];
-  try {
-    const colRef = collection(db, MEDIA_ASSETS_COLLECTION);
-    const snap = await getDocs(colRef);
-    if (snap.empty) return [];
-    const list: MediaAsset[] = [];
-    snap.forEach((docSnap) => list.push(docSnap.data() as MediaAsset));
-    return list;
-  } catch (err) {
-    checkQuotaError(err);
-    return [];
+  const sb = getSupabase();
+  if (sb && id) {
+    try {
+      await sb.from('faqs').delete().eq('id', id);
+    } catch {}
   }
 }
 
 export async function saveFirestoreMediaAsset(asset: MediaAsset): Promise<void> {
-  if (firestoreQuotaExceeded || !asset || !asset.id) return;
-  try {
-    const docRef = doc(db, MEDIA_ASSETS_COLLECTION, asset.id);
-    await setDoc(
-      docRef,
-      cleanFirestoreData({
-        ...asset,
-        updated_at: new Date().toISOString(),
-      }),
-      { merge: true }
-    );
-    await saveFirestoreSyncFlag(true);
-  } catch (err) {
-    checkQuotaError(err);
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      await sb.from('media').upsert({
+        id: asset.id,
+        storage_path: asset.storage_path,
+        media_type: asset.media_type || 'image',
+        filename: asset.filename || '',
+        title: asset.title || '',
+        created_at: asset.created_at || new Date().toISOString(),
+      }, { onConflict: 'id' });
+    } catch {}
   }
 }
 
-export async function syncLocalCustomProductsToFirestore(): Promise<number> {
-  try {
-    const localProds = getLocalCustomProducts();
-    if (!localProds || localProds.length === 0) return 0;
-    let synced = 0;
-    for (const p of localProds) {
-      if (p && p.sku && !isSkuBlocked(p.sku, p.id)) {
-        await saveFirestoreProduct(p).catch(() => {});
-        synced++;
+export async function saveFirestoreSyncFlag(_changed = true): Promise<void> {
+  // Local/Supabase sync flag helper
+}
+
+export async function getFirestoreSyncFlag(): Promise<{ changed: boolean; updated_at: string } | null> {
+  return { changed: false, updated_at: new Date().toISOString() };
+}
+
+export async function syncLocalCustomProductsToFirestore(): Promise<void> {
+  const localCustom = getLocalCustomProducts();
+  const sb = getSupabase();
+  if (sb && localCustom.length > 0) {
+    try {
+      const { data: existing } = await sb.from('products').select('id, sku');
+      const existingIds = new Set((existing || []).map((r: any) => r.id));
+      const existingSkus = new Set((existing || []).map((r: any) => (r.sku || '').toUpperCase()));
+
+      for (const p of localCustom) {
+        const skuUpper = (p.sku || '').trim().toUpperCase();
+        // Only insert if completely absent from Supabase
+        if (!existingIds.has(p.id) && !existingSkus.has(skuUpper)) {
+          await saveFirestoreProduct(p);
+        }
       }
+    } catch (e) {
+      console.warn('[Supabase] Offline sync notice:', e);
     }
-    return synced;
-  } catch (err) {
-    console.warn('[firestoreCatalog] Background auto-sync notice:', err);
-    return 0;
   }
 }

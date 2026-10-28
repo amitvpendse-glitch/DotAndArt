@@ -15,6 +15,8 @@ import {
   copyImageToClipboard,
 } from '../utils/whatsapp';
 
+import { SafeProductImage } from './SafeProductImage';
+
 interface WhatsAppAttachmentModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -143,14 +145,17 @@ export const WhatsAppAttachmentModal: React.FC<WhatsAppAttachmentModalProps> = (
           {primaryItem && (
             <div className="space-y-3 pt-1">
               <div className="relative aspect-square w-full max-w-[280px] mx-auto rounded-2xl overflow-hidden border-2 border-theme-accent/40 bg-theme-page shadow-md flex items-center justify-center p-2 group">
-                <img
+                <SafeProductImage
                   src={primaryItem.url}
+                  sku={primaryItem.sku || ''}
+                  name={primaryItem.title || 'Artwork'}
                   alt={primaryItem.title || 'Artwork'}
+                  size="lg"
+                  fit="contain"
                   className="w-full h-full object-contain rounded-xl cursor-pointer"
-                  title="Right-click or long-press to copy image directly"
                 />
                 {primaryItem.sku && (
-                  <span className="absolute top-2 left-2 px-2.5 py-1 rounded-md bg-black/80 text-white font-mono text-[11px] font-bold shadow-xs">
+                  <span className="absolute top-2 left-2 px-2.5 py-1 rounded-md bg-black/80 text-white font-mono text-[11px] font-bold shadow-xs border border-white/20">
                     Code: {primaryItem.sku}
                   </span>
                 )}

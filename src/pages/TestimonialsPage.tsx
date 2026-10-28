@@ -19,9 +19,7 @@ import { createWhatsAppUrl, getDisplayWhatsAppNumber, openExternalLink } from '.
 import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 import { INITIAL_TESTIMONIALS } from '../data/initialCatalog';
-import { saveFirestoreTestimonial } from '../lib/firestoreCatalog';
-import { onSnapshot, collection } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { getFirestoreTestimonials, saveFirestoreTestimonial } from '../lib/firestoreCatalog';
 
 interface TestimonialsPageProps {
   onNavigate?: (path: string) => void;
@@ -109,23 +107,17 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
   }, []);
 
 
-  // Fetch testimonials via real-time listener
+  // Fetch testimonials via Supabase / local cache
   useEffect(() => {
     setLoading(true);
-    const colRef = collection(db, 'testimonials');
-    const unsubscribe = onSnapshot(colRef, (snapshot) => {
-      const list: Testimonial[] = [];
-      snapshot.forEach((doc) => doc.exists() && list.push(doc.data() as Testimonial));
-      
-      // Sort: newest first or as needed
-      list.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      
-      console.log('Testimonials from Firestore:', list);
-      setTestimonials(list.length > 0 ? list : INITIAL_TESTIMONIALS);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    getFirestoreTestimonials()
+      .then((list) => {
+        setTestimonials(Array.isArray(list) && list.length > 0 ? list : []);
+      })
+      .catch((err) => {
+        console.warn('Testimonials load notice:', err);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   // Handle Public User Submission

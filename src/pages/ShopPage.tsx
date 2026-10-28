@@ -66,35 +66,41 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   const [sortBy, setSortBy] = useState<string>('featured');
   const [highDemandOnly, setHighDemandOnly] = useState<boolean>(false);
 
+  const handleSelectCategory = (slug: string) => {
+    setSelectedCategory(slug);
+    setSelectedSizeFilter('all');
+  };
+
   useEffect(() => {
     if (initialCategory) {
       setSelectedCategory(initialCategory);
+      setSelectedSizeFilter('all');
     }
   }, [initialCategory]);
 
   useEffect(() => {
     const savedFilters = sessionStorage.getItem('shop_filters');
     if (savedFilters) {
-      const { category, search, size, price, sort, highDemand } = JSON.parse(savedFilters);
-      if (category) setSelectedCategory(category);
-      if (search) setSearchQuery(search);
-      if (size) setSelectedSizeFilter(size);
-      if (price) setPriceTier(price);
-      if (sort) setSortBy(sort);
-      if (highDemand !== undefined) setHighDemandOnly(highDemand);
+      try {
+        const { category, size, price, sort, highDemand } = JSON.parse(savedFilters);
+        if (category) setSelectedCategory(category);
+        if (size) setSelectedSizeFilter(size);
+        if (price) setPriceTier(price);
+        if (sort) setSortBy(sort);
+        if (highDemand !== undefined) setHighDemandOnly(highDemand);
+      } catch {}
     }
   }, []);
 
   useEffect(() => {
     sessionStorage.setItem('shop_filters', JSON.stringify({
       category: selectedCategory,
-      search: searchQuery,
       size: selectedSizeFilter,
       price: priceTier,
       sort: sortBy,
       highDemand: highDemandOnly
     }));
-  }, [selectedCategory, searchQuery, selectedSizeFilter, priceTier, sortBy, highDemandOnly]);
+  }, [selectedCategory, selectedSizeFilter, priceTier, sortBy, highDemandOnly]);
 
   useEffect(() => {
     const loadSettingsAndCategories = () => {
@@ -153,7 +159,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           queryParams.append('minPrice', '10000');
         }
 
-        if (selectedSizeFilter !== 'all') {
+        if (selectedSizeFilter !== 'all' && !searchQuery.trim()) {
           queryParams.append('size', selectedSizeFilter);
         }
 
@@ -223,7 +229,8 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
             pSlug.includes(catLower) ||
             pId.includes(catLower) ||
             (catLower.includes('mandala') && pSlug.includes('mandala')) ||
-            (catLower.includes('lippan') && pSlug.includes('lippan'))
+            (catLower.includes('lippan') && pSlug.includes('lippan')) ||
+            ((catLower.includes('tea-light') || catLower.includes('candle')) && (pSlug.includes('tea-light') || pSlug.includes('candle') || p.sku?.toUpperCase().startsWith('DA-TC')))
           );
         });
 
@@ -366,7 +373,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           
           {/* Product Catalog / All Artworks button — STRICTLY highlighted ONLY if selectedCategory === 'all' */}
           <button
-            onClick={() => setSelectedCategory('all')}
+            onClick={() => handleSelectCategory('all')}
             className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
               selectedCategory === 'all'
                 ? 'bg-theme-accent text-white font-semibold shadow-xs ring-2 ring-theme-accent/30'
@@ -392,7 +399,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
             return (
               <button
                 key={cat.id || cat.slug}
-                onClick={() => setSelectedCategory(cat.slug)}
+                onClick={() => handleSelectCategory(cat.slug)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   isSelected
                     ? 'bg-theme-accent text-white font-semibold shadow-xs ring-2 ring-theme-accent/30'

@@ -38,8 +38,6 @@ import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
 import { handleClientFallbackApi } from '../lib/clientFallbackApi';
 import { generateProfessionalCatalogPDF } from '../utils/pdfCatalogGenerator';
 import { deleteFirestoreProducts, updateFirestoreProducts, saveFirestoreProduct, getFirestoreDeletedIds, syncLocalCustomProductsToFirestore } from '../lib/firestoreCatalog';
-import { onSnapshot, collection } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 import { isAwaitingPhoto } from '../utils/productUtils';
 import { compressImageFile } from '../utils/imageCompressor';
 import { saveLocalArtworkImage, saveLocalCustomProduct, exportLocalCatalogBackup, importLocalCatalogBackup } from '../utils/localImageCache';
@@ -152,18 +150,24 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({
   const handleExportCsvCatalog = () => {
     if (!products || products.length === 0) return;
 
-    const headers = ['Product Code', 'Artwork Name', 'Category', 'Base Size', 'Base Price (INR)', 'Customizable', 'Availability', 'Description'];
+    const headers = ['id', 'sku', 'name', 'category_id', 'category_name', 'category_slug', 'base_size', 'base_price', 'customizable', 'is_published', 'is_available', 'description'];
     
     const csvRows = products.map((p) => {
       const escape = (str: string) => `"${(str || '').replace(/"/g, '""')}"`;
+      const cleanSku = (p.sku || '').trim().toUpperCase();
+      const pid = p.id || `prod-${cleanSku.toLowerCase()}`;
       return [
-        escape(p.sku),
+        escape(pid),
+        escape(cleanSku),
         escape(p.name),
-        escape(p.category_name || p.category_slug || ''),
+        escape(p.category_id || 'cat-mandala'),
+        escape(p.category_name || 'Mandala Wall Hangings'),
+        escape(p.category_slug || 'mandala-wall-hangings'),
         escape(p.base_size),
         p.base_price,
-        p.customizable ? 'Yes' : 'No',
-        p.is_published ? 'In Stock / Available' : 'Custom Order Only',
+        p.customizable !== false ? 'true' : 'false',
+        p.is_published !== false ? 'true' : 'false',
+        p.is_available !== false ? 'true' : 'false',
         escape(p.description),
       ].join(',');
     });
@@ -613,6 +617,12 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         return true;
       });
       setProducts(uniqueProds);
+      // Sync local custom products cache with authoritative Supabase products
+      if (typeof window !== 'undefined' && window.localStorage && uniqueProds.length > 0) {
+        try {
+          localStorage.setItem('app_custom_products', JSON.stringify(uniqueProds));
+        } catch {}
+      }
       const rawCats = Array.isArray(catRes) ? catRes : (catRes as any)?.categories || [];
       const seenCatIds = new Set<string>();
       const seenCatNames = new Set<string>();
@@ -648,66 +658,9 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     window.addEventListener('app_products_updated', handleProductsRefresh);
     window.addEventListener('app_sync_refresh', handleProductsRefresh);
 
-    const colRef = collection(db, 'products');
-    const unsubscribe = onSnapshot(
-      colRef,
-      (snapshot) => {
-        const fsData: Product[] = [];
-        snapshot.forEach((docSnap) => {
-          if (docSnap.exists()) {
-            const item = docSnap.data() as Product;
-            const pid = item.id || docSnap.id;
-            fsData.push({ ...item, id: pid });
-          }
-        });
-        if (fsData.length > 0) {
-          getFirestoreDeletedIds()
-            .then((deletedSet) => {
-              const seenIds = new Set<string>();
-              const seenSkus = new Set<string>();
-              const deduped: Product[] = [];
-              for (const p of fsData) {
-                if (!p) continue;
-                const pid = (p.id || '').trim();
-                const psku = (p.sku || '').trim().toUpperCase();
-                if (deletedSet.has(pid) || deletedSet.has(psku) || deletedSet.has(pid.toUpperCase())) continue;
-                if (pid && seenIds.has(pid)) continue;
-                if (psku && seenSkus.has(psku)) continue;
-                if (pid) seenIds.add(pid);
-                if (psku) seenSkus.add(psku);
-                deduped.push(p);
-              }
-              setProducts((prev) => {
-                const combined = [...deduped, ...prev];
-                const finalIds = new Set<string>();
-                const finalSkus = new Set<string>();
-                const finalMerged: Product[] = [];
-                for (const p of combined) {
-                  if (!p) continue;
-                  const pid = (p.id || '').trim();
-                  const psku = (p.sku || '').trim().toUpperCase();
-                  if (deletedSet.has(pid) || deletedSet.has(psku) || deletedSet.has(pid.toUpperCase())) continue;
-                  if (pid && finalIds.has(pid)) continue;
-                  if (psku && finalSkus.has(psku)) continue;
-                  if (pid) finalIds.add(pid);
-                  if (psku) finalSkus.add(psku);
-                  finalMerged.push(p);
-                }
-                return finalMerged;
-              });
-            })
-            .catch(() => {});
-        }
-      },
-      (err) => {
-        console.warn('[AdminProducts] Firestore snapshot notice:', err);
-      }
-    );
-
     return () => {
       window.removeEventListener('app_products_updated', handleProductsRefresh);
       window.removeEventListener('app_sync_refresh', handleProductsRefresh);
-      unsubscribe();
     };
   }, [token]);
 
@@ -829,6 +782,10 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
           const formData = new FormData();
           formData.append('file', compressedFile);
           formData.append('alt_text', `${name || 'Artwork'} photo`);
+          if (cleanSku) {
+            formData.append('sku', cleanSku);
+            formData.append('product_sku', cleanSku);
+          }
 
           const data = await safeFetchJson<any>(
             '/api/uploads',
@@ -848,16 +805,27 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         }
 
         setImages((prev) => {
-          const isFirst = prev.length === 0;
+          // If the product only has 1 image that is a placeholder or inherited from another SKU, replace it!
+          const cleanProdSku = (sku || '').trim().toUpperCase();
+          const isInheritedCopiedImg =
+            prev.length === 1 &&
+            prev[0].storage_path &&
+            cleanProdSku &&
+            !prev[0].storage_path.toUpperCase().includes(cleanProdSku);
+
+          const existingRemaining = isInheritedCopiedImg
+            ? []
+            : prev.map((img) => ({ ...img, is_primary: false }));
+
           const newImg: ProductImage = {
             id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
             product_id: editingProduct?.id || '',
             storage_path: finalPath,
             alt_text: rawFile.name,
-            display_order: prev.length + 1,
-            is_primary: isFirst,
+            display_order: 1,
+            is_primary: true,
           };
-          return [...prev, newImg];
+          return [newImg, ...existingRemaining];
         });
 
         setIsDrawerDirty(true);
@@ -1032,12 +1000,21 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
       const resultProduct = data && (data.sku || data.id) ? { ...fullPayload, ...data } : fullPayload;
 
       setProducts((prev) => {
+        const editId = editingProduct?.id;
+        const editSku = editingProduct?.sku?.toUpperCase();
         const exists = prev.some(
-          (p) => p.id === resultProduct.id || (p.sku && resultProduct.sku && p.sku.toUpperCase() === resultProduct.sku.toUpperCase())
+          (p) =>
+            p.id === resultProduct.id ||
+            (editId && p.id === editId) ||
+            (p.sku && resultProduct.sku && p.sku.toUpperCase() === resultProduct.sku.toUpperCase()) ||
+            (editSku && p.sku && p.sku.toUpperCase() === editSku)
         );
         if (exists) {
           return prev.map((p) =>
-            p.id === resultProduct.id || (p.sku && resultProduct.sku && p.sku.toUpperCase() === resultProduct.sku.toUpperCase())
+            p.id === resultProduct.id ||
+            (editId && p.id === editId) ||
+            (p.sku && resultProduct.sku && p.sku.toUpperCase() === resultProduct.sku.toUpperCase()) ||
+            (editSku && p.sku && p.sku.toUpperCase() === editSku)
               ? resultProduct
               : p
           );
@@ -1059,7 +1036,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
 
   const handleDuplicate = async (p: Product) => {
     try {
-      const res = await safeFetchJson<Product>(
+      let res = await safeFetchJson<Product>(
         `/api/admin/products/${p.id}/duplicate`,
         {
           method: 'POST',
@@ -1067,15 +1044,54 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         },
         null
       );
+
+      if (!res || !res.sku) {
+        // Direct client-side duplicate fallback
+        const copySku = `${p.sku || 'DA-ART'}-COPY-${Math.floor(100 + Math.random() * 900)}`;
+        const now = new Date().toISOString();
+        const newId = `prod-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+
+        res = {
+          ...JSON.parse(JSON.stringify(p)),
+          id: newId,
+          sku: copySku,
+          name: p.name.includes('(Copy)') ? p.name : `${p.name} (Copy)`,
+          is_published: true,
+          is_available: true,
+          created_at: now,
+          updated_at: now,
+          images: (p.images || []).map((img, idx) => ({
+            ...img,
+            id: `img-${newId}-${idx + 1}`,
+            product_id: newId,
+          })),
+          variants: (p.variants || []).map((v, idx) => ({
+            ...v,
+            id: `v-${newId}-${idx + 1}`,
+            product_id: newId,
+          })),
+        };
+
+        // Post new product to backend API to ensure server db.json is updated
+        await safeFetchJson('/api/admin/products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(res),
+        }, res).catch(() => {});
+      }
+
       if (res && res.sku) {
-        setProducts((prev) => [res, ...prev]);
+        setProducts((prev) => [res!, ...prev]);
         await saveLocalCustomProduct(res).catch(() => {});
         await saveFirestoreProduct(res).catch(() => {});
         fetchProductsAndCategories();
         window.dispatchEvent(new Event('app_products_updated'));
       }
     } catch (err) {
-      console.error(err);
+      console.error('Duplicate failed:', err);
     }
   };
 
@@ -1633,53 +1649,40 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
 
                     {/* 1. PHOTO (Frozen Column: z-20) */}
                     <td className="sticky left-12 z-20 bg-white group-hover:bg-[#FFF9F3] border-b border-r border-[#E0D2C2] shadow-[2px_0_6px_-2px_rgba(0,0,0,0.08)] px-3 py-3 w-28 min-w-[104px]">
-                      {isAwaitingPhoto(p) ? (
-                        <div
-                          onClick={() => handleOpenEdit(p)}
-                          className="relative w-14 h-14 rounded-xl border border-dashed border-amber-400 bg-amber-50/70 hover:border-[#C85A32] flex flex-col items-center justify-center p-1 text-center group/add cursor-pointer transition-all shadow-xs"
-                          title="Click to add or update artwork photos"
-                        >
-                          <AlertTriangle className="w-3.5 h-3.5 text-amber-600 mb-0.5" />
-                          <span className="text-[9px] font-bold text-amber-800 leading-none">
-                            Awaiting Photo
+                      <div
+                        onClick={() => handleOpenEdit(p)}
+                        className="relative w-14 h-14 rounded-xl overflow-hidden border border-[#E0D2C2] bg-[#FAF7F2] group/thumb cursor-pointer shadow-xs hover:border-[#C85A32] transition-all"
+                        title="Click to edit artwork photos & details"
+                      >
+                        <SafeProductImage
+                          src={primaryImg?.storage_path || (p as any).image_url || (p as any).image_path || (p.sku ? `/static/assets/images/${p.sku}.jpg` : undefined)}
+                          alt={p.name}
+                          name={p.name}
+                          sku={p.sku}
+                          category_slug={p.category_slug}
+                          size="sm"
+                          className="w-full h-full object-cover"
+                        />
+                        {/* Hover Overlay */}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center text-white">
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </div>
+                        {/* Photo Count Pill */}
+                        <div className="absolute top-0.5 right-0.5 z-10">
+                          <span className={`px-1 py-0.2 rounded text-[8px] font-mono font-bold leading-none ${photoCount > 0 ? 'bg-black/75 text-white' : 'bg-[#C85A32] text-white'}`}>
+                            {photoCount}
                           </span>
                         </div>
-                      ) : (
-                        <div
-                          onClick={() => handleOpenEdit(p)}
-                          className="relative w-14 h-14 rounded-xl overflow-hidden border border-[#E0D2C2] bg-[#FAF7F2] group/thumb cursor-pointer shadow-xs hover:border-[#C85A32] transition-all"
-                          title="Click to edit artwork photos & details"
-                        >
-                          <SafeProductImage
-                            src={primaryImg?.storage_path || (p as any).image_url || (p as any).image_path || (p.sku ? `/static/assets/images/${p.sku}.jpg` : undefined)}
-                            alt={p.name}
-                            name={p.name}
-                            sku={p.sku}
-                            category_slug={p.category_slug}
-                            size="sm"
-                            className="w-full h-full object-cover"
+                        {/* Small Available Badge indicator */}
+                        <div className="absolute bottom-0.5 left-0.5 z-10 pointer-events-none scale-65 origin-bottom-left">
+                          <AvailableBadge
+                            isAvailable={p.is_available !== false}
+                            badgeText={p.available_badge_text}
+                            unavailableText={p.unavailable_badge_text}
+                            size="xs"
                           />
-                          {/* Hover Overlay */}
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center text-white">
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </div>
-                          {/* Photo Count Pill */}
-                          <div className="absolute top-0.5 right-0.5 z-10">
-                            <span className={`px-1 py-0.2 rounded text-[8px] font-mono font-bold leading-none ${photoCount > 0 ? 'bg-black/75 text-white' : 'bg-red-600 text-white'}`}>
-                              {photoCount}
-                            </span>
-                          </div>
-                          {/* Small Available Badge indicator */}
-                          <div className="absolute bottom-0.5 left-0.5 z-10 pointer-events-none scale-65 origin-bottom-left">
-                            <AvailableBadge
-                              isAvailable={p.is_available !== false}
-                              badgeText={p.available_badge_text}
-                              unavailableText={p.unavailable_badge_text}
-                              size="xs"
-                            />
-                          </div>
                         </div>
-                      )}
+                      </div>
                     </td>
 
                     {/* 2. Product Code */}
@@ -2748,7 +2751,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                     Close
                   </button>
                   {(() => {
-                    const canSave = (!editingProduct ? Boolean(name.trim() && sku.trim()) : isDrawerDirty) && !savingProduct;
+                    const canSave = Boolean(name.trim() && sku.trim()) && !savingProduct;
                     return (
                       <button
                         type="submit"

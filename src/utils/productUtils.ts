@@ -11,8 +11,9 @@ export function isAwaitingPhoto(p: Product): boolean {
 
   if (imagesList.length === 0) {
     const legacyPath = ((p as any).image_url || (p as any).image_path || '').trim();
-    if (!legacyPath) return true;
-    return isPlaceholderPath(legacyPath);
+    if (legacyPath && !isPlaceholderPath(legacyPath)) return false;
+    if (p.sku && p.sku.trim()) return false;
+    return true;
   }
 
   const hasRealPhoto = imagesList.some((img) => {
@@ -22,7 +23,10 @@ export function isAwaitingPhoto(p: Product): boolean {
     return !isPlaceholderPath(path);
   });
 
-  return !hasRealPhoto;
+  if (hasRealPhoto) return false;
+  if (p.sku && p.sku.trim()) return false;
+
+  return true;
 }
 
 function isPlaceholderPath(pathStr: string): boolean {

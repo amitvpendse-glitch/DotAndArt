@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { onSnapshot, collection } from 'firebase/firestore';
-import { db } from './firebase';
 import { WebsitePage } from '../types';
-import { PAGES_COLLECTION } from './firestoreCatalog';
 import { INITIAL_PAGES } from '../data/initialCatalog';
+import { safeFetchJson } from './safeFetch';
 
 function getInitialPage(slug: string): WebsitePage | null {
   try {
@@ -27,66 +25,57 @@ export function usePageSeo(slug: string, defaultTitle: string, defaultDesc?: str
     const cached = getInitialPage(slug);
     if (cached) {
       setPage(cached);
-    }
-
-    const colRef = collection(db, PAGES_COLLECTION);
-    
-    // Real-time listener
-    const unsubscribe = onSnapshot(colRef, (snapshot) => {
-      const data: WebsitePage[] = [];
-      snapshot.forEach((doc) => {
-        if (doc.exists()) {
-          data.push(doc.data() as WebsitePage);
-        }
-      });
-      
-      const found = data.find((p) => p.slug === slug);
-      if (found) {
-        setPage(found);
-        try {
-          const custom = localStorage.getItem('app_custom_pages');
-          let pagesArr: WebsitePage[] = custom ? JSON.parse(custom) : [];
-          if (!Array.isArray(pagesArr)) pagesArr = [];
-          const idx = pagesArr.findIndex((p) => p.slug === slug);
-          if (idx >= 0) {
-            pagesArr[idx] = found;
-          } else {
-            pagesArr.push(found);
-          }
-          localStorage.setItem('app_custom_pages', JSON.stringify(pagesArr));
-        } catch {}
-
-        if (found.seo_title) {
-          document.title = found.seo_title;
-        } else if (defaultTitle) {
-          document.title = defaultTitle;
-        }
-        if (found.meta_description) {
-          let metaDesc = document.querySelector('meta[name="description"]');
-          if (!metaDesc) {
-            metaDesc = document.createElement('meta');
-            metaDesc.setAttribute('name', 'description');
-            document.head.appendChild(metaDesc);
-          }
-          metaDesc.setAttribute('content', found.meta_description);
-        }
+      if (cached.seo_title) {
+        document.title = cached.seo_title;
       } else if (defaultTitle) {
         document.title = defaultTitle;
       }
-      setLoading(false);
-    });
+    }
+
+    async function fetchPageSeo() {
+      try {
+        const pages = await safeFetchJson<WebsitePage[]>('/api/pages', undefined, []);
+        if (Array.isArray(pages)) {
+          const found = pages.find((p) => p.slug === slug);
+          if (found) {
+            setPage(found);
+            if (found.seo_title) {
+              document.title = found.seo_title;
+            } else if (defaultTitle) {
+              document.title = defaultTitle;
+            }
+            if (found.meta_description) {
+              let metaDesc = document.querySelector('meta[name="description"]');
+              if (!metaDesc) {
+                metaDesc = document.createElement('meta');
+                metaDesc.setAttribute('name', 'description');
+                document.head.appendChild(metaDesc);
+              }
+              metaDesc.setAttribute('content', found.meta_description);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('SEO fetch error:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPageSeo();
 
     const handlePagesUpdated = () => {
       const refreshed = getInitialPage(slug);
       if (refreshed) {
         setPage(refreshed);
+      } else {
+        fetchPageSeo();
       }
     };
 
     window.addEventListener('app_pages_updated', handlePagesUpdated);
 
     return () => {
-      unsubscribe();
       window.removeEventListener('app_pages_updated', handlePagesUpdated);
     };
   }, [slug, defaultTitle]);

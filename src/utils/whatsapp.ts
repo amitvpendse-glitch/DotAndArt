@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { CartItem, CustomMandalaInquiry, Product } from '../types';
+import { getLocalArtworkImage } from './localImageCache';
 
 export const BUSINESS_WHATSAPP_NUMBER = '918652162647';
 export const DISPLAY_WHATSAPP_NUMBER = '+91 8652162647';
@@ -38,11 +39,14 @@ export function createWhatsAppUrl(message: string, phone?: string): string {
 export function collectAttachmentsForProduct(product: Product): WhatsAppAttachmentItem[] {
   if (!product) return [];
   const items: WhatsAppAttachmentItem[] = [];
-  const images = product?.images && product?.images.length > 0 ? product?.images : [];
+  const rawProd = product as any;
+  const images = Array.isArray(product?.images) && product.images.length > 0 ? product.images : [];
+
   images.forEach((img, idx) => {
-    if (img.storage_path) {
+    const path = (img?.storage_path || (img as any)?.url || '').trim();
+    if (path) {
       items.push({
-        url: img.storage_path,
+        url: path,
         filename: `${product.sku}_${idx + 1}.jpg`,
         title: `${product.name} (Image ${idx + 1})`,
         sku: product.sku,
@@ -51,8 +55,36 @@ export function collectAttachmentsForProduct(product: Product): WhatsAppAttachme
   });
 
   if (items.length === 0) {
+    const directPath = (rawProd.image_url || rawProd.image_path || rawProd.primary_image || '').trim();
+    if (directPath) {
+      items.push({
+        url: directPath,
+        filename: `${product.sku}.jpg`,
+        title: product.name,
+        sku: product.sku,
+      });
+    }
+  }
+
+  if (items.length === 0 && product.sku) {
+    const cleanSku = product.sku.trim().toUpperCase();
+    const EXACT_SKU_FILE_MAP: Record<string, string> = {
+      'DA-LP-24X48-0001': 'DA-LP-24x48-0001.jpg',
+      'DA-LP-24x48-0001': 'DA-LP-24x48-0001.jpg',
+      'DA-LP-SET-0001': 'DA-LP-Set-0001.jpg',
+      'DA-LP-Set-0001': 'DA-LP-Set-0001.jpg',
+      'DA-LP-SET-0002': 'DA-LP-Set-0002.jpg',
+      'DA-LP-Set-0002': 'DA-LP-Set-0002.jpg',
+      'DA-LP-SET-0003': 'DA-LP-Set-0003.jpg',
+      'DA-LP-Set-0003': 'DA-LP-Set-0003.jpg',
+      'DA-MD-SET-0001': 'DA-MD-Set-0001.jpg',
+      'DA-MD-Set-0001': 'DA-MD-Set-0001.jpg',
+      'DA-MD-SET-7CHAKRA': 'DA-MD-Set-7Chakra.jpg',
+      'DA-MD-Set-7Chakra': 'DA-MD-Set-7Chakra.jpg',
+    };
+    const mapped = EXACT_SKU_FILE_MAP[cleanSku] || `${cleanSku}.jpg`;
     items.push({
-      url: `/static/assets/images/${product.sku}.jpg`,
+      url: `/static/assets/images/${mapped}`,
       filename: `${product.sku}.jpg`,
       title: product.name,
       sku: product.sku,
@@ -69,27 +101,9 @@ export function collectAttachmentsForCart(cartItems: CartItem[]): WhatsAppAttach
   if (!cartItems || cartItems.length === 0) return [];
   const items: WhatsAppAttachmentItem[] = [];
   cartItems.forEach((ci) => {
-    const images = ci.product?.images && ci.product?.images.length > 0 ? ci.product?.images : [];
-    let addedForProduct = false;
-    images.forEach((img, idx) => {
-      if (img.storage_path) {
-        items.push({
-          url: img.storage_path,
-          filename: `${ci.product.sku}_${idx + 1}.jpg`,
-          title: `${ci.product.name} (Image ${idx + 1})`,
-          sku: ci.product.sku,
-        });
-        addedForProduct = true;
-      }
-    });
-    if (!addedForProduct) {
-      items.push({
-        url: `/static/assets/images/${ci.product.sku}.jpg`,
-        filename: `${ci.product.sku}.jpg`,
-        title: ci.product.name,
-        sku: ci.product.sku,
-      });
-    }
+    if (!ci.product) return;
+    const prodAtts = collectAttachmentsForProduct(ci.product);
+    items.push(...prodAtts);
   });
   return items;
 }
@@ -98,61 +112,80 @@ export function collectAttachmentsForCart(cartItems: CartItem[]): WhatsAppAttach
  * Helper to fetch and convert any image URL into a high-quality JPG Blob
  */
 export async function fetchImageAsJpgBlob(imageUrl: string): Promise<Blob> {
-  let fullUrl = imageUrl || '';
-  if (
-    typeof window !== 'undefined' &&
-    fullUrl &&
-    !fullUrl.startsWith('http') &&
-    !fullUrl.startsWith('data:') &&
-    !fullUrl.startsWith('blob:')
-  ) {
-    if (!fullUrl.startsWith('/')) fullUrl = '/' + fullUrl;
-    fullUrl = window.location.origin + fullUrl;
+  let primaryUrl = imageUrl;
+  if (imageUrl.startsWith('/uploads/local-') || imageUrl.startsWith('data:')) {
+    const cached = await getLocalArtworkImage(imageUrl);
+    if (cached) primaryUrl = cached;
   }
 
-  return new Promise<Blob>((resolve, reject) => {
-    const img = new Image();
-    if (fullUrl.startsWith('http') && typeof window !== 'undefined' && !fullUrl.startsWith(window.location.origin)) {
-      img.crossOrigin = 'anonymous';
-    }
-    img.onload = () => {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth || img.width || 800;
-        canvas.height = img.naturalHeight || img.height || 800;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0);
-          canvas.toBlob(
-            (blob) => {
-              if (blob) {
-                resolve(blob);
-              } else {
-                reject(new Error('Canvas toBlob failed'));
-              }
-            },
-            'image/jpeg',
-            0.92
-          );
-        } else {
-          reject(new Error('Canvas context unavailable'));
+  if (
+    typeof window !== 'undefined' &&
+    primaryUrl &&
+    !primaryUrl.startsWith('http') &&
+    !primaryUrl.startsWith('data:') &&
+    !primaryUrl.startsWith('blob:')
+  ) {
+    if (!primaryUrl.startsWith('/')) primaryUrl = '/' + primaryUrl;
+    primaryUrl = window.location.origin + primaryUrl;
+  }
+
+  const candidates: string[] = [primaryUrl];
+  const skuMatch = imageUrl.match(/(DA-[A-Z0-9-]+)/i);
+  if (skuMatch && skuMatch[1] && typeof window !== 'undefined') {
+    const cleanSku = skuMatch[1].toUpperCase();
+    const candidatePath = `${window.location.origin}/static/assets/images/${cleanSku}.jpg`;
+    if (!candidates.includes(candidatePath)) candidates.push(candidatePath);
+  }
+
+  let lastErr: any = null;
+  for (const candUrl of candidates) {
+    try {
+      return await new Promise<Blob>((resolve, reject) => {
+        const img = new Image();
+        if (candUrl.startsWith('http') && typeof window !== 'undefined' && !candUrl.startsWith(window.location.origin)) {
+          img.crossOrigin = 'anonymous';
         }
-      } catch (err) {
-        reject(err);
-      }
-    };
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth || img.width || 800;
+            canvas.height = img.naturalHeight || img.height || 800;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.fillStyle = '#FFFFFF';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(img, 0, 0);
+              canvas.toBlob(
+                (blob) => {
+                  if (blob) resolve(blob);
+                  else reject(new Error('Canvas toBlob failed'));
+                },
+                'image/jpeg',
+                0.92
+              );
+            } else {
+              reject(new Error('Canvas context unavailable'));
+            }
+          } catch (err) {
+            reject(err);
+          }
+        };
 
-    img.onerror = () => {
-      fetch(fullUrl)
-        .then((res) => res.blob())
-        .then((blob) => resolve(blob))
-        .catch((err) => reject(err));
-    };
+        img.onerror = () => {
+          fetch(candUrl)
+            .then((res) => res.blob())
+            .then((blob) => resolve(blob))
+            .catch((err) => reject(err));
+        };
 
-    img.src = fullUrl;
-  });
+        img.src = candUrl;
+      });
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+
+  throw lastErr || new Error('Failed to fetch image as JPG blob');
 }
 
 /**
@@ -225,69 +258,93 @@ export function openExternalLink(url: string): void {
  * Scales images down to maxDimension (default 800px) so large 16MB photos become ~150KB - 300KB
  */
 export async function fetchImageAsPngBlob(imageUrl: string, maxDimension: number = 800): Promise<Blob> {
-  let fullUrl = imageUrl || '';
-  if (
-    typeof window !== 'undefined' &&
-    fullUrl &&
-    !fullUrl.startsWith('http') &&
-    !fullUrl.startsWith('data:') &&
-    !fullUrl.startsWith('blob:')
-  ) {
-    if (!fullUrl.startsWith('/')) fullUrl = '/' + fullUrl;
-    fullUrl = window.location.origin + fullUrl;
+  if (!imageUrl) throw new Error('Image URL is required');
+
+  let primaryUrl = imageUrl;
+  if (imageUrl.startsWith('/uploads/local-') || imageUrl.startsWith('data:')) {
+    const cached = await getLocalArtworkImage(imageUrl);
+    if (cached) primaryUrl = cached;
   }
 
-  return new Promise<Blob>((resolve, reject) => {
-    const img = new Image();
-    if (fullUrl.startsWith('http') && typeof window !== 'undefined' && !fullUrl.startsWith(window.location.origin)) {
-      img.crossOrigin = 'anonymous';
-    }
-    img.onload = () => {
-      try {
-        const origWidth = img.naturalWidth || img.width || 800;
-        const origHeight = img.naturalHeight || img.height || 800;
+  if (
+    typeof window !== 'undefined' &&
+    primaryUrl &&
+    !primaryUrl.startsWith('http') &&
+    !primaryUrl.startsWith('data:') &&
+    !primaryUrl.startsWith('blob:')
+  ) {
+    if (!primaryUrl.startsWith('/')) primaryUrl = '/' + primaryUrl;
+    primaryUrl = window.location.origin + primaryUrl;
+  }
 
-        let targetWidth = origWidth;
-        let targetHeight = origHeight;
+  const candidates: string[] = [primaryUrl];
+  const skuMatch = imageUrl.match(/(DA-[A-Z0-9-]+)/i);
+  if (skuMatch && skuMatch[1] && typeof window !== 'undefined') {
+    const cleanSku = skuMatch[1].toUpperCase();
+    const candidatePath = `${window.location.origin}/static/assets/images/${cleanSku}.jpg`;
+    if (!candidates.includes(candidatePath)) candidates.push(candidatePath);
+  }
 
-        if (origWidth > maxDimension || origHeight > maxDimension) {
-          if (origWidth >= origHeight) {
-            targetWidth = maxDimension;
-            targetHeight = Math.round((origHeight * maxDimension) / origWidth);
-          } else {
-            targetHeight = maxDimension;
-            targetWidth = Math.round((origWidth * maxDimension) / origHeight);
+  let lastErr: any = null;
+  for (const candUrl of candidates) {
+    try {
+      return await new Promise<Blob>((resolve, reject) => {
+        const img = new Image();
+        if (candUrl.startsWith('http') && typeof window !== 'undefined' && !candUrl.startsWith(window.location.origin)) {
+          img.crossOrigin = 'anonymous';
+        }
+        img.onload = () => {
+          try {
+            const origWidth = img.naturalWidth || img.width || 800;
+            const origHeight = img.naturalHeight || img.height || 800;
+
+            let targetWidth = origWidth;
+            let targetHeight = origHeight;
+
+            if (origWidth > maxDimension || origHeight > maxDimension) {
+              if (origWidth >= origHeight) {
+                targetWidth = maxDimension;
+                targetHeight = Math.round((origHeight * maxDimension) / origWidth);
+              } else {
+                targetHeight = maxDimension;
+                targetWidth = Math.round((origWidth * maxDimension) / origHeight);
+              }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.fillStyle = '#FFFFFF';
+              ctx.fillRect(0, 0, targetWidth, targetHeight);
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+              ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+              canvas.toBlob(
+                (blob) => {
+                  if (blob) resolve(blob);
+                  else reject(new Error('Canvas toBlob returned null'));
+                },
+                'image/png'
+              );
+            } else {
+              reject(new Error('Canvas context unavailable'));
+            }
+          } catch (err) {
+            reject(err);
           }
-        }
+        };
+        img.onerror = () => reject(new Error(`Failed to load image at ${candUrl}`));
+        img.src = candUrl;
+      });
+    } catch (e) {
+      lastErr = e;
+    }
+  }
 
-        const canvas = document.createElement('canvas');
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, targetWidth, targetHeight);
-          ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = 'high';
-          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-
-          canvas.toBlob(
-            (blob) => {
-              if (blob) resolve(blob);
-              else reject(new Error('Canvas toBlob returned null'));
-            },
-            'image/png'
-          );
-        } else {
-          reject(new Error('Canvas context unavailable'));
-        }
-      } catch (err) {
-        reject(err);
-      }
-    };
-    img.onerror = () => reject(new Error('Failed to load image for PNG blob creation'));
-    img.src = fullUrl;
-  });
+  throw lastErr || new Error('Failed to load image for PNG blob creation');
 }
 
 /**

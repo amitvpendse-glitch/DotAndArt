@@ -32,8 +32,6 @@ import {
 import { WhatsAppAttachmentModal } from '../components/WhatsAppAttachmentModal';
 import { isSkuBlocked } from '../lib/blockedSkus';
 import { isProductHighDemand } from '../utils/productUtils';
-import { onSnapshot, query, where, collection } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 import {
   getFirestoreProducts,
   getLocalCustomProducts,
@@ -202,38 +200,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
     loadArtworkDetails();
 
-    // 3. Optional real-time Firestore listener in background (never blocks loading)
-    let unsubscribeFirestore = () => {};
-    if (!firestoreQuotaExceeded) {
-      try {
-        const colRef = collection(db, 'products');
-        const q = query(colRef, where('sku', '==', cleanSku.toUpperCase()));
-        unsubscribeFirestore = onSnapshot(
-          q,
-          (snapshot) => {
-            if (!isMounted) return;
-            if (!snapshot.empty) {
-              const productDoc = snapshot.docs[0];
-              const docData = productDoc.data() as Product;
-              const prod = { ...docData, id: productDoc.id };
-              if (!isSkuBlocked(prod.sku, prod.id)) {
-                setProduct(prod);
-              }
-            }
-          },
-          (error) => {
-            checkQuotaError(error);
-          }
-        );
-      } catch (err) {
-        // Silent catch
-      }
-    }
-
     return () => {
       isMounted = false;
       clearTimeout(safetyTimer);
-      unsubscribeFirestore();
     };
   }, [cleanSku, synchronousProduct]);
 

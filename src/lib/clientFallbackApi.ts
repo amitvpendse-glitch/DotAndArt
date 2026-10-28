@@ -27,24 +27,23 @@ import { compressImageFile } from '../utils/imageCompressor';
 import { saveLocalArtworkImage } from '../utils/localImageCache';
 
 function normalizeProduct(p: Product): Product {
+  if (!p) return p;
+
   const cleanImg = (path?: string) => {
     if (!path) return '';
-    let res = path.startsWith('/public/') ? path.replace(/^\/public/, '') : path;
-    if (res.startsWith('/uploads/') && p?.sku && (p.sku.startsWith('DA-') || p.sku.startsWith('DNA-'))) {
-      res = `/static/assets/images/${p.sku}.jpg`;
-    }
-    return res;
+    return path.startsWith('/public/') ? path.replace(/^\/public/, '') : path;
   };
 
-  const targetSkus = new Set(['DA-MD-10-0013', 'DA-MD-10-0016', 'DA-MD-10-0017', 'DA-MD-10-0018', 'DA-MD-10-0019']);
-  if (p?.sku && targetSkus.has(p.sku)) {
-    const updated: Product = {
+  if (!Array.isArray(p.images) || p.images.length === 0) {
+    const cleanSku = (p.sku || '').trim().toUpperCase();
+    const fallbackPath = cleanSku ? `/static/assets/images/${cleanSku}.jpg` : '/static/assets/images/DA-MD-10-0001.jpg';
+    return {
       ...p,
       images: [
         {
-          id: `img-${p.id || p.sku}-1`,
-          product_id: p.id || p.sku,
-          storage_path: `/static/assets/images/${p.sku}.jpg`,
+          id: `img-${p.id || p.sku || 'gen'}-1`,
+          product_id: p.id || p.sku || 'prod',
+          storage_path: fallbackPath,
           alt_text: `${p.name} (${p.sku})`,
           caption: p.name,
           display_order: 1,
@@ -52,12 +51,11 @@ function normalizeProduct(p: Product): Product {
         },
       ],
     };
-    (updated as any).image_url = `/static/assets/images/${p.sku}.jpg`;
-    return updated;
   }
+
   return {
     ...p,
-    images: (p?.images || []).map((img) => ({
+    images: p.images.map((img) => ({
       ...img,
       storage_path: cleanImg(img.storage_path) || '',
     })),
@@ -309,7 +307,7 @@ export async function handleClientFallbackApi<T = any>(
   if ((pathname === '/api/products' || pathname === '/api/admin/products') && method === 'GET') {
     let list: Product[] = [];
     try {
-      list = await getFirestoreProducts();
+      list = await getFirestoreProducts(true);
     } catch {
       list = getStoredProducts();
     }
@@ -458,6 +456,78 @@ export async function handleClientFallbackApi<T = any>(
       return jsonRes(newProd);
     } catch (err) {
       console.error('[clientFallbackApi] Failed to create product', err);
+    }
+  }
+
+  // 1b0. POST /api/admin/products/:id/duplicate (Duplicate Product)
+  if (pathname.match(/^\/api\/admin\/products\/([^/]+)\/duplicate$/) && method === 'POST') {
+    try {
+      const match = pathname.match(/^\/api\/admin\/products\/([^/]+)\/duplicate$/);
+      const targetIdOrSku = decodeURIComponent(match?.[1] || '').trim();
+      const products = getStoredProducts();
+      const source = products.find(
+        (p) =>
+          p.id === targetIdOrSku ||
+          p.sku === targetIdOrSku ||
+          p.id?.toLowerCase() === targetIdOrSku.toLowerCase() ||
+          p.sku?.toLowerCase() === targetIdOrSku.toLowerCase()
+      ) || (INITIAL_PRODUCTS || []).find(
+        (p: any) =>
+          p.id === targetIdOrSku ||
+          p.sku === targetIdOrSku ||
+          p.id?.toLowerCase() === targetIdOrSku.toLowerCase() ||
+          p.sku?.toLowerCase() === targetIdOrSku.toLowerCase()
+      );
+
+      if (!source) {
+        return jsonRes({ error: 'Source product not found' });
+      }
+
+      const baseSku = source.sku || 'DA-ART-0001';
+      const copySku = `${baseSku}-COPY-${Math.floor(100 + Math.random() * 900)}`;
+      const now = new Date().toISOString();
+      const newId = `prod-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+
+      const duplicatedProd: Product = {
+        ...JSON.parse(JSON.stringify(source)),
+        id: newId,
+        sku: copySku,
+        name: source.name.includes('(Copy)') ? source.name : `${source.name} (Copy)`,
+        is_published: true,
+        is_available: true,
+        created_at: now,
+        updated_at: now,
+        images: (source.images || []).map((img: any, idx: number) => ({
+          ...img,
+          id: `img-${newId}-${idx + 1}`,
+          product_id: newId,
+        })),
+        variants: (source.variants || []).map((v: any, idx: number) => ({
+          ...v,
+          id: `v-${newId}-${idx + 1}`,
+          product_id: newId,
+        })),
+      };
+
+      const updatedList = [duplicatedProd, ...products];
+      localStorage.setItem('app_custom_products', JSON.stringify(updatedList));
+
+      let deletedIdsSet = new Set<string>();
+      try {
+        const del = localStorage.getItem('app_deleted_product_ids');
+        if (del) {
+          const parsed = JSON.parse(del);
+          if (Array.isArray(parsed)) parsed.forEach((i) => deletedIdsSet.add(String(i)));
+        }
+      } catch {}
+      deletedIdsSet.delete(duplicatedProd.id);
+      deletedIdsSet.delete(duplicatedProd.sku);
+      localStorage.setItem('app_deleted_product_ids', JSON.stringify(Array.from(deletedIdsSet)));
+
+      saveFirestoreProduct(duplicatedProd).catch(() => {});
+      return jsonRes(duplicatedProd);
+    } catch {
+      return jsonRes({ error: 'Duplicate failed' });
     }
   }
 

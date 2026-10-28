@@ -4,7 +4,7 @@
     "pin_hash": "97b3616b4102d8fffe0e9f77c66be24d15cfc45a10accb5addd36df4a1e4679a3dd094a679ea7a21747a3edd769ff89b559fbaee295c8b0ebad63197ac7df5a4",
     "salt": "882855132cb07106cf3d1e18bb3dbf29",
     "updated_at": "2026-10-20T10:06:11.955Z",
-    "last_login_at": "2026-10-26T13:43:42.969Z"
+    "last_login_at": "2026-10-28T11:23:01.280Z"
   },
   "sessions": [
     {
@@ -138,6 +138,30 @@
       "admin_username": "admin",
       "expires_at": 1793121584320,
       "created_at": "2026-10-27T15:02:12.535Z"
+    },
+    {
+      "token_hash": "33dc4555e785ad76c9bc63b4b8a5d59beed67df86c7f16055d065da4c3f59748",
+      "admin_username": "admin",
+      "expires_at": 1793192108012,
+      "created_at": "2026-10-28T10:55:07.981Z"
+    },
+    {
+      "token_hash": "7a554cd302d2240ff48f7e1032b808f5e60305dc317d2c6df00934c0ac79a647",
+      "admin_username": "admin",
+      "expires_at": 1793197150798,
+      "created_at": "2026-10-28T10:57:52.163Z"
+    },
+    {
+      "token_hash": "70b88b39142c91ed73fab6193ef2fb9d465f439d19e42afd5395f281c4558f67",
+      "admin_username": "admin",
+      "expires_at": 1793193308361,
+      "created_at": "2026-10-28T11:15:07.554Z"
+    },
+    {
+      "token_hash": "4a031ed15e4fa83a1d6de1d06b5d50d974c25fef77f36359f38383889bb68a90",
+      "admin_username": "admin",
+      "expires_at": 1793193783128,
+      "created_at": "2026-10-28T11:23:01.280Z"
     }
   ],
   "categories": [
@@ -161,6 +185,114 @@
     }
   ],
   "products": [
+    {
+      "id": "prod-da-md-12-0021",
+      "sku": "DA-MD-12-0021",
+      "name": "Mandala Wall Hanging - Celestial Gold Edition",
+      "short_description": "Exclusive hand-painted celestial dot mandala",
+      "description": "Masterpiece hand-painted dot mandala featuring intricate geometric symmetry and gold accent detailing on moisture-resistant MDF board.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Moisture-resistant MDF board, Artist Acrylics, Gold Leaf, Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "3-5 Days",
+      "shipping_info": "Worldwide insured shipping available",
+      "special_information": "Clean gently with a soft dry microfiber cloth.",
+      "featured": true,
+      "is_published": true,
+      "is_available": true,
+      "base_price": 2800,
+      "base_size": "12 Inches",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0021-1",
+          "product_id": "prod-da-md-12-0021",
+          "storage_path": "/static/assets/images/DA-MD-10-0001.jpg",
+          "alt_text": "Mandala Wall Hanging - Celestial Gold Edition (DA-MD-12-0021)",
+          "caption": "Mandala Wall Hanging",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T12:28:45.062Z",
+      "updated_at": "2026-10-28T12:28:45.062Z",
+      "is_high_demand": false
+    },
+    {
+      "id": "prod-da-md-12-0022",
+      "sku": "DA-MD-12-0022",
+      "name": "Mandala Wall Hanging - Royal Sapphire Series",
+      "short_description": "Handcrafted royal blue and silver dot mandala",
+      "description": "Stunning royal sapphire blue and silver dot mandala art piece crafted with precision and protective lacquer finish.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Moisture-resistant MDF board, Artist Acrylics, Silver Accent, Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "3-5 Days",
+      "shipping_info": "Worldwide insured shipping available",
+      "special_information": "Clean gently with a soft dry microfiber cloth.",
+      "featured": true,
+      "is_published": true,
+      "is_available": true,
+      "base_price": 3200,
+      "base_size": "12 Inches",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0022-1",
+          "product_id": "prod-da-md-12-0022",
+          "storage_path": "/static/assets/images/DA-MD-10-0001.jpg",
+          "alt_text": "Mandala Wall Hanging - Royal Sapphire Series (DA-MD-12-0022)",
+          "caption": "Mandala Wall Hanging",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T12:28:45.062Z",
+      "updated_at": "2026-10-28T12:28:45.062Z",
+      "is_high_demand": false
+    },
+    {
+      "id": "prod-da-md-12-0023",
+      "sku": "DA-MD-12-0023",
+      "name": "Mandala Wall Hanging - Sunset Harmony",
+      "short_description": "Warm sunset inspired dot mandala wall decor",
+      "description": "Vibrant sunset orange, crimson, and golden yellow dot mandala wall hanging designed to bring warmth and positive energy into any living space.",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Moisture-resistant MDF board, Artist Acrylics, Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "3-5 Days",
+      "shipping_info": "Worldwide insured shipping available",
+      "special_information": "Clean gently with a soft dry microfiber cloth.",
+      "featured": true,
+      "is_published": true,
+      "is_available": true,
+      "base_price": 2950,
+      "base_size": "12 Inches",
+      "images": [
+        {
+          "id": "img-prod-da-md-12-0023-1",
+          "product_id": "prod-da-md-12-0023",
+          "storage_path": "/static/assets/images/DA-MD-10-0001.jpg",
+          "alt_text": "Mandala Wall Hanging - Sunset Harmony (DA-MD-12-0023)",
+          "caption": "Mandala Wall Hanging",
+          "display_order": 1,
+          "is_primary": true
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T12:28:45.062Z",
+      "updated_at": "2026-10-28T12:28:45.062Z",
+      "is_high_demand": false
+    },
     {
       "id": "prod-da-lp-10-0001",
       "sku": "DA-LP-10-0001",
@@ -2453,114 +2585,6 @@
       "variants": [],
       "created_at": "2026-10-20T10:06:11.949Z",
       "updated_at": "2026-10-20T10:06:11.949Z",
-      "is_high_demand": false
-    },
-    {
-      "id": "prod-da-md-12-0021",
-      "sku": "DA-MD-12-0021",
-      "name": "Mandala Wall Hanging",
-      "short_description": "Hand-painted dot mandala",
-      "description": "Hand-painted dot mandala crafted with artist acrylics on moisture-resistant MDF board.",
-      "category_id": "cat-mandala",
-      "category_name": "Mandala Wall Hangings",
-      "category_slug": "mandala-wall-hangings",
-      "material": "Moisture-resistant MDF board, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "Ready to hang",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Worldwide insured shipping available",
-      "special_information": "Clean gently with a soft dry microfiber cloth.",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "base_price": 950,
-      "base_size": "12 Inches",
-      "images": [
-        {
-          "id": "img-prod-da-md-12-0021-1",
-          "product_id": "prod-da-md-12-0021",
-          "storage_path": "/static/assets/images/DA-MD-12-0021.jpg",
-          "alt_text": "Mandala Wall Hanging (DA-MD-12-0021)",
-          "caption": "Mandala Wall Hanging",
-          "display_order": 1,
-          "is_primary": true
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-20T10:06:11.948Z",
-      "updated_at": "2026-10-20T10:06:11.948Z",
-      "is_high_demand": false
-    },
-    {
-      "id": "prod-da-md-12-0022",
-      "sku": "DA-MD-12-0022",
-      "name": "Mandala Wall Hanging",
-      "short_description": "Hand-painted dot mandala",
-      "description": "Hand-painted dot mandala crafted with artist acrylics on moisture-resistant MDF board.",
-      "category_id": "cat-mandala",
-      "category_name": "Mandala Wall Hangings",
-      "category_slug": "mandala-wall-hangings",
-      "material": "Moisture-resistant MDF board, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "Ready to hang",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Worldwide insured shipping available",
-      "special_information": "Clean gently with a soft dry microfiber cloth.",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "base_price": 950,
-      "base_size": "12 Inches",
-      "images": [
-        {
-          "id": "img-prod-da-md-12-0022-1",
-          "product_id": "prod-da-md-12-0022",
-          "storage_path": "/static/assets/images/DA-MD-12-0022.jpg",
-          "alt_text": "Mandala Wall Hanging (DA-MD-12-0022)",
-          "caption": "Mandala Wall Hanging",
-          "display_order": 1,
-          "is_primary": true
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-20T10:06:11.948Z",
-      "updated_at": "2026-10-20T10:06:11.948Z",
-      "is_high_demand": false
-    },
-    {
-      "id": "prod-da-md-12-0023",
-      "sku": "DA-MD-12-0023",
-      "name": "Mandala Wall Hanging",
-      "short_description": "Hand-painted dot mandala",
-      "description": "Hand-painted dot mandala crafted with artist acrylics on moisture-resistant MDF board.",
-      "category_id": "cat-mandala",
-      "category_name": "Mandala Wall Hangings",
-      "category_slug": "mandala-wall-hangings",
-      "material": "Moisture-resistant MDF board, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "Ready to hang",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Worldwide insured shipping available",
-      "special_information": "Clean gently with a soft dry microfiber cloth.",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "base_price": 950,
-      "base_size": "12 Inches",
-      "images": [
-        {
-          "id": "img-prod-da-md-12-0023-1",
-          "product_id": "prod-da-md-12-0023",
-          "storage_path": "/static/assets/images/DA-MD-12-0023.jpg",
-          "alt_text": "Mandala Wall Hanging (DA-MD-12-0023)",
-          "caption": "Mandala Wall Hanging",
-          "display_order": 1,
-          "is_primary": true
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-20T10:06:11.948Z",
-      "updated_at": "2026-10-20T10:06:11.948Z",
       "is_high_demand": false
     },
     {
@@ -7401,6 +7425,182 @@
   },
   "audit_logs": [
     {
+      "id": "log-1793186583405-417a0e42",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793186581324-b68765",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001-COPY-585",
+        "name": "Tea Light Candle Holder - Artisan Gold Collection"
+      },
+      "created_at": "2026-10-28T11:23:03.405Z"
+    },
+    {
+      "id": "log-1793186583105-8fe08925",
+      "admin_user_id": "admin",
+      "action": "product_duplicated",
+      "entity_type": "product",
+      "entity_id": "prod-1793186581324-b68765",
+      "safe_metadata_json": {
+        "source_sku": "DA-TC-CS-0001",
+        "new_sku": "DA-TC-CS-0001-COPY-585"
+      },
+      "created_at": "2026-10-28T11:23:03.105Z"
+    },
+    {
+      "id": "log-1793186581286-783bf168",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-28T11:23:01.286Z"
+    },
+    {
+      "id": "log-1793186108673-dd352ec8",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793183038140-a6f5a0",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001-COPY-304",
+        "name": "Tea Light Candle Holder - Beautiful Hand Painted Coasters"
+      },
+      "created_at": "2026-10-28T11:15:08.673Z"
+    },
+    {
+      "id": "log-1793186107560-0760a8e8",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-28T11:15:07.560Z"
+    },
+    {
+      "id": "log-1793185921720-defd68c0",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793185197102-b84794",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001-AMIT",
+        "name": "Tea Light Candle Holder - Coaster Set (Copy)"
+      },
+      "created_at": "2026-10-28T11:12:01.720Z"
+    },
+    {
+      "id": "log-1793185884986-d08d311e",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793185197102-b84794",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001-COPY-600",
+        "name": "Tea Light Candle Holder - Coaster Set (Copy)"
+      },
+      "created_at": "2026-10-28T11:11:24.986Z"
+    },
+    {
+      "id": "log-1793185500863-42ad7094",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793185197102-b84794",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001-AMIT",
+        "name": "Tea Light Candle Holder - Coaster Set (Copy)"
+      },
+      "created_at": "2026-10-28T11:05:00.863Z"
+    },
+    {
+      "id": "log-1793185232274-c364507b",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793185197102-b84794",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001-AMIT",
+        "name": "Tea Light Candle Holder - Coaster Set (Copy)"
+      },
+      "created_at": "2026-10-28T11:00:32.275Z"
+    },
+    {
+      "id": "log-1793185197357-5cf5e3a7",
+      "admin_user_id": "admin",
+      "action": "product_duplicated",
+      "entity_type": "product",
+      "entity_id": "prod-1793185197102-b84794",
+      "safe_metadata_json": {
+        "source_sku": "DA-TC-CS-0001",
+        "new_sku": "DA-TC-CS-0001-COPY-600"
+      },
+      "created_at": "2026-10-28T10:59:57.357Z"
+    },
+    {
+      "id": "log-1793185179129-75a79d66",
+      "admin_user_id": "admin",
+      "action": "product_deleted",
+      "entity_type": "product",
+      "entity_id": "prod-1793185083278-72d8bf",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001-AMIT",
+        "name": "Tea Light Candle Holder - Coaster Set (Copy)"
+      },
+      "created_at": "2026-10-28T10:59:39.129Z"
+    },
+    {
+      "id": "log-1793185101543-9655a33b",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793185083278-72d8bf",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001-AMIT",
+        "name": "Tea Light Candle Holder - Coaster Set (Copy)"
+      },
+      "created_at": "2026-10-28T10:58:21.543Z"
+    },
+    {
+      "id": "log-1793185083926-f8651124",
+      "admin_user_id": "admin",
+      "action": "product_duplicated",
+      "entity_type": "product",
+      "entity_id": "prod-1793185083278-72d8bf",
+      "safe_metadata_json": {
+        "source_sku": "DA-TC-CS-0001-COPY-304",
+        "new_sku": "DA-TC-CS-0001-COPY-304-COPY-167"
+      },
+      "created_at": "2026-10-28T10:58:03.926Z"
+    },
+    {
+      "id": "log-1793185072168-c6999af4",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "2401:4900:8fc8:4de0:bd99:b4f1:a81f:aea6"
+      },
+      "created_at": "2026-10-28T10:57:52.169Z"
+    },
+    {
+      "id": "log-1793184907985-13c2dce1",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-28T10:55:07.985Z"
+    },
+    {
       "id": "log-1793114383975-a1ac779b",
       "admin_user_id": "admin",
       "action": "product_updated",
@@ -8258,6 +8458,6 @@
   ],
   "sync_flag": {
     "changed": true,
-    "updated_at": "2026-10-27T15:26:03.182Z"
+    "updated_at": "2026-10-28T12:19:10.798Z"
   }
 }
