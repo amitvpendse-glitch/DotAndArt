@@ -439,14 +439,19 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
         }
       } catch {}
 
-      console.log(`[SupabaseCatalog] Executing Supabase upsert for SKU: ${sku}, base_price: ${payload.base_price}`);
-      let { data, error: upsertErr } = await sb.from('products').upsert(payload, { onConflict: 'id' }).select();
-      if (upsertErr && (upsertErr.code === '23505' || upsertErr.message?.includes('products_sku_key') || upsertErr.message?.includes('unique constraint'))) {
-        const fallbackRes = await sb.from('products').update(payload).eq('sku', sku).select();
-        upsertErr = fallbackRes.error;
-        data = fallbackRes.data;
+      console.log(`[SupabaseCatalog] Executing Supabase insert/update for SKU: ${sku}, base_price: ${payload.base_price}`);
+      let { data: existingRow, error: checkErr } = await sb.from('products').select('id').eq('id', payload.id).maybeSingle();
+      
+      let res;
+      if (!checkErr && existingRow && existingRow.id) {
+        res = await sb.from('products').update(payload).eq('id', existingRow.id).select();
+      } else {
+        res = await sb.from('products').insert(payload).select();
       }
 
+      const upsertErr = res.error;
+      const data = res.data;
+      
       if (upsertErr) {
         if (upsertErr.code === '42501' || upsertErr.message?.includes('row-level security')) {
           console.warn(`[SupabaseCatalog] RLS Policy Notice (Error 42501): Supabase Row-Level Security is blocking writes from the anon key for SKU ${sku}. Saved successfully to local cache.`);
@@ -494,10 +499,18 @@ export async function deleteFirestoreProducts(ids: string[], skus: string[] = []
   if (sb) {
     try {
       if (ids.length > 0) {
-        await sb.from('products').delete().in('id', ids);
+        const { data: existing } = await sb.from('products').select('id').in('id', ids);
+        if (existing && existing.length > 0) {
+            const { error } = await sb.from('products').delete().in('id', existing.map(e => e.id));
+            if (error && error.code !== '409') console.warn('[Supabase] Delete ID error', error);
+        }
       }
       if (skus.length > 0) {
-        await sb.from('products').delete().in('sku', skus);
+        const { data: existing } = await sb.from('products').select('sku').in('sku', skus);
+        if (existing && existing.length > 0) {
+            const { error } = await sb.from('products').delete().in('sku', existing.map(e => e.sku));
+            if (error && error.code !== '409') console.warn('[Supabase] Delete SKU error', error);
+        }
       }
     } catch (e) {
       console.warn('[Supabase] Delete products error:', e);
