@@ -468,6 +468,28 @@ export async function deleteFirestoreProducts(ids: string[], skus: string[] = []
   cachedProducts = null;
   await addFirestoreDeletedIds([...ids, ...skus]);
 
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const customStr = localStorage.getItem('app_custom_products');
+      if (customStr) {
+        const parsed = JSON.parse(customStr);
+        if (Array.isArray(parsed)) {
+          const idSet = new Set(ids.map((i) => String(i).toUpperCase()));
+          const skuSet = new Set(skus.map((s) => String(s).toUpperCase()));
+          ids.forEach((i) => idSet.add(String(i).toUpperCase()));
+          skus.forEach((s) => skuSet.add(String(s).toUpperCase()));
+
+          const filtered = parsed.filter((p: any) => {
+            const pid = String(p.id || '').toUpperCase();
+            const psku = String(p.sku || '').toUpperCase();
+            return !idSet.has(pid) && !skuSet.has(psku);
+          });
+          localStorage.setItem('app_custom_products', JSON.stringify(filtered));
+        }
+      }
+    } catch {}
+  }
+
   const sb = getSupabase();
   if (sb) {
     try {
