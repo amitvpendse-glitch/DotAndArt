@@ -20,9 +20,9 @@ export function getSupabase(): SupabaseClient | null {
     } catch {}
   }
 
-  const rawUrl = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_URL) || process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
+  const rawUrl = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_URL) || process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://faijoouprxkttsfrajya.supabase.co';
   const supabaseUrl = rawUrl.replace(/\/rest\/v1\/?$/, '').trim();
-  const supabaseKey = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_ANON_KEY) || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
+  const supabaseKey = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_ANON_KEY) || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhaWpvb3VwcnhrdHRzZnJhanlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMzE2ODcsImV4cCI6MjEwODcwNzY4N30.dpQTTxbPZHp_yff109modnbzTRdCg0T0_zU8G_mmjFY';
 
   if (supabaseUrl && supabaseKey) {
     try {
