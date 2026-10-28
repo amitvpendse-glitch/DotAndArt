@@ -2365,6 +2365,7 @@ const handleProductDelete = async (req: Request, res: Response) => {
 app.delete('/api/admin/products/:id', requireAdmin, handleProductDelete);
 app.post('/api/admin/products/:id', requireAdmin, handleProductDelete);
 app.post('/api/admin/products/:id/delete', requireAdmin, handleProductDelete);
+app.delete('/api/admin/products/:id/delete', requireAdmin, handleProductDelete);
 
 // Bulk Delete Products
 app.post('/api/admin/products/bulk-delete', requireAdmin, async (req: Request, res: Response) => {
