@@ -172,10 +172,10 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
 
   const localCustom = getLocalCustomProducts();
   const sb = getSupabase();
+  const deletedSet = await getFirestoreDeletedIds();
 
   if (sb) {
     try {
-      const deletedSet = await getFirestoreDeletedIds();
       const { data, error } = await sb.from('products').select('*');
       if (!error && Array.isArray(data) && data.length > 0) {
         const items: Product[] = data
@@ -227,7 +227,7 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
           }
         });
 
-        const merged = ensureSpecialProducts(Array.from(productMap.values()));
+        const merged = ensureSpecialProducts(Array.from(productMap.values()), deletedSet);
         cachedProducts = merged;
         lastProductsFetchTime = now;
 
@@ -257,13 +257,13 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
     }
   });
 
-  const result = ensureSpecialProducts(Array.from(fallbackMap.values())).filter((p) => !isSkuBlocked(p?.sku, p?.id));
+  const result = ensureSpecialProducts(Array.from(fallbackMap.values()), deletedSet).filter((p) => !isSkuBlocked(p?.sku, p?.id));
   cachedProducts = result;
   lastProductsFetchTime = now;
   return result;
 }
 
-function ensureSpecialProducts(products: Product[]): Product[] {
+function ensureSpecialProducts(products: Product[], deletedSet: Set<string> = new Set()): Product[] {
   const specials = [
     { sku: 'DA-TC-CS-0001', name: 'Handcrafted Tea Light Candle Stand', price: 650 },
     { sku: 'DA-TC-CS-0001-COPY-304', name: 'Handcrafted Tea Light Candle Stand (Copy 304)', price: 650 },
@@ -276,7 +276,7 @@ function ensureSpecialProducts(products: Product[]): Product[] {
 
   specials.forEach((sp, idx) => {
     const upperSku = sp.sku.toUpperCase();
-    if (!skuSet.has(upperSku)) {
+    if (!skuSet.has(upperSku) && !deletedSet.has(upperSku)) {
       newProds.push({
         id: `prod-tc-${idx + 1}-${Date.now()}`,
         sku: sp.sku,
