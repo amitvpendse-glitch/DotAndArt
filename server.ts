@@ -2124,9 +2124,9 @@ app.post('/api/admin/products/bulk', requireAdmin, async (req: Request, res: Res
   res.json({ success: true, count: createdProducts.length, products: createdProducts });
 });
 
-app.put('/api/admin/products/:id', requireAdmin, async (req: Request, res: Response) => {
+const handleProductUpdate = async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log(`[Server] PUT /api/admin/products/${id} received with body:`, JSON.stringify(req.body, null, 2));
+  console.log(`[Server] Product update request for ${id} received with body:`, JSON.stringify(req.body, null, 2));
   const idLower = id.toLowerCase();
   let index = (db.products || []).findIndex(
     (p) =>
@@ -2251,7 +2251,11 @@ app.put('/api/admin/products/:id', requireAdmin, async (req: Request, res: Respo
   }
   logAudit('product_updated', 'product', id, { sku: db.products[index].sku, name: db.products[index].name });
   res.json(db.products[index]);
-});
+};
+
+app.put('/api/admin/products/:id', requireAdmin, handleProductUpdate);
+app.post('/api/admin/products/:id', requireAdmin, handleProductUpdate);
+app.patch('/api/admin/products/:id', requireAdmin, handleProductUpdate);
 
 // Duplicate / Copy Product
 app.post('/api/admin/products/:id/duplicate', requireAdmin, async (req: Request, res: Response) => {
