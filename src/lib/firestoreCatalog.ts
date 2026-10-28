@@ -351,10 +351,11 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
   console.log(`[SupabaseCatalog] saveFirestoreProduct called for SKU: ${product.sku}, name: ${product.name}, price: ${product.base_price}`);
   invalidateProductsCache();
 
-  // Check if product is in deleted set, if so, abort save
+  // Check if product is in deleted set, if so, ensure it is deleted from Supabase and abort save
   const deletedSet = await getFirestoreDeletedIds();
   if (deletedSet.has(product.id) || (product.sku && deletedSet.has(product.sku.toUpperCase()))) {
-      console.warn(`[SupabaseCatalog] Product ${product.sku} is marked as deleted. Skipping sync.`);
+      console.warn(`[SupabaseCatalog] Product ${product.sku} is marked as deleted. Ensuring deletion from Supabase.`);
+      await deleteFirestoreProducts([product.id], [product.sku || '']).catch((err) => console.warn('Firestore forced delete error', err));
       return;
   }
 
