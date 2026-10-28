@@ -429,6 +429,16 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
         updated_at: new Date().toISOString(),
       };
 
+      // Check for SKU unique constraint collision (another row with same SKU but different ID)
+      try {
+        const { data: conflictingSkuRows } = await sb.from('products').select('id').eq('sku', sku).neq('id', payload.id);
+        if (conflictingSkuRows && conflictingSkuRows.length > 0) {
+          for (const conflict of conflictingSkuRows) {
+            await sb.from('products').delete().eq('id', conflict.id);
+          }
+        }
+      } catch {}
+
       console.log(`[SupabaseCatalog] Executing Supabase upsert for SKU: ${sku}, base_price: ${payload.base_price}`);
       const { data, error: upsertErr } = await sb.from('products').upsert(payload, { onConflict: 'id' }).select();
       if (upsertErr) {

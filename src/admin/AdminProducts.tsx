@@ -1149,11 +1149,11 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         console.warn('Firestore direct single delete warning', err)
       );
 
-      // 2. Safe API call
+      // 2. Safe API call using POST to /delete endpoint to avoid 405 proxy blocks on DELETE method
       await safeFetchJson<any>(
-        `/api/admin/products/${targetId}`,
+        `/api/admin/products/${targetId}/delete`,
         {
-          method: 'DELETE',
+          method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
         },
         { success: true }
