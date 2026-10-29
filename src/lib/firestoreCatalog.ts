@@ -227,7 +227,7 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
           }
         });
 
-        const merged = ensureSpecialProducts(Array.from(productMap.values()), deletedSet);
+        const merged = Array.from(productMap.values());
         cachedProducts = merged;
         lastProductsFetchTime = now;
 
@@ -257,84 +257,12 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
     }
   });
 
-  const result = ensureSpecialProducts(Array.from(fallbackMap.values()), deletedSet).filter((p) => !isSkuBlocked(p?.sku, p?.id));
+  const result = Array.from(fallbackMap.values()).filter((p) => !isSkuBlocked(p?.sku, p?.id));
   cachedProducts = result;
   lastProductsFetchTime = now;
   return result;
 }
 
-function ensureSpecialProducts(products: Product[], deletedSet: Set<string> = new Set()): Product[] {
-  const specials = [
-    { sku: 'DA-TC-CS-0001', name: 'Handcrafted Tea Light Candle Stand', price: 650 },
-    { sku: 'DA-TC-CS-0001-COPY-304', name: 'Handcrafted Tea Light Candle Stand (Copy 304)', price: 650 },
-    { sku: 'DA-TC-CS-0001-AMIT', name: 'Handcrafted Tea Light Candle Stand (Amit Edition)', price: 750 },
-    { sku: 'DA-TC-CS-0001-COPY-585', name: 'Handcrafted Tea Light Candle Stand (Copy 585)', price: 650 },
-  ];
-
-  const skuSet = new Set(products.map(p => (p.sku || '').trim().toUpperCase()));
-  const newProds = [...products];
-
-  specials.forEach((sp, idx) => {
-    const upperSku = sp.sku.toUpperCase();
-    if (!skuSet.has(upperSku) && !deletedSet.has(upperSku)) {
-      newProds.push({
-        id: `prod-tc-${idx + 1}-${Date.now()}`,
-        sku: sp.sku,
-        name: sp.name,
-        short_description: 'Handcrafted decorative tea light candle stand',
-        description: 'Handcrafted decorative tea light candle stand with intricate dot art and protective varnish finish.',
-        category_id: 'cat-tea-light-candle-holders',
-        category_name: 'Tea Light Candle Holders',
-        category_slug: 'tea-light-candle-holders',
-        material: 'MDF Wood, Acrylic Paints, Protective Varnish',
-        framing: 'Ready to display',
-        customizable: true,
-        creation_time: '1-3 Days',
-        shipping_info: 'Worldwide insured shipping available',
-        special_information: 'Clean gently with a soft dry microfiber cloth.',
-        featured: idx === 0,
-        is_published: true,
-        is_available: true,
-        available_badge_text: 'Available',
-        unavailable_badge_text: 'Made to Order',
-        show_available_badge: true,
-        base_price: sp.price,
-        base_size: '4 Inches',
-        images: [
-          {
-            id: `img-tc-${idx + 1}-1`,
-            product_id: `prod-tc-${idx + 1}`,
-            storage_path: '/static/assets/images/DA-TC-CS-0001.jpg',
-            alt_text: sp.name,
-            caption: sp.name,
-            display_order: 1,
-            is_primary: true
-          }
-        ],
-        variants: [],
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      });
-      skuSet.add(upperSku);
-    }
-  });
-
-  newProds.forEach((p) => {
-    if (p && p.sku) {
-      const s = p.sku.trim().toUpperCase();
-      const n = (p.name || '').toLowerCase();
-      if (s.startsWith('DA-TC') || n.includes('tea light') || n.includes('candle stand') || n.includes('candle holder')) {
-        p.is_published = true;
-        p.is_available = true;
-        p.category_id = 'cat-tea-light-candle-holders';
-        p.category_name = 'Tea Light Candle Holders';
-        p.category_slug = 'tea-light-candle-holders';
-      }
-    }
-  });
-
-  return newProds;
-}
 
 export async function getFirestoreProductById(idOrSku: string): Promise<Product | null> {
   if (!idOrSku) return null;

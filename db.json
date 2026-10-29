@@ -162,6 +162,12 @@
       "admin_username": "admin",
       "expires_at": 1793193783128,
       "created_at": "2026-10-28T11:23:01.280Z"
+    },
+    {
+      "token_hash": "8dd0418b01d5a04a63c6b2e69ec37e0508bbd4391141526257f5bfe256cf8a95",
+      "admin_username": "admin",
+      "expires_at": 1793320589747,
+      "created_at": "2026-10-29T00:36:29.747Z"
     }
   ],
   "categories": [
@@ -192,7 +198,7 @@
   ],
   "products": [
     {
-      "id": "prod-tc-2-1793216562926",
+      "id": "prod-tc-2-1793234190520",
       "sku": "DA-TC-CS-0001-COPY-304",
       "name": "Handcrafted Tea Light Candle Stand (Copy 304)",
       "short_description": "Handcrafted decorative tea light candle stand",
@@ -226,12 +232,12 @@
         }
       ],
       "variants": [],
-      "created_at": "2026-10-28T19:42:42.926Z",
-      "updated_at": "2026-10-28T19:42:42.926Z",
+      "created_at": "2026-10-29T00:36:30.520Z",
+      "updated_at": "2026-10-29T00:36:30.520Z",
       "is_high_demand": false
     },
     {
-      "id": "prod-tc-3-1793216562926",
+      "id": "prod-tc-3-1793234190520",
       "sku": "DA-TC-CS-0001-AMIT",
       "name": "Handcrafted Tea Light Candle Stand (Amit Edition)",
       "short_description": "Handcrafted decorative tea light candle stand",
@@ -265,12 +271,12 @@
         }
       ],
       "variants": [],
-      "created_at": "2026-10-28T19:42:42.926Z",
-      "updated_at": "2026-10-28T19:42:42.926Z",
+      "created_at": "2026-10-29T00:36:30.520Z",
+      "updated_at": "2026-10-29T00:36:30.520Z",
       "is_high_demand": false
     },
     {
-      "id": "prod-tc-4-1793216562926",
+      "id": "prod-tc-4-1793234190520",
       "sku": "DA-TC-CS-0001-COPY-585",
       "name": "Handcrafted Tea Light Candle Stand (Copy 585)",
       "short_description": "Handcrafted decorative tea light candle stand",
@@ -304,49 +310,9 @@
         }
       ],
       "variants": [],
-      "created_at": "2026-10-28T19:42:42.926Z",
-      "updated_at": "2026-10-28T19:42:42.926Z",
+      "created_at": "2026-10-29T00:36:30.520Z",
+      "updated_at": "2026-10-29T00:36:30.520Z",
       "is_high_demand": false
-    },
-    {
-      "id": "prod-1793212755174",
-      "sku": "DA-TC-CS-0001A",
-      "name": "Casted Stone Tea Light Candle Holder",
-      "short_description": "",
-      "description": "Casted Stone Tea Light Candle Holder set. Available as individual pieces as well. Small one (4 inches) costs INR 350 each and big one (6 inches) costs INR 550 each.",
-      "category_id": "cat-tea-light-candle-holders",
-      "category_name": "Tea Light Candle Holders",
-      "category_slug": "tea-light-candle-holders",
-      "material": "Stone casted with casting powder, acrylic paint, pearls, rhinestones",
-      "framing": "Ready to hang",
-      "customizable": true,
-      "creation_time": "5-7 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": true,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": true,
-      "extra_delivery_days": 2,
-      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
-      "base_price": 1250,
-      "base_size": "Set of 3",
-      "images": [
-        {
-          "id": "img-1793212739111-p6bq",
-          "alt_text": "DA-TC-CS-0001.jpg",
-          "is_primary": true,
-          "product_id": "",
-          "storage_path": "/uploads/local-media-1793212739086-ppin.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T18:39:14.871715+00:00",
-      "updated_at": "2026-10-28T18:39:17.186+00:00"
     },
     {
       "id": "prod-tc-1-1793212651222",
@@ -376,18 +342,57 @@
       "base_size": "4 Inches",
       "images": [
         {
-          "id": "img-tc-1-1",
-          "caption": "Handcrafted Tea Light Candle Stand",
-          "alt_text": "Handcrafted Tea Light Candle Stand",
+          "id": "img-1793233389424-1bxa",
+          "alt_text": "DotAndArt_Logo.jpeg",
           "is_primary": true,
-          "product_id": "prod-tc-1",
-          "storage_path": "/static/assets/images/DA-TC-CS-0001.jpg",
+          "product_id": "prod-tc-1-1793212651222",
+          "storage_path": "/uploads/local-media-1793233389396-1g8t.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T18:37:31.313219+00:00",
-      "updated_at": "2026-10-28T18:37:31.739+00:00"
+      "updated_at": "2026-10-29T00:23:14.484+00:00"
+    },
+    {
+      "id": "prod-1793212755174",
+      "sku": "DA-TC-CS-0001A",
+      "name": "Casted Stone Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Casted Stone Tea Light Candle Holder set. Available as individual pieces as well. Small one (4 inches) costs INR 350 each and big one (6 inches) costs INR 550 each.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Stone casted with casting powder, acrylic paint, pearls, rhinestones",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "5-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": true,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 2,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 1250,
+      "base_size": "Set of 3",
+      "images": [
+        {
+          "id": "img-1793232894169-juub",
+          "alt_text": "DotAndArt_Logo.jpeg",
+          "is_primary": true,
+          "product_id": "prod-1793212755174",
+          "storage_path": "/uploads/local-media-1793232894122-7gcz.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T18:39:14.871715+00:00",
+      "updated_at": "2026-10-29T00:14:59.187+00:00"
     },
     {
       "id": "prod-tc-3-1793212038085",
@@ -417,17 +422,17 @@
       "base_size": "4 Inches",
       "images": [
         {
-          "id": "img-1793212508879-x5hi",
-          "alt_text": "DA-TC-CS-0002.jpg",
+          "id": "img-1793232877921-yrwq",
+          "alt_text": "DotAndArt_Logo.jpeg",
           "is_primary": true,
           "product_id": "prod-tc-3-1793212038085",
-          "storage_path": "/uploads/local-media-1793212508862-gcv2.jpg",
+          "storage_path": "/uploads/local-media-1793232877858-3m2r.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T18:27:17.992825+00:00",
-      "updated_at": "2026-10-28T18:35:43.395+00:00"
+      "updated_at": "2026-10-29T00:14:43.939+00:00"
     },
     {
       "id": "prod-314ab920-3fc7-4c95-a147-2dbc25a14494",
@@ -8570,6 +8575,17 @@
   },
   "audit_logs": [
     {
+      "id": "log-1793234190529-156e4cb5",
+      "admin_user_id": "admin",
+      "action": "admin_pulled_latest_db",
+      "entity_type": "system",
+      "entity_id": "db",
+      "safe_metadata_json": {
+        "message": "Admin manually pulled latest changes from Firestore and synced local cache."
+      },
+      "created_at": "2026-10-29T00:36:30.530Z"
+    },
+    {
       "id": "log-1793186583405-417a0e42",
       "admin_user_id": "admin",
       "action": "product_updated",
@@ -9603,6 +9619,6 @@
   ],
   "sync_flag": {
     "changed": true,
-    "updated_at": "2026-10-28T12:19:10.798Z"
+    "updated_at": "2026-10-29T00:36:30.530Z"
   }
 }

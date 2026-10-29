@@ -225,7 +225,8 @@ function sanitizeProductImages(p: Product): Product {
 function deduplicateProducts(products: Product[]): Product[] {
   if (!Array.isArray(products)) return [];
   const deletedSkus = new Set<string>([
-    'DA-AP-10-0001', 'DA-AP-10-0002', 'DA-AP-10-0003', 'DA-AP-10-0004', 'DA-AP-10-0005'
+    'DA-AP-10-0001', 'DA-AP-10-0002', 'DA-AP-10-0003', 'DA-AP-10-0004', 'DA-AP-10-0005',
+    'DA-TC-CS-0001-COPY-304', 'DA-TC-CS-0001-COPY-585'
   ]);
   const deletedIds = new Set<string>([
     'prod-da-ap-10-0001', 'prod-da-ap-10-0002', 'prod-da-ap-10-0003', 'prod-da-ap-10-0004', 'prod-da-ap-10-0005',
@@ -264,80 +265,9 @@ function deduplicateProducts(products: Product[]): Product[] {
     if (psku) seenSkus.add(psku);
     result.push(sanitizeProductImages(p));
   }
-  return ensureSpecialProducts(result);
+  return result;
 }
 
-function ensureSpecialProducts(products: Product[]): Product[] {
-  const specials = [
-    { sku: 'DA-TC-CS-0001', name: 'Handcrafted Tea Light Candle Stand', price: 650 },
-    { sku: 'DA-TC-CS-0001-AMIT', name: 'Handcrafted Tea Light Candle Stand (Amit Edition)', price: 750 },
-  ];
-
-  const skuSet = new Set(products.map(p => (p.sku || '').trim().toUpperCase()));
-  const newProds = [...products];
-
-  specials.forEach((sp, idx) => {
-    const upperSku = sp.sku.toUpperCase();
-    if (!skuSet.has(upperSku)) {
-      newProds.push({
-        id: `prod-tc-${idx + 1}-${Date.now()}`,
-        sku: sp.sku,
-        name: sp.name,
-        short_description: 'Handcrafted decorative tea light candle stand',
-        description: 'Handcrafted decorative tea light candle stand with intricate dot art and protective varnish finish.',
-        category_id: 'cat-tea-light-candle-holders',
-        category_name: 'Tea Light Candle Holders',
-        category_slug: 'tea-light-candle-holders',
-        material: 'MDF Wood, Acrylic Paints, Protective Varnish',
-        framing: 'Ready to display',
-        customizable: true,
-        creation_time: '1-3 Days',
-        shipping_info: 'Worldwide insured shipping available',
-        special_information: 'Clean gently with a soft dry microfiber cloth.',
-        featured: idx === 0,
-        is_published: true,
-        is_available: true,
-        available_badge_text: 'Available',
-        unavailable_badge_text: 'Made to Order',
-        show_available_badge: true,
-        base_price: sp.price,
-        base_size: '4 Inches',
-        images: [
-          {
-            id: `img-tc-${idx + 1}-1`,
-            product_id: `prod-tc-${idx + 1}`,
-            storage_path: '/static/assets/images/DA-TC-CS-0001.jpg',
-            alt_text: sp.name,
-            caption: sp.name,
-            display_order: 1,
-            is_primary: true
-          }
-        ],
-        variants: [],
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      });
-      skuSet.add(upperSku);
-    }
-  });
-
-  // Also ensure any existing product starting with DA-TC or tea light has correct category
-  newProds.forEach((p) => {
-    if (p && p.sku) {
-      const s = p.sku.trim().toUpperCase();
-      const n = (p.name || '').toLowerCase();
-      if (s.startsWith('DA-TC') || n.includes('tea light') || n.includes('candle stand') || n.includes('candle holder')) {
-        p.is_published = true;
-        p.is_available = true;
-        p.category_id = 'cat-tea-light-candle-holders';
-        p.category_name = 'Tea Light Candle Holders';
-        p.category_slug = 'tea-light-candle-holders';
-      }
-    }
-  });
-
-  return newProds;
-}
 
 function mergeSupabaseProducts(fsProducts: Product[]): Product[] {
   if (!Array.isArray(fsProducts) || fsProducts.length === 0) return deduplicateProducts(db.products);
