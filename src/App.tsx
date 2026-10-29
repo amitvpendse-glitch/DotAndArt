@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { SyncProvider } from './context/SyncContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { EnquiryDrawer } from './components/EnquiryDrawer';
@@ -357,34 +358,36 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <CartProvider>
-        <div className="min-h-screen flex flex-col font-sans antialiased bg-theme-page text-theme-primary transition-colors duration-500 overflow-x-clip">
-          <Navbar
-            currentPath={currentPath}
-            onNavigate={navigate}
-            announcement={settings?.announcement_banner}
-          />
+      <SyncProvider>
+        <CartProvider>
+          <div className="min-h-screen flex flex-col font-sans antialiased bg-theme-page text-theme-primary transition-colors duration-500 overflow-x-clip">
+            <Navbar
+              currentPath={currentPath}
+              onNavigate={navigate}
+              announcement={settings?.announcement_banner}
+            />
 
-          {/* Unified Responsive Stage: Side streams and main sections resize seamlessly with 0% overlap */}
-          <div className="flex-1 flex w-full relative justify-center items-start">
-            {/* Left Waterfall Stream */}
-            <SideArtStreams side="left" onSelectProduct={handleSelectProduct} />
+            {/* Unified Responsive Stage: Side streams and main sections resize seamlessly with 0% overlap */}
+            <div className="flex-1 flex w-full relative justify-center items-start">
+              {/* Left Waterfall Stream */}
+              <SideArtStreams side="left" onSelectProduct={handleSelectProduct} />
 
-            {/* Central Main Stage: All page sections render naturally without forced block height extension */}
-            <main id="main-stage-content" className="flex-1 min-w-0 w-full overflow-x-hidden">
-              {renderCurrentPage()}
-            </main>
+              {/* Central Main Stage: All page sections render naturally without forced block height extension */}
+              <main id="main-stage-content" className="flex-1 min-w-0 w-full overflow-x-hidden">
+                {renderCurrentPage()}
+              </main>
 
-            {/* Right Waterfall Stream */}
-            <SideArtStreams side="right" onSelectProduct={handleSelectProduct} />
+              {/* Right Waterfall Stream */}
+              <SideArtStreams side="right" onSelectProduct={handleSelectProduct} />
+            </div>
+
+            <Footer onNavigate={navigate} settings={settings} />
+            <EnquiryDrawer />
+            <ThemeSelector />
+            <FloatingActions />
           </div>
-
-          <Footer onNavigate={navigate} settings={settings} />
-          <EnquiryDrawer />
-          <ThemeSelector />
-          <FloatingActions />
-        </div>
-      </CartProvider>
+        </CartProvider>
+      </SyncProvider>
     </ThemeProvider>
   );
 }
