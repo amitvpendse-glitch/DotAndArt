@@ -5,7 +5,7 @@ import { WebsiteSettings, Product, ShowcaseBannerHotspot } from '../types';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
 import { setActiveWhatsAppNumber } from '../utils/whatsapp';
 import { compressImageFile } from '../utils/imageCompressor';
-import { uploadImageToSupabaseStorage } from '../lib/firestoreCatalog';
+import { uploadImageToSupabaseStorage, saveFirestoreSettings } from '../lib/firestoreCatalog';
 
 interface AdminSettingsProps {
   token: string;
@@ -55,6 +55,8 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
     setErrorMsg('');
 
     try {
+      await saveFirestoreSettings(settings).catch((err) => console.warn('[AdminSettings] Direct Supabase DB save warning:', err));
+
       const data = await safeFetchJson<any>(
         '/api/admin/settings',
         {

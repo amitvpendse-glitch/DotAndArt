@@ -216,126 +216,6 @@
   ],
   "products": [
     {
-      "id": "prod-1793281080738",
-      "sku": "DA-TC-LP-0003",
-      "name": "Lippan Tea Light Candle Holder",
-      "short_description": "",
-      "description": "Lippan Tea Light Candle Holder set of 4. Available as set of 2 as well costing INR 350.",
-      "category_id": "cat-tea-light-candle-holders",
-      "category_name": "Tea Light Candle Holders",
-      "category_slug": "tea-light-candle-holders",
-      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
-      "framing": "Ready to hang",
-      "customizable": true,
-      "creation_time": "5-7 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": true,
-      "is_published": true,
-      "is_available": false,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": true,
-      "extra_delivery_days": 2,
-      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
-      "base_price": 700,
-      "base_size": "Set of 4",
-      "images": [
-        {
-          "id": "img-1793281067128-1s3y",
-          "alt_text": "DA-TC-LP-0003B.jpg",
-          "is_primary": true,
-          "product_id": "",
-          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0003_1793281065856.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-29T13:38:01.455181+00:00",
-      "updated_at": "2026-10-29T13:38:04.039+00:00"
-    },
-    {
-      "id": "prod-1793280983430",
-      "sku": "DA-TC-LP-0002",
-      "name": "Lippan Tea Light Candle Holder",
-      "short_description": "",
-      "description": "Lippan Tea Light Candle Holder set of 4. Available as set of 2 as well costing INR 350.",
-      "category_id": "cat-tea-light-candle-holders",
-      "category_name": "Tea Light Candle Holders",
-      "category_slug": "tea-light-candle-holders",
-      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
-      "framing": "Ready to hang",
-      "customizable": true,
-      "creation_time": "5-7 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": true,
-      "is_published": true,
-      "is_available": false,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": true,
-      "extra_delivery_days": 2,
-      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
-      "base_price": 700,
-      "base_size": "Set of 4",
-      "images": [
-        {
-          "id": "img-1793280957558-v0gq",
-          "alt_text": "DA-TC-LP-0002B.jpg",
-          "is_primary": true,
-          "product_id": "",
-          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0002_1793280956556.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-29T13:36:23.770771+00:00",
-      "updated_at": "2026-10-29T13:36:26.034+00:00"
-    },
-    {
-      "id": "prod-1793280838345",
-      "sku": "DA-TC-LP-0001",
-      "name": "Lippan Tea Light Candle Holder",
-      "short_description": "",
-      "description": "Lippan Tea Light Candle Holder set of 4. Available as set of 2 as well costing INR 350.",
-      "category_id": "cat-tea-light-candle-holders",
-      "category_name": "Tea Light Candle Holders",
-      "category_slug": "tea-light-candle-holders",
-      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
-      "framing": "Ready to hang",
-      "customizable": true,
-      "creation_time": "5-7 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": false,
-      "extra_delivery_days": 5,
-      "high_demand_message": "",
-      "base_price": 700,
-      "base_size": "Set of 4",
-      "images": [
-        {
-          "id": "img-1793280881983-c7wp",
-          "alt_text": "DA-TC-LP-0001B.jpg",
-          "is_primary": true,
-          "product_id": "prod-1793280838345",
-          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0001_1793280880884.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-29T13:33:58.067494+00:00",
-      "updated_at": "2026-10-29T13:34:52.494+00:00"
-    },
-    {
       "id": "prod-1793280613767",
       "sku": "DA-TC-CS-0008",
       "name": "Casted Stone Tea Light Candle Holder",
@@ -369,11 +249,27 @@
           "product_id": "",
           "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0008_1793280599140.jpg",
           "display_order": 1
+        },
+        {
+          "id": "img-1793288334781-0-3y09",
+          "alt_text": "DA-TC-CS-0008B.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793280613767",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0008_1793288333315.jpg",
+          "display_order": 2
+        },
+        {
+          "id": "img-1793288338495-0-2liw",
+          "alt_text": "DA-TC-CS-0008C.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793280613767",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0008_1793288337326.jpg",
+          "display_order": 3
         }
       ],
       "variants": [],
       "created_at": "2026-10-29T13:30:13.523009+00:00",
-      "updated_at": "2026-10-29T13:30:16.163+00:00"
+      "updated_at": "2026-10-29T15:39:05.853+00:00"
     },
     {
       "id": "prod-1793280457290",
@@ -409,11 +305,27 @@
           "product_id": "",
           "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0007_1793280424383.jpg",
           "display_order": 1
+        },
+        {
+          "id": "img-1793288315750-0-vz0w",
+          "alt_text": "DA-TC-CS-0007B.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793280457290",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0007_1793288314370.jpg",
+          "display_order": 2
+        },
+        {
+          "id": "img-1793288319640-0-3ph7",
+          "alt_text": "DA-TC-CS-0007C.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793280457290",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0007_1793288318581.jpg",
+          "display_order": 3
         }
       ],
       "variants": [],
       "created_at": "2026-10-29T13:27:37.55061+00:00",
-      "updated_at": "2026-10-29T13:27:40.503+00:00"
+      "updated_at": "2026-10-29T15:38:45.828+00:00"
     },
     {
       "id": "prod-1793280352226",
@@ -449,11 +361,27 @@
           "product_id": "",
           "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0006_1793280315876.jpg",
           "display_order": 1
+        },
+        {
+          "id": "img-1793288293087-0-oz05",
+          "alt_text": "DA-TC-CS-0006B.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793280352226",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0006_1793288292367.jpg",
+          "display_order": 2
+        },
+        {
+          "id": "img-1793288298435-0-gx76",
+          "alt_text": "DA-TC-CS-0006C.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793280352226",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0006_1793288296990.jpg",
+          "display_order": 3
         }
       ],
       "variants": [],
       "created_at": "2026-10-29T13:25:52.067514+00:00",
-      "updated_at": "2026-10-29T13:25:54.211+00:00"
+      "updated_at": "2026-10-29T15:38:24.995+00:00"
     },
     {
       "id": "prod-1793280232784",
@@ -489,11 +417,27 @@
           "product_id": "",
           "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0005_1793280200802.jpg",
           "display_order": 1
+        },
+        {
+          "id": "img-1793288266100-0-43kx",
+          "alt_text": "DA-TC-CS-0005B.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793280232784",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0005_1793288264703.jpg",
+          "display_order": 2
+        },
+        {
+          "id": "img-1793288270458-0-63jz",
+          "alt_text": "DA-TC-CS-0005C.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793280232784",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0005_1793288269256.jpg",
+          "display_order": 3
         }
       ],
       "variants": [],
       "created_at": "2026-10-29T13:23:52.593032+00:00",
-      "updated_at": "2026-10-29T13:23:54.715+00:00"
+      "updated_at": "2026-10-29T15:38:02.518+00:00"
     },
     {
       "id": "prod-1793268958321",
@@ -529,51 +473,27 @@
           "product_id": "prod-1793268958321",
           "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0004_1793280077487.jpg",
           "display_order": 1
+        },
+        {
+          "id": "img-1793288242109-0-1yo1",
+          "alt_text": "DA-TC-CS-0004B.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793268958321",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0004_1793288240663.jpg",
+          "display_order": 2
+        },
+        {
+          "id": "img-1793288246870-0-knwq",
+          "alt_text": "DA-TC-CS-0004C.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793268958321",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0004_1793288245624.jpg",
+          "display_order": 3
         }
       ],
       "variants": [],
       "created_at": "2026-10-29T10:15:58.311266+00:00",
-      "updated_at": "2026-10-29T13:21:33.499+00:00"
-    },
-    {
-      "id": "prod-tc-3-1793212038085",
-      "sku": "DA-TC-CS-0002",
-      "name": "Casted Stone Tea Light Candle Holder",
-      "short_description": "Handcrafted decorative tea light candle stand",
-      "description": "Casted Stone Tea Light Candle Holder set. Available as individual pieces as well. Small one (4 inches) costs INR 350 each and big one (6 inches) costs INR 550 each.",
-      "category_id": "cat-tea-light-candle-holders",
-      "category_name": "Tea Light Candle Holders",
-      "category_slug": "tea-light-candle-holders",
-      "material": "Stone casted with casting powder, acrylic paint, pearls, rhinestones",
-      "framing": "Ready to display",
-      "customizable": true,
-      "creation_time": "8-10 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": true,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": true,
-      "extra_delivery_days": 2,
-      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
-      "base_price": 1500,
-      "base_size": "Set of 3",
-      "images": [
-        {
-          "id": "img-1793280018426-1ls2",
-          "alt_text": "DA-TC-CS-0002.jpg",
-          "is_primary": true,
-          "product_id": "prod-tc-3-1793212038085",
-          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0002_1793280016982.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T18:27:17.992825+00:00",
-      "updated_at": "2026-10-29T13:20:50.28+00:00"
+      "updated_at": "2026-10-29T15:37:33.374+00:00"
     },
     {
       "id": "prod-1793268726017",
@@ -609,11 +529,75 @@
           "product_id": "prod-1793268726017",
           "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0003_1793279985993.jpg",
           "display_order": 1
+        },
+        {
+          "id": "img-1793288220360-0-t4iz",
+          "alt_text": "DA-TC-CS-0003B.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793268726017",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0003_1793288219187.jpg",
+          "display_order": 2
+        },
+        {
+          "id": "img-1793288224529-0-lrah",
+          "alt_text": "DA-TC-CS-0003C.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793268726017",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0003_1793288223761.jpg",
+          "display_order": 3
         }
       ],
       "variants": [],
       "created_at": "2026-10-29T10:12:06.019366+00:00",
-      "updated_at": "2026-10-29T13:20:01.544+00:00"
+      "updated_at": "2026-10-29T15:37:11.379+00:00"
+    },
+    {
+      "id": "prod-tc-3-1793212038085",
+      "sku": "DA-TC-CS-0002",
+      "name": "Casted Stone Tea Light Candle Holder",
+      "short_description": "Handcrafted decorative tea light candle stand",
+      "description": "Casted Stone Tea Light Candle Holder set. Available as individual pieces as well. Small one (4 inches) costs INR 350 each and big one (6 inches) costs INR 550 each.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Stone casted with casting powder, acrylic paint, pearls, rhinestones",
+      "framing": "Ready to display",
+      "customizable": true,
+      "creation_time": "8-10 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": true,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 2,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 1500,
+      "base_size": "Set of 3",
+      "images": [
+        {
+          "id": "img-1793280018426-1ls2",
+          "alt_text": "DA-TC-CS-0002.jpg",
+          "is_primary": true,
+          "product_id": "prod-tc-3-1793212038085",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0002_1793280016982.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793288204228-0-70uf",
+          "alt_text": "DA-TC-CS-0002B.jpg",
+          "is_primary": false,
+          "product_id": "prod-tc-3-1793212038085",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0002_1793288203211.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T18:27:17.992825+00:00",
+      "updated_at": "2026-10-29T15:36:50.231+00:00"
     },
     {
       "id": "prod-tc-1-1793212651222",
@@ -649,11 +633,547 @@
           "product_id": "prod-tc-1-1793212651222",
           "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001_1793279835565.jpg",
           "display_order": 1
+        },
+        {
+          "id": "img-1793288164129-0-moqs",
+          "alt_text": "DA-TC-CS-0001B.jpg",
+          "is_primary": false,
+          "product_id": "prod-tc-1-1793212651222",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001_1793288162669.jpg",
+          "display_order": 2
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T18:37:31.313219+00:00",
-      "updated_at": "2026-10-29T13:17:33.071+00:00"
+      "updated_at": "2026-10-29T15:36:32.532+00:00"
+    },
+    {
+      "id": "prod-1793282011120",
+      "sku": "DA-TC-LP-0010",
+      "name": "Lippan Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Lippan Tea Light Candle Holder set of 5. Available as set of 2 smaller ones as well costing INR 350.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "8-10 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 5,
+      "high_demand_message": "",
+      "base_price": 950,
+      "base_size": "Set of 5",
+      "images": [
+        {
+          "id": "img-1793281957316-pglj",
+          "alt_text": "DA-TC-LP-0010B.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0010_1793281955813.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793282217516-0-r9m3",
+          "alt_text": "DA-TC-LP-0010A.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793282011120",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0010_1793282216485.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T13:53:30.861606+00:00",
+      "updated_at": "2026-10-29T14:01:26.429+00:00"
+    },
+    {
+      "id": "prod-1793281903535",
+      "sku": "DA-TC-LP-0009",
+      "name": "Lippan Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Lippan Tea Light Candle Holder set of 5. Available as set of 2 smaller ones as well costing INR 350.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "8-10 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 5,
+      "high_demand_message": "",
+      "base_price": 950,
+      "base_size": "Set of 5",
+      "images": [
+        {
+          "id": "img-1793281887881-112m",
+          "alt_text": "DA-TC-LP-0009B.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0009_1793281887143.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793282466046-0-i1r8",
+          "alt_text": "DA-TC-LP-0009A.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793281903535",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0009_1793282464948.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T13:51:43.557097+00:00",
+      "updated_at": "2026-10-29T14:01:12.71+00:00"
+    },
+    {
+      "id": "prod-1793281828211",
+      "sku": "DA-TC-LP-0008",
+      "name": "Lippan Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Lippan Tea Light Candle Holder set of 5. Available as set of 2 smaller ones as well costing INR 350.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "8-10 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 3,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 950,
+      "base_size": "Set of 5",
+      "images": [
+        {
+          "id": "img-1793281809247-xjj3",
+          "alt_text": "DA-TC-LP-0008B.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0008_1793281807865.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793282451301-0-5woj",
+          "alt_text": "DA-TC-LP-0008A.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793281828211",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0008_1793282450276.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T13:50:28.206094+00:00",
+      "updated_at": "2026-10-29T14:00:57.656+00:00"
+    },
+    {
+      "id": "prod-1793281670807",
+      "sku": "DA-TC-LP-0007",
+      "name": "Lippan Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Lippan Tea Light Candle Holder set of 5. Available as set of 2 smaller ones as well costing INR 350.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "8-10 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": true,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 3,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 950,
+      "base_size": "Set of 5",
+      "images": [
+        {
+          "id": "img-1793281655736-3lbf",
+          "alt_text": "DA-TC-LP-0007B.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0007_1793281654142.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793282435836-0-1kmh",
+          "alt_text": "DA-TC-LP-0007A.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793281670807",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0007_1793282434620.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T13:47:50.580082+00:00",
+      "updated_at": "2026-10-29T14:00:43.012+00:00"
+    },
+    {
+      "id": "prod-1793281598862",
+      "sku": "DA-TC-LP-0006",
+      "name": "Lippan Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Lippan Tea Light Candle Holder set of 4. Available as set of 2 as well costing INR 350.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "5-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 5,
+      "high_demand_message": "",
+      "base_price": 700,
+      "base_size": "Set of 4",
+      "images": [
+        {
+          "id": "img-1793281591735-wgno",
+          "alt_text": "DA-TC-LP-0006B.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0006_1793281590192.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793282418326-0-lxbl",
+          "alt_text": "DA-TC-LP-0006A.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793281598862",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0006_1793282416831.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T13:46:38.699833+00:00",
+      "updated_at": "2026-10-29T14:00:25.502+00:00"
+    },
+    {
+      "id": "prod-1793281365961",
+      "sku": "DA-TC-LP-0005",
+      "name": "Lippan Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Lippan Tea Light Candle Holder set of 4. Available as set of 2 as well costing INR 350.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "5-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 5,
+      "high_demand_message": "",
+      "base_price": 700,
+      "base_size": "Set of 4",
+      "images": [
+        {
+          "id": "img-1793281351192-oeg5",
+          "alt_text": "DA-TC-LP-0005B.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0005_1793281350111.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793282399902-0-qpzw",
+          "alt_text": "DA-TC-LP-0005A.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793281365961",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0005_1793282398789.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T13:42:45.9376+00:00",
+      "updated_at": "2026-10-29T14:00:07.069+00:00"
+    },
+    {
+      "id": "prod-1793281264005",
+      "sku": "DA-TC-LP-0004",
+      "name": "Lippan Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Lippan Tea Light Candle Holder set of 4. Available as set of 2 as well costing INR 350.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "5-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 5,
+      "high_demand_message": "",
+      "base_price": 700,
+      "base_size": "Set of 4",
+      "images": [
+        {
+          "id": "img-1793281236298-56oo",
+          "alt_text": "DA-TC-LP-0004B.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0004_1793281234733.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793282383310-0-hvb4",
+          "alt_text": "DA-TC-LP-0004A.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793281264005",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0004_1793282382351.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T13:41:03.870049+00:00",
+      "updated_at": "2026-10-29T13:59:49.817+00:00"
+    },
+    {
+      "id": "prod-1793281080738",
+      "sku": "DA-TC-LP-0003",
+      "name": "Lippan Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Lippan Tea Light Candle Holder set of 4. Available as set of 2 as well costing INR 350.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "5-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": true,
+      "is_published": true,
+      "is_available": false,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 2,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 700,
+      "base_size": "Set of 4",
+      "images": [
+        {
+          "id": "img-1793281067128-1s3y",
+          "alt_text": "DA-TC-LP-0003B.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0003_1793281065856.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793282361396-0-1le2",
+          "alt_text": "DA-TC-LP-0003A.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793281080738",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0003_1793282359858.jpg",
+          "display_order": 3
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T13:38:01.455181+00:00",
+      "updated_at": "2026-10-29T13:59:32.047+00:00"
+    },
+    {
+      "id": "prod-1793280983430",
+      "sku": "DA-TC-LP-0002",
+      "name": "Lippan Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Lippan Tea Light Candle Holder set of 4. Available as set of 2 as well costing INR 350.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "5-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": true,
+      "is_published": true,
+      "is_available": false,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 2,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 700,
+      "base_size": "Set of 4",
+      "images": [
+        {
+          "id": "img-1793280957558-v0gq",
+          "alt_text": "DA-TC-LP-0002B.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0002_1793280956556.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793282346747-0-pzdw",
+          "alt_text": "DA-TC-LP-0002A.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793280983430",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0002_1793282345452.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T13:36:23.770771+00:00",
+      "updated_at": "2026-10-29T13:59:12.898+00:00"
+    },
+    {
+      "id": "prod-1793280838345",
+      "sku": "DA-TC-LP-0001",
+      "name": "Lippan Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Lippan Tea Light Candle Holder set of 4. Available as set of 2 as well costing INR 350.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "5-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 5,
+      "high_demand_message": "",
+      "base_price": 700,
+      "base_size": "Set of 4",
+      "images": [
+        {
+          "id": "img-1793280881983-c7wp",
+          "alt_text": "DA-TC-LP-0001B.jpg",
+          "is_primary": true,
+          "product_id": "prod-1793280838345",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0001_1793280880884.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793282326372-0-cqvq",
+          "alt_text": "DA-TC-LP-0001A.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793280838345",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0001_1793282325111.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T13:33:58.067494+00:00",
+      "updated_at": "2026-10-29T13:58:52.212+00:00"
+    },
+    {
+      "id": "prod-1793282077471",
+      "sku": "DA-TC-LP-0011",
+      "name": "Lippan Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Lippan Tea Light Candle Holder set of 5. Available as set of 2 smaller ones as well costing INR 350.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "8-10 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 5,
+      "high_demand_message": "",
+      "base_price": 950,
+      "base_size": "Set of 5",
+      "images": [
+        {
+          "id": "img-1793282068216-pojq",
+          "alt_text": "DA-TC-LP-0011B.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0011_1793282066819.jpg",
+          "display_order": 1
+        },
+        {
+          "id": "img-1793282105493-0-etgk",
+          "alt_text": "DA-TC-LP-0011A.jpg",
+          "is_primary": false,
+          "product_id": "prod-1793282077471",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-LP-0011_1793282104567.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T13:54:37.208942+00:00",
+      "updated_at": "2026-10-29T13:57:56.421+00:00"
     },
     {
       "id": "prod-314ab920-3fc7-4c95-a147-2dbc25a14494",
@@ -8063,250 +8583,6 @@
   ],
   "pages": [
     {
-      "id": "page-home",
-      "slug": "home",
-      "title": "Home Page — Dot And Art Studio",
-      "seo_title": "Dot And Art Studio — Handcrafted Mandalas & Lippan Mirror Art",
-      "meta_description": "Discover authentic hand-painted dot mandalas and traditional Kutch Lippan mud-mirror art by artist Shital Thosar.",
-      "status": "published",
-      "sections": [
-        {
-          "id": "sec-home-slideshow",
-          "page_id": "page-home",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "slideshow",
-          "content_json": {
-            "title": "Handcrafted Artwork Showcase",
-            "slides": [
-              {
-                "image": "/static/assets/images/Home_page_banner.jpeg",
-                "title": "AUTHENTIC HARMONY · 24\" HANDCRAFTED DOT MANDALA",
-                "subtext": "Hand-painted dot mandala art by Shital Thosar"
-              },
-              {
-                "image": "/static/assets/images/DA-MD-30-0001.jpg",
-                "title": "GRAND AURA · 30\" MONUMENTAL WALL MANDALA",
-                "subtext": "Intricate symmetry and vibrant gold pigments"
-              },
-              {
-                "image": "/static/assets/images/DA-MD-24-0001.jpg",
-                "title": "CELESTIAL RADIANCE · 24\" GEOMETRY MANDALA",
-                "subtext": "Meticulously placed acrylic dots"
-              },
-              {
-                "image": "/static/assets/images/DA-LP-36-0001.jpg",
-                "title": "HERITAGE MIRROR · 36\" GUJARATI LIPPAN KAAM",
-                "subtext": "Mud-relief craft with shimmering mirrors"
-              },
-              {
-                "image": "/static/assets/images/DA-MD-Set-7Chakra.jpg",
-                "title": "SEVEN CHAKRAS · COMPLETE MEDITATION SET",
-                "subtext": "Complete set of hand-painted chakra plaques"
-              },
-              {
-                "image": "/static/assets/images/DA-MD-24-0002.jpg",
-                "title": "LOTUS MEDITATION · 24\" SPIRITUAL DOT MANDALA",
-                "subtext": "Harmonic geometry for tranquil wall decor"
-              },
-              {
-                "image": "/static/assets/images/DA-LP-24x48-0001.jpg",
-                "title": "KUTCH TRADITION · 24\"x48\" LIPPAN MUD-MIRROR PANEL",
-                "subtext": "Reflective mirror clay relief panel"
-              },
-              {
-                "image": "/static/assets/images/DA-MD-18-0002.jpg",
-                "title": "GOLDEN SUNBURST · 18\" ENERGY MANDALA",
-                "subtext": "Vibrant energy and precise dotwork"
-              },
-              {
-                "image": "/static/assets/images/DA-MD-24-0005.jpg",
-                "title": "ROYAL AZURE · 24\" INTRICATE CERAMIC MANDALA",
-                "subtext": "Deep blue hues with gold highlights"
-              },
-              {
-                "image": "/static/assets/images/DA-MD-15-0001.jpg",
-                "title": "VIBRANT BLOSSOM · 15\" CONTEMPORARY MANDALA",
-                "subtext": "Modern color palettes with traditional techniques"
-              }
-            ]
-          },
-          "section_type": "slideshow",
-          "display_order": 1
-        },
-        {
-          "id": "sec-home-begin-portals",
-          "page_id": "page-home",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "begin_portals",
-          "content_json": {
-            "title": "Where would you like to begin?",
-            "portals": [
-              {
-                "link": "/shop",
-                "image": "/static/assets/images/DA-MD-12-0001.jpg",
-                "title": "Artworks Collection",
-                "subtitle": "Explore handcrafted Dot Mandalas & Lippan Mirrors"
-              },
-              {
-                "link": "/custom-order",
-                "image": "/static/assets/images/shital-studio-working.jpg",
-                "title": "Commissions Studio",
-                "subtitle": "Personalized sizes, color palettes & photo art"
-              },
-              {
-                "link": "/about",
-                "image": "/static/assets/images/Home_page_banner.jpeg",
-                "title": "Artist & Studio Story",
-                "subtitle": "Meet Shital Thosar and read collector reviews"
-              }
-            ],
-            "subtitle": "Select a category to explore our authentic collection or start a custom order."
-          },
-          "section_type": "begin_portals",
-          "display_order": 2
-        },
-        {
-          "id": "sec-home-detail-plates",
-          "page_id": "page-home",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "detail_plates",
-          "content_json": {
-            "title": "Details you can feel before you touch it.",
-            "plates": [
-              {
-                "sku": "DA-MD-12-0001",
-                "src": "/static/assets/images/DA-MD-12-0001.jpg",
-                "name": "Celestial Teal Mandala",
-                "size": "12\""
-              },
-              {
-                "sku": "DA-MD-18-0002",
-                "src": "/static/assets/images/DA-MD-18-0002.jpg",
-                "name": "Peacock Bloom Mandala",
-                "size": "18\""
-              },
-              {
-                "sku": "DA-LP-14-0001",
-                "src": "/static/assets/images/DA-LP-14-0001.jpg",
-                "name": "Radiant Lippan Kaam Mirror",
-                "size": "14\""
-              },
-              {
-                "sku": "DA-MD-10-0001",
-                "src": "/static/assets/images/DA-MD-10-0001.jpg",
-                "name": "Harmonic Ochre Mandala",
-                "size": "10\""
-              },
-              {
-                "sku": "DA-MD-15-0001",
-                "src": "/static/assets/images/DA-MD-15-0001.jpg",
-                "name": "Multi-Colour Symphony",
-                "size": "15\""
-              },
-              {
-                "sku": "DA-LP-18-0001",
-                "src": "/static/assets/images/DA-LP-18-0001.jpg",
-                "name": "Concentric Lippan Relief",
-                "size": "18\""
-              },
-              {
-                "sku": "DA-LP-Set-0001",
-                "src": "/static/assets/images/DA-LP-Set-0001.jpg",
-                "name": "Kutch Diya & Mirror Inlay",
-                "size": "Set"
-              },
-              {
-                "sku": "DA-MD-12-0006",
-                "src": "/static/assets/images/DA-MD-12-0006.jpg",
-                "name": "Blush Lotus Mandala",
-                "size": "12\""
-              },
-              {
-                "sku": "DA-MD-24-0001",
-                "src": "/static/assets/images/DA-MD-24-0001.jpg",
-                "name": "Royal Emerald Monumental",
-                "size": "24\""
-              }
-            ],
-            "subtitle": "Zoom in on the raised acrylic dots, clay mud relief, and sparkling mirrorwork."
-          },
-          "section_type": "detail_plates",
-          "display_order": 3
-        },
-        {
-          "id": "sec-home-featured",
-          "page_id": "page-home",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "featured_artworks",
-          "content_json": {
-            "badge": "Studio Highlights",
-            "title": "Featured Hand-Painted Pieces",
-            "description": "Explore our most sought-after Dot Mandalas and Lippan Mud-Mirror Art, each piece individually hand-painted."
-          },
-          "section_type": "featured_artworks",
-          "display_order": 4
-        },
-        {
-          "id": "sec-home-large-mandalas",
-          "page_id": "page-home",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "large_mandalas_banner",
-          "content_json": {
-            "image": "/static/assets/images/Art_artist.jpeg",
-            "quote": "You choose the colours and the inspiration. I create the mandala. Together, it creates magic.",
-            "title": "Made to enthrall,\nup close and across the room.",
-            "author": "— Shital Thosar",
-            "eyebrow": "CUSTOM COMMISSIONS · LARGE SIZED MANDALAS",
-            "paragraph": "At this scale a mandala holds you still for a moment. From the doorway it reads as one bold form. Step closer and the nuance arrives: the concentric rings, the subtle gradients, the thousands of individual dots and light-reflecting mirrors that built it."
-          },
-          "section_type": "large_mandalas_banner",
-          "display_order": 5
-        },
-        {
-          "id": "sec-home-trust-boxes",
-          "page_id": "page-home",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "trust_boxes",
-          "content_json": {
-            "boxes": [
-              {
-                "title": "100% Handcrafted Originals",
-                "description": "Every dot and clay relief pattern is meticulously handcrafted by artist Shital Thosar."
-              },
-              {
-                "title": "Protective Varnish Finish",
-                "description": "Sealed with professional UV & moisture resistant varnish for long-lasting vibrant artwork."
-              },
-              {
-                "title": "Safe Worldwide Delivery",
-                "description": "Multi-layered custom wooden crate & foam bubble packaging ensures 100% safe transit."
-              },
-              {
-                "title": "Direct Artist Support",
-                "description": "Direct communication with the artist for color advice, wall sizing & custom creations."
-              }
-            ]
-          },
-          "section_type": "trust_boxes",
-          "display_order": 6
-        }
-      ],
-      "created_at": "2026-10-28T09:13:02.237+00:00",
-      "updated_at": "2026-10-28T09:13:02.238+00:00"
-    },
-    {
       "id": "page-shop",
       "slug": "shop",
       "title": "Artworks Catalog — Dot And Art",
@@ -8407,176 +8683,6 @@
           },
           "section_type": "form_labels",
           "display_order": 4
-        }
-      ],
-      "created_at": "2026-10-28T09:13:02.238+00:00",
-      "updated_at": "2026-10-28T09:13:02.238+00:00"
-    },
-    {
-      "id": "page-about",
-      "slug": "about",
-      "title": "About Shital Thosar — Dot And Art Studio",
-      "seo_title": "About Shital Thosar — Artist & Founder, Dot And Art",
-      "meta_description": "Learn about artist Shital Thosar, her meditative journey into dot mandala painting, and traditional Lippan Kaam mirror art.",
-      "status": "published",
-      "sections": [
-        {
-          "id": "sec-about-guarantee",
-          "page_id": "page-about",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "artist_authenticity_guarantee",
-          "content_json": {
-            "tag": "ORIGINAL PHOTOGRAPHY [NO AI]",
-            "heading": "Authenticity Guarantee: 100% Hand-Painted",
-            "paragraph": "All artworks crafted at DotAndArt are authentic, physical hand-painted creations. Every image on this website is an original photograph of actual physical pieces, never AI-generated or digitally fabricated."
-          },
-          "section_type": "guarantee",
-          "display_order": 1
-        },
-        {
-          "id": "sec-about-hero",
-          "page_id": "page-about",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "artist_hero",
-          "content_json": {
-            "badge": "Meet The Artist",
-            "title": "About Shital Thosar",
-            "subtitle": "Artist & Founder behind DotAndArt"
-          },
-          "section_type": "hero",
-          "display_order": 2
-        },
-        {
-          "id": "sec-about-story",
-          "page_id": "page-about",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "artist_story",
-          "content_json": {
-            "paragraph_1": "What started as a love for colours, patterns and the simple joy of creating with my hands slowly grew into something much more meaningful—my own art journey.",
-            "paragraph_2": "I found myself drawn to Dot Mandala Art, where tiny dots come together to create intricate patterns, balance and harmony. For me, mandala is not just about creating something beautiful. It is a process of slowing down, being present and finding a little calm in the middle of everyday life.",
-            "paragraph_3": "With time, my art has evolved into a blend of traditional mandala patterns, contemporary colours and Indian artistic influences. I enjoy experimenting with colours, textures and different forms while keeping the handmade character of every piece alive.",
-            "paragraph_4": "Every DotAndArt creation is painted by hand, one dot and one detail at a time. Whether it is a personalised photo mandala, a festive piece, a wall artwork or a custom creation, I put a little piece of my creativity and love into each one.",
-            "paragraph_5": "Today, DotAndArt is not just about selling handmade art. It is about creating meaningful pieces that become part of someone's home, celebrations and memories.",
-            "closing_name": "Shital",
-            "closing_role": "ARTIST & FOUNDER, DOTANDART",
-            "closing_sign": "With love,",
-            "closing_thanks": "Thank you for being a part of my creative journey.",
-            "statement_heading": "Hi, I’m Shital Thosar, the artist and creator behind DotAndArt."
-          },
-          "section_type": "bio",
-          "display_order": 3
-        },
-        {
-          "id": "sec-about-card",
-          "page_id": "page-about",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "artist_card",
-          "content_json": {
-            "name": "Shital Thosar",
-            "role": "FOUNDER & MASTER ARTIST",
-            "image": "/static/assets/images/Art_artist.jpeg"
-          },
-          "section_type": "profile_card",
-          "display_order": 4
-        },
-        {
-          "id": "sec-about-promise",
-          "page_id": "page-about",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "artist_promise",
-          "content_json": {
-            "point_1": "Zero mass-production or stencil printing",
-            "point_2": "Hand painted dot by dot, detail by detail",
-            "point_3": "Protective moisture-seal applied to every creation",
-            "promise_desc": "Every artwork leaving the studio has been painted by hand with patience, precision, and devotion. We use non-toxic, lightfast acrylics, moisture-sealed MDF bases, and authentic mirrors.",
-            "promise_title": "The Handcrafted Promise"
-          },
-          "section_type": "features",
-          "display_order": 5
-        },
-        {
-          "id": "sec-about-custom-card",
-          "page_id": "page-about",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "artist_custom_card",
-          "content_json": {
-            "card_desc": "Looking for custom colors, specific dimensions, or a personalized photo mandala?",
-            "card_title": "Custom Artworks",
-            "button_text": "Commission Custom Piece"
-          },
-          "section_type": "callout",
-          "display_order": 6
-        },
-        {
-          "id": "sec-about-discipline",
-          "page_id": "page-about",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "meditative_discipline",
-          "content_json": {
-            "feature_1_desc": "Every circle, arc, and mirror placement is created manually using traditional dotting tools.",
-            "feature_2_desc": "Designs rooted in ancient Vedic proportions that balance energy and harmony in living spaces.",
-            "feature_3_desc": "Coated with professional artist varnish to safeguard colors and mirrors against dust and humidity.",
-            "feature_4_desc": "Custom shock-absorbent multi-ply packaging ensures your delicate artwork arrives flawless.",
-            "feature_1_title": "No Mechanization",
-            "feature_2_title": "Authentic Geometry",
-            "feature_3_title": "Weather Protective Seal",
-            "feature_4_title": "Transit Safe Crate",
-            "discipline_badge": "THE MEDITATIVE DISCIPLINE",
-            "discipline_title": "Every Dot Placed with Breath, Patience & Devotion",
-            "discipline_intro_1": "At DotAndArt, art is not merely decoration; it is a authentic meditation. Each dot mandala begins at the central Bindu — the spark of primordial consciousness — and blossoms outward in thousands of concentric, hand-dropped acrylic droplets.",
-            "discipline_intro_2": "Our Lippan Kaam honors the pastoral tribes of Kutch, where hand-kneaded organic clay relief lines cradle gleaming hand-cut mirrors that reflect light and ward off negativity. No molds, no mass production — only singular handmade devotion."
-          },
-          "section_type": "philosophy",
-          "display_order": 7
-        },
-        {
-          "id": "sec-about-process",
-          "page_id": "page-about",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "creation_process",
-          "content_json": {
-            "step_1_desc": "Moisture-resistant MDF discs are precision-cut, sanded, primed, and coated in rich foundational base paint.",
-            "step_2_desc": "Harmonious radial divisions are mapped outward from the central nucleus to guide dot placements.",
-            "step_3_desc": "Layer after layer of graduated paint droplets or hand-set mirrors are painted with steady presence.",
-            "step_4_desc": "Artworks cure naturally before being sealed with protective varnish and fitted with mounting hardware.",
-            "step_1_title": "Base Preparation",
-            "step_2_title": "Symmetry & Geometry",
-            "step_3_title": "Dotting & Detailing",
-            "step_4_title": "Sealing & Finishing",
-            "process_badge": "THE CREATION PROCESS",
-            "process_title": "How Each Piece Comes To Life"
-          },
-          "section_type": "steps",
-          "display_order": 8
-        },
-        {
-          "id": "sec-about-cta",
-          "page_id": "page-about",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "bottom_cta",
-          "content_json": {
-            "button_text": "Explore Entire Product Catalog"
-          },
-          "section_type": "cta",
-          "display_order": 9
         }
       ],
       "created_at": "2026-10-28T09:13:02.238+00:00",
@@ -8752,6 +8858,350 @@
       ],
       "created_at": "2026-10-28T09:13:02.238+00:00",
       "updated_at": "2026-10-28T09:13:02.238+00:00"
+    },
+    {
+      "id": "page-home",
+      "slug": "home",
+      "title": "Home Page — Dot And Art Studio",
+      "seo_title": "Dot And Art Studio — Handcrafted Mandalas & Lippan Mirror Art",
+      "meta_description": "Discover authentic hand-painted dot mandalas and traditional Kutch Lippan mud-mirror art by artist Shital Thosar.",
+      "status": "published",
+      "sections": [
+        {
+          "id": "sec-home-slideshow",
+          "page_id": "page-home",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-29T16:07:04.959Z",
+          "section_key": "slideshow",
+          "content_json": {
+            "title": "Handcrafted Artwork Showcase",
+            "slides": [
+              {
+                "image": "/static/assets/images/Home_page_banner.jpeg",
+                "title": "PEARL-STUDDED ELEGENT 30\" DOT MANDALA",
+                "subtext": "Hand-painted dot mandala art by Shital Thosar"
+              },
+              {
+                "image": "/static/assets/images/DA-MD-24-0001.jpg",
+                "title": "CELESTIAL RADIANCE · 24\" GEOMETRY DOT MANDALA",
+                "subtext": "Meticulously placed acrylic dots"
+              },
+              {
+                "image": "/static/assets/images/DA-LP-24x48-0001.jpg",
+                "title": "KUTCH TRADITION · 24\"x48\" ASPICIOUS SYMBOLS LIPPAN KAAM",
+                "subtext": "Reflective mirror clay relief panel"
+              },
+              {
+                "image": "/static/assets/images/DA-MD-24-0005.jpg",
+                "title": "RICH MULTICOLOR VIBRANT 24\" DOT MANDALA",
+                "subtext": "Deep blue hues with gold highlights"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289628268.jpg",
+                "title": "SHIVA THEME 24\" DOT MANDALA",
+                "subtext": "Handcrafted artwork"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289657335.jpg",
+                "title": "KRISHNA THEME 24\" DOT MANDALA",
+                "subtext": "Handcrafted artwork"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289709469.jpg",
+                "title": "RED AND ORANGE CASTED TEA LIGHT CANDLE HOLDER SET",
+                "subtext": "Handcrafted artwork"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289721423.jpg",
+                "title": "VIBRANT MULTICOLOR LIPPAN TEA LIGHT CANDLE HOLDER SET",
+                "subtext": "Handcrafted artwork"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289748984.jpg",
+                "title": "PURPLE CASTED TEA LIGHT CANDLE HOLDER SET",
+                "subtext": "Handcrafted artwork"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289765457.jpg",
+                "title": "ELEGENT LIPPAN TEA LIGHT CANDLE HOLDER SET",
+                "subtext": "Handcrafted artwork"
+              }
+            ]
+          },
+          "section_type": "slideshow",
+          "display_order": 1
+        },
+        {
+          "id": "sec-home-begin-portals",
+          "page_id": "page-home",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-29T16:07:54.175Z",
+          "section_key": "begin_portals",
+          "content_json": {
+            "title": "Where would you like to begin?",
+            "portals": [
+              {
+                "link": "/shop",
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793290052829.jpg",
+                "title": "Artworks Collection",
+                "subtitle": "Explore handcrafted Dot Mandalas & Lippan Mirrors"
+              },
+              {
+                "link": "/custom-order",
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793290073125.jpg",
+                "title": "Commissions Studio",
+                "subtitle": "Personalized sizes, color palettes & photo art"
+              },
+              {
+                "link": "/about",
+                "image": "/static/assets/images/Home_page_banner.jpeg",
+                "title": "Artist & Studio Story",
+                "subtitle": "Meet Shital Thosar and read collector reviews"
+              }
+            ],
+            "subtitle": "Select a category to explore our authentic collection or start a custom order."
+          },
+          "section_type": "begin_portals",
+          "display_order": 2
+        },
+        {
+          "id": "sec-home-featured",
+          "page_id": "page-home",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "featured_artworks",
+          "content_json": {
+            "badge": "Studio Highlights",
+            "title": "Featured Hand-Painted Pieces",
+            "description": "Explore our most sought-after Dot Mandalas and Lippan Mud-Mirror Art, each piece individually hand-painted."
+          },
+          "section_type": "featured_artworks",
+          "display_order": 4
+        },
+        {
+          "id": "sec-home-large-mandalas",
+          "page_id": "page-home",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-29T16:12:59.233Z",
+          "section_key": "large_mandalas_banner",
+          "content_json": {
+            "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793290377436.jpg",
+            "quote": "You choose the colours and the inspiration. I create the mandala. Together, it creates magic.",
+            "title": "Made to enthrall,\nup close and across the room.",
+            "author": "— Shital Thosar",
+            "eyebrow": "CUSTOM COMMISSIONS · LARGE SIZED MANDALAS",
+            "paragraph": "At this scale a mandala holds you still for a moment. From the doorway it reads as one bold form. Step closer and the nuance arrives: the concentric rings, the subtle gradients, the thousands of individual dots and light-reflecting mirrors that built it."
+          },
+          "section_type": "large_mandalas_banner",
+          "display_order": 5
+        },
+        {
+          "id": "sec-home-trust-boxes",
+          "page_id": "page-home",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "trust_boxes",
+          "content_json": {
+            "boxes": [
+              {
+                "title": "100% Handcrafted Originals",
+                "description": "Every dot and clay relief pattern is meticulously handcrafted by artist Shital Thosar."
+              },
+              {
+                "title": "Protective Varnish Finish",
+                "description": "Sealed with professional UV & moisture resistant varnish for long-lasting vibrant artwork."
+              },
+              {
+                "title": "Safe Worldwide Delivery",
+                "description": "Multi-layered custom wooden crate & foam bubble packaging ensures 100% safe transit."
+              },
+              {
+                "title": "Direct Artist Support",
+                "description": "Direct communication with the artist for color advice, wall sizing & custom creations."
+              }
+            ]
+          },
+          "section_type": "trust_boxes",
+          "display_order": 6
+        }
+      ],
+      "created_at": "2026-10-28T09:13:02.237+00:00",
+      "updated_at": "2026-10-29T16:20:27.573+00:00"
+    },
+    {
+      "id": "page-about",
+      "slug": "about",
+      "title": "About Shital Thosar — Dot And Art Studio",
+      "seo_title": "About Shital Thosar — Artist & Founder, Dot And Art",
+      "meta_description": "Learn about artist Shital Thosar, her meditative journey into dot mandala painting, and traditional Lippan Kaam mirror art.",
+      "status": "published",
+      "sections": [
+        {
+          "id": "sec-about-guarantee",
+          "page_id": "page-about",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "artist_authenticity_guarantee",
+          "content_json": {
+            "tag": "ORIGINAL PHOTOGRAPHY [NO AI]",
+            "heading": "Authenticity Guarantee: 100% Hand-Painted",
+            "paragraph": "All artworks crafted at DotAndArt are authentic, physical hand-painted creations. Every image on this website is an original photograph of actual physical pieces, never AI-generated or digitally fabricated."
+          },
+          "section_type": "guarantee",
+          "display_order": 1
+        },
+        {
+          "id": "sec-about-hero",
+          "page_id": "page-about",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "artist_hero",
+          "content_json": {
+            "badge": "Meet The Artist",
+            "title": "About Shital Thosar",
+            "subtitle": "Artist & Founder behind DotAndArt"
+          },
+          "section_type": "hero",
+          "display_order": 2
+        },
+        {
+          "id": "sec-about-story",
+          "page_id": "page-about",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "artist_story",
+          "content_json": {
+            "paragraph_1": "What started as a love for colours, patterns and the simple joy of creating with my hands slowly grew into something much more meaningful—my own art journey.",
+            "paragraph_2": "I found myself drawn to Dot Mandala Art, where tiny dots come together to create intricate patterns, balance and harmony. For me, mandala is not just about creating something beautiful. It is a process of slowing down, being present and finding a little calm in the middle of everyday life.",
+            "paragraph_3": "With time, my art has evolved into a blend of traditional mandala patterns, contemporary colours and Indian artistic influences. I enjoy experimenting with colours, textures and different forms while keeping the handmade character of every piece alive.",
+            "paragraph_4": "Every DotAndArt creation is painted by hand, one dot and one detail at a time. Whether it is a personalised photo mandala, a festive piece, a wall artwork or a custom creation, I put a little piece of my creativity and love into each one.",
+            "paragraph_5": "Today, DotAndArt is not just about selling handmade art. It is about creating meaningful pieces that become part of someone's home, celebrations and memories.",
+            "closing_name": "Shital",
+            "closing_role": "ARTIST & FOUNDER, DOTANDART",
+            "closing_sign": "With love,",
+            "closing_thanks": "Thank you for being a part of my creative journey.",
+            "statement_heading": "Hi, I’m Shital Thosar, the artist and creator behind DotAndArt."
+          },
+          "section_type": "bio",
+          "display_order": 3
+        },
+        {
+          "id": "sec-about-card",
+          "page_id": "page-about",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-29T16:13:37.225Z",
+          "section_key": "artist_card",
+          "content_json": {
+            "name": "Shital Thosar",
+            "role": "FOUNDER & MASTER ARTIST",
+            "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/ABOUT_1793290415940.jpg"
+          },
+          "section_type": "profile_card",
+          "display_order": 4
+        },
+        {
+          "id": "sec-about-promise",
+          "page_id": "page-about",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "artist_promise",
+          "content_json": {
+            "point_1": "Zero mass-production or stencil printing",
+            "point_2": "Hand painted dot by dot, detail by detail",
+            "point_3": "Protective moisture-seal applied to every creation",
+            "promise_desc": "Every artwork leaving the studio has been painted by hand with patience, precision, and devotion. We use non-toxic, lightfast acrylics, moisture-sealed MDF bases, and authentic mirrors.",
+            "promise_title": "The Handcrafted Promise"
+          },
+          "section_type": "features",
+          "display_order": 5
+        },
+        {
+          "id": "sec-about-custom-card",
+          "page_id": "page-about",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "artist_custom_card",
+          "content_json": {
+            "card_desc": "Looking for custom colors, specific dimensions, or a personalized photo mandala?",
+            "card_title": "Custom Artworks",
+            "button_text": "Commission Custom Piece"
+          },
+          "section_type": "callout",
+          "display_order": 6
+        },
+        {
+          "id": "sec-about-discipline",
+          "page_id": "page-about",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "meditative_discipline",
+          "content_json": {
+            "feature_1_desc": "Every circle, arc, and mirror placement is created manually using traditional dotting tools.",
+            "feature_2_desc": "Designs rooted in ancient Vedic proportions that balance energy and harmony in living spaces.",
+            "feature_3_desc": "Coated with professional artist varnish to safeguard colors and mirrors against dust and humidity.",
+            "feature_4_desc": "Custom shock-absorbent multi-ply packaging ensures your delicate artwork arrives flawless.",
+            "feature_1_title": "No Mechanization",
+            "feature_2_title": "Authentic Geometry",
+            "feature_3_title": "Weather Protective Seal",
+            "feature_4_title": "Transit Safe Crate",
+            "discipline_badge": "THE MEDITATIVE DISCIPLINE",
+            "discipline_title": "Every Dot Placed with Breath, Patience & Devotion",
+            "discipline_intro_1": "At DotAndArt, art is not merely decoration; it is a authentic meditation. Each dot mandala begins at the central Bindu — the spark of primordial consciousness — and blossoms outward in thousands of concentric, hand-dropped acrylic droplets.",
+            "discipline_intro_2": "Our Lippan Kaam honors the pastoral tribes of Kutch, where hand-kneaded organic clay relief lines cradle gleaming hand-cut mirrors that reflect light and ward off negativity. No molds, no mass production — only singular handmade devotion."
+          },
+          "section_type": "philosophy",
+          "display_order": 7
+        },
+        {
+          "id": "sec-about-process",
+          "page_id": "page-about",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "creation_process",
+          "content_json": {
+            "step_1_desc": "Moisture-resistant MDF discs are precision-cut, sanded, primed, and coated in rich foundational base paint.",
+            "step_2_desc": "Harmonious radial divisions are mapped outward from the central nucleus to guide dot placements.",
+            "step_3_desc": "Layer after layer of graduated paint droplets or hand-set mirrors are painted with steady presence.",
+            "step_4_desc": "Artworks cure naturally before being sealed with protective varnish and fitted with mounting hardware.",
+            "step_1_title": "Base Preparation",
+            "step_2_title": "Symmetry & Geometry",
+            "step_3_title": "Dotting & Detailing",
+            "step_4_title": "Sealing & Finishing",
+            "process_badge": "THE CREATION PROCESS",
+            "process_title": "How Each Piece Comes To Life"
+          },
+          "section_type": "steps",
+          "display_order": 8
+        },
+        {
+          "id": "sec-about-cta",
+          "page_id": "page-about",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "bottom_cta",
+          "content_json": {
+            "button_text": "Explore Entire Product Catalog"
+          },
+          "section_type": "cta",
+          "display_order": 9
+        }
+      ],
+      "created_at": "2026-10-28T09:13:02.238+00:00",
+      "updated_at": "2026-10-29T16:13:42.669+00:00"
     }
   ],
   "testimonials": [

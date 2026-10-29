@@ -266,13 +266,20 @@ export function HomePage({
     return true;
   });
 
+  const isSectionVisible = (sec?: any) => {
+    if (!sec) return true;
+    if (sec.enabled === false || sec.is_visible === false) return false;
+    return true;
+  };
+
   return (
     <div className="min-h-screen bg-theme-page text-theme-primary selection:bg-[#C85A32]/20">
       
       {/* ========================================================================= */}
       {/* 1. MONUMENTAL HERO SECTION                                               */}
       {/* ========================================================================= */}
-      <section className="relative w-full overflow-hidden bg-[#0A0D10] text-white">
+      {isSectionVisible(slideshowSec) && (
+        <section className="relative w-full overflow-hidden bg-[#0A0D10] text-white">
         {/* Full-bleed high-res Mandala Art Backdrop - Editable CMS Slideshow */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           {heroSlides.map((slide: any, idx: number) => (
@@ -385,157 +392,162 @@ export function HomePage({
           </div>
         </div>
       </section>
+      )}
 
       {/* ========================================================================= */}
       {/* 2. "WHERE WOULD YOU LIKE TO BEGIN?" PORTALS                               */}
       {/* ========================================================================= */}
-      <section className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-24">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4 border-b border-theme-glass gap-3">
-          <div>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-theme-primary tracking-tight">
-              Where would you like to begin?
-            </h2>
-          </div>
-          <span className="text-xs uppercase font-mono tracking-widest text-theme-accent font-semibold">
-            TAP A CARD TO EXPLORE
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {portals.map((p: any, idx: number) => (
-            <div
-              key={idx}
-              onClick={() => onNavigate(p.link || '/shop')}
-              className="group relative h-96 sm:h-[420px] rounded-3xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1.5 border border-theme-glass"
-            >
-              <img
-                src={p.image}
-                alt={p.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                onError={(e) => { e.currentTarget.src = '/static/assets/images/Home_page_banner.jpeg'; }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-              <div className="absolute top-4 left-4 font-mono text-xs text-white/70 tracking-widest font-bold">
-                0{idx + 1}
-              </div>
-              <div className="absolute bottom-6 left-6 right-6 space-y-1 text-white">
-                <h3 className="font-serif text-2xl font-medium tracking-wide group-hover:text-[#F7D8BA] transition-colors">
-                  {p.title}
-                </h3>
-                <p className="text-xs text-stone-300 font-light leading-relaxed">
-                  {p.subtitle}
-                </p>
-              </div>
+      {isSectionVisible(beginPortalsSec) && (
+        <section className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-24">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4 border-b border-theme-glass gap-3">
+            <div>
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-theme-primary tracking-tight">
+                Where would you like to begin?
+              </h2>
             </div>
-          ))}
-        </div>
-      </section>
+            <span className="text-xs uppercase font-mono tracking-widest text-theme-accent font-semibold">
+              TAP A CARD TO EXPLORE
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {portals.map((p: any, idx: number) => (
+              <div
+                key={idx}
+                onClick={() => onNavigate(p.link || '/shop')}
+                className="group relative h-96 sm:h-[420px] rounded-3xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1.5 border border-theme-glass"
+              >
+                <img
+                  src={p.image}
+                  alt={p.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  onError={(e) => { e.currentTarget.src = '/static/assets/images/Home_page_banner.jpeg'; }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                <div className="absolute top-4 left-4 font-mono text-xs text-white/70 tracking-widest font-bold">
+                  0{idx + 1}
+                </div>
+                <div className="absolute bottom-6 left-6 right-6 space-y-1 text-white">
+                  <h3 className="font-serif text-2xl font-medium tracking-wide group-hover:text-[#F7D8BA] transition-colors">
+                    {p.title}
+                  </h3>
+                  <p className="text-xs text-stone-300 font-light leading-relaxed">
+                    {p.subtitle}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ========================================================================= */}
       {/* 3. "DETAILS YOU CAN FEEL BEFORE YOU TOUCH IT"                             */}
       {/* ========================================================================= */}
-      <section className="bg-theme-card/50 border-y border-theme-glass py-16 sm:py-24">
-        <div className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            
-            {/* Left Column: Craftsmanship Philosophy */}
-            <div className="lg:col-span-6 space-y-8">
-              <div className="space-y-3">
-                <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C85A32] font-bold">
-                  DOT MANDALA & LIPPAN KAAM · THE ART FORM
-                </span>
-                <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-theme-primary tracking-tight leading-[1.12]">
-                  Details you can feel <br />
-                  <span className="italic font-normal">before you touch it.</span>
-                </h2>
-              </div>
-
-              <p className="text-sm sm:text-base text-theme-muted font-light leading-relaxed">
-                In a Dot Mandala piece, there are no prints, no stencils, no shortcuts. Every dot is placed by hand: raised, glossy, catching light differently from every angle. Each mirror is hand-inlaid into authentic Gujarati clay-relief motifs.
-              </p>
-
-              {/* 4 Pillars */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-                <div className="space-y-1.5 border-t border-theme-glass pt-3">
-                  <h4 className="font-serif font-semibold text-base text-theme-primary">A meditative process</h4>
-                  <p className="text-xs text-theme-muted font-light leading-relaxed">Hours of slow, steady mindful dotting with complete concentration.</p>
-                </div>
-
-                <div className="space-y-1.5 border-t border-theme-glass pt-3">
-                  <h4 className="font-serif font-semibold text-base text-theme-primary">Control in every stroke</h4>
-                  <p className="text-xs text-theme-muted font-light leading-relaxed">Brushwork and custom styluses held to a fine, even line.</p>
-                </div>
-
-                <div className="space-y-1.5 border-t border-theme-glass pt-3">
-                  <h4 className="font-serif font-semibold text-base text-theme-primary">Magic out of dots</h4>
-                  <p className="text-xs text-theme-muted font-light leading-relaxed">Artist-grade heavy acrylics and patience until the surface shimmers.</p>
-                </div>
-
-                <div className="space-y-1.5 border-t border-theme-glass pt-3">
-                  <h4 className="font-serif font-semibold text-base text-theme-primary">A symphony of colour</h4>
-                  <p className="text-xs text-theme-muted font-light leading-relaxed">Each concentric ring harmoniously answering the one before it.</p>
-                </div>
-              </div>
-
-              {/* Stats */}
-              <div className="flex flex-wrap items-center gap-8 pt-4 border-t border-theme-glass text-xs font-mono">
-                <div>
-                  <span className="text-xl sm:text-2xl font-bold font-serif text-[#C85A32] block">10,000+</span>
-                  <span className="text-theme-muted tracking-wider uppercase text-[10px]">dots in a large piece</span>
-                </div>
-                <div>
-                  <span className="text-xl sm:text-2xl font-bold font-serif text-theme-primary block">40+ hrs</span>
-                  <span className="text-theme-muted tracking-wider uppercase text-[10px]">average per commission</span>
-                </div>
-                <div>
-                  <span className="text-xl sm:text-2xl font-bold font-serif text-emerald-600 block">100%</span>
-                  <span className="text-theme-muted tracking-wider uppercase text-[10px]">Handmade & Non-AI</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: 3x3 CMS Artwork Gallery */}
-            <div className="lg:col-span-6">
-              <div className="p-4 sm:p-6 rounded-3xl glass-card border border-theme-glass bg-theme-page/80 shadow-2xl">
-                <div className="grid grid-cols-3 gap-3 sm:gap-4">
-                  {plateImages.map((plate: any, idx: number) => (
-                    <div
-                      key={idx}
-                      onClick={() => {
-                        const matched = featuredProducts.find((p) => p.sku === plate.sku || plate.src?.includes(p.sku));
-                        if (matched) {
-                          setZoomedProduct(matched);
-                        } else if (plate.sku) {
-                          onSelectProduct(plate.sku);
-                        }
-                      }}
-                      className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer bg-stone-50 dark:bg-stone-900/60 border border-theme-glass shadow-xs hover:shadow-md transition-all duration-300 flex items-center justify-center p-2 sm:p-2.5"
-                      title={`${plate.name} (${plate.size}) — Click to view authentic high-resolution photograph`}
-                    >
-                      <img
-                        src={plate.src}
-                        alt={plate.name}
-                        className="w-full h-full object-contain max-h-full max-w-full transition-transform duration-300 group-hover:scale-102"
-                        loading="lazy"
-                        onError={(e) => { e.currentTarget.src = '/static/assets/images/Home_page_banner.jpeg'; }}
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 text-center rounded-2xl">
-                        <span className="text-[10px] font-bold text-white leading-tight">{plate.name}</span>
-                        <span className="text-[9px] text-[#F7D8BA] font-mono mt-0.5">{plate.size} · View Photo</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-4 text-center">
-                  <span className="text-[11px] font-mono uppercase tracking-widest text-theme-muted">
-                    Click any authentic artwork plate to inspect full original photograph
+      {isSectionVisible(detailPlatesSec) && (
+        <section className="bg-theme-card/50 border-y border-theme-glass py-16 sm:py-24">
+          <div className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+              
+              {/* Left Column: Craftsmanship Philosophy */}
+              <div className="lg:col-span-6 space-y-8">
+                <div className="space-y-3">
+                  <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C85A32] font-bold">
+                    DOT MANDALA & LIPPAN KAAM · THE ART FORM
                   </span>
+                  <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-theme-primary tracking-tight leading-[1.12]">
+                    Details you can feel <br />
+                    <span className="italic font-normal">before you touch it.</span>
+                  </h2>
+                </div>
+
+                <p className="text-sm sm:text-base text-theme-muted font-light leading-relaxed">
+                  In a Dot Mandala piece, there are no prints, no stencils, no shortcuts. Every dot is placed by hand: raised, glossy, catching light differently from every angle. Each mirror is hand-inlaid into authentic Gujarati clay-relief motifs.
+                </p>
+
+                {/* 4 Pillars */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                  <div className="space-y-1.5 border-t border-theme-glass pt-3">
+                    <h4 className="font-serif font-semibold text-base text-theme-primary">A meditative process</h4>
+                    <p className="text-xs text-theme-muted font-light leading-relaxed">Hours of slow, steady mindful dotting with complete concentration.</p>
+                  </div>
+
+                  <div className="space-y-1.5 border-t border-theme-glass pt-3">
+                    <h4 className="font-serif font-semibold text-base text-theme-primary">Control in every stroke</h4>
+                    <p className="text-xs text-theme-muted font-light leading-relaxed">Brushwork and custom styluses held to a fine, even line.</p>
+                  </div>
+
+                  <div className="space-y-1.5 border-t border-theme-glass pt-3">
+                    <h4 className="font-serif font-semibold text-base text-theme-primary">Magic out of dots</h4>
+                    <p className="text-xs text-theme-muted font-light leading-relaxed">Artist-grade heavy acrylics and patience until the surface shimmers.</p>
+                  </div>
+
+                  <div className="space-y-1.5 border-t border-theme-glass pt-3">
+                    <h4 className="font-serif font-semibold text-base text-theme-primary">A symphony of colour</h4>
+                    <p className="text-xs text-theme-muted font-light leading-relaxed">Each concentric ring harmoniously answering the one before it.</p>
+                  </div>
+                </div>
+
+                {/* Stats */}
+                <div className="flex flex-wrap items-center gap-8 pt-4 border-t border-theme-glass text-xs font-mono">
+                  <div>
+                    <span className="text-xl sm:text-2xl font-bold font-serif text-[#C85A32] block">10,000+</span>
+                    <span className="text-theme-muted tracking-wider uppercase text-[10px]">dots in a large piece</span>
+                  </div>
+                  <div>
+                    <span className="text-xl sm:text-2xl font-bold font-serif text-theme-primary block">40+ hrs</span>
+                    <span className="text-theme-muted tracking-wider uppercase text-[10px]">average per commission</span>
+                  </div>
+                  <div>
+                    <span className="text-xl sm:text-2xl font-bold font-serif text-emerald-600 block">100%</span>
+                    <span className="text-theme-muted tracking-wider uppercase text-[10px]">Handmade & Non-AI</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: 3x3 CMS Artwork Gallery */}
+              <div className="lg:col-span-6">
+                <div className="p-4 sm:p-6 rounded-3xl glass-card border border-theme-glass bg-theme-page/80 shadow-2xl">
+                  <div className="grid grid-cols-3 gap-3 sm:gap-4">
+                    {plateImages.map((plate: any, idx: number) => (
+                      <div
+                        key={idx}
+                        onClick={() => {
+                          const matched = featuredProducts.find((p) => p.sku === plate.sku || plate.src?.includes(p.sku));
+                          if (matched) {
+                            setZoomedProduct(matched);
+                          } else if (plate.sku) {
+                            onSelectProduct(plate.sku);
+                          }
+                        }}
+                        className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer bg-stone-50 dark:bg-stone-900/60 border border-theme-glass shadow-xs hover:shadow-md transition-all duration-300 flex items-center justify-center p-2 sm:p-2.5"
+                        title={`${plate.name} (${plate.size}) — Click to view authentic high-resolution photograph`}
+                      >
+                        <img
+                          src={plate.src}
+                          alt={plate.name}
+                          className="w-full h-full object-contain max-h-full max-w-full transition-transform duration-300 group-hover:scale-102"
+                          loading="lazy"
+                          onError={(e) => { e.currentTarget.src = '/static/assets/images/Home_page_banner.jpeg'; }}
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 text-center rounded-2xl">
+                          <span className="text-[10px] font-bold text-white leading-tight">{plate.name}</span>
+                          <span className="text-[9px] text-[#F7D8BA] font-mono mt-0.5">{plate.size} · View Photo</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 text-center">
+                    <span className="text-[11px] font-mono uppercase tracking-widest text-theme-muted">
+                      Click any authentic artwork plate to inspect full original photograph
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ========================================================================= */}
       {/* 4. FEATURED HAND-PAINTED PIECES (Supports up to 50 items)                */}
@@ -705,77 +717,79 @@ export function HomePage({
       {/* ========================================================================= */}
       {/* 5. LARGE SIZED MANDALAS BANNER (CMS Editable)                             */}
       {/* ========================================================================= */}
-      <section className="w-full bg-[#0E0C0A] text-white py-20 sm:py-28 border-t border-white/10">
-        <div className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            
-            {/* Left Column: Portrait of Artist Shital Thosar */}
-            <div className="lg:col-span-6 flex justify-center">
-              <div className="relative w-full max-w-lg aspect-square rounded-3xl overflow-hidden border-2 border-[#C85A32]/30 shadow-2xl p-2 bg-[#171412]">
-                <img
-                  src={largeMandalas.image}
-                  alt="Artist Shital Thosar with Handcrafted Mandala Artwork"
-                  className="w-full h-full object-contain rounded-2xl"
-                  onError={(e) => { e.currentTarget.src = '/static/assets/images/Art_artist.jpeg'; }}
-                />
-                <div className="absolute bottom-5 left-5 right-5 p-4 rounded-2xl bg-black/80 backdrop-blur-md border border-white/15 text-xs flex items-center justify-between">
-                  <div>
-                    <h4 className="font-serif font-bold text-sm text-white">Shital Thosar</h4>
-                    <p className="text-[11px] text-[#E6A082] font-mono uppercase tracking-wider">Founder & Master Artisan</p>
+      {isSectionVisible(largeMandalasSec) && (
+        <section className="w-full bg-[#0E0C0A] text-white py-20 sm:py-28 border-t border-white/10">
+          <div className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+              
+              {/* Left Column: Portrait of Artist Shital Thosar */}
+              <div className="lg:col-span-6 flex justify-center">
+                <div className="relative w-full max-w-lg aspect-square rounded-3xl overflow-hidden border-2 border-[#C85A32]/30 shadow-2xl p-2 bg-[#171412]">
+                  <img
+                    src={largeMandalas.image}
+                    alt="Artist Shital Thosar with Handcrafted Mandala Artwork"
+                    className="w-full h-full object-contain rounded-2xl"
+                    onError={(e) => { e.currentTarget.src = '/static/assets/images/Art_artist.jpeg'; }}
+                  />
+                  <div className="absolute bottom-5 left-5 right-5 p-4 rounded-2xl bg-black/80 backdrop-blur-md border border-white/15 text-xs flex items-center justify-between">
+                    <div>
+                      <h4 className="font-serif font-bold text-sm text-white">Shital Thosar</h4>
+                      <p className="text-[11px] text-[#E6A082] font-mono uppercase tracking-wider">Founder & Master Artisan</p>
+                    </div>
+                    <span className="text-[10px] text-stone-400 font-mono">Pune, India</span>
                   </div>
-                  <span className="text-[10px] text-stone-400 font-mono">Pune, India</span>
+                </div>
+              </div>
+
+              {/* Right Column: Editorial Commission Proposition */}
+              <div className="lg:col-span-6 space-y-6">
+                <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#E6A082] font-bold">
+                  {largeMandalas.eyebrow}
+                </span>
+
+                <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light text-white tracking-tight leading-[1.12] whitespace-pre-line">
+                  {largeMandalas.title}
+                </h2>
+
+                <p className="text-sm sm:text-base text-stone-300 font-light leading-relaxed">
+                  {largeMandalas.paragraph}
+                </p>
+
+                <div className="pl-4 border-l-2 border-[#C85A32] py-1 space-y-1">
+                  <p className="font-serif text-base sm:text-lg text-stone-200 italic leading-snug">
+                    "{largeMandalas.quote}"
+                  </p>
+                  <span className="text-xs uppercase font-mono tracking-wider text-[#E6A082] block">
+                    {largeMandalas.author}
+                  </span>
+                </div>
+
+                <div className="pt-4 flex flex-wrap items-center gap-4">
+                  <button
+                    onClick={() => onNavigate('/custom-order')}
+                    className="px-6 py-3.5 rounded-full bg-[#C85A32] hover:bg-[#b04a25] text-white font-semibold text-xs sm:text-sm tracking-wide shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center gap-2"
+                  >
+                    <MessageCircle className="w-4 h-4 fill-white" />
+                    <span>Enquire about a commission</span>
+                  </button>
+
+                  <button
+                    onClick={handleCommissionClick}
+                    className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/20 transition-all cursor-pointer"
+                  >
+                    WhatsApp: {DISPLAY_WHATSAPP_NUMBER}
+                  </button>
                 </div>
               </div>
             </div>
-
-            {/* Right Column: Editorial Commission Proposition */}
-            <div className="lg:col-span-6 space-y-6">
-              <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#E6A082] font-bold">
-                {largeMandalas.eyebrow}
-              </span>
-
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light text-white tracking-tight leading-[1.12] whitespace-pre-line">
-                {largeMandalas.title}
-              </h2>
-
-              <p className="text-sm sm:text-base text-stone-300 font-light leading-relaxed">
-                {largeMandalas.paragraph}
-              </p>
-
-              <div className="pl-4 border-l-2 border-[#C85A32] py-1 space-y-1">
-                <p className="font-serif text-base sm:text-lg text-stone-200 italic leading-snug">
-                  "{largeMandalas.quote}"
-                </p>
-                <span className="text-xs uppercase font-mono tracking-wider text-[#E6A082] block">
-                  {largeMandalas.author}
-                </span>
-              </div>
-
-              <div className="pt-4 flex flex-wrap items-center gap-4">
-                <button
-                  onClick={() => onNavigate('/custom-order')}
-                  className="px-6 py-3.5 rounded-full bg-[#C85A32] hover:bg-[#b04a25] text-white font-semibold text-xs sm:text-sm tracking-wide shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center gap-2"
-                >
-                  <MessageCircle className="w-4 h-4 fill-white" />
-                  <span>Enquire about a commission</span>
-                </button>
-
-                <button
-                  onClick={handleCommissionClick}
-                  className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/20 transition-all cursor-pointer"
-                >
-                  WhatsApp: {DISPLAY_WHATSAPP_NUMBER}
-                </button>
-              </div>
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ========================================================================= */}
       {/* 6. 4 TRUST TEXT BOXES (CMS Editable)                                    */}
       {/* ========================================================================= */}
-      {trustBoxes.length > 0 && (
+      {isSectionVisible(trustBoxesSec) && trustBoxes.length > 0 && (
         <section className="bg-theme-card/30 border-t border-theme-glass py-12 sm:py-16">
           <div className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

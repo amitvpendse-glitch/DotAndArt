@@ -274,7 +274,7 @@ html {
 
 .animate-waterfall-down,
 .animate-waterfall-left {
-  animation: waterfallDown 300s linear infinite;
+  animation: waterfallDown 380s linear infinite;
   will-change: transform;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
@@ -283,7 +283,7 @@ html {
 
 .animate-waterfall-up,
 .animate-waterfall-right {
-  animation: waterfallUp 200s linear infinite;
+  animation: waterfallUp 380s linear infinite;
   will-change: transform;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;

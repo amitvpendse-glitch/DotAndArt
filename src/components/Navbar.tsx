@@ -292,13 +292,16 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
 
           {/* Right Actions: Enquire Button (from reference), Theme, Admin, Cart */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {/* Prominent "Enquire" Button matching reference image */}
+            {/* Standard WhatsApp Enquire Icon Button */}
             <button
               onClick={handleEnquireClick}
-              className="px-4 sm:px-5 py-2 rounded-full bg-[#C85A32] hover:bg-[#b04a25] text-white text-xs sm:text-sm font-semibold tracking-wide shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer flex items-center gap-1.5"
+              className="p-2 sm:p-2.5 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-md hover:shadow-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+              title="Enquire on WhatsApp"
+              aria-label="Enquire on WhatsApp"
             >
-              <MessageCircle className="w-4 h-4 fill-white" />
-              <span>Enquire</span>
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.964 9.964 0 001.333 4.993L2 22l5.233-1.237a9.982 9.982 0 004.779 1.221h.004c5.505 0 9.988-4.478 9.989-9.985 0-2.668-1.037-5.176-2.922-7.062A9.92 9.92 0 0012.012 2zm5.835 14.168c-.246.691-1.224 1.263-1.688 1.343-.464.08-1.07.136-3.088-.698-2.578-1.066-4.237-3.682-4.366-3.854-.129-.172-1.045-1.391-1.045-2.654 0-1.263.662-1.884.898-2.141.236-.257.514-.321.685-.321.172 0 .343.003.493.01.16.007.375-.06.586.446.214.514.729 1.778.793 1.907.064.129.107.279.021.45-.086.171-.129.278-.257.428-.129.15-.271.335-.386.45-.128.129-.262.269-.113.526.15.257.662 1.092 1.42 1.767.976.87 1.798 1.14 2.055 1.269.257.129.407.107.557-.064.15-.171.643-.75.814-1.007.171-.257.343-.214.578-.129.236.086 1.499.707 1.756.836.257.129.428.193.492.3.064.107.064.622-.182 1.313z" />
+              </svg>
             </button>
 
             {/* Theme Selector Button */}

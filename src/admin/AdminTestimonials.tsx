@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Star } from 'lucide-react';
+import { Plus, Edit2, Trash2, Star, Upload, ImageIcon } from 'lucide-react';
 import { Testimonial } from '../types';
-import { getFirestoreTestimonials, saveFirestoreTestimonial, deleteFirestoreTestimonial } from '../lib/firestoreCatalog';
+import { getFirestoreTestimonials, saveFirestoreTestimonial, deleteFirestoreTestimonial, uploadImageToSupabaseStorage } from '../lib/firestoreCatalog';
+import { compressImageFile } from '../utils/imageCompressor';
 
 interface AdminTestimonialsProps {
   token: string;
@@ -19,6 +20,8 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
   const [content, setContent] = useState('');
   const [rating, setRating] = useState(5);
   const [isPublished, setIsPublished] = useState(true);
+  const [imagePath, setImagePath] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const fetchItems = async () => {
     setLoading(true);
@@ -45,6 +48,7 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
     setContent('');
     setRating(5);
     setIsPublished(true);
+    setImagePath('');
     setModalOpen(true);
   };
 
@@ -56,7 +60,24 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
     setContent(t.content);
     setRating(t.rating || 5);
     setIsPublished(t.is_published);
+    setImagePath(t.image_path || '');
     setModalOpen(true);
+  };
+
+  const handleTestimonialImageUpload = async (file: File) => {
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const compressed = await compressImageFile(file, 800, 800, 0.85);
+      const res = await uploadImageToSupabaseStorage(compressed, 'collector-review', file.name);
+      if (res.success && res.public_url) {
+        setImagePath(res.public_url);
+      }
+    } catch (err) {
+      console.warn('Upload error', err);
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -70,6 +91,7 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
         artwork_purchased: artwork,
         content,
         rating,
+        image_path: imagePath,
         is_published: isPublished,
         display_order: editing?.display_order || 0,
         created_at: editing?.created_at || new Date().toISOString(),
@@ -227,6 +249,41 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
                   onChange={(e) => setContent(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary resize-none"
                 />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-theme-primary mb-1">Collector / Artwork Photo (Optional)</label>
+                <div className="flex items-center gap-3">
+                  {imagePath ? (
+                    <img src={imagePath} alt="Avatar" className="w-12 h-12 rounded-xl object-cover border border-theme-glass shrink-0" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-xl bg-theme-page border border-theme-glass flex items-center justify-center shrink-0">
+                      <ImageIcon className="w-5 h-5 text-theme-muted" />
+                    </div>
+                  )}
+                  <input
+                    type="text"
+                    value={imagePath}
+                    onChange={(e) => setImagePath(e.target.value)}
+                    placeholder="https://... or upload photo"
+                    className="flex-1 px-3 py-2 rounded-xl bg-theme-page border border-theme-glass text-theme-primary text-xs"
+                  />
+                  <label className="px-3 py-2 rounded-xl bg-theme-accent/15 text-theme-accent font-semibold flex items-center gap-1 cursor-pointer shrink-0">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{uploadingImage ? '...' : 'Upload'}</span>
+                    <input
+                      type="file"
+                      accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                          handleTestimonialImageUpload(e.target.files[0]);
+                        }
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+                </div>
               </div>
 
               <div>

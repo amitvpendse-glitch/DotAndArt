@@ -86,7 +86,8 @@ export interface PageSection {
   section_key: string;
   content_json: Record<string, any>;
   display_order: number;
-  is_visible: boolean;
+  is_visible?: boolean;
+  enabled?: boolean;
   created_at: string;
   updated_at: string;
 }

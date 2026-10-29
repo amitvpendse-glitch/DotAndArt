@@ -23,7 +23,7 @@ import { setActiveWhatsAppNumber } from '../utils/whatsapp';
 import { AdminTestimonials } from './AdminTestimonials';
 import { AdminFAQs } from './AdminFAQs';
 import { compressImageFile, compressDataUrl } from '../utils/imageCompressor';
-import { uploadImageToSupabaseStorage } from '../lib/firestoreCatalog';
+import { uploadImageToSupabaseStorage, saveFirestorePage } from '../lib/firestoreCatalog';
 
 interface AdminPagesCMSProps {
   token: string;
@@ -552,6 +552,9 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
       setPages((prev) => prev.map((p) => (p.slug === finalPage.slug ? finalPage : p)));
       setActivePage(finalPage);
       setIsDirty(false);
+
+      // Save directly to Supabase DB pages table
+      await saveFirestorePage(finalPage).catch((err) => console.warn('[AdminPagesCMS] Direct Supabase DB save warning:', err));
 
       // Immediately sync localStorage
       try {
