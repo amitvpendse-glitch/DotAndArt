@@ -50,7 +50,6 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     'DA-MD-Set-0001': 'DA-MD-Set-0001.jpg',
     'DA-MD-SET-7CHAKRA': 'DA-MD-Set-7Chakra.jpg',
     'DA-MD-Set-7Chakra': 'DA-MD-Set-7Chakra.jpg',
-    'DA-TC-CS-0002': 'DA-TC-CS-0001.jpg',
     'DA-TC-CS-0001-AMIT': 'DA-TC-CS-0001.jpg',
   };
 

@@ -2,6 +2,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SETTINGS, INITIAL_PAGES, INITIAL_TESTIMONIALS, INITIAL_FAQS } from '../data/initialCatalog';
 import { Product, Category, WebsiteSettings, WebsitePage, Testimonial, FAQ, MediaAsset } from '../types';
 import { isSkuBlocked } from './blockedSkus';
+import { clearLocalArtworkImage } from '../utils/localImageCache';
 
 /**
  * Supabase + Smart Local Cache Adapter
@@ -222,7 +223,7 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
 
         // Retain truly un-synced offline local items if any
         localCustom.forEach((p) => {
-          if (p && p.sku && !productMap.has(p.sku.toUpperCase()) && !deletedSet.has(p.sku) && !deletedSet.has(p.id)) {
+          if (p && p.sku && !productMap.has(p.sku.toUpperCase()) && !deletedSet.has(p.sku) && !deletedSet.has(p.id) && !isSkuBlocked(p.sku, p.id)) {
             productMap.set(p.sku.toUpperCase(), p);
           }
         });
@@ -286,6 +287,8 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
       await deleteFirestoreProducts([product.id], [product.sku || '']).catch((err) => console.warn('Firestore forced delete error', err));
       return;
   }
+  
+  await clearLocalArtworkImage(product.sku || product.id);
 
   // 1. Local Storage Cache
   if (typeof window !== 'undefined' && window.localStorage) {
@@ -392,6 +395,13 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
 export async function deleteFirestoreProducts(ids: string[], skus: string[] = []): Promise<void> {
   cachedProducts = null;
   await addFirestoreDeletedIds([...ids, ...skus]);
+  
+  for (const sku of skus) {
+      await clearLocalArtworkImage(sku);
+  }
+  for (const id of ids) {
+      await clearLocalArtworkImage(id);
+  }
 
   if (typeof window !== 'undefined' && window.localStorage) {
     try {

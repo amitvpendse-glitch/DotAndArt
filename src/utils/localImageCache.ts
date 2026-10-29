@@ -381,3 +381,39 @@ export async function importLocalCatalogBackup(
 
   return { productsCount, imagesCount };
 }
+
+/**
+ * Clears locally cached artwork images by key or SKU.
+ */
+export async function clearLocalArtworkImage(keyOrSku: string): Promise<void> {
+  const cleanKey = keyOrSku.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+  const cleanSku = keyOrSku.trim().toUpperCase();
+
+  memoryImages.delete(cleanKey);
+  memoryImages.delete(cleanSku);
+
+  // 1. Remove from IndexedDB
+  try {
+    const db = await openDB();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE_IMAGES, 'readwrite');
+      const store = tx.objectStore(STORE_IMAGES);
+      store.delete(cleanKey);
+      store.delete(cleanSku);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch {}
+
+  // 2. Remove from Cache API
+  if (typeof window !== 'undefined' && 'caches' in window) {
+    try {
+      const cache = await window.caches.open(RUNTIME_CACHE_NAME);
+      await cache.delete(`/uploads/local-${cleanKey}.jpg`);
+      await cache.delete(`/static/assets/images/${cleanSku}.jpg`);
+      await cache.delete(cleanKey);
+      await cache.delete(cleanSku);
+    } catch {}
+  }
+}
+
