@@ -270,9 +270,7 @@ function deduplicateProducts(products: Product[]): Product[] {
 function ensureSpecialProducts(products: Product[]): Product[] {
   const specials = [
     { sku: 'DA-TC-CS-0001', name: 'Handcrafted Tea Light Candle Stand', price: 650 },
-    { sku: 'DA-TC-CS-0001-COPY-304', name: 'Handcrafted Tea Light Candle Stand (Copy 304)', price: 650 },
     { sku: 'DA-TC-CS-0001-AMIT', name: 'Handcrafted Tea Light Candle Stand (Amit Edition)', price: 750 },
-    { sku: 'DA-TC-CS-0001-COPY-585', name: 'Handcrafted Tea Light Candle Stand (Copy 585)', price: 650 },
   ];
 
   const skuSet = new Set(products.map(p => (p.sku || '').trim().toUpperCase()));
@@ -1204,11 +1202,12 @@ app.get('/api/categories', async (req: Request, res: Response) => {
     const catSlug = (p.category_slug || p.category_id || '').trim().toLowerCase();
     const catId = (p.category_id || '').trim();
     
-    if (catName && catSlug && !existingSlugs.has(catSlug) && !existingIds.has(catId)) {
+    if (catName && !existingSlugs.has(catSlug)) {
+      const cleanSlug = catName.toLowerCase().trim().replace(/[^a-z0-9-_]/g, '-');
       const newCat: Category = {
-        id: catId || `cat-${catSlug}`,
+        id: catId && !catId.includes('cat-') ? catId : `cat-${cleanSlug}`,
         name: catName,
-        slug: catSlug,
+        slug: cleanSlug,
         description: `Handcrafted ${catName}`,
         display_order: db.categories.length + 1,
         is_active: true,
@@ -1983,7 +1982,41 @@ app.post('/api/admin/products', requireAdmin, async (req: Request, res: Response
     variants,
   } = req.body;
 
-  const resolvedCatId = category_id || (req.body.category_slug === 'lippan-wall-hangings' ? 'cat-lippan' : 'cat-mandala');
+  const catInput = String(category_id || req.body.category_name || req.body.category_slug || '').trim();
+  let cat = (db.categories || []).find((c) => c.id === catInput || c.name.toLowerCase() === catInput.toLowerCase() || c.slug === catInput);
+  if (!cat && catInput) {
+    const cleanSlug = catInput.toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+    cat = {
+      id: `cat-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      name: catInput,
+      slug: cleanSlug,
+      description: `Handcrafted ${catInput}`,
+      image_path: '',
+      display_order: db.categories.length + 1,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    (db.categories = db.categories || []).push(cat);
+    try {
+      await saveFirestoreCategory(cat);
+    } catch (e) {
+      console.warn('[server] Failed to save new category to Supabase:', e);
+    }
+  }
+  if (!cat) {
+    cat = db.categories[0] || { 
+      id: 'cat-mandala', 
+      name: 'Mandala Wall Hangings', 
+      slug: 'mandala-wall-hangings', 
+      description: 'Handcrafted Mandala Wall Hangings', 
+      image_path: '', 
+      display_order: 1, 
+      is_active: true, 
+      created_at: new Date().toISOString(), 
+      updated_at: new Date().toISOString() 
+    };
+  }
 
   if (!name || !sku || base_price === undefined || base_price === null) {
     res.status(400).json({ error: 'Name, unique SKU, and base price are required' });
@@ -1993,7 +2026,6 @@ app.post('/api/admin/products', requireAdmin, async (req: Request, res: Response
   const cleanSku = sku.trim().toUpperCase();
   const targetId = (req.body.id && typeof req.body.id === 'string' && req.body.id.startsWith('prod-')) ? req.body.id : `prod-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
 
-  const cat = (db.categories || []).find((c) => c.id === resolvedCatId || c.slug === req.body.category_slug) || db.categories[0];
   const isLippanCategory = cat?.slug === 'lippan-wall-hangings' || name.toLowerCase().includes('lippan');
 
   const newProd: Product = {
@@ -2002,7 +2034,7 @@ app.post('/api/admin/products', requireAdmin, async (req: Request, res: Response
     name: name.trim(),
     short_description: short_description || '',
     description: description || '',
-    category_id: cat?.id || resolvedCatId,
+    category_id: cat?.id || 'cat-mandala',
     category_name: cat?.name || '',
     category_slug: cat?.slug || '',
     material: material || 'MDF Wood, Acrylics',
@@ -2067,14 +2099,45 @@ app.post('/api/admin/products/bulk', requireAdmin, async (req: Request, res: Res
       counter++;
     }
 
-    const catName = item.category_name || item.category || '';
-    const cat = (db.categories || []).find(
+    const catName = item.category_name || item.category || item.category_slug || '';
+    let cat = (db.categories || []).find(
       (c) =>
         c.id === item.category_id ||
         c.slug === item.category_slug ||
         c.slug === item.categorySlug ||
-        c.name.toLowerCase() === catName.toLowerCase()
-    ) || db.categories[0];
+        c.name.toLowerCase() === String(catName).toLowerCase()
+    );
+    if (!cat && catName) {
+      const cleanSlug = String(catName).toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+      cat = {
+        id: `cat-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        name: String(catName),
+        slug: cleanSlug,
+        description: `Handcrafted ${catName}`,
+        image_path: '',
+        display_order: db.categories.length + 1,
+        is_active: true,
+        created_at: now,
+        updated_at: now,
+      };
+      (db.categories = db.categories || []).push(cat);
+      try {
+        await saveFirestoreCategory(cat);
+      } catch {}
+    }
+    if (!cat) {
+      cat = db.categories[0] || { 
+        id: 'cat-mandala', 
+        name: 'Mandala Wall Hangings', 
+        slug: 'mandala-wall-hangings', 
+        description: 'Handcrafted Mandala Wall Hangings', 
+        image_path: '', 
+        display_order: 1, 
+        is_active: true, 
+        created_at: now, 
+        updated_at: now 
+      };
+    }
 
     const isLippanCategory = cat?.slug === 'lippan-wall-hangings' || (item.name || '').toLowerCase().includes('lippan');
 

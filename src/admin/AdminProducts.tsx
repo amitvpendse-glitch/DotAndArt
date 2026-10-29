@@ -586,6 +586,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         setCategoryId(res.category.id);
         setIsAddingNewCat(false);
         setNewCatName('');
+        window.dispatchEvent(new Event('app_categories_updated'));
       }
     } catch (err) {
       console.error('Failed to create category', err);
@@ -638,6 +639,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         uniqueCats.push(c);
       }
       setCategories(uniqueCats);
+      window.dispatchEvent(new Event('app_categories_updated'));
       if (setRes) setWebsiteSettings(setRes);
       // Auto-sync any local custom products to Cloud Firestore so all browsers (Opera, Chrome, etc.) stay updated
       syncLocalCustomProductsToFirestore().catch(() => {});

@@ -112,6 +112,7 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ token }) => {
 
       setModalOpen(false);
       fetchCategories();
+      window.dispatchEvent(new Event('app_categories_updated'));
     } catch (err) {
       setErrorMessage('Server error while saving category.');
     }
@@ -140,6 +141,7 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ token }) => {
       setDeleteTarget(null);
       setReassignTargetId('');
       fetchCategories();
+      window.dispatchEvent(new Event('app_categories_updated'));
     } catch (err) {
       setDeleteError('Server error while deleting category.');
     }

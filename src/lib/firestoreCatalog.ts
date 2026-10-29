@@ -392,16 +392,8 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
   if (sb) {
     try {
       const sku = (product.sku || '').trim().toUpperCase();
-      let recordId = product.id;
-      try {
-        const { data: existingRow } = await sb.from('products').select('id').eq('sku', sku).maybeSingle();
-        if (existingRow && existingRow.id) {
-          recordId = existingRow.id;
-        }
-      } catch {}
-
       const payload: Record<string, any> = {
-        id: recordId || `prod-${sku.toLowerCase()}`,
+        id: product.id || `prod-${sku.toLowerCase()}`,
         sku,
         name: product.name,
         short_description: product.short_description || '',
@@ -431,24 +423,22 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
         updated_at: new Date().toISOString(),
       };
 
-      // Check for SKU unique constraint collision (another row with same SKU but different ID)
-      try {
-        const { data: conflictingSkuRows } = await sb.from('products').select('id').eq('sku', sku).neq('id', payload.id);
-        if (conflictingSkuRows && conflictingSkuRows.length > 0) {
-          for (const conflict of conflictingSkuRows) {
-            await sb.from('products').delete().eq('id', conflict.id);
-          }
-        }
-      } catch {}
-
-      console.log(`[SupabaseCatalog] Executing Supabase insert/update for SKU: ${sku}, base_price: ${payload.base_price}`);
-      let { data: existingRow, error: checkErr } = await sb.from('products').select('id').eq('id', payload.id).maybeSingle();
+      // SKU-centric Upsert: Find existing record by SKU to ensure stable identity and prevent 409s
+      let { data: existingSkuRow } = await sb.from('products').select('id').eq('sku', sku).maybeSingle();
       
       let res;
-      if (!checkErr && existingRow && existingRow.id) {
-        res = await sb.from('products').update(payload).eq('id', existingRow.id).select();
+      if (existingSkuRow && existingSkuRow.id) {
+        // Update existing record by SKU (even if the ID in the payload is different)
+        payload.id = existingSkuRow.id; // Ensure we update the correct ID
+        res = await sb.from('products').update(payload).eq('id', existingSkuRow.id).select();
       } else {
-        res = await sb.from('products').insert(payload).select();
+        // Check for ID collision if no SKU match found
+        let { data: existingIdRow } = await sb.from('products').select('id').eq('id', payload.id).maybeSingle();
+        if (existingIdRow && existingIdRow.id) {
+          res = await sb.from('products').update(payload).eq('id', payload.id).select();
+        } else {
+          res = await sb.from('products').insert(payload).select();
+        }
       }
 
       const upsertErr = res.error;
@@ -504,14 +494,14 @@ export async function deleteFirestoreProducts(ids: string[], skus: string[] = []
         const { data: existing } = await sb.from('products').select('id').in('id', ids);
         if (existing && existing.length > 0) {
             const { error } = await sb.from('products').delete().in('id', existing.map(e => e.id));
-            if (error && error.code !== '409') console.warn('[Supabase] Delete ID error', error);
+            if (error) console.warn('[Supabase] Delete ID error', error);
         }
       }
       if (skus.length > 0) {
         const { data: existing } = await sb.from('products').select('sku').in('sku', skus);
         if (existing && existing.length > 0) {
             const { error } = await sb.from('products').delete().in('sku', existing.map(e => e.sku));
-            if (error && error.code !== '409') console.warn('[Supabase] Delete SKU error', error);
+            if (error) console.warn('[Supabase] Delete SKU error', error);
         }
       }
     } catch (e) {
