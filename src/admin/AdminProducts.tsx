@@ -32,6 +32,9 @@ import {
   Cloud,
   RefreshCw,
   ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+  ImagePlus,
 } from 'lucide-react';
 import { Product, Category, ProductVariant, ProductImage, WebsiteSettings } from '../types';
 import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
@@ -757,6 +760,24 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     setDrawerOpen(true);
   };
 
+  // Move image position left or right in gallery order
+  const handleMoveImage = (index: number, direction: 'left' | 'right') => {
+    setImages((prev) => {
+      const targetIdx = direction === 'left' ? index - 1 : index + 1;
+      if (targetIdx < 0 || targetIdx >= prev.length) return prev;
+      const copy = [...prev];
+      const temp = copy[index];
+      copy[index] = copy[targetIdx];
+      copy[targetIdx] = temp;
+
+      return copy.map((img, i) => ({
+        ...img,
+        display_order: i + 1,
+      }));
+    });
+    setIsDrawerDirty(true);
+  };
+
   // Upload multiple files or replace an existing photo (supports mobile camera, file input, drag-and-drop, and in-place replacement)
   const processFiles = async (filesList: FileList | File[], targetReplaceIndex?: number) => {
     if (!filesList || filesList.length === 0) return;
@@ -779,6 +800,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     }
 
     const cleanSku = (sku || '').trim().toUpperCase();
+    const newUploadedImages: ProductImage[] = [];
 
     for (let i = 0; i < filesArray.length; i++) {
       const rawFile = filesArray[i];
@@ -788,7 +810,6 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         const compressedFile = await compressImageFile(rawFile, 1400, 1400, 0.85);
 
         // 2. Direct upload to Supabase Storage ('product-images' bucket)
-        // Works directly from client on desktop, iPhone, Android, and preview environments
         let finalPath = '';
         let uploadSucceeded = false;
         try {
@@ -818,15 +839,6 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
               formData.append('product_id', editingProduct.id);
             }
 
-            const isDirectReplace = targetReplaceIndex !== undefined && targetReplaceIndex >= 0;
-            if (isDirectReplace) {
-              formData.append('replace_index', String(targetReplaceIndex));
-              formData.append('replace', 'true');
-            } else if (images.length === 1) {
-              formData.append('replace_index', '0');
-              formData.append('replace', 'true');
-            }
-
             const data = await safeFetchJson<any>(
               '/api/uploads',
               {
@@ -840,15 +852,6 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
             if (data && (data.success || data.public_url || data.file_path)) {
               finalPath = data.public_url || data.file_path || data.asset?.storage_path || '';
               uploadSucceeded = true;
-              if (data.product) {
-                setProducts((prevList) =>
-                  prevList.map((p) =>
-                    p.id === data.product.id || (p.sku && data.product.sku && p.sku.toUpperCase() === data.product.sku.toUpperCase())
-                      ? { ...p, ...data.product }
-                      : p
-                  )
-                );
-              }
             }
           } catch (uploadErr) {
             console.warn('[AdminProducts] /api/uploads fallback exception:', uploadErr);
@@ -871,53 +874,65 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
           } catch {}
         }
 
-        if (!finalPath) {
-          throw new Error('Could not upload or store image file');
-        }
-
-        setImages((prev) => {
-          const newImg: ProductImage = {
-            id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        if (finalPath) {
+          newUploadedImages.push({
+            id: `img-${Date.now()}-${i}-${Math.random().toString(36).substring(2, 6)}`,
             product_id: editingProduct?.id || '',
             storage_path: finalPath,
             alt_text: rawFile.name,
-            display_order: 1,
-            is_primary: true,
-          };
-
-          // If directly replacing a specific image slot:
-          if (targetReplaceIndex !== undefined && targetReplaceIndex >= 0 && prev[targetReplaceIndex]) {
-            return prev.map((img, idx) =>
-              idx === targetReplaceIndex ? { ...newImg, is_primary: img.is_primary } : img
-            );
-          }
-
-          // If product only has 1 image, directly replace it so the new one replaces the old image!
-          if (prev.length === 1) {
-            return [newImg];
-          }
-
-          const cleanProdSku = (sku || '').trim().toUpperCase();
-          const isInheritedCopiedImg =
-            prev.length === 1 &&
-            prev[0].storage_path &&
-            cleanProdSku &&
-            !prev[0].storage_path.toUpperCase().includes(cleanProdSku);
-
-          const existingRemaining = isInheritedCopiedImg
-            ? []
-            : prev.map((img) => ({ ...img, is_primary: false }));
-
-          return [newImg, ...existingRemaining];
-        });
-
-        setIsDrawerDirty(true);
+            display_order: i + 1,
+            is_primary: false,
+          });
+        }
       } catch (err: any) {
         console.error('Failed to process and store image', err);
-        setErrorMessage(err?.message || 'Failed to process image file.');
       }
     }
 
+    if (newUploadedImages.length === 0) {
+      setErrorMessage('Failed to process or upload selected image(s). Please try again.');
+      setUploadingImage(false);
+      setReplaceTargetIndex(null);
+      return;
+    }
+
+    setImages((prev) => {
+      // Case A: User explicitly clicked "Replace" on a specific image index
+      if (targetReplaceIndex !== undefined && targetReplaceIndex >= 0 && prev[targetReplaceIndex]) {
+        const replaceImage = newUploadedImages[0];
+        const wasPrimary = prev[targetReplaceIndex].is_primary;
+        return prev.map((img, idx) =>
+          idx === targetReplaceIndex ? { ...replaceImage, is_primary: wasPrimary, display_order: img.display_order } : img
+        );
+      }
+
+      // Case B: Special check for duplicated products inheriting 1 old image from source SKU
+      const cleanProdSku = (sku || '').trim().toUpperCase();
+      const isInheritedCopiedImg =
+        prev.length === 1 &&
+        prev[0].storage_path &&
+        cleanProdSku &&
+        !prev[0].storage_path.toUpperCase().includes(cleanProdSku);
+
+      const existingBase = isInheritedCopiedImg ? [] : [...prev];
+      const hasPrimary = existingBase.some((img) => img.is_primary);
+
+      const formattedNew = newUploadedImages.map((img, idx) => ({
+        ...img,
+        is_primary: !hasPrimary && idx === 0,
+        display_order: existingBase.length + idx + 1,
+      }));
+
+      const combined = [...existingBase, ...formattedNew];
+
+      if (combined.length > 0 && !combined.some((img) => img.is_primary)) {
+        combined[0].is_primary = true;
+      }
+
+      return combined;
+    });
+
+    setIsDrawerDirty(true);
     setUploadingImage(false);
     setReplaceTargetIndex(null);
   };
@@ -2345,68 +2360,122 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                 {images.length === 0 ? (
                   <div className="p-4 rounded-xl bg-[#FAF7F2] border border-[#E0D2C2] text-center">
                     <p className="text-[11px] text-[#8C7667]">
-                      A graceful handcrafted SVG placeholder will be shown until real photos are uploaded.
+                      A graceful handcrafted SVG placeholder will be shown until real photos are uploaded. You can upload multiple photos for this item.
                     </p>
                   </div>
                 ) : (
-                  <div className="space-y-2">
-                    <div className="text-xs font-semibold text-[#8C4A28] flex items-center justify-between">
-                      <span>Uploaded Artwork Photos ({images.length})</span>
-                      <span className="text-[11px] text-[#8C7667] font-normal">Click ★ on any photo to set as Cover</span>
-                    </div>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                    {images.map((img, idx) => (
-                      <div
-                        key={img.id || idx}
-                        className={`relative aspect-square rounded-xl overflow-hidden border-2 group ${
-                          img.is_primary ? 'border-[#C85A32] shadow-xs' : 'border-[#E0D2C2]'
-                        }`}
-                      >
-                        <SafeProductImage
-                          key={img.storage_path}
-                          src={img.storage_path}
-                          alt={img.alt_text || name}
-                          name={name}
-                          sku={sku}
-                          category_slug={(categories || []).find(c => c.id === categoryId)?.slug}
-                          size="sm"
-                          className="w-full h-full"
-                        />
-                        {img.is_primary && (
-                          <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-[#C85A32] text-white text-[9px] font-bold">
-                            Cover
-                          </span>
-                        )}
-                        <div className="absolute inset-0 bg-black/40 sm:bg-black/60 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-1">
-                          {!img.is_primary && (
-                            <button
-                              type="button"
-                              onClick={() => handleSetPrimaryImage(idx)}
-                              className="p-1.5 rounded-lg bg-white text-xs font-semibold text-[#2C2724] hover:bg-gray-100 transition-colors shadow-xs"
-                              title="Set as Cover"
-                            >
-                              ★
-                            </button>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => handleTriggerReplace(idx)}
-                            className="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white cursor-pointer shadow-xs transition-colors flex items-center justify-center"
-                            title="Replace with new photo"
-                          >
-                            <RefreshCw className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveImage(idx)}
-                            className="p-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white cursor-pointer shadow-xs transition-colors flex items-center justify-center"
-                            title="Remove Image"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
+                  <div className="space-y-3">
+                    <div className="text-xs font-semibold text-[#8C4A28] flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <span>Uploaded Item Gallery ({images.length} Photo{images.length === 1 ? '' : 's'})</span>
+                        <span className="text-[10px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full font-medium border border-emerald-200">
+                          {images.length} image{images.length === 1 ? '' : 's'} attached
+                        </span>
                       </div>
-                    ))}
+                      <label className="cursor-pointer px-2.5 py-1 rounded-lg bg-[#C85A32] hover:bg-[#B04B26] text-white font-semibold text-xs flex items-center gap-1 transition-colors shadow-2xs">
+                        <ImagePlus className="w-3.5 h-3.5" />
+                        <span>+ Add More Photos</span>
+                        <input
+                          type="file"
+                          accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
+                          multiple
+                          onChange={handleImageUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                      {images.map((img, idx) => (
+                        <div
+                          key={img.id || idx}
+                          className={`relative aspect-square rounded-2xl overflow-hidden border-2 group bg-stone-100 ${
+                            img.is_primary ? 'border-[#C85A32] shadow-sm' : 'border-[#E0D2C2]'
+                          }`}
+                        >
+                          <SafeProductImage
+                            key={img.storage_path}
+                            src={img.storage_path}
+                            alt={img.alt_text || name}
+                            name={name}
+                            sku={sku}
+                            category_slug={(categories || []).find((c) => c.id === categoryId)?.slug}
+                            size="sm"
+                            className="w-full h-full object-cover"
+                          />
+
+                          {/* Top Badges */}
+                          <div className="absolute top-1.5 left-1.5 flex items-center gap-1 z-10 pointer-events-none">
+                            {img.is_primary ? (
+                              <span className="px-1.5 py-0.5 rounded-md bg-[#C85A32] text-white text-[9px] font-bold shadow-xs">
+                                Cover
+                              </span>
+                            ) : (
+                              <span className="px-1.5 py-0.5 rounded-md bg-black/60 text-white text-[9px] font-mono font-semibold backdrop-blur-xs">
+                                #{idx + 1}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Interactive Overlay Actions (Desktop & Touch Mobile) */}
+                          <div className="absolute inset-0 bg-black/50 sm:bg-black/65 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
+                            {/* Top row controls: Reorder arrows */}
+                            <div className="flex items-center justify-between w-full">
+                              {idx > 0 ? (
+                                <button
+                                  type="button"
+                                  onClick={() => handleMoveImage(idx, 'left')}
+                                  className="p-1 rounded-md bg-white/90 text-stone-800 hover:bg-white text-xs font-bold transition-colors shadow-xs"
+                                  title="Move Photo Left"
+                                >
+                                  <ChevronLeft className="w-3.5 h-3.5" />
+                                </button>
+                              ) : <div />}
+
+                              {idx < images.length - 1 ? (
+                                <button
+                                  type="button"
+                                  onClick={() => handleMoveImage(idx, 'right')}
+                                  className="p-1 rounded-md bg-white/90 text-stone-800 hover:bg-white text-xs font-bold transition-colors shadow-xs ml-auto"
+                                  title="Move Photo Right"
+                                >
+                                  <ChevronRight className="w-3.5 h-3.5" />
+                                </button>
+                              ) : <div />}
+                            </div>
+
+                            {/* Bottom row controls: Set Cover, Replace, Delete */}
+                            <div className="flex items-center justify-center gap-1.5">
+                              {!img.is_primary && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleSetPrimaryImage(idx)}
+                                  className="p-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold transition-colors shadow-xs"
+                                  title="Set as Main Cover Photo"
+                                >
+                                  ★ Cover
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => handleTriggerReplace(idx)}
+                                className="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white cursor-pointer shadow-xs transition-colors flex items-center justify-center"
+                                title="Replace with new photo"
+                              >
+                                <RefreshCw className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveImage(idx)}
+                                className="p-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white cursor-pointer shadow-xs transition-colors flex items-center justify-center"
+                                title="Delete photo"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
