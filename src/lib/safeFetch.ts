@@ -86,6 +86,16 @@ export async function safeFetchJson<T = any>(
     }
   }
 
+  // Intercept image uploads to upload directly to Supabase Storage and avoid proxy 405 Method Not Allowed on live website
+  if (method === 'POST' && (urlString === '/api/uploads' || urlString.startsWith('/api/uploads?'))) {
+    try {
+      const clientFallback = await handleClientFallbackApi<T>(urlString, init);
+      if (clientFallback) return clientFallback;
+    } catch (err) {
+      console.warn('[safeFetchJson] Upload local interceptor notice', err);
+    }
+  }
+
   // Try standard backend Express server fetch first
   try {
     const res = await fetch(urlString, enhancedInit);

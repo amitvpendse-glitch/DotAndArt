@@ -731,3 +731,58 @@ export async function syncLocalCustomProductsToFirestore(): Promise<void> {
     }
   }
 }
+
+/**
+ * Direct client-side upload to Supabase Storage ('product-images' bucket).
+ * Works reliably from the browser on the live website and preview environments,
+ * completely avoiding backend 405 Method Not Allowed proxy errors.
+ */
+export async function uploadImageToSupabaseStorage(
+  file: File | Blob,
+  sku?: string,
+  originalFilename?: string
+): Promise<{ success: boolean; public_url: string; fileName: string; error?: string }> {
+  const sb = getSupabase();
+  const cleanSku = (sku || '').trim().toUpperCase();
+  const timestamp = Date.now();
+  let ext = 'jpg';
+
+  if (originalFilename && originalFilename.includes('.')) {
+    ext = (originalFilename.split('.').pop() || 'jpg').toLowerCase();
+  } else if (file.type) {
+    if (file.type.includes('png')) ext = 'png';
+    else if (file.type.includes('webp')) ext = 'webp';
+    else if (file.type.includes('jpeg') || file.type.includes('jpg')) ext = 'jpg';
+  }
+
+  const fileName = cleanSku
+    ? `${cleanSku}_${timestamp}.${ext}`
+    : `${timestamp}-${Math.random().toString(36).substring(2, 6)}.${ext}`;
+
+  if (sb) {
+    try {
+      const { data, error } = await sb.storage
+        .from('product-images')
+        .upload(fileName, file, {
+          contentType: file.type || 'image/jpeg',
+          upsert: true,
+        });
+
+      if (!error && data) {
+        const { data: pubData } = sb.storage.from('product-images').getPublicUrl(fileName);
+        const publicUrl = pubData?.publicUrl || `https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/${fileName}`;
+        console.log(`[SupabaseStorage] Successfully uploaded ${fileName} directly from client:`, publicUrl);
+        return { success: true, public_url: publicUrl, fileName };
+      }
+      if (error) {
+        console.warn('[uploadImageToSupabaseStorage] Supabase storage upload warning:', error.message);
+        return { success: false, public_url: '', fileName, error: error.message };
+      }
+    } catch (err: any) {
+      console.warn('[uploadImageToSupabaseStorage] Exception:', err);
+      return { success: false, public_url: '', fileName, error: err?.message || 'Storage upload error' };
+    }
+  }
+
+  return { success: false, public_url: '', fileName, error: 'Supabase client not initialized' };
+}

@@ -20,6 +20,7 @@ import {
   getFirestorePages,
   saveFirestoreMediaAsset,
   saveFirestoreCategory,
+  uploadImageToSupabaseStorage,
 } from './firestoreCatalog';
 import { isAwaitingPhoto, isProductHighDemand } from '../utils/productUtils';
 import { isSkuBlocked } from './blockedSkus';
@@ -249,16 +250,24 @@ export async function handleClientFallbackApi<T = any>(
   // Helper response
   const jsonRes = (data: any) => JSON.parse(JSON.stringify(data)) as T;
 
-  // 0. POST /api/uploads
+  // 0. POST /api/uploads - Direct Supabase Storage upload for live website
   if (pathname === '/api/uploads' && method === 'POST') {
     try {
       let file: File | null = null;
       let altText = '';
       let rawSku = '';
+      let targetId = '';
+      let replaceIndex = -1;
+      let isReplace = false;
+
       if (options?.body instanceof FormData) {
         file = options.body.get('file') as File;
         altText = (options.body.get('alt_text') as string) || '';
         rawSku = (options.body.get('sku') as string) || (options.body.get('product_sku') as string) || '';
+        targetId = (options.body.get('product_id') as string) || (options.body.get('id') as string) || '';
+        const repIdxStr = options.body.get('replace_index');
+        if (repIdxStr !== null && repIdxStr !== undefined && repIdxStr !== '') replaceIndex = Number(repIdxStr);
+        isReplace = options.body.get('replace') === 'true';
       }
       const cleanSku = rawSku.trim().toUpperCase();
 
@@ -273,38 +282,90 @@ export async function handleClientFallbackApi<T = any>(
               reader.readAsDataURL(compressed);
             });
 
+            // 1. Direct client-side upload to Supabase Storage ('product-images' bucket)
+            const uploadResult = await uploadImageToSupabaseStorage(compressed, cleanSku, file.name);
             const assetId = `media-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
-            const filename = cleanSku ? `${cleanSku}.jpg` : (file.name || `upload-${Date.now()}.jpg`);
+            const fileName = uploadResult.fileName || (cleanSku ? `${cleanSku}_${Date.now()}.jpg` : file.name || `upload-${Date.now()}.jpg`);
 
-            // Store in persistent IndexedDB + Cache API
-            const virtualPath = await saveLocalArtworkImage(assetId, dataUrl, filename);
-            const supabaseStorageUrl = cleanSku
-              ? `https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/${cleanSku}.jpg`
-              : virtualPath;
+            // 2. Persist local offline backup into IndexedDB + Cache API
+            const virtualPath = await saveLocalArtworkImage(assetId, dataUrl, cleanSku);
+            const publicUrl = uploadResult.success && uploadResult.public_url ? uploadResult.public_url : virtualPath;
+
+            // 3. Update target product in Supabase & local cache if identified
+            let updatedTargetProduct: Product | undefined;
+            try {
+              const allProds = await getFirestoreProducts();
+              const pIdx = (allProds || []).findIndex(
+                (p) =>
+                  (cleanSku && (p.sku || '').trim().toUpperCase() === cleanSku) ||
+                  (targetId && (p.id || '').trim() === targetId)
+              );
+              if (pIdx >= 0) {
+                const targetProduct = { ...allProds[pIdx] };
+                const newImg = {
+                  id: `img-${targetProduct.id || cleanSku}-${Date.now()}`,
+                  product_id: targetProduct.id,
+                  storage_path: publicUrl,
+                  alt_text: altText || `${targetProduct.name || 'Artwork'} (${targetProduct.sku || cleanSku})`,
+                  caption: targetProduct.name || '',
+                  display_order: 1,
+                  is_primary: true,
+                };
+
+                const currentImages = Array.isArray(targetProduct.images) ? targetProduct.images : [];
+                let updatedImgs = [];
+                if (replaceIndex >= 0 && currentImages[replaceIndex]) {
+                  updatedImgs = currentImages.map((img, i) =>
+                    i === replaceIndex ? newImg : { ...img, is_primary: false }
+                  );
+                } else if (isReplace || currentImages.length <= 1) {
+                  if (currentImages.length > 1) {
+                    updatedImgs = [newImg, ...currentImages.slice(1).map((img) => ({ ...img, is_primary: false }))];
+                  } else {
+                    updatedImgs = [newImg];
+                  }
+                } else {
+                  const remaining = currentImages
+                    .filter((img) => img && img.storage_path !== publicUrl)
+                    .map((img) => ({ ...img, is_primary: false }));
+                  updatedImgs = [newImg, ...remaining];
+                }
+
+                targetProduct.images = updatedImgs;
+                targetProduct.updated_at = new Date().toISOString();
+                await saveFirestoreProduct(targetProduct);
+                updatedTargetProduct = targetProduct;
+              }
+            } catch (pErr) {
+              console.warn('[clientFallbackApi] Product update notice:', pErr);
+            }
 
             const asset: MediaAsset = {
               id: assetId,
-              storage_path: supabaseStorageUrl,
+              storage_path: publicUrl,
               media_type: 'image',
-              filename,
-              title: filename,
+              filename: fileName,
+              title: fileName,
               alt_text: altText,
               file_size: compressed.size || file.size || 0,
               created_at: new Date().toISOString(),
             };
 
-            // Non-blocking firestore attempt
             saveFirestoreMediaAsset(asset).catch(() => {});
 
             return jsonRes({
               success: true,
-              file_path: supabaseStorageUrl,
-              public_url: supabaseStorageUrl,
+              file_path: publicUrl,
+              public_url: publicUrl,
+              fileName,
+              supabase_storage_uploaded: uploadResult.success,
+              product_updated: Boolean(updatedTargetProduct),
+              product: updatedTargetProduct,
               data_url: dataUrl,
               asset,
             });
           } catch (readErr) {
-            console.error('[clientFallbackApi] Image compression or read failed', readErr);
+            console.error('[clientFallbackApi] Image compression or upload failed', readErr);
             return jsonRes({ success: false, error: 'Failed to process image' });
           }
         })() as Promise<T>;
