@@ -29,6 +29,9 @@ import {
   FileDown,
   Loader2,
   Save,
+  Cloud,
+  RefreshCw,
+  ExternalLink,
 } from 'lucide-react';
 import { Product, Category, ProductVariant, ProductImage, WebsiteSettings } from '../types';
 import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
@@ -121,6 +124,8 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({
   // Image Uploading & Drag-and-Drop State
   const [uploadingImage, setUploadingImage] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [replaceTargetIndex, setReplaceTargetIndex] = useState<number | null>(null);
+  const replaceFileInputRef = React.useRef<HTMLInputElement>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<Product | null>(null);
   const backupFileInputRef = React.useRef<HTMLInputElement>(null);
@@ -745,8 +750,8 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     setDrawerOpen(true);
   };
 
-  // Upload multiple files (supports file input and drag-and-drop)
-  const processFiles = async (filesList: FileList | File[]) => {
+  // Upload multiple files or replace an existing photo (supports file input, drag-and-drop, and in-place replacement)
+  const processFiles = async (filesList: FileList | File[], targetReplaceIndex?: number) => {
     if (!filesList || filesList.length === 0) return;
 
     setUploadingImage(true);
@@ -758,6 +763,8 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
       setUploadingImage(false);
       return;
     }
+
+    const cleanSku = (sku || '').trim().toUpperCase();
 
     for (let i = 0; i < filesArray.length; i++) {
       const rawFile = filesArray[i];
@@ -772,14 +779,13 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
           reader.readAsDataURL(compressedFile);
         });
 
-        const cleanSku = (sku || '').trim().toUpperCase();
         const localImgKey = `${cleanSku || 'artwork'}-${Date.now()}-${i + 1}`;
 
         // 2. Persist immediately into IndexedDB and Service Worker Cache API
         const localVirtualPath = await saveLocalArtworkImage(localImgKey, dataUrl, cleanSku);
         let finalPath = localVirtualPath;
 
-        // 3. Attempt server/firestore upload in background if available
+        // 3. Attempt server/Supabase upload
         try {
           const formData = new FormData();
           formData.append('file', compressedFile);
@@ -787,6 +793,18 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
           if (cleanSku) {
             formData.append('sku', cleanSku);
             formData.append('product_sku', cleanSku);
+          }
+          if (editingProduct?.id) {
+            formData.append('product_id', editingProduct.id);
+          }
+
+          const isDirectReplace = targetReplaceIndex !== undefined && targetReplaceIndex >= 0;
+          if (isDirectReplace) {
+            formData.append('replace_index', String(targetReplaceIndex));
+            formData.append('replace', 'true');
+          } else if (images.length === 1) {
+            formData.append('replace_index', '0');
+            formData.append('replace', 'true');
           }
 
           const data = await safeFetchJson<any>(
@@ -799,15 +817,47 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
             null
           );
 
-          if (data && (data.success || data.file_path)) {
-            finalPath = data.file_path || data.asset?.storage_path || localVirtualPath;
+          if (data && (data.success || data.public_url || data.file_path)) {
+            finalPath = data.public_url || data.file_path || data.asset?.storage_path || localVirtualPath;
+            if (data.product) {
+              setProducts((prevList) =>
+                prevList.map((p) =>
+                  p.id === data.product.id || (p.sku && data.product.sku && p.sku.toUpperCase() === data.product.sku.toUpperCase())
+                    ? { ...p, ...data.product }
+                    : p
+                )
+              );
+            }
+            if (data.supabase_storage_uploaded === false && data.supabase_storage_error) {
+              console.warn('[AdminProducts] Supabase Storage upload note:', data.supabase_storage_error);
+            }
           }
-        } catch {
-          // Keep localVirtualPath - already safely persisted in local cache!
+        } catch (uploadErr) {
+          console.warn('[AdminProducts] Upload exception:', uploadErr);
         }
 
         setImages((prev) => {
-          // If the product only has 1 image that is a placeholder or inherited from another SKU, replace it!
+          const newImg: ProductImage = {
+            id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+            product_id: editingProduct?.id || '',
+            storage_path: finalPath,
+            alt_text: rawFile.name,
+            display_order: 1,
+            is_primary: true,
+          };
+
+          // If directly replacing a specific image slot:
+          if (targetReplaceIndex !== undefined && targetReplaceIndex >= 0 && prev[targetReplaceIndex]) {
+            return prev.map((img, idx) =>
+              idx === targetReplaceIndex ? { ...newImg, is_primary: img.is_primary } : img
+            );
+          }
+
+          // If product only has 1 image, directly replace it so the new one replaces the old image!
+          if (prev.length === 1) {
+            return [newImg];
+          }
+
           const cleanProdSku = (sku || '').trim().toUpperCase();
           const isInheritedCopiedImg =
             prev.length === 1 &&
@@ -819,14 +869,6 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
             ? []
             : prev.map((img) => ({ ...img, is_primary: false }));
 
-          const newImg: ProductImage = {
-            id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-            product_id: editingProduct?.id || '',
-            storage_path: finalPath,
-            alt_text: rawFile.name,
-            display_order: 1,
-            is_primary: true,
-          };
           return [newImg, ...existingRemaining];
         });
 
@@ -838,6 +880,21 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     }
 
     setUploadingImage(false);
+    setReplaceTargetIndex(null);
+  };
+
+  const handleTriggerReplace = (index: number) => {
+    setReplaceTargetIndex(index);
+    if (replaceFileInputRef.current) {
+      replaceFileInputRef.current.value = '';
+      replaceFileInputRef.current.click();
+    }
+  };
+
+  const handleReplaceFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0 && replaceTargetIndex !== null) {
+      processFiles(e.target.files, replaceTargetIndex);
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -2265,6 +2322,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                         }`}
                       >
                         <SafeProductImage
+                          key={img.storage_path}
                           src={img.storage_path}
                           alt={img.alt_text || name}
                           name={name}
@@ -2283,7 +2341,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                             <button
                               type="button"
                               onClick={() => handleSetPrimaryImage(idx)}
-                              className="p-1 rounded bg-white text-xs font-semibold text-[#2C2724]"
+                              className="p-1 rounded bg-white text-xs font-semibold text-[#2C2724] hover:bg-gray-100 transition-colors"
                               title="Set as Cover"
                             >
                               ★
@@ -2291,8 +2349,16 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                           )}
                           <button
                             type="button"
+                            onClick={() => handleTriggerReplace(idx)}
+                            className="p-1 rounded bg-blue-600 hover:bg-blue-700 text-white cursor-pointer shadow-xs transition-colors"
+                            title="Replace with new photo"
+                          >
+                            <RefreshCw className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => handleRemoveImage(idx)}
-                            className="p-1 rounded bg-red-600 text-white cursor-pointer"
+                            className="p-1 rounded bg-red-600 hover:bg-red-700 text-white cursor-pointer shadow-xs transition-colors"
                             title="Remove Image"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -2303,6 +2369,14 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                     </div>
                   </div>
                 )}
+                {/* Dedicated hidden input for replacing a specific photo */}
+                <input
+                  ref={replaceFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleReplaceFileChange}
+                  className="hidden"
+                />
               </div>
 
               {/* Size Variants */}
@@ -3192,6 +3266,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
           </div>
         </div>
       )}
+
     </div>
   );
 };

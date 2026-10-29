@@ -67,37 +67,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // API / JSON data requests: Network first with fast timeout and Cache API fallback
+  // API / JSON data requests: Network only
   if (url.pathname.startsWith('/api/')) {
-    event.respondWith(
-      (async () => {
-        const cache = await caches.open(RUNTIME_CACHE);
-        try {
-          // Timeout after 1.5s so client never hangs waiting on network/firestore
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 1500);
-
-          const networkResponse = await fetch(request, { signal: controller.signal });
-          clearTimeout(timeoutId);
-
-          if (networkResponse && networkResponse.status === 200) {
-            cache.put(request, networkResponse.clone()).catch(() => {});
-          }
-          return networkResponse;
-        } catch (error) {
-          // Attempt to find in cache without query string timestamp
-          const cleanUrl = url.origin + url.pathname;
-          const cachedResponse = (await cache.match(request)) || (await cache.match(cleanUrl));
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          return new Response(JSON.stringify({ error: 'Offline / Cached fallback', fallback: true }), {
-            headers: { 'Content-Type': 'application/json' },
-            status: 200
-          });
-        }
-      })()
-    );
     return;
   }
 

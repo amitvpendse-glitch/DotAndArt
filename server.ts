@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import multer from 'multer';
+import { createClient } from '@supabase/supabase-js';
 import { createServer as createViteServer } from 'vite';
 import {
   INITIAL_CATEGORIES,
@@ -16,6 +17,7 @@ import {
 import {
   Category,
   Product,
+  ProductImage,
   Testimonial,
   FAQ,
   WebsiteSettings,
@@ -50,6 +52,15 @@ import {
 const app = express();
 const PORT = process.env.PORT || 3000;
 const IS_PROD = process.env.NODE_ENV === 'production';
+
+if (!process.env.SUPABASE_URL || (!process.env.SUPABASE_ANON_KEY && !process.env.SUPABASE_SERVICE_ROLE_KEY)) {
+  console.error('[server] FATAL: SUPABASE_URL and SUPABASE_ANON_KEY must be set in the environment.');
+  process.exit(1);
+}
+const rawSupabaseUrl = (process.env.SUPABASE_URL || 'https://faijoouprxkttsfrajya.supabase.co').trim();
+const normalizedSupabaseUrl = rawSupabaseUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '';
+const supabase = createClient(normalizedSupabaseUrl, supabaseKey);
 
 // Ensure data and uploads directories exist
 const ROOT_DB_FILE = path.resolve(process.cwd(), 'db.json');
@@ -186,7 +197,7 @@ function sanitizeProductImages(p: Product): Product {
 
   if (!Array.isArray(p.images) || p.images.length === 0) {
     const cleanSku = (p.sku || '').trim().toUpperCase();
-    const fallbackImg = cleanSku ? `/static/assets/images/${cleanSku}.jpg` : '/static/assets/images/DA-MD-10-0001.jpg';
+    const fallbackImg = cleanSku ? `/static/assets/images/${cleanSku}.jpg` : '/static/assets/images/DotAndArt_Logo.jpeg';
     p.images = [
       {
         id: `img-${p.id || 'gen'}-1`,
@@ -201,21 +212,22 @@ function sanitizeProductImages(p: Product): Product {
     (p as any).image_url = fallbackImg;
   } else {
     // Ensure storage path is valid
-    p.images = p.images.map((img, idx) => {
-      if (!img || !img.storage_path) {
-        const cleanSku = (p.sku || '').trim().toUpperCase();
-        return {
-          id: `img-${p.id}-${idx + 1}`,
-          product_id: p.id,
-          storage_path: cleanSku ? `/static/assets/images/${cleanSku}.jpg` : '/static/assets/images/DA-MD-10-0001.jpg',
-          alt_text: `${p.name} (${p.sku})`,
-          caption: p.name,
-          display_order: idx + 1,
-          is_primary: idx === 0,
-        };
-      }
-      return img;
-    });
+  p.images = p.images.map((img, idx) => {
+    if (!img || !img.storage_path) {
+      console.log(`[ImageFix] Product ${p.sku} has missing storage_path, idx ${idx}. Resetting to fallback.`);
+      const cleanSku = (p.sku || '').trim().toUpperCase();
+      return {
+        id: `img-${p.id}-${idx + 1}`,
+        product_id: p.id,
+        storage_path: cleanSku ? `/static/assets/images/${cleanSku}.jpg` : '/static/assets/images/DotAndArt_Logo.jpeg',
+        alt_text: `${p.name} (${p.sku})`,
+        caption: p.name,
+        display_order: idx + 1,
+        is_primary: idx === 0,
+      };
+    }
+    return img;
+  });
   }
 
   return p;
@@ -803,20 +815,10 @@ function requireAdmin(req: Request, res: Response, next: NextFunction) {
 }
 
 // File Upload with Multer
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    cb(null, UPLOADS_DIR);
-  },
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const cleanBase = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
-    const unique = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
-    cb(null, `${cleanBase}-${unique}${ext}`);
-  },
-});
+
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 25 * 1024 * 1024 }, // 25 MB
   fileFilter: (_req, file, cb) => {
     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4'];
@@ -1047,7 +1049,7 @@ app.post('/api/admin/pull-sync', requireAdmin, async (_req: Request, res: Respon
     await saveFirestoreSyncFlag(false).catch(() => {});
 
     logAudit('admin_pulled_latest_db', 'system', 'db', { message: 'Admin manually pulled latest changes from Firestore and synced local cache.' });
-    res.json({ success: true, message: 'Successfully pulled latest changes from database and synced local cache.' });
+    res.json({ success: true, message: 'Successfully pulled latest changes from database and synced local cache.', clear_client_cache: true });
   } catch (err: any) {
     console.warn('[PullSync] Notice during pull-sync, falling back to local cache:', err);
     saveDB(db, false);
@@ -2231,7 +2233,14 @@ const handleProductUpdate = async (req: Request, res: Response) => {
   if (p.base_size !== undefined) db.products[index].base_size = p.base_size;
   if (p.badge_tag !== undefined) db.products[index].badge_tag = p.badge_tag;
   if (p.photos_available_note !== undefined) db.products[index].photos_available_note = p.photos_available_note;
-  if (p.images !== undefined) db.products[index].images = Array.isArray(p.images) ? p.images : [];
+  if (p.images !== undefined) {
+    db.products[index].images = Array.isArray(p.images) ? p.images : [];
+    const primaryImg = (db.products[index].images || []).find((img) => img && img.is_primary) || db.products[index].images[0];
+    if (primaryImg && primaryImg.storage_path) {
+      (db.products[index] as any).image_url = primaryImg.storage_path;
+      (db.products[index] as any).image_path = primaryImg.storage_path;
+    }
+  }
   if (p.variants !== undefined) db.products[index].variants = Array.isArray(p.variants) ? p.variants : [];
 
   db.products[index].updated_at = new Date().toISOString();
@@ -2688,65 +2697,188 @@ app.get('/api/admin/smart-sync-status', requireAdmin, (_req: Request, res: Respo
   });
 });
 
-// Admin File Uploads
-app.post('/api/uploads', requireAdmin, upload.single('file'), (req: Request, res: Response) => {
+// Admin File Uploads - Saves directly to Supabase Storage ('product-images' bucket) and links to product table
+app.post('/api/uploads', requireAdmin, upload.single('file'), async (req: Request, res: Response) => {
   if (!req.file) {
     res.status(400).json({ error: 'No file uploaded' });
     return;
   }
 
-  const relativePath = `/uploads/${req.file.filename}`;
-  const isVideo = req.file.mimetype.startsWith('video/');
+  const file = req.file;
+  const rawSku = String(req.body.sku || req.body.product_sku || req.query.sku || '').trim();
+  const cleanSku = rawSku.toUpperCase();
+  const targetId = String(req.body.product_id || req.body.id || req.query.id || '').trim();
+  const fileExt = (path.extname(file.originalname) || '.jpg').toLowerCase();
+  const isVideo = file.mimetype.startsWith('video/');
 
-  // Sync file copy to ROOT_UPLOADS_DIR
+  const uploadTimestamp = Date.now();
+  // Generate distinct versioned filename so newly uploaded or replacement images
+  // are stored under unique names in Supabase Storage without overwriting past versions or hitting stale CDN caches
+  const fileName = cleanSku
+    ? `${cleanSku}_${uploadTimestamp}${fileExt}`
+    : `${uploadTimestamp}-${crypto.randomBytes(4).toString('hex')}${fileExt}`;
+
+  const BUCKET_NAME = 'product-images';
+
   try {
-    const srcPath = path.join(PUBLIC_UPLOADS_DIR, req.file.filename);
-    const dstPath = path.join(ROOT_UPLOADS_DIR, req.file.filename);
-    if (fs.existsSync(srcPath) && !fs.existsSync(dstPath)) {
-      fs.copyFileSync(srcPath, dstPath);
-    }
-  } catch {}
-
-  // If SKU is provided (e.g. DA-TC-CS-0001), also sync to static images folder
-  const targetSku = String(req.body.sku || req.body.product_sku || req.query.sku || '').trim().toUpperCase();
-  if (targetSku && !isVideo) {
+    // 1. Local disk persistence is ALWAYS guaranteed immediately
     try {
-      const staticDir = path.resolve(process.cwd(), 'public/static/assets/images');
-      if (!fs.existsSync(staticDir)) fs.mkdirSync(staticDir, { recursive: true });
-      const staticDst = path.join(staticDir, `${targetSku}.jpg`);
-      const srcPath = path.join(PUBLIC_UPLOADS_DIR, req.file.filename);
-      if (fs.existsSync(srcPath)) {
-        fs.copyFileSync(srcPath, staticDst);
-        console.log(`[server] Copied uploaded photo directly to ${staticDst}`);
+      fs.writeFileSync(path.join(PUBLIC_UPLOADS_DIR, fileName), file.buffer);
+      if (cleanSku) {
+        fs.writeFileSync(path.join(process.cwd(), 'public/static/assets/images', fileName), file.buffer);
+        // Also keep the base unversioned SKU file updated as local fallback
+        fs.writeFileSync(path.join(process.cwd(), 'public/static/assets/images', `${cleanSku}${fileExt}`), file.buffer);
       }
-    } catch (e) {
-      console.warn('[server] Error syncing upload to static images folder:', e);
+    } catch (fsErr) {
+      console.warn('[server] Local disk backup note:', fsErr);
     }
+
+    // 2. Attempt upload to Supabase Storage bucket 'product-images'
+    let supabaseUploaded = false;
+    let supabaseErrorMsg = '';
+
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from(BUCKET_NAME)
+        .upload(fileName, file.buffer, {
+          contentType: file.mimetype || 'image/jpeg',
+          upsert: true,
+        });
+
+      if (uploadError) {
+        supabaseErrorMsg = uploadError.message;
+        console.warn(`[server] Supabase storage upload note for ${BUCKET_NAME}/${fileName}:`, uploadError.message);
+      } else {
+        supabaseUploaded = true;
+        console.log(`[server] Successfully uploaded ${fileName} to Supabase Storage bucket "${BUCKET_NAME}"`);
+      }
+    } catch (sbErr: any) {
+      supabaseErrorMsg = sbErr?.message || String(sbErr);
+      console.warn(`[server] Supabase storage upload exception:`, supabaseErrorMsg);
+    }
+
+    // 3. Determine reliable working URL:
+    // If Supabase Storage upload succeeded, use the public Supabase Storage URL.
+    // If Supabase Storage rejected upload (e.g. missing bucket or RLS policy), use the reliable local server static URL so links never 404!
+    let publicUrl = '';
+    if (supabaseUploaded) {
+      const { data: publicUrlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(fileName);
+      publicUrl = publicUrlData?.publicUrl || `https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/${BUCKET_NAME}/${fileName}`;
+    } else {
+      publicUrl = `/static/assets/images/${fileName}`;
+      console.log(`[server] Fallback: using reliable local static URL (${publicUrl}) because Supabase Storage bucket is not ready (${supabaseErrorMsg})`);
+    }
+
+    // 4. Persist working URL into product record
+    let productUpdated = false;
+    let targetProduct: Product | undefined;
+
+    const prodIndex = (db.products || []).findIndex(
+      (p) =>
+        (cleanSku && (p.sku || '').trim().toUpperCase() === cleanSku) ||
+        (targetId && (p.id || '').trim() === targetId)
+    );
+
+    if (prodIndex !== -1) {
+      targetProduct = db.products[prodIndex];
+      const newImg: ProductImage = {
+        id: `img-${targetProduct.id || cleanSku}-${uploadTimestamp}`,
+        product_id: targetProduct.id,
+        storage_path: publicUrl,
+        alt_text: (req.body.alt_text || `${targetProduct.name || 'Artwork'} (${targetProduct.sku || cleanSku})`).trim(),
+        caption: targetProduct.name || '',
+        display_order: 1,
+        is_primary: true,
+      };
+
+      const replaceIndex = req.body.replace_index !== undefined && req.body.replace_index !== '' ? Number(req.body.replace_index) : -1;
+      const isReplace = req.body.replace === 'true' || req.body.replace === true;
+
+      let updatedImages: ProductImage[] = [];
+      const currentImages = Array.isArray(targetProduct.images) ? targetProduct.images : [];
+
+      if (replaceIndex >= 0 && currentImages[replaceIndex]) {
+        // Direct replacement of a specific image slot
+        updatedImages = currentImages.map((img, i) =>
+          i === replaceIndex ? newImg : { ...img, is_primary: false }
+        );
+      } else if (isReplace || currentImages.length <= 1) {
+        // Replace single or cover image with the new version directly
+        if (currentImages.length > 1) {
+          updatedImages = [newImg, ...currentImages.slice(1).map((img) => ({ ...img, is_primary: false }))];
+        } else {
+          updatedImages = [newImg];
+        }
+      } else {
+        const remainingImages = currentImages
+          .filter((img) => img && img.storage_path !== publicUrl)
+          .map((img) => ({ ...img, is_primary: false }));
+        updatedImages = [newImg, ...remainingImages];
+      }
+
+      targetProduct.images = updatedImages;
+      (targetProduct as any).image_url = publicUrl;
+      (targetProduct as any).image_path = publicUrl;
+      targetProduct.updated_at = new Date().toISOString();
+
+      saveDB(db);
+      invalidateProductsCache();
+      productUpdated = true;
+
+      // Sync updated product to Supabase products table
+      try {
+        await saveFirestoreProduct(targetProduct);
+      } catch (err) {
+        console.warn('[server] Supabase products table update error:', err);
+      }
+
+      console.log(`[server] Persisted latest image URL (${publicUrl}) to product ${targetProduct.sku}`);
+    }
+
+    // 5. Save to media library
+    const asset: MediaAsset = {
+      id: `media-${uploadTimestamp}-${crypto.randomBytes(3).toString('hex')}`,
+      storage_path: publicUrl,
+      media_type: isVideo ? 'video' : 'image',
+      filename: fileName,
+      title: cleanSku ? `${cleanSku}_${uploadTimestamp}${fileExt}` : file.originalname,
+      alt_text: req.body.alt_text || '',
+      caption: req.body.caption || '',
+      file_size: file.size,
+      created_at: new Date().toISOString(),
+    };
+
+    db.media.unshift(asset);
+    saveDB(db);
+    saveFirestoreMediaAsset(asset).catch((err) =>
+      console.warn('[server] Failed to save media asset to Supabase/DB:', err)
+    );
+    logAudit('media_uploaded', 'media', asset.id, {
+      filename: asset.filename,
+      path: asset.storage_path,
+      sku: cleanSku || undefined,
+      product_updated: productUpdated,
+      supabase_uploaded: supabaseUploaded,
+    });
+
+    res.json({
+      success: true,
+      file_path: publicUrl,
+      public_url: publicUrl,
+      fileName,
+      supabase_storage_uploaded: supabaseUploaded,
+      supabase_storage_error: supabaseErrorMsg || undefined,
+      product_updated: productUpdated,
+      product: targetProduct,
+      asset,
+    });
+  } catch (err: any) {
+    console.error('[server] Upload error:', err);
+    res.status(500).json({ error: 'Failed to upload file to storage.' });
   }
-
-  const asset: MediaAsset = {
-    id: `media-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
-    storage_path: relativePath,
-    media_type: isVideo ? 'video' : 'image',
-    filename: req.file.filename,
-    title: req.file.originalname,
-    alt_text: req.body.alt_text || '',
-    caption: req.body.caption || '',
-    file_size: req.file.size,
-    created_at: new Date().toISOString(),
-  };
-
-  db.media.unshift(asset);
-  saveDB(db);
-  saveFirestoreMediaAsset(asset).catch((err) => console.warn('[server] Failed to save media asset to Supabase:', err));
-  logAudit('media_uploaded', 'media', asset.id, { filename: asset.filename, path: asset.storage_path, sku: targetSku });
-
-  res.json({
-    success: true,
-    file_path: relativePath,
-    asset,
-  });
 });
+
+
 
 // Admin Media Library CRUD
 app.get('/api/admin/media', requireAdmin, (_req: Request, res: Response) => {

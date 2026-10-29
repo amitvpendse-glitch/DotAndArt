@@ -56,6 +56,7 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
   const appendCacheBuster = (url?: string) => {
     if (!url) return url;
     if (url.startsWith('data:') || url.startsWith('blob:') || url.includes('?')) return url;
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
     return `${url}?v=20261026_v5`;
   };
 
@@ -107,6 +108,10 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     setLocalSrc(null);
 
     const checkLocal = async () => {
+      // If src is already a remote Supabase/cloud URL, don't override it with old local cached images
+      if (src && (src.startsWith('http://') || src.startsWith('https://'))) {
+        return;
+      }
       let cached: string | null = null;
       if (src && (src.startsWith('/uploads/') || src.startsWith('data:') || src.startsWith('blob:'))) {
         cached = await getLocalArtworkImage(src);

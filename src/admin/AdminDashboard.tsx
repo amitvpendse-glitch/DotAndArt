@@ -231,10 +231,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab, t
             if (confirm('Are you sure you want to force a full database sync? This will reload the application.')) {
               try {
                 setLoading(true);
-                await safeFetchJson('/api/admin/pull-sync', {
+                const res = await safeFetchJson<{clear_client_cache?: boolean}>('/api/admin/pull-sync', {
                   method: 'POST',
                   headers: { Authorization: `Bearer ${token}` },
                 }, {});
+                
+                if (res?.clear_client_cache) {
+                  localStorage.clear();
+                  if (window.indexedDB) {
+                    const req = window.indexedDB.deleteDatabase('DotAndArtStorage');
+                    req.onsuccess = () => console.log('IndexedDB cleared.');
+                  }
+                  if ('caches' in window) {
+                    const names = await window.caches.keys();
+                    await Promise.all(names.map(name => window.caches.delete(name)));
+                    console.log('Cache API cleared.');
+                  }
+                }
+                
                 alert('Database synchronized successfully. Reloading...');
                 window.location.reload();
               } catch (e) {

@@ -4,7 +4,7 @@
     "pin_hash": "97b3616b4102d8fffe0e9f77c66be24d15cfc45a10accb5addd36df4a1e4679a3dd094a679ea7a21747a3edd769ff89b559fbaee295c8b0ebad63197ac7df5a4",
     "salt": "882855132cb07106cf3d1e18bb3dbf29",
     "updated_at": "2026-10-20T10:06:11.955Z",
-    "last_login_at": "2026-10-28T11:23:01.280Z"
+    "last_login_at": "2026-10-29T11:12:55.626Z"
   },
   "sessions": [
     {
@@ -168,6 +168,30 @@
       "admin_username": "admin",
       "expires_at": 1793320589747,
       "created_at": "2026-10-29T00:36:29.747Z"
+    },
+    {
+      "token_hash": "1a71f09cb32dd1944a719b1b8f4bb096a72830d1e24ff06f2986e0eacb3e837f",
+      "admin_username": "admin",
+      "expires_at": 1793362583632,
+      "created_at": "2026-10-29T10:59:31.535Z"
+    },
+    {
+      "token_hash": "0d49b1e7b3a5cb5aa2eea4d35caf84186e64af6dfe6816095e2109fe3f085093",
+      "admin_username": "admin",
+      "expires_at": 1793358730080,
+      "created_at": "2026-10-29T11:12:10.041Z"
+    },
+    {
+      "token_hash": "bcc7a8b190bc1c676be8ebc175e974e9d56d5dba3dc14f1566d8b5f7333a24a4",
+      "admin_username": "admin",
+      "expires_at": 1793358775663,
+      "created_at": "2026-10-29T11:12:55.626Z"
+    },
+    {
+      "token_hash": "07425cbf14ae56234f7432a206d841e56c38941ba8d7580d67f2a79fb6db793f",
+      "admin_username": "admin",
+      "expires_at": 1793362156658,
+      "created_at": "2026-10-29T12:09:16.659Z"
     }
   ],
   "categories": [
@@ -184,12 +208,6 @@
       "description": "Traditional Kutch mud and mirror art"
     },
     {
-      "id": "cat-lippan-mud-mirror-art",
-      "name": "Lippan Mud-Mirror Art",
-      "slug": "lippan-mud-mirror-art",
-      "description": "Handcrafted traditional Lippan artwork"
-    },
-    {
       "id": "cat-tea-light-candle-holders",
       "name": "Tea Light Candle Holders",
       "slug": "tea-light-candle-holders",
@@ -197,163 +215,6 @@
     }
   ],
   "products": [
-    {
-      "id": "prod-tc-2-1793234190520",
-      "sku": "DA-TC-CS-0001-COPY-304",
-      "name": "Handcrafted Tea Light Candle Stand (Copy 304)",
-      "short_description": "Handcrafted decorative tea light candle stand",
-      "description": "Handcrafted decorative tea light candle stand with intricate dot art and protective varnish finish.",
-      "category_id": "cat-tea-light-candle-holders",
-      "category_name": "Tea Light Candle Holders",
-      "category_slug": "tea-light-candle-holders",
-      "material": "MDF Wood, Acrylic Paints, Protective Varnish",
-      "framing": "Ready to display",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Worldwide insured shipping available",
-      "special_information": "Clean gently with a soft dry microfiber cloth.",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "base_price": 650,
-      "base_size": "4 Inches",
-      "images": [
-        {
-          "id": "img-tc-2-1",
-          "product_id": "prod-tc-2",
-          "storage_path": "/static/assets/images/DA-TC-CS-0001.jpg",
-          "alt_text": "Handcrafted Tea Light Candle Stand (Copy 304)",
-          "caption": "Handcrafted Tea Light Candle Stand (Copy 304)",
-          "display_order": 1,
-          "is_primary": true
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-29T00:36:30.520Z",
-      "updated_at": "2026-10-29T00:36:30.520Z",
-      "is_high_demand": false
-    },
-    {
-      "id": "prod-tc-3-1793234190520",
-      "sku": "DA-TC-CS-0001-AMIT",
-      "name": "Handcrafted Tea Light Candle Stand (Amit Edition)",
-      "short_description": "Handcrafted decorative tea light candle stand",
-      "description": "Handcrafted decorative tea light candle stand with intricate dot art and protective varnish finish.",
-      "category_id": "cat-tea-light-candle-holders",
-      "category_name": "Tea Light Candle Holders",
-      "category_slug": "tea-light-candle-holders",
-      "material": "MDF Wood, Acrylic Paints, Protective Varnish",
-      "framing": "Ready to display",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Worldwide insured shipping available",
-      "special_information": "Clean gently with a soft dry microfiber cloth.",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "base_price": 750,
-      "base_size": "4 Inches",
-      "images": [
-        {
-          "id": "img-tc-3-1",
-          "product_id": "prod-tc-3",
-          "storage_path": "/static/assets/images/DA-TC-CS-0001.jpg",
-          "alt_text": "Handcrafted Tea Light Candle Stand (Amit Edition)",
-          "caption": "Handcrafted Tea Light Candle Stand (Amit Edition)",
-          "display_order": 1,
-          "is_primary": true
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-29T00:36:30.520Z",
-      "updated_at": "2026-10-29T00:36:30.520Z",
-      "is_high_demand": false
-    },
-    {
-      "id": "prod-tc-4-1793234190520",
-      "sku": "DA-TC-CS-0001-COPY-585",
-      "name": "Handcrafted Tea Light Candle Stand (Copy 585)",
-      "short_description": "Handcrafted decorative tea light candle stand",
-      "description": "Handcrafted decorative tea light candle stand with intricate dot art and protective varnish finish.",
-      "category_id": "cat-tea-light-candle-holders",
-      "category_name": "Tea Light Candle Holders",
-      "category_slug": "tea-light-candle-holders",
-      "material": "MDF Wood, Acrylic Paints, Protective Varnish",
-      "framing": "Ready to display",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Worldwide insured shipping available",
-      "special_information": "Clean gently with a soft dry microfiber cloth.",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "base_price": 650,
-      "base_size": "4 Inches",
-      "images": [
-        {
-          "id": "img-tc-4-1",
-          "product_id": "prod-tc-4",
-          "storage_path": "/static/assets/images/DA-TC-CS-0001.jpg",
-          "alt_text": "Handcrafted Tea Light Candle Stand (Copy 585)",
-          "caption": "Handcrafted Tea Light Candle Stand (Copy 585)",
-          "display_order": 1,
-          "is_primary": true
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-29T00:36:30.520Z",
-      "updated_at": "2026-10-29T00:36:30.520Z",
-      "is_high_demand": false
-    },
-    {
-      "id": "prod-tc-1-1793212651222",
-      "sku": "DA-TC-CS-0001",
-      "name": "Handcrafted Tea Light Candle Stand",
-      "short_description": "Handcrafted decorative tea light candle stand",
-      "description": "Handcrafted decorative tea light candle stand with intricate dot art and protective varnish finish.",
-      "category_id": "cat-tea-light-candle-holders",
-      "category_name": "Tea Light Candle Holders",
-      "category_slug": "tea-light-candle-holders",
-      "material": "MDF Wood, Acrylic Paints, Protective Varnish",
-      "framing": "Ready to display",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Worldwide insured shipping available",
-      "special_information": "Clean gently with a soft dry microfiber cloth.",
-      "featured": true,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": false,
-      "extra_delivery_days": 0,
-      "high_demand_message": "",
-      "base_price": 650,
-      "base_size": "4 Inches",
-      "images": [
-        {
-          "id": "img-1793233389424-1bxa",
-          "alt_text": "DotAndArt_Logo.jpeg",
-          "is_primary": true,
-          "product_id": "prod-tc-1-1793212651222",
-          "storage_path": "/uploads/local-media-1793233389396-1g8t.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T18:37:31.313219+00:00",
-      "updated_at": "2026-10-29T00:23:14.484+00:00"
-    },
     {
       "id": "prod-1793212755174",
       "sku": "DA-TC-CS-0001A",
@@ -382,21 +243,21 @@
       "base_size": "Set of 3",
       "images": [
         {
-          "id": "img-1793232894169-juub",
-          "alt_text": "DotAndArt_Logo.jpeg",
+          "id": "img-1793275930656-803h",
+          "alt_text": "DA-LP-MD-0002.jpg",
           "is_primary": true,
           "product_id": "prod-1793212755174",
-          "storage_path": "/uploads/local-media-1793232894122-7gcz.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A_1793275930403.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
-      "created_at": "2026-10-28T18:39:14.871715+00:00",
-      "updated_at": "2026-10-29T00:14:59.187+00:00"
+      "created_at": "2026-10-29T10:22:57.720363+00:00",
+      "updated_at": "2026-10-29T12:12:20.07+00:00"
     },
     {
-      "id": "prod-tc-3-1793212038085",
-      "sku": "DA-TC-CS-0002",
+      "id": "prod-tc-1-1793212651222",
+      "sku": "DA-TC-CS-0001",
       "name": "Casted Stone Tea Light Candle Holder",
       "short_description": "Handcrafted decorative tea light candle stand",
       "description": "Casted Stone Tea Light Candle Holder set. Available as individual pieces as well. Small one (4 inches) costs INR 350 each and big one (6 inches) costs INR 550 each.",
@@ -409,9 +270,9 @@
       "creation_time": "5-7 Days",
       "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
       "special_information": "Wipe with dry or damp soft cloth",
-      "featured": false,
+      "featured": true,
       "is_published": true,
-      "is_available": true,
+      "is_available": false,
       "available_badge_text": "Available",
       "unavailable_badge_text": "Made to Order",
       "show_available_badge": true,
@@ -419,20 +280,21 @@
       "extra_delivery_days": 2,
       "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
       "base_price": 1250,
-      "base_size": "4 Inches",
+      "base_size": "Set of 3",
       "images": [
         {
-          "id": "img-1793232877921-yrwq",
-          "alt_text": "DotAndArt_Logo.jpeg",
+          "id": "img-prod-tc-1-1793212651222-1",
+          "caption": "Casted Stone Tea Light Candle Holder",
+          "alt_text": "Tea Light Candle Holder (DA-TC-CS-0001)",
           "is_primary": true,
-          "product_id": "prod-tc-3-1793212038085",
-          "storage_path": "/uploads/local-media-1793232877858-3m2r.jpg",
+          "product_id": "prod-tc-1-1793212651222",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
-      "created_at": "2026-10-28T18:27:17.992825+00:00",
-      "updated_at": "2026-10-29T00:14:43.939+00:00"
+      "created_at": "2026-10-28T18:37:31.313219+00:00",
+      "updated_at": "2026-10-29T11:44:45.077+00:00"
     },
     {
       "id": "prod-314ab920-3fc7-4c95-a147-2dbc25a14494",
@@ -467,13 +329,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-SET-7CHAKRA)",
           "is_primary": true,
           "product_id": "prod-314ab920-3fc7-4c95-a147-2dbc25a14494",
-          "storage_path": "/static/assets/images/DA-MD-SET-7CHAKRA.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-Set-7chakra.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:27:01.715+00:00"
+      "updated_at": "2026-10-29T11:44:43.719+00:00"
     },
     {
       "id": "prod-f5ccc504-e248-47c7-973e-1af4dd3f9804",
@@ -508,13 +370,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-SET-0001)",
           "is_primary": true,
           "product_id": "prod-f5ccc504-e248-47c7-973e-1af4dd3f9804",
-          "storage_path": "/static/assets/images/DA-MD-SET-0001.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-Set-0001.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:26:05.133+00:00"
+      "updated_at": "2026-10-29T11:44:42.634+00:00"
     },
     {
       "id": "prod-306b85d1-5d2d-45a4-ba17-859045110ed3",
@@ -549,13 +411,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-30-0001)",
           "is_primary": true,
           "product_id": "prod-306b85d1-5d2d-45a4-ba17-859045110ed3",
-          "storage_path": "/static/assets/images/DA-MD-30-0001.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-30-0001.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:24:10.681+00:00"
+      "updated_at": "2026-10-29T11:44:39.517+00:00"
     },
     {
       "id": "prod-e36eb87e-bb13-4db4-85e9-5efcb2821af4",
@@ -590,13 +452,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-24-0007)",
           "is_primary": true,
           "product_id": "prod-e36eb87e-bb13-4db4-85e9-5efcb2821af4",
-          "storage_path": "/static/assets/images/DA-MD-24-0007.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-24-0007.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:23:09.502+00:00"
+      "updated_at": "2026-10-29T11:44:38.399+00:00"
     },
     {
       "id": "prod-0c8c50f1-5bdc-41f8-9dd6-062fc8edb051",
@@ -631,13 +493,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-24-0006)",
           "is_primary": true,
           "product_id": "prod-0c8c50f1-5bdc-41f8-9dd6-062fc8edb051",
-          "storage_path": "/static/assets/images/DA-MD-24-0006.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-24-0006.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:22:51.217+00:00"
+      "updated_at": "2026-10-29T11:44:37.488+00:00"
     },
     {
       "id": "prod-460d9348-7cfb-46a0-bd02-5069bb5d84bf",
@@ -672,13 +534,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-24-0005)",
           "is_primary": true,
           "product_id": "prod-460d9348-7cfb-46a0-bd02-5069bb5d84bf",
-          "storage_path": "/static/assets/images/DA-MD-24-0005.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-24-0005.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:22:08.479+00:00"
+      "updated_at": "2026-10-29T11:44:36.696+00:00"
     },
     {
       "id": "prod-4b2e2f2b-614a-46bc-b59a-5d75af636743",
@@ -713,13 +575,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-24-0004)",
           "is_primary": true,
           "product_id": "prod-4b2e2f2b-614a-46bc-b59a-5d75af636743",
-          "storage_path": "/static/assets/images/DA-MD-24-0004.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-24-0004.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:21:44.424+00:00"
+      "updated_at": "2026-10-29T11:44:35.775+00:00"
     },
     {
       "id": "prod-17534091-6884-4931-b63f-2bbf738500fc",
@@ -754,13 +616,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-24-0003)",
           "is_primary": true,
           "product_id": "prod-17534091-6884-4931-b63f-2bbf738500fc",
-          "storage_path": "/static/assets/images/DA-MD-24-0003.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-24-0003.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:21:13.854+00:00"
+      "updated_at": "2026-10-29T11:44:34.893+00:00"
     },
     {
       "id": "prod-2af89190-4b1d-47af-b30c-0e6aeec17272",
@@ -795,13 +657,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-24-0002)",
           "is_primary": true,
           "product_id": "prod-2af89190-4b1d-47af-b30c-0e6aeec17272",
-          "storage_path": "/static/assets/images/DA-MD-24-0002.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-24-0002.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:20:51.083+00:00"
+      "updated_at": "2026-10-29T11:44:33.961+00:00"
     },
     {
       "id": "prod-64ace9d3-ef6f-41c3-abce-5847e55d6d16",
@@ -836,13 +698,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-24-0001)",
           "is_primary": true,
           "product_id": "prod-64ace9d3-ef6f-41c3-abce-5847e55d6d16",
-          "storage_path": "/static/assets/images/DA-MD-24-0001.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-24-0001.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:20:31.544+00:00"
+      "updated_at": "2026-10-29T11:44:32.7+00:00"
     },
     {
       "id": "prod-5ca928e3-bec9-4d97-9e64-b724d33a5825",
@@ -877,13 +739,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0031)",
           "is_primary": true,
           "product_id": "prod-5ca928e3-bec9-4d97-9e64-b724d33a5825",
-          "storage_path": "/static/assets/images/DA-MD-18-0031.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0031.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:18:57.456+00:00"
+      "updated_at": "2026-10-29T11:44:30.617+00:00"
     },
     {
       "id": "prod-fbc66f50-865c-404a-846c-8236f17ebb21",
@@ -918,13 +780,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0030)",
           "is_primary": true,
           "product_id": "prod-fbc66f50-865c-404a-846c-8236f17ebb21",
-          "storage_path": "/static/assets/images/DA-MD-18-0030.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0030.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:18:32.194+00:00"
+      "updated_at": "2026-10-29T11:44:30.015+00:00"
     },
     {
       "id": "prod-47a93c2e-feda-4a57-9463-b4e93800a79d",
@@ -959,13 +821,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0029)",
           "is_primary": true,
           "product_id": "prod-47a93c2e-feda-4a57-9463-b4e93800a79d",
-          "storage_path": "/static/assets/images/DA-MD-18-0029.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0029.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:18:06.739+00:00"
+      "updated_at": "2026-10-29T11:44:29.479+00:00"
     },
     {
       "id": "prod-7ed0463d-44cb-4e50-b58a-79ac6cc0e511",
@@ -1000,13 +862,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0028)",
           "is_primary": true,
           "product_id": "prod-7ed0463d-44cb-4e50-b58a-79ac6cc0e511",
-          "storage_path": "/static/assets/images/DA-MD-18-0028.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0028.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:17:47.231+00:00"
+      "updated_at": "2026-10-29T11:44:28.813+00:00"
     },
     {
       "id": "prod-6832880b-101a-4cf6-be6e-d9f0cccb6883",
@@ -1041,13 +903,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0027)",
           "is_primary": true,
           "product_id": "prod-6832880b-101a-4cf6-be6e-d9f0cccb6883",
-          "storage_path": "/static/assets/images/DA-MD-18-0027.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0027.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:17:20.707+00:00"
+      "updated_at": "2026-10-29T11:44:28.308+00:00"
     },
     {
       "id": "prod-bf29e82e-de5b-44ba-91b1-55664dd00a83",
@@ -1082,13 +944,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0026)",
           "is_primary": true,
           "product_id": "prod-bf29e82e-de5b-44ba-91b1-55664dd00a83",
-          "storage_path": "/static/assets/images/DA-MD-18-0026.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0026.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:17:00.231+00:00"
+      "updated_at": "2026-10-29T11:44:27.234+00:00"
     },
     {
       "id": "prod-ab91233a-505c-4a31-8a15-07d068e2d69c",
@@ -1123,13 +985,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0025)",
           "is_primary": true,
           "product_id": "prod-ab91233a-505c-4a31-8a15-07d068e2d69c",
-          "storage_path": "/static/assets/images/DA-MD-18-0025.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0025.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:16:40.303+00:00"
+      "updated_at": "2026-10-29T11:44:26.328+00:00"
     },
     {
       "id": "prod-0c70019e-c260-4f87-95fb-caae85d3993d",
@@ -1164,13 +1026,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0024)",
           "is_primary": true,
           "product_id": "prod-0c70019e-c260-4f87-95fb-caae85d3993d",
-          "storage_path": "/static/assets/images/DA-MD-18-0024.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0024.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:16:09.461+00:00"
+      "updated_at": "2026-10-29T11:44:25.568+00:00"
     },
     {
       "id": "prod-ce941374-247b-4888-a1e7-97bc5939f70f",
@@ -1205,13 +1067,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0023)",
           "is_primary": true,
           "product_id": "prod-ce941374-247b-4888-a1e7-97bc5939f70f",
-          "storage_path": "/static/assets/images/DA-MD-18-0023.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0023.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:15:47.807+00:00"
+      "updated_at": "2026-10-29T11:44:24.954+00:00"
     },
     {
       "id": "prod-cd6fcb5a-8b2d-4889-83b0-388eb08ee0e8",
@@ -1246,13 +1108,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0022)",
           "is_primary": true,
           "product_id": "prod-cd6fcb5a-8b2d-4889-83b0-388eb08ee0e8",
-          "storage_path": "/static/assets/images/DA-MD-18-0022.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0022.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:14:45.18+00:00"
+      "updated_at": "2026-10-29T11:44:24.441+00:00"
     },
     {
       "id": "prod-f5f42278-30c2-4409-bc43-7461a33710cb",
@@ -1287,13 +1149,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0021)",
           "is_primary": true,
           "product_id": "prod-f5f42278-30c2-4409-bc43-7461a33710cb",
-          "storage_path": "/static/assets/images/DA-MD-18-0021.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0021.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:14:22.632+00:00"
+      "updated_at": "2026-10-29T11:44:23.922+00:00"
     },
     {
       "id": "prod-12aa5bc5-e443-4fe2-b3c0-6d15527b3e02",
@@ -1328,13 +1190,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0020)",
           "is_primary": true,
           "product_id": "prod-12aa5bc5-e443-4fe2-b3c0-6d15527b3e02",
-          "storage_path": "/static/assets/images/DA-MD-18-0020.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0020.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:14:04.268+00:00"
+      "updated_at": "2026-10-29T11:44:23.387+00:00"
     },
     {
       "id": "prod-3b59b08e-2ead-49ca-aeae-1edd01c81527",
@@ -1369,13 +1231,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0019)",
           "is_primary": true,
           "product_id": "prod-3b59b08e-2ead-49ca-aeae-1edd01c81527",
-          "storage_path": "/static/assets/images/DA-MD-18-0019.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0019.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:13:34.156+00:00"
+      "updated_at": "2026-10-29T11:44:22.87+00:00"
     },
     {
       "id": "prod-33973291-f137-4d80-beab-8b8c9d7f7640",
@@ -1410,13 +1272,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0018)",
           "is_primary": true,
           "product_id": "prod-33973291-f137-4d80-beab-8b8c9d7f7640",
-          "storage_path": "/static/assets/images/DA-MD-18-0018.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0018.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:13:14.135+00:00"
+      "updated_at": "2026-10-29T11:44:22.254+00:00"
     },
     {
       "id": "prod-b41bff52-7ace-472b-8a15-b0224f5ef43b",
@@ -1451,13 +1313,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0017)",
           "is_primary": true,
           "product_id": "prod-b41bff52-7ace-472b-8a15-b0224f5ef43b",
-          "storage_path": "/static/assets/images/DA-MD-18-0017.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0017.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:12:52.521+00:00"
+      "updated_at": "2026-10-29T11:44:21.713+00:00"
     },
     {
       "id": "prod-feeb6e63-cc71-4c76-90dd-f27c759b1661",
@@ -1492,13 +1354,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0016)",
           "is_primary": true,
           "product_id": "prod-feeb6e63-cc71-4c76-90dd-f27c759b1661",
-          "storage_path": "/static/assets/images/DA-MD-18-0016.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0016.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:12:30.88+00:00"
+      "updated_at": "2026-10-29T11:44:21.174+00:00"
     },
     {
       "id": "prod-909a638e-0612-4d01-bd74-4faae1f53bd4",
@@ -1533,13 +1395,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0015)",
           "is_primary": true,
           "product_id": "prod-909a638e-0612-4d01-bd74-4faae1f53bd4",
-          "storage_path": "/static/assets/images/DA-MD-18-0015.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0015.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:11:59.151+00:00"
+      "updated_at": "2026-10-29T11:44:20.633+00:00"
     },
     {
       "id": "prod-7a7da678-625b-412a-9bb4-1f5dab8ad7bc",
@@ -1574,13 +1436,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0014)",
           "is_primary": true,
           "product_id": "prod-7a7da678-625b-412a-9bb4-1f5dab8ad7bc",
-          "storage_path": "/static/assets/images/DA-MD-18-0014.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0014.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:11:34.959+00:00"
+      "updated_at": "2026-10-29T11:44:20.093+00:00"
     },
     {
       "id": "prod-0100a13b-5b33-4625-ac75-c4c4a45acff2",
@@ -1615,13 +1477,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0013)",
           "is_primary": true,
           "product_id": "prod-0100a13b-5b33-4625-ac75-c4c4a45acff2",
-          "storage_path": "/static/assets/images/DA-MD-18-0013.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0013.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:11:10.895+00:00"
+      "updated_at": "2026-10-29T11:44:19.561+00:00"
     },
     {
       "id": "prod-c051a8fe-3c33-4ad1-80a4-b18ad5c46d4a",
@@ -1656,13 +1518,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0012)",
           "is_primary": true,
           "product_id": "prod-c051a8fe-3c33-4ad1-80a4-b18ad5c46d4a",
-          "storage_path": "/static/assets/images/DA-MD-18-0012.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0012.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:10:38.489+00:00"
+      "updated_at": "2026-10-29T11:44:19.053+00:00"
     },
     {
       "id": "prod-92c132f4-3fa4-4931-ad56-546b28b27161",
@@ -1697,13 +1559,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0011)",
           "is_primary": true,
           "product_id": "prod-92c132f4-3fa4-4931-ad56-546b28b27161",
-          "storage_path": "/static/assets/images/DA-MD-18-0011.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0011.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:10:00.201+00:00"
+      "updated_at": "2026-10-29T11:44:18.502+00:00"
     },
     {
       "id": "prod-e32c3005-5c72-4609-96df-98e102335509",
@@ -1738,13 +1600,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0010)",
           "is_primary": true,
           "product_id": "prod-e32c3005-5c72-4609-96df-98e102335509",
-          "storage_path": "/static/assets/images/DA-MD-18-0010.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0010.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:09:32.66+00:00"
+      "updated_at": "2026-10-29T11:44:17.977+00:00"
     },
     {
       "id": "prod-535fb64e-4ff2-4d40-ab66-a2564f9a5450",
@@ -1779,54 +1641,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0009)",
           "is_primary": true,
           "product_id": "prod-535fb64e-4ff2-4d40-ab66-a2564f9a5450",
-          "storage_path": "/static/assets/images/DA-MD-18-0009.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0009.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:08:56.987+00:00"
-    },
-    {
-      "id": "prod-565d2970-fa97-4051-9d55-5412ac51f4f6",
-      "sku": "DA-MD-18-0007",
-      "name": "Mandala Wall Hanging",
-      "short_description": "",
-      "description": "Circular hand-painted dot mandala with central photo",
-      "category_id": "cat-mandala",
-      "category_name": "Mandala Wall Hangings",
-      "category_slug": "mandala-wall-hangings",
-      "material": "Moisture-resistant MDF board, Acrylic Paints, Central Photo, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "",
-      "customizable": true,
-      "creation_time": "4-7 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": true,
-      "is_published": true,
-      "is_available": false,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": true,
-      "extra_delivery_days": 3,
-      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
-      "base_price": 2400,
-      "base_size": "18 Inches",
-      "images": [
-        {
-          "id": "img-prod-565d2970-fa97-4051-9d55-5412ac51f4f6-1",
-          "caption": "Mandala Wall Hanging",
-          "alt_text": "Mandala Wall Hanging (DA-MD-18-0007)",
-          "is_primary": true,
-          "product_id": "prod-565d2970-fa97-4051-9d55-5412ac51f4f6",
-          "storage_path": "/static/assets/images/DA-MD-18-0007.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:07:32.597+00:00"
+      "updated_at": "2026-10-29T11:44:17.281+00:00"
     },
     {
       "id": "prod-b2a8bc16-b5de-4329-880e-8309151d63da",
@@ -1861,13 +1682,54 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0008)",
           "is_primary": true,
           "product_id": "prod-b2a8bc16-b5de-4329-880e-8309151d63da",
-          "storage_path": "/static/assets/images/DA-MD-18-0008.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0008.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:07:17.274+00:00"
+      "updated_at": "2026-10-29T11:44:16.287+00:00"
+    },
+    {
+      "id": "prod-565d2970-fa97-4051-9d55-5412ac51f4f6",
+      "sku": "DA-MD-18-0007",
+      "name": "Mandala Wall Hanging",
+      "short_description": "",
+      "description": "Circular hand-painted dot mandala with central photo",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Moisture-resistant MDF board, Acrylic Paints, Central Photo, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
+      "framing": "",
+      "customizable": true,
+      "creation_time": "4-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": true,
+      "is_published": true,
+      "is_available": false,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 3,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 2400,
+      "base_size": "18 Inches",
+      "images": [
+        {
+          "id": "img-prod-565d2970-fa97-4051-9d55-5412ac51f4f6-1",
+          "caption": "Mandala Wall Hanging",
+          "alt_text": "Mandala Wall Hanging (DA-MD-18-0007)",
+          "is_primary": true,
+          "product_id": "prod-565d2970-fa97-4051-9d55-5412ac51f4f6",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0007.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T07:36:57.940983+00:00",
+      "updated_at": "2026-10-29T11:44:15.658+00:00"
     },
     {
       "id": "prod-0a504a95-d721-4b50-9225-a2e90bdfeeed",
@@ -1902,13 +1764,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0006)",
           "is_primary": true,
           "product_id": "prod-0a504a95-d721-4b50-9225-a2e90bdfeeed",
-          "storage_path": "/static/assets/images/DA-MD-18-0006.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0006.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:06:18.057+00:00"
+      "updated_at": "2026-10-29T11:44:15.015+00:00"
     },
     {
       "id": "prod-b92c2e4b-8f24-4cf3-a3c3-07433eb0a1e7",
@@ -1943,13 +1805,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0005)",
           "is_primary": true,
           "product_id": "prod-b92c2e4b-8f24-4cf3-a3c3-07433eb0a1e7",
-          "storage_path": "/static/assets/images/DA-MD-18-0005.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0005.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:05:51.114+00:00"
+      "updated_at": "2026-10-29T11:44:14.386+00:00"
     },
     {
       "id": "prod-167ebab0-8304-417a-a1c1-99d3ff1e7291",
@@ -1984,13 +1846,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0004)",
           "is_primary": true,
           "product_id": "prod-167ebab0-8304-417a-a1c1-99d3ff1e7291",
-          "storage_path": "/static/assets/images/DA-MD-18-0004.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0004.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:05:12.98+00:00"
+      "updated_at": "2026-10-29T11:44:13.764+00:00"
     },
     {
       "id": "prod-57d7872c-3b43-451a-bca7-2ec8238cfa34",
@@ -2025,13 +1887,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0003)",
           "is_primary": true,
           "product_id": "prod-57d7872c-3b43-451a-bca7-2ec8238cfa34",
-          "storage_path": "/static/assets/images/DA-MD-18-0003.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0003.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:04:46.632+00:00"
+      "updated_at": "2026-10-29T11:44:13.259+00:00"
     },
     {
       "id": "prod-e5878102-99be-4928-aec2-ee53db710a37",
@@ -2066,13 +1928,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0002)",
           "is_primary": true,
           "product_id": "prod-e5878102-99be-4928-aec2-ee53db710a37",
-          "storage_path": "/static/assets/images/DA-MD-18-0002.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0002.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:04:11.486+00:00"
+      "updated_at": "2026-10-29T11:44:12.658+00:00"
     },
     {
       "id": "prod-e9616114-b970-4c62-9346-8d4b9a56a9f0",
@@ -2107,13 +1969,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0052)",
           "is_primary": true,
           "product_id": "prod-e9616114-b970-4c62-9346-8d4b9a56a9f0",
-          "storage_path": "/static/assets/images/DA-MD-15-0052.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0052.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:03:05.716+00:00"
+      "updated_at": "2026-10-29T11:44:12.049+00:00"
     },
     {
       "id": "prod-7b2e7693-ab81-47b9-b57a-f08adc39b7b4",
@@ -2148,13 +2010,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0051)",
           "is_primary": true,
           "product_id": "prod-7b2e7693-ab81-47b9-b57a-f08adc39b7b4",
-          "storage_path": "/static/assets/images/DA-MD-15-0051.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0051.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:02:42.388+00:00"
+      "updated_at": "2026-10-29T11:44:11.502+00:00"
     },
     {
       "id": "prod-2bf1972e-4812-4feb-9e89-3607943c4e8e",
@@ -2189,13 +2051,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0050)",
           "is_primary": true,
           "product_id": "prod-2bf1972e-4812-4feb-9e89-3607943c4e8e",
-          "storage_path": "/static/assets/images/DA-MD-15-0050.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0050.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:02:22.616+00:00"
+      "updated_at": "2026-10-29T11:44:10.933+00:00"
     },
     {
       "id": "prod-9df82611-2b0c-45ff-9728-16e58fdf6ec1",
@@ -2230,13 +2092,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0049)",
           "is_primary": true,
           "product_id": "prod-9df82611-2b0c-45ff-9728-16e58fdf6ec1",
-          "storage_path": "/static/assets/images/DA-MD-15-0049.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0049.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:01:45.831+00:00"
+      "updated_at": "2026-10-29T11:44:10.061+00:00"
     },
     {
       "id": "prod-dda68582-9c99-4264-8bbd-e6b45fe65b2b",
@@ -2271,13 +2133,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0048)",
           "is_primary": true,
           "product_id": "prod-dda68582-9c99-4264-8bbd-e6b45fe65b2b",
-          "storage_path": "/static/assets/images/DA-MD-15-0048.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0048.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:01:24.093+00:00"
+      "updated_at": "2026-10-29T11:44:09.523+00:00"
     },
     {
       "id": "prod-fd68b343-d40d-40b4-baa3-45127b21eb42",
@@ -2312,13 +2174,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0047)",
           "is_primary": true,
           "product_id": "prod-fd68b343-d40d-40b4-baa3-45127b21eb42",
-          "storage_path": "/static/assets/images/DA-MD-15-0047.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0047.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:01:02.187+00:00"
+      "updated_at": "2026-10-29T11:44:08.983+00:00"
     },
     {
       "id": "prod-9c41722b-1511-47eb-9356-64876d83751f",
@@ -2353,13 +2215,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0046)",
           "is_primary": true,
           "product_id": "prod-9c41722b-1511-47eb-9356-64876d83751f",
-          "storage_path": "/static/assets/images/DA-MD-15-0046.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0046.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:00:41.779+00:00"
+      "updated_at": "2026-10-29T11:44:08.446+00:00"
     },
     {
       "id": "prod-538de275-557c-4031-abbe-129ba9fc1f08",
@@ -2394,13 +2256,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0045)",
           "is_primary": true,
           "product_id": "prod-538de275-557c-4031-abbe-129ba9fc1f08",
-          "storage_path": "/static/assets/images/DA-MD-15-0045.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0045.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:00:09.3+00:00"
+      "updated_at": "2026-10-29T11:44:07.935+00:00"
     },
     {
       "id": "prod-0d52064c-7a95-4c47-8d32-f9399adecefa",
@@ -2435,13 +2297,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0044)",
           "is_primary": true,
           "product_id": "prod-0d52064c-7a95-4c47-8d32-f9399adecefa",
-          "storage_path": "/static/assets/images/DA-MD-15-0044.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0044.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:59:49.797+00:00"
+      "updated_at": "2026-10-29T11:44:07.18+00:00"
     },
     {
       "id": "prod-feccec7c-17fe-4d4d-957a-e99f67328305",
@@ -2476,13 +2338,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0043)",
           "is_primary": true,
           "product_id": "prod-feccec7c-17fe-4d4d-957a-e99f67328305",
-          "storage_path": "/static/assets/images/DA-MD-15-0043.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0043.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:59:29.482+00:00"
+      "updated_at": "2026-10-29T11:44:06.665+00:00"
     },
     {
       "id": "prod-4d31fe1b-b390-4bdc-878b-a90cef6bf4f9",
@@ -2517,13 +2379,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0042)",
           "is_primary": true,
           "product_id": "prod-4d31fe1b-b390-4bdc-878b-a90cef6bf4f9",
-          "storage_path": "/static/assets/images/DA-MD-15-0042.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0042.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:59:05.288+00:00"
+      "updated_at": "2026-10-29T11:44:06.159+00:00"
     },
     {
       "id": "prod-3923ac41-0ec6-46df-88db-7c136b8fc440",
@@ -2558,13 +2420,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0041)",
           "is_primary": true,
           "product_id": "prod-3923ac41-0ec6-46df-88db-7c136b8fc440",
-          "storage_path": "/static/assets/images/DA-MD-15-0041.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0041.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:58:45.484+00:00"
+      "updated_at": "2026-10-29T11:44:05.654+00:00"
     },
     {
       "id": "prod-8a702ad7-1bf6-4d5e-8d36-c6edddf305fc",
@@ -2599,13 +2461,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0040)",
           "is_primary": true,
           "product_id": "prod-8a702ad7-1bf6-4d5e-8d36-c6edddf305fc",
-          "storage_path": "/static/assets/images/DA-MD-15-0040.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0040.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:58:20.609+00:00"
+      "updated_at": "2026-10-29T11:44:05.144+00:00"
     },
     {
       "id": "prod-33c6e5b7-8f06-4ae4-bce0-9ac88a145c22",
@@ -2640,13 +2502,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0039)",
           "is_primary": true,
           "product_id": "prod-33c6e5b7-8f06-4ae4-bce0-9ac88a145c22",
-          "storage_path": "/static/assets/images/DA-MD-15-0039.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0039.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:57:53.713+00:00"
+      "updated_at": "2026-10-29T11:44:04.631+00:00"
     },
     {
       "id": "prod-c37e6226-d320-4400-a787-870034ac9f2c",
@@ -2681,13 +2543,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0038)",
           "is_primary": true,
           "product_id": "prod-c37e6226-d320-4400-a787-870034ac9f2c",
-          "storage_path": "/static/assets/images/DA-MD-15-0038.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0038.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:57:27.45+00:00"
+      "updated_at": "2026-10-29T11:44:04.093+00:00"
     },
     {
       "id": "prod-19da916f-5563-499c-a62c-1bd907bee371",
@@ -2722,13 +2584,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0037)",
           "is_primary": true,
           "product_id": "prod-19da916f-5563-499c-a62c-1bd907bee371",
-          "storage_path": "/static/assets/images/DA-MD-15-0037.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0037.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:56:15.31+00:00"
+      "updated_at": "2026-10-29T11:44:03.576+00:00"
     },
     {
       "id": "prod-63463904-ecb9-4e5f-8f3e-4a3dedb00846",
@@ -2763,13 +2625,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0036)",
           "is_primary": true,
           "product_id": "prod-63463904-ecb9-4e5f-8f3e-4a3dedb00846",
-          "storage_path": "/static/assets/images/DA-MD-15-0036.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0036.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:55:49.233+00:00"
+      "updated_at": "2026-10-29T11:44:03.06+00:00"
     },
     {
       "id": "prod-549c8435-a3e6-4b5c-aebc-af089c21820b",
@@ -2804,13 +2666,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0035)",
           "is_primary": true,
           "product_id": "prod-549c8435-a3e6-4b5c-aebc-af089c21820b",
-          "storage_path": "/static/assets/images/DA-MD-15-0035.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0035.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:55:17.335+00:00"
+      "updated_at": "2026-10-29T11:44:02.532+00:00"
     },
     {
       "id": "prod-0f08e9e4-498b-48ac-a588-3575e7724235",
@@ -2845,13 +2707,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0034)",
           "is_primary": true,
           "product_id": "prod-0f08e9e4-498b-48ac-a588-3575e7724235",
-          "storage_path": "/static/assets/images/DA-MD-15-0034.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0034.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:54:53.806+00:00"
+      "updated_at": "2026-10-29T11:44:02.008+00:00"
     },
     {
       "id": "prod-ce2e5398-84f5-4678-8697-a6cd7d4c5d6c",
@@ -2886,13 +2748,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0033)",
           "is_primary": true,
           "product_id": "prod-ce2e5398-84f5-4678-8697-a6cd7d4c5d6c",
-          "storage_path": "/static/assets/images/DA-MD-15-0033.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0033.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:54:19.964+00:00"
+      "updated_at": "2026-10-29T11:44:01.455+00:00"
     },
     {
       "id": "prod-135a7af9-2304-44af-85ed-a71046cc07d0",
@@ -2927,13 +2789,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0032)",
           "is_primary": true,
           "product_id": "prod-135a7af9-2304-44af-85ed-a71046cc07d0",
-          "storage_path": "/static/assets/images/DA-MD-15-0032.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0032.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:53:46.75+00:00"
+      "updated_at": "2026-10-29T11:44:00.894+00:00"
     },
     {
       "id": "prod-755f62de-a3ff-4b1e-b661-8709a9d68490",
@@ -2968,13 +2830,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0031)",
           "is_primary": true,
           "product_id": "prod-755f62de-a3ff-4b1e-b661-8709a9d68490",
-          "storage_path": "/static/assets/images/DA-MD-15-0031.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0031.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:53:23.675+00:00"
+      "updated_at": "2026-10-29T11:44:00.385+00:00"
     },
     {
       "id": "prod-9fff83ae-ce39-45da-bf3a-85c6277bdbd0",
@@ -3009,13 +2871,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0030)",
           "is_primary": true,
           "product_id": "prod-9fff83ae-ce39-45da-bf3a-85c6277bdbd0",
-          "storage_path": "/static/assets/images/DA-MD-15-0030.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0030.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:52:54.994+00:00"
+      "updated_at": "2026-10-29T11:43:59.864+00:00"
     },
     {
       "id": "prod-1babe950-fdb6-4bc7-9b32-8c6d234731b5",
@@ -3050,13 +2912,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0029)",
           "is_primary": true,
           "product_id": "prod-1babe950-fdb6-4bc7-9b32-8c6d234731b5",
-          "storage_path": "/static/assets/images/DA-MD-15-0029.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0029.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:52:02.328+00:00"
+      "updated_at": "2026-10-29T11:43:59.331+00:00"
     },
     {
       "id": "prod-1c8923b1-67d3-4f05-8c97-61e0aa64067b",
@@ -3091,13 +2953,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0028)",
           "is_primary": true,
           "product_id": "prod-1c8923b1-67d3-4f05-8c97-61e0aa64067b",
-          "storage_path": "/static/assets/images/DA-MD-15-0028.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0028.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:50:47.517+00:00"
+      "updated_at": "2026-10-29T11:43:58.833+00:00"
     },
     {
       "id": "prod-3ff2e0dd-2e83-42cb-981e-107f4cd43d2f",
@@ -3132,13 +2994,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0027)",
           "is_primary": true,
           "product_id": "prod-3ff2e0dd-2e83-42cb-981e-107f4cd43d2f",
-          "storage_path": "/static/assets/images/DA-MD-15-0027.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0027.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:50:23.199+00:00"
+      "updated_at": "2026-10-29T11:43:58.313+00:00"
     },
     {
       "id": "prod-b484f184-9779-4472-a205-8bfffa3a9871",
@@ -3173,13 +3035,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0026)",
           "is_primary": true,
           "product_id": "prod-b484f184-9779-4472-a205-8bfffa3a9871",
-          "storage_path": "/static/assets/images/DA-MD-15-0026.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0026.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:50:01.902+00:00"
+      "updated_at": "2026-10-29T11:43:57.67+00:00"
     },
     {
       "id": "prod-1940eb00-3357-419b-9b23-7b7d3847275f",
@@ -3214,13 +3076,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0025)",
           "is_primary": true,
           "product_id": "prod-1940eb00-3357-419b-9b23-7b7d3847275f",
-          "storage_path": "/static/assets/images/DA-MD-15-0025.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0025.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:49:32.786+00:00"
+      "updated_at": "2026-10-29T11:43:57+00:00"
     },
     {
       "id": "prod-9eaca907-0590-469d-8787-6ca3aacfce73",
@@ -3255,13 +3117,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0024)",
           "is_primary": true,
           "product_id": "prod-9eaca907-0590-469d-8787-6ca3aacfce73",
-          "storage_path": "/static/assets/images/DA-MD-15-0024.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0024.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:48:57.502+00:00"
+      "updated_at": "2026-10-29T11:43:56.449+00:00"
     },
     {
       "id": "prod-4a11ca2b-f920-4af4-b711-8910460c4e35",
@@ -3296,13 +3158,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0023)",
           "is_primary": true,
           "product_id": "prod-4a11ca2b-f920-4af4-b711-8910460c4e35",
-          "storage_path": "/static/assets/images/DA-MD-15-0023.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0023.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:48:28.692+00:00"
+      "updated_at": "2026-10-29T11:43:55.888+00:00"
     },
     {
       "id": "prod-20b9003b-a858-4dbc-8e64-334ee85d8a38",
@@ -3337,13 +3199,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0022)",
           "is_primary": true,
           "product_id": "prod-20b9003b-a858-4dbc-8e64-334ee85d8a38",
-          "storage_path": "/static/assets/images/DA-MD-15-0022.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0022.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:48:00.835+00:00"
+      "updated_at": "2026-10-29T11:43:55.314+00:00"
     },
     {
       "id": "prod-53c2d9bc-6e71-42d4-9dcf-ed90e49c1098",
@@ -3378,13 +3240,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0021)",
           "is_primary": true,
           "product_id": "prod-53c2d9bc-6e71-42d4-9dcf-ed90e49c1098",
-          "storage_path": "/static/assets/images/DA-MD-15-0021.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0021.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:47:34.931+00:00"
+      "updated_at": "2026-10-29T11:43:54.782+00:00"
     },
     {
       "id": "prod-9355ee2f-389b-4ec3-a1a5-6ea1a38f351d",
@@ -3419,13 +3281,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0020)",
           "is_primary": true,
           "product_id": "prod-9355ee2f-389b-4ec3-a1a5-6ea1a38f351d",
-          "storage_path": "/static/assets/images/DA-MD-15-0020.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0020.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:46:57.481+00:00"
+      "updated_at": "2026-10-29T11:43:54.229+00:00"
     },
     {
       "id": "prod-987aa83a-5788-4948-8185-f941a1aa5749",
@@ -3460,13 +3322,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0019)",
           "is_primary": true,
           "product_id": "prod-987aa83a-5788-4948-8185-f941a1aa5749",
-          "storage_path": "/static/assets/images/DA-MD-15-0019.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0019.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:46:33.134+00:00"
+      "updated_at": "2026-10-29T11:43:53.473+00:00"
     },
     {
       "id": "prod-e6243c19-9c24-43ee-93f5-bf3aedd7a2e5",
@@ -3501,13 +3363,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0018)",
           "is_primary": true,
           "product_id": "prod-e6243c19-9c24-43ee-93f5-bf3aedd7a2e5",
-          "storage_path": "/static/assets/images/DA-MD-15-0018.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0018.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:46:12.296+00:00"
+      "updated_at": "2026-10-29T11:43:52.815+00:00"
     },
     {
       "id": "prod-a87ee1d4-1054-419b-ac59-92befb069382",
@@ -3542,13 +3404,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0017)",
           "is_primary": true,
           "product_id": "prod-a87ee1d4-1054-419b-ac59-92befb069382",
-          "storage_path": "/static/assets/images/DA-MD-15-0017.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0017.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:45:43.568+00:00"
+      "updated_at": "2026-10-29T11:43:52.058+00:00"
     },
     {
       "id": "prod-6563b98a-c383-4513-b0ce-e9dd453e29a6",
@@ -3583,13 +3445,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0016)",
           "is_primary": true,
           "product_id": "prod-6563b98a-c383-4513-b0ce-e9dd453e29a6",
-          "storage_path": "/static/assets/images/DA-MD-15-0016.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0016.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:45:11.806+00:00"
+      "updated_at": "2026-10-29T11:43:51.55+00:00"
     },
     {
       "id": "prod-c1826d46-d261-4ef4-8f62-8c6fd902d1da",
@@ -3624,54 +3486,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0015)",
           "is_primary": true,
           "product_id": "prod-c1826d46-d261-4ef4-8f62-8c6fd902d1da",
-          "storage_path": "/static/assets/images/DA-MD-15-0015.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0015.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:44:49.746+00:00"
-    },
-    {
-      "id": "prod-29e6de85-9746-451e-b2f0-b57bc8adc273",
-      "sku": "DA-MD-15-0013",
-      "name": "Mandala Wall Hanging",
-      "short_description": "",
-      "description": "Circular hand-painted dot mandala",
-      "category_id": "cat-mandala",
-      "category_name": "Mandala Wall Hangings",
-      "category_slug": "mandala-wall-hangings",
-      "material": "Moisture-resistant MDF board, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "",
-      "customizable": true,
-      "creation_time": "4-7 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": false,
-      "is_published": true,
-      "is_available": false,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": false,
-      "extra_delivery_days": 0,
-      "high_demand_message": "",
-      "base_price": 1500,
-      "base_size": "15 Inches",
-      "images": [
-        {
-          "id": "img-prod-29e6de85-9746-451e-b2f0-b57bc8adc273-1",
-          "caption": "Mandala Wall Hanging",
-          "alt_text": "Mandala Wall Hanging (DA-MD-15-0013)",
-          "is_primary": true,
-          "product_id": "prod-29e6de85-9746-451e-b2f0-b57bc8adc273",
-          "storage_path": "/static/assets/images/DA-MD-15-0013.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:44:25.104+00:00"
+      "updated_at": "2026-10-29T11:43:51.025+00:00"
     },
     {
       "id": "prod-6f1ab3c2-ed04-4c56-b6f3-614cacd2a54f",
@@ -3706,13 +3527,54 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0014)",
           "is_primary": true,
           "product_id": "prod-6f1ab3c2-ed04-4c56-b6f3-614cacd2a54f",
-          "storage_path": "/static/assets/images/DA-MD-15-0014.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0014.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:44:14.487+00:00"
+      "updated_at": "2026-10-29T11:43:50.486+00:00"
+    },
+    {
+      "id": "prod-29e6de85-9746-451e-b2f0-b57bc8adc273",
+      "sku": "DA-MD-15-0013",
+      "name": "Mandala Wall Hanging",
+      "short_description": "",
+      "description": "Circular hand-painted dot mandala",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Moisture-resistant MDF board, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
+      "framing": "",
+      "customizable": true,
+      "creation_time": "4-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": false,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": "",
+      "base_price": 1500,
+      "base_size": "15 Inches",
+      "images": [
+        {
+          "id": "img-prod-29e6de85-9746-451e-b2f0-b57bc8adc273-1",
+          "caption": "Mandala Wall Hanging",
+          "alt_text": "Mandala Wall Hanging (DA-MD-15-0013)",
+          "is_primary": true,
+          "product_id": "prod-29e6de85-9746-451e-b2f0-b57bc8adc273",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0013.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T07:36:57.940983+00:00",
+      "updated_at": "2026-10-29T11:43:49.965+00:00"
     },
     {
       "id": "prod-1c4426d1-7af8-4632-ac6c-eb7592f0255c",
@@ -3747,13 +3609,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0012)",
           "is_primary": true,
           "product_id": "prod-1c4426d1-7af8-4632-ac6c-eb7592f0255c",
-          "storage_path": "/static/assets/images/DA-MD-15-0012.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0012.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:42:46.417+00:00"
+      "updated_at": "2026-10-29T11:43:49.427+00:00"
     },
     {
       "id": "prod-45acff8a-ffa3-465c-a77c-e6f6169759bb",
@@ -3788,13 +3650,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0011)",
           "is_primary": true,
           "product_id": "prod-45acff8a-ffa3-465c-a77c-e6f6169759bb",
-          "storage_path": "/static/assets/images/DA-MD-15-0011.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0011.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:42:16.789+00:00"
+      "updated_at": "2026-10-29T11:43:48.921+00:00"
     },
     {
       "id": "prod-325f9f90-ea5a-4a5a-b434-0a00c36c53ee",
@@ -3829,13 +3691,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0010)",
           "is_primary": true,
           "product_id": "prod-325f9f90-ea5a-4a5a-b434-0a00c36c53ee",
-          "storage_path": "/static/assets/images/DA-MD-15-0010.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0010.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:41:54.352+00:00"
+      "updated_at": "2026-10-29T11:43:48.391+00:00"
     },
     {
       "id": "prod-c44818d8-4ce1-4d73-973d-53c6ce824e47",
@@ -3870,13 +3732,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0009)",
           "is_primary": true,
           "product_id": "prod-c44818d8-4ce1-4d73-973d-53c6ce824e47",
-          "storage_path": "/static/assets/images/DA-MD-15-0009.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0009.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:38:43.345+00:00"
+      "updated_at": "2026-10-29T11:43:47.779+00:00"
     },
     {
       "id": "prod-0cc8a88f-c0a4-4a47-95c9-fb730643336f",
@@ -3911,13 +3773,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0008)",
           "is_primary": true,
           "product_id": "prod-0cc8a88f-c0a4-4a47-95c9-fb730643336f",
-          "storage_path": "/static/assets/images/DA-MD-15-0008.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0008.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:37:59.326+00:00"
+      "updated_at": "2026-10-29T11:43:47.162+00:00"
     },
     {
       "id": "prod-82a5aeea-7e0c-40be-b546-027b15ec940c",
@@ -3952,13 +3814,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0006)",
           "is_primary": true,
           "product_id": "prod-82a5aeea-7e0c-40be-b546-027b15ec940c",
-          "storage_path": "/static/assets/images/DA-MD-15-0006.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0006.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:35:17.55+00:00"
+      "updated_at": "2026-10-29T11:43:46.467+00:00"
     },
     {
       "id": "prod-4b7d8ecd-ea1c-4455-bd16-3b19101da624",
@@ -3993,13 +3855,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0005)",
           "is_primary": true,
           "product_id": "prod-4b7d8ecd-ea1c-4455-bd16-3b19101da624",
-          "storage_path": "/static/assets/images/DA-MD-15-0005.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0005.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:34:32.513+00:00"
+      "updated_at": "2026-10-29T11:43:45.885+00:00"
     },
     {
       "id": "prod-f6e67edb-80e3-4eb4-8e3b-89165dc25825",
@@ -4034,13 +3896,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0004)",
           "is_primary": true,
           "product_id": "prod-f6e67edb-80e3-4eb4-8e3b-89165dc25825",
-          "storage_path": "/static/assets/images/DA-MD-15-0004.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0004.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:33:32.09+00:00"
+      "updated_at": "2026-10-29T11:43:45.328+00:00"
     },
     {
       "id": "prod-547ff8a3-b03a-46f2-8ab2-02e0632c37dc",
@@ -4075,13 +3937,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0003)",
           "is_primary": true,
           "product_id": "prod-547ff8a3-b03a-46f2-8ab2-02e0632c37dc",
-          "storage_path": "/static/assets/images/DA-MD-15-0003.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0003.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:32:50.687+00:00"
+      "updated_at": "2026-10-29T11:43:44.59+00:00"
     },
     {
       "id": "prod-5c384af9-2512-4bbd-ba52-d4c28e92a612",
@@ -4116,13 +3978,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0002)",
           "is_primary": true,
           "product_id": "prod-5c384af9-2512-4bbd-ba52-d4c28e92a612",
-          "storage_path": "/static/assets/images/DA-MD-15-0002.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0002.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:32:17.729+00:00"
+      "updated_at": "2026-10-29T11:43:43.994+00:00"
     },
     {
       "id": "prod-4d2f6b84-2d2e-4455-b0b3-629e1e86e77b",
@@ -4157,13 +4019,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-15-0001)",
           "is_primary": true,
           "product_id": "prod-4d2f6b84-2d2e-4455-b0b3-629e1e86e77b",
-          "storage_path": "/static/assets/images/DA-MD-15-0001.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-15-0001.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:31:41.111+00:00"
+      "updated_at": "2026-10-29T11:43:43.371+00:00"
     },
     {
       "id": "prod-9cad3832-4d4f-475d-ae28-648f3c85025f",
@@ -4198,13 +4060,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0056)",
           "is_primary": true,
           "product_id": "prod-9cad3832-4d4f-475d-ae28-648f3c85025f",
-          "storage_path": "/static/assets/images/DA-MD-12-0056.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0056.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:30:33.711+00:00"
+      "updated_at": "2026-10-29T11:43:42.758+00:00"
     },
     {
       "id": "prod-32c1db2b-0fe1-4b42-b58a-b42098cbd2a2",
@@ -4239,13 +4101,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0055)",
           "is_primary": true,
           "product_id": "prod-32c1db2b-0fe1-4b42-b58a-b42098cbd2a2",
-          "storage_path": "/static/assets/images/DA-MD-12-0055.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0055.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:30:02.991+00:00"
+      "updated_at": "2026-10-29T11:43:41.875+00:00"
     },
     {
       "id": "prod-42f8449b-ae49-43e5-8684-1ffe36f298f7",
@@ -4280,13 +4142,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0054)",
           "is_primary": true,
           "product_id": "prod-42f8449b-ae49-43e5-8684-1ffe36f298f7",
-          "storage_path": "/static/assets/images/DA-MD-12-0054.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0054.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:29:34.2+00:00"
+      "updated_at": "2026-10-29T11:43:41.1+00:00"
     },
     {
       "id": "prod-f814f5f2-7b11-48c9-8cd1-32fd9a0c8e85",
@@ -4321,13 +4183,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0053)",
           "is_primary": true,
           "product_id": "prod-f814f5f2-7b11-48c9-8cd1-32fd9a0c8e85",
-          "storage_path": "/static/assets/images/DA-MD-12-0053.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0053.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:29:02.668+00:00"
+      "updated_at": "2026-10-29T11:43:40.187+00:00"
     },
     {
       "id": "prod-c1b39919-35f2-4274-b10b-d2c4254c2e77",
@@ -4362,13 +4224,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0052)",
           "is_primary": true,
           "product_id": "prod-c1b39919-35f2-4274-b10b-d2c4254c2e77",
-          "storage_path": "/static/assets/images/DA-MD-12-0052.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0052.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:28:37.91+00:00"
+      "updated_at": "2026-10-29T11:43:38.815+00:00"
     },
     {
       "id": "prod-b97bc6ec-cd3e-4da4-b68b-b6a371ef46d1",
@@ -4403,13 +4265,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0051)",
           "is_primary": true,
           "product_id": "prod-b97bc6ec-cd3e-4da4-b68b-b6a371ef46d1",
-          "storage_path": "/static/assets/images/DA-MD-12-0051.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0051.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:28:04.133+00:00"
+      "updated_at": "2026-10-29T11:43:37.543+00:00"
     },
     {
       "id": "prod-3cef832a-5547-4a48-9f5d-386a9e656a97",
@@ -4444,13 +4306,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0050)",
           "is_primary": true,
           "product_id": "prod-3cef832a-5547-4a48-9f5d-386a9e656a97",
-          "storage_path": "/static/assets/images/DA-MD-12-0050.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0050.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:27:31.983+00:00"
+      "updated_at": "2026-10-29T11:43:36.307+00:00"
     },
     {
       "id": "prod-cc20e3e4-da35-418f-b084-d3e8df2f7a33",
@@ -4485,13 +4347,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0049)",
           "is_primary": true,
           "product_id": "prod-cc20e3e4-da35-418f-b084-d3e8df2f7a33",
-          "storage_path": "/static/assets/images/DA-MD-12-0049.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0049.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:27:09.775+00:00"
+      "updated_at": "2026-10-29T11:43:35.097+00:00"
     },
     {
       "id": "prod-5ee64ce8-2467-453d-b31e-905855a0bbf3",
@@ -4526,13 +4388,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0048)",
           "is_primary": true,
           "product_id": "prod-5ee64ce8-2467-453d-b31e-905855a0bbf3",
-          "storage_path": "/static/assets/images/DA-MD-12-0048.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0048.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:26:44.147+00:00"
+      "updated_at": "2026-10-29T11:43:34.281+00:00"
     },
     {
       "id": "prod-6d7f63bc-c897-4181-ae92-b850b629af62",
@@ -4567,13 +4429,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0047)",
           "is_primary": true,
           "product_id": "prod-6d7f63bc-c897-4181-ae92-b850b629af62",
-          "storage_path": "/static/assets/images/DA-MD-12-0047.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0047.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:26:20.01+00:00"
+      "updated_at": "2026-10-29T11:43:33.484+00:00"
     },
     {
       "id": "prod-c6abc636-a475-47a4-a520-4ea7aa80a5f7",
@@ -4608,13 +4470,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0046)",
           "is_primary": true,
           "product_id": "prod-c6abc636-a475-47a4-a520-4ea7aa80a5f7",
-          "storage_path": "/static/assets/images/DA-MD-12-0046.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0046.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:25:57.702+00:00"
+      "updated_at": "2026-10-29T11:43:32.289+00:00"
     },
     {
       "id": "prod-dbda8833-96d2-455a-b1a2-3e235baa7d24",
@@ -4649,13 +4511,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0045)",
           "is_primary": true,
           "product_id": "prod-dbda8833-96d2-455a-b1a2-3e235baa7d24",
-          "storage_path": "/static/assets/images/DA-MD-12-0045.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0045.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:25:29.26+00:00"
+      "updated_at": "2026-10-29T11:43:31.148+00:00"
     },
     {
       "id": "prod-b575ff3e-710f-4242-9dba-5c4994385c0c",
@@ -4690,13 +4552,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0044)",
           "is_primary": true,
           "product_id": "prod-b575ff3e-710f-4242-9dba-5c4994385c0c",
-          "storage_path": "/static/assets/images/DA-MD-12-0044.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0044.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:25:07.026+00:00"
+      "updated_at": "2026-10-29T11:43:30.615+00:00"
     },
     {
       "id": "prod-b5c5aa35-1049-40d9-b87b-029cc5fa4906",
@@ -4731,13 +4593,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0043)",
           "is_primary": true,
           "product_id": "prod-b5c5aa35-1049-40d9-b87b-029cc5fa4906",
-          "storage_path": "/static/assets/images/DA-MD-12-0043.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0043.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:24:44.698+00:00"
+      "updated_at": "2026-10-29T11:43:30.066+00:00"
     },
     {
       "id": "prod-ba170f53-dc1b-4253-9b46-91af4f3adc2a",
@@ -4772,13 +4634,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0042)",
           "is_primary": true,
           "product_id": "prod-ba170f53-dc1b-4253-9b46-91af4f3adc2a",
-          "storage_path": "/static/assets/images/DA-MD-12-0042.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0042.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:24:18.061+00:00"
+      "updated_at": "2026-10-29T11:43:29.56+00:00"
     },
     {
       "id": "prod-425fc917-985b-401e-9715-3daf43995122",
@@ -4813,54 +4675,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0041)",
           "is_primary": true,
           "product_id": "prod-425fc917-985b-401e-9715-3daf43995122",
-          "storage_path": "/static/assets/images/DA-MD-12-0041.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0041.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:23:51.353+00:00"
-    },
-    {
-      "id": "prod-a0727763-4844-4085-b668-ef9ed9e642b8",
-      "sku": "DA-MD-12-0039",
-      "name": "Mandala Wall Hanging",
-      "short_description": "",
-      "description": "Circular hand-painted dot mandala",
-      "category_id": "cat-mandala",
-      "category_name": "Mandala Wall Hangings",
-      "category_slug": "mandala-wall-hangings",
-      "material": "Moisture-resistant MDF board, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": true,
-      "is_published": true,
-      "is_available": false,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": false,
-      "extra_delivery_days": 0,
-      "high_demand_message": "",
-      "base_price": 850,
-      "base_size": "12 Inches",
-      "images": [
-        {
-          "id": "img-prod-a0727763-4844-4085-b668-ef9ed9e642b8-1",
-          "caption": "Mandala Wall Hanging",
-          "alt_text": "Mandala Wall Hanging (DA-MD-12-0039)",
-          "is_primary": true,
-          "product_id": "prod-a0727763-4844-4085-b668-ef9ed9e642b8",
-          "storage_path": "/static/assets/images/DA-MD-12-0039.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:23:25.375+00:00"
+      "updated_at": "2026-10-29T11:43:28.952+00:00"
     },
     {
       "id": "prod-c3db5b0b-0ef3-424a-b5a0-514f019e383b",
@@ -4895,13 +4716,54 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0040)",
           "is_primary": true,
           "product_id": "prod-c3db5b0b-0ef3-424a-b5a0-514f019e383b",
-          "storage_path": "/static/assets/images/DA-MD-12-0040.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0040.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:23:15.677+00:00"
+      "updated_at": "2026-10-29T11:43:28.389+00:00"
+    },
+    {
+      "id": "prod-a0727763-4844-4085-b668-ef9ed9e642b8",
+      "sku": "DA-MD-12-0039",
+      "name": "Mandala Wall Hanging",
+      "short_description": "",
+      "description": "Circular hand-painted dot mandala",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Moisture-resistant MDF board, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
+      "framing": "",
+      "customizable": true,
+      "creation_time": "1-3 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": true,
+      "is_published": true,
+      "is_available": false,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": "",
+      "base_price": 850,
+      "base_size": "12 Inches",
+      "images": [
+        {
+          "id": "img-prod-a0727763-4844-4085-b668-ef9ed9e642b8-1",
+          "caption": "Mandala Wall Hanging",
+          "alt_text": "Mandala Wall Hanging (DA-MD-12-0039)",
+          "is_primary": true,
+          "product_id": "prod-a0727763-4844-4085-b668-ef9ed9e642b8",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0039.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T07:36:57.940983+00:00",
+      "updated_at": "2026-10-29T11:43:27.873+00:00"
     },
     {
       "id": "prod-8174eb84-5601-49fc-9a9d-208d8aa1124f",
@@ -4936,13 +4798,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0038)",
           "is_primary": true,
           "product_id": "prod-8174eb84-5601-49fc-9a9d-208d8aa1124f",
-          "storage_path": "/static/assets/images/DA-MD-12-0038.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0038.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:22:14.05+00:00"
+      "updated_at": "2026-10-29T11:43:27.34+00:00"
     },
     {
       "id": "prod-c9a9b636-d7af-42fa-b602-c680fc4da8a0",
@@ -4977,13 +4839,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0037)",
           "is_primary": true,
           "product_id": "prod-c9a9b636-d7af-42fa-b602-c680fc4da8a0",
-          "storage_path": "/static/assets/images/DA-MD-12-0037.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0037.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:21:44.919+00:00"
+      "updated_at": "2026-10-29T11:43:26.798+00:00"
     },
     {
       "id": "prod-61c6ff69-872a-44f7-8630-8b05f09786c0",
@@ -5018,13 +4880,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0036)",
           "is_primary": true,
           "product_id": "prod-61c6ff69-872a-44f7-8630-8b05f09786c0",
-          "storage_path": "/static/assets/images/DA-MD-12-0036.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0036.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:21:20.799+00:00"
+      "updated_at": "2026-10-29T11:43:26.273+00:00"
     },
     {
       "id": "prod-6dd1faa3-5f15-4d72-af8f-c19ac62f9997",
@@ -5059,13 +4921,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0035)",
           "is_primary": true,
           "product_id": "prod-6dd1faa3-5f15-4d72-af8f-c19ac62f9997",
-          "storage_path": "/static/assets/images/DA-MD-12-0035.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0035.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:20:50.549+00:00"
+      "updated_at": "2026-10-29T11:43:25.746+00:00"
     },
     {
       "id": "prod-11a4ce07-f54b-4985-b15c-659e702f5f0a",
@@ -5100,13 +4962,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0034)",
           "is_primary": true,
           "product_id": "prod-11a4ce07-f54b-4985-b15c-659e702f5f0a",
-          "storage_path": "/static/assets/images/DA-MD-12-0034.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0034.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:19:27.734+00:00"
+      "updated_at": "2026-10-29T11:43:25.178+00:00"
     },
     {
       "id": "prod-2f423483-f2e2-4efa-82ce-77a50b11db2d",
@@ -5141,13 +5003,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0033)",
           "is_primary": true,
           "product_id": "prod-2f423483-f2e2-4efa-82ce-77a50b11db2d",
-          "storage_path": "/static/assets/images/DA-MD-12-0033.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0033.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:18:54.993+00:00"
+      "updated_at": "2026-10-29T11:43:24.668+00:00"
     },
     {
       "id": "prod-6479832a-4caf-46fc-845f-b4de34d03809",
@@ -5182,13 +5044,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0032)",
           "is_primary": true,
           "product_id": "prod-6479832a-4caf-46fc-845f-b4de34d03809",
-          "storage_path": "/static/assets/images/DA-MD-12-0032.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0032.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:18:28.075+00:00"
+      "updated_at": "2026-10-29T11:43:24.139+00:00"
     },
     {
       "id": "prod-724e1b6e-6a84-4b97-a3b2-2433d7bf146e",
@@ -5223,13 +5085,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0031)",
           "is_primary": true,
           "product_id": "prod-724e1b6e-6a84-4b97-a3b2-2433d7bf146e",
-          "storage_path": "/static/assets/images/DA-MD-12-0031.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0031.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:18:01.209+00:00"
+      "updated_at": "2026-10-29T11:43:23.6+00:00"
     },
     {
       "id": "prod-986b1591-124c-4e7b-bbf4-38581b027b74",
@@ -5264,54 +5126,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0030)",
           "is_primary": true,
           "product_id": "prod-986b1591-124c-4e7b-bbf4-38581b027b74",
-          "storage_path": "/static/assets/images/DA-MD-12-0030.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0030.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:17:28.158+00:00"
-    },
-    {
-      "id": "prod-22ecc809-b063-4713-b7f9-87784b7575a3",
-      "sku": "DA-MD-12-0028",
-      "name": "Mandala Wall Hanging",
-      "short_description": "",
-      "description": "Circular hand-painted dot mandala",
-      "category_id": "cat-mandala",
-      "category_name": "Mandala Wall Hangings",
-      "category_slug": "mandala-wall-hangings",
-      "material": "Moisture-resistant MDF board, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": false,
-      "is_published": true,
-      "is_available": false,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": false,
-      "extra_delivery_days": 0,
-      "high_demand_message": "",
-      "base_price": 850,
-      "base_size": "12 Inches",
-      "images": [
-        {
-          "id": "img-prod-22ecc809-b063-4713-b7f9-87784b7575a3-1",
-          "caption": "Mandala Wall Hanging",
-          "alt_text": "Mandala Wall Hanging (DA-MD-12-0028)",
-          "is_primary": true,
-          "product_id": "prod-22ecc809-b063-4713-b7f9-87784b7575a3",
-          "storage_path": "/static/assets/images/DA-MD-12-0028.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:14:15.336+00:00"
+      "updated_at": "2026-10-29T11:43:23.043+00:00"
     },
     {
       "id": "prod-44bea079-bce8-4a32-9ca7-55b6b7a7d192",
@@ -5346,13 +5167,54 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0029)",
           "is_primary": true,
           "product_id": "prod-44bea079-bce8-4a32-9ca7-55b6b7a7d192",
-          "storage_path": "/static/assets/images/DA-MD-12-0029.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0029.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:14:08.037+00:00"
+      "updated_at": "2026-10-29T11:43:22.524+00:00"
+    },
+    {
+      "id": "prod-22ecc809-b063-4713-b7f9-87784b7575a3",
+      "sku": "DA-MD-12-0028",
+      "name": "Mandala Wall Hanging",
+      "short_description": "",
+      "description": "Circular hand-painted dot mandala",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Moisture-resistant MDF board, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
+      "framing": "",
+      "customizable": true,
+      "creation_time": "1-3 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": false,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": "",
+      "base_price": 850,
+      "base_size": "12 Inches",
+      "images": [
+        {
+          "id": "img-prod-22ecc809-b063-4713-b7f9-87784b7575a3-1",
+          "caption": "Mandala Wall Hanging",
+          "alt_text": "Mandala Wall Hanging (DA-MD-12-0028)",
+          "is_primary": true,
+          "product_id": "prod-22ecc809-b063-4713-b7f9-87784b7575a3",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0028.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T07:36:57.940983+00:00",
+      "updated_at": "2026-10-29T11:43:21.984+00:00"
     },
     {
       "id": "prod-e91dc105-e1e5-47cc-becd-03eda6c0e7a1",
@@ -5387,13 +5249,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0027)",
           "is_primary": true,
           "product_id": "prod-e91dc105-e1e5-47cc-becd-03eda6c0e7a1",
-          "storage_path": "/static/assets/images/DA-MD-12-0027.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0027.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:12:40.001+00:00"
+      "updated_at": "2026-10-29T11:43:21.441+00:00"
     },
     {
       "id": "prod-e6bae11d-53c4-4079-b735-412fd0c39242",
@@ -5428,13 +5290,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0026)",
           "is_primary": true,
           "product_id": "prod-e6bae11d-53c4-4079-b735-412fd0c39242",
-          "storage_path": "/static/assets/images/DA-MD-12-0026.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0026.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:12:10.605+00:00"
+      "updated_at": "2026-10-29T11:43:20.912+00:00"
     },
     {
       "id": "prod-ab5cdc1c-b960-4eb7-977a-320fa823ecb1",
@@ -5469,13 +5331,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0025)",
           "is_primary": true,
           "product_id": "prod-ab5cdc1c-b960-4eb7-977a-320fa823ecb1",
-          "storage_path": "/static/assets/images/DA-MD-12-0025.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0025.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:11:36.269+00:00"
+      "updated_at": "2026-10-29T11:43:20.269+00:00"
     },
     {
       "id": "prod-fc5e3d4d-c8bf-461b-9d2e-c96ca259ad8a",
@@ -5510,13 +5372,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0024)",
           "is_primary": true,
           "product_id": "prod-fc5e3d4d-c8bf-461b-9d2e-c96ca259ad8a",
-          "storage_path": "/static/assets/images/DA-MD-12-0024.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0024.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:11:05.725+00:00"
+      "updated_at": "2026-10-29T11:43:19.752+00:00"
     },
     {
       "id": "prod-ddade311-686b-4b9a-ad9d-1b2521bbad8b",
@@ -5551,13 +5413,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0023)",
           "is_primary": true,
           "product_id": "prod-ddade311-686b-4b9a-ad9d-1b2521bbad8b",
-          "storage_path": "/static/assets/images/DA-MD-12-0023.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0023.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:10:23.858+00:00"
+      "updated_at": "2026-10-29T11:43:19.24+00:00"
     },
     {
       "id": "prod-55c1948e-e5f6-4677-a592-0ad690c7a781",
@@ -5592,13 +5454,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0022)",
           "is_primary": true,
           "product_id": "prod-55c1948e-e5f6-4677-a592-0ad690c7a781",
-          "storage_path": "/static/assets/images/DA-MD-12-0022.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0022.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:09:49.05+00:00"
+      "updated_at": "2026-10-29T11:43:18.702+00:00"
     },
     {
       "id": "prod-eabf6693-f68b-4fe9-ba4d-50b7d08ac5b5",
@@ -5633,13 +5495,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0021)",
           "is_primary": true,
           "product_id": "prod-eabf6693-f68b-4fe9-ba4d-50b7d08ac5b5",
-          "storage_path": "/static/assets/images/DA-MD-12-0021.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0021.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:09:24.256+00:00"
+      "updated_at": "2026-10-29T11:43:18.175+00:00"
     },
     {
       "id": "prod-875efd52-173a-4adf-bf38-06572c3b6339",
@@ -5674,13 +5536,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0020)",
           "is_primary": true,
           "product_id": "prod-875efd52-173a-4adf-bf38-06572c3b6339",
-          "storage_path": "/static/assets/images/DA-MD-12-0020.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0020.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:08:45.256+00:00"
+      "updated_at": "2026-10-29T11:43:17.646+00:00"
     },
     {
       "id": "prod-db598690-8746-4f7e-990a-5ff36972dc52",
@@ -5715,13 +5577,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0019)",
           "is_primary": true,
           "product_id": "prod-db598690-8746-4f7e-990a-5ff36972dc52",
-          "storage_path": "/static/assets/images/DA-MD-12-0019.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0019.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:08:17.855+00:00"
+      "updated_at": "2026-10-29T11:43:17.14+00:00"
     },
     {
       "id": "prod-5e3b9da4-a318-4219-b6ca-ec10b178b892",
@@ -5756,13 +5618,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0018)",
           "is_primary": true,
           "product_id": "prod-5e3b9da4-a318-4219-b6ca-ec10b178b892",
-          "storage_path": "/static/assets/images/DA-MD-12-0018.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0018.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:07:46.048+00:00"
+      "updated_at": "2026-10-29T11:43:16.491+00:00"
     },
     {
       "id": "prod-b459beb2-713a-4368-ad56-1f157da5c01c",
@@ -5797,13 +5659,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0017)",
           "is_primary": true,
           "product_id": "prod-b459beb2-713a-4368-ad56-1f157da5c01c",
-          "storage_path": "/static/assets/images/DA-MD-12-0017.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0017.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:07:05.067+00:00"
+      "updated_at": "2026-10-29T11:43:15.883+00:00"
     },
     {
       "id": "prod-708f643d-4907-41ed-9851-18419a09d1c8",
@@ -5838,13 +5700,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0016)",
           "is_primary": true,
           "product_id": "prod-708f643d-4907-41ed-9851-18419a09d1c8",
-          "storage_path": "/static/assets/images/DA-MD-12-0016.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0016.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:06:30.873+00:00"
+      "updated_at": "2026-10-29T11:43:15.272+00:00"
     },
     {
       "id": "prod-1ed1bc1f-8206-4399-b18f-eeffc7d6882b",
@@ -5879,13 +5741,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0015)",
           "is_primary": true,
           "product_id": "prod-1ed1bc1f-8206-4399-b18f-eeffc7d6882b",
-          "storage_path": "/static/assets/images/DA-MD-12-0015.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0015.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:06:04.011+00:00"
+      "updated_at": "2026-10-29T11:43:14.646+00:00"
     },
     {
       "id": "prod-2080b889-c89a-4d9f-8c93-cb6ce9091952",
@@ -5920,13 +5782,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0012)",
           "is_primary": true,
           "product_id": "prod-2080b889-c89a-4d9f-8c93-cb6ce9091952",
-          "storage_path": "/static/assets/images/DA-MD-12-0012.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0012.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:05:30.098+00:00"
+      "updated_at": "2026-10-29T11:43:14.014+00:00"
     },
     {
       "id": "prod-bf5021ad-85d3-426d-95e2-8f06e9bdc1ce",
@@ -5961,13 +5823,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0011)",
           "is_primary": true,
           "product_id": "prod-bf5021ad-85d3-426d-95e2-8f06e9bdc1ce",
-          "storage_path": "/static/assets/images/DA-MD-12-0011.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0011.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:04:58.778+00:00"
+      "updated_at": "2026-10-29T11:43:13.367+00:00"
     },
     {
       "id": "prod-478c633c-e517-4e3e-869f-f903aab77313",
@@ -6002,13 +5864,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0009)",
           "is_primary": true,
           "product_id": "prod-478c633c-e517-4e3e-869f-f903aab77313",
-          "storage_path": "/static/assets/images/DA-MD-12-0009.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0009.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:04:17.875+00:00"
+      "updated_at": "2026-10-29T11:43:12.701+00:00"
     },
     {
       "id": "prod-333793c1-60ab-4a5f-a423-ad3d3895d6a8",
@@ -6043,13 +5905,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0008)",
           "is_primary": true,
           "product_id": "prod-333793c1-60ab-4a5f-a423-ad3d3895d6a8",
-          "storage_path": "/static/assets/images/DA-MD-12-0008.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0008.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:03:37.675+00:00"
+      "updated_at": "2026-10-29T11:43:12.095+00:00"
     },
     {
       "id": "prod-aff6bb1c-b4a3-431d-9e2d-f83c0d143f88",
@@ -6084,13 +5946,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0007)",
           "is_primary": true,
           "product_id": "prod-aff6bb1c-b4a3-431d-9e2d-f83c0d143f88",
-          "storage_path": "/static/assets/images/DA-MD-12-0007.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0007.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:02:57.276+00:00"
+      "updated_at": "2026-10-29T11:43:11.454+00:00"
     },
     {
       "id": "prod-2b7eeebd-3bbd-4927-83a6-9a84c49868d7",
@@ -6125,13 +5987,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0006)",
           "is_primary": true,
           "product_id": "prod-2b7eeebd-3bbd-4927-83a6-9a84c49868d7",
-          "storage_path": "/static/assets/images/DA-MD-12-0006.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0006.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:02:25.299+00:00"
+      "updated_at": "2026-10-29T11:43:10.451+00:00"
     },
     {
       "id": "prod-ee23b9c5-e89a-47b4-bd5e-ccc07beb8c9f",
@@ -6166,13 +6028,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0005)",
           "is_primary": true,
           "product_id": "prod-ee23b9c5-e89a-47b4-bd5e-ccc07beb8c9f",
-          "storage_path": "/static/assets/images/DA-MD-12-0005.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0005.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:01:58.017+00:00"
+      "updated_at": "2026-10-29T11:43:09.863+00:00"
     },
     {
       "id": "prod-42b03bcd-3c46-4b22-895c-c29603f7d5fe",
@@ -6207,13 +6069,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0004)",
           "is_primary": true,
           "product_id": "prod-42b03bcd-3c46-4b22-895c-c29603f7d5fe",
-          "storage_path": "/static/assets/images/DA-MD-12-0004.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0004.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T17:01:25.074+00:00"
+      "updated_at": "2026-10-29T11:43:09.272+00:00"
     },
     {
       "id": "prod-10a10bbb-ad22-4267-b27c-842070dcaa1e",
@@ -6248,13 +6110,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0003)",
           "is_primary": true,
           "product_id": "prod-10a10bbb-ad22-4267-b27c-842070dcaa1e",
-          "storage_path": "/static/assets/images/DA-MD-12-0003.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0003.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:58:00.185+00:00"
+      "updated_at": "2026-10-29T11:43:08.665+00:00"
     },
     {
       "id": "prod-7a4678de-90fe-4705-9f08-632ae1b03a79",
@@ -6289,13 +6151,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0002)",
           "is_primary": true,
           "product_id": "prod-7a4678de-90fe-4705-9f08-632ae1b03a79",
-          "storage_path": "/static/assets/images/DA-MD-12-0002.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0002.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:57:33.971+00:00"
+      "updated_at": "2026-10-29T11:43:08.063+00:00"
     },
     {
       "id": "prod-e0f73555-d138-4b14-bcc3-6c496e425d85",
@@ -6330,13 +6192,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-12-0001)",
           "is_primary": true,
           "product_id": "prod-e0f73555-d138-4b14-bcc3-6c496e425d85",
-          "storage_path": "/static/assets/images/DA-MD-12-0001.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-12-0001.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:56:26.375+00:00"
+      "updated_at": "2026-10-29T11:43:07.456+00:00"
     },
     {
       "id": "prod-3efdbccd-f095-440e-bfb9-126726a444bb",
@@ -6371,13 +6233,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0019)",
           "is_primary": true,
           "product_id": "prod-3efdbccd-f095-440e-bfb9-126726a444bb",
-          "storage_path": "/static/assets/images/DA-MD-10-0019.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0019.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:54:44.484+00:00"
+      "updated_at": "2026-10-29T11:43:06.877+00:00"
     },
     {
       "id": "prod-a3a08d03-f235-4e58-bb22-0a99331a4fb8",
@@ -6412,13 +6274,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0018)",
           "is_primary": true,
           "product_id": "prod-a3a08d03-f235-4e58-bb22-0a99331a4fb8",
-          "storage_path": "/static/assets/images/DA-MD-10-0018.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0018.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:54:05.126+00:00"
+      "updated_at": "2026-10-29T11:43:06.344+00:00"
     },
     {
       "id": "prod-532f5329-6d7a-4c7f-8005-746a58003542",
@@ -6453,13 +6315,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0017)",
           "is_primary": true,
           "product_id": "prod-532f5329-6d7a-4c7f-8005-746a58003542",
-          "storage_path": "/static/assets/images/DA-MD-10-0017.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0017.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:53:39.4+00:00"
+      "updated_at": "2026-10-29T11:43:05.768+00:00"
     },
     {
       "id": "prod-25e5eba5-ed2f-47be-9823-65ee2416a1f4",
@@ -6494,13 +6356,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0016)",
           "is_primary": true,
           "product_id": "prod-25e5eba5-ed2f-47be-9823-65ee2416a1f4",
-          "storage_path": "/static/assets/images/DA-MD-10-0016.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0016.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:53:03.805+00:00"
+      "updated_at": "2026-10-29T11:43:05.234+00:00"
     },
     {
       "id": "prod-171649d7-c4b7-47e9-a99a-4e589b54fde2",
@@ -6535,13 +6397,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0015)",
           "is_primary": true,
           "product_id": "prod-171649d7-c4b7-47e9-a99a-4e589b54fde2",
-          "storage_path": "/static/assets/images/DA-MD-10-0015.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0015.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:52:19.278+00:00"
+      "updated_at": "2026-10-29T11:43:04.708+00:00"
     },
     {
       "id": "prod-794a8461-e5a9-49c5-813b-5fff16e06708",
@@ -6576,13 +6438,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0014)",
           "is_primary": true,
           "product_id": "prod-794a8461-e5a9-49c5-813b-5fff16e06708",
-          "storage_path": "/static/assets/images/DA-MD-10-0014.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0014.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:51:49.191+00:00"
+      "updated_at": "2026-10-29T11:43:04.194+00:00"
     },
     {
       "id": "prod-61856703-af2b-451a-895c-8e10cccedb21",
@@ -6617,13 +6479,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0013)",
           "is_primary": true,
           "product_id": "prod-61856703-af2b-451a-895c-8e10cccedb21",
-          "storage_path": "/static/assets/images/DA-MD-10-0013.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0013.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:51:19.425+00:00"
+      "updated_at": "2026-10-29T11:43:03.674+00:00"
     },
     {
       "id": "prod-db29ea10-8b7b-45c8-8bf0-9a1aa66096d1",
@@ -6658,13 +6520,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0012)",
           "is_primary": true,
           "product_id": "prod-db29ea10-8b7b-45c8-8bf0-9a1aa66096d1",
-          "storage_path": "/static/assets/images/DA-MD-10-0012.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0012.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:50:50.249+00:00"
+      "updated_at": "2026-10-29T11:43:03.031+00:00"
     },
     {
       "id": "prod-464c7ba1-1d08-433e-9582-4b55c6988f04",
@@ -6699,13 +6561,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0011)",
           "is_primary": true,
           "product_id": "prod-464c7ba1-1d08-433e-9582-4b55c6988f04",
-          "storage_path": "/static/assets/images/DA-MD-10-0011.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0011.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:50:12.948+00:00"
+      "updated_at": "2026-10-29T11:43:02.474+00:00"
     },
     {
       "id": "prod-8360ce6d-8f33-4792-a207-48da8fec9bbd",
@@ -6740,13 +6602,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0010)",
           "is_primary": true,
           "product_id": "prod-8360ce6d-8f33-4792-a207-48da8fec9bbd",
-          "storage_path": "/static/assets/images/DA-MD-10-0010.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0010.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:48:58.484+00:00"
+      "updated_at": "2026-10-29T11:43:01.937+00:00"
     },
     {
       "id": "prod-b7676d54-6a08-480c-bdae-046584e512b9",
@@ -6781,13 +6643,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0009)",
           "is_primary": true,
           "product_id": "prod-b7676d54-6a08-480c-bdae-046584e512b9",
-          "storage_path": "/static/assets/images/DA-MD-10-0009.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0009.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:48:28.266+00:00"
+      "updated_at": "2026-10-29T11:43:01.369+00:00"
     },
     {
       "id": "prod-6a51c49f-8107-4ae7-a2ed-ac272fe37da3",
@@ -6822,13 +6684,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0008)",
           "is_primary": true,
           "product_id": "prod-6a51c49f-8107-4ae7-a2ed-ac272fe37da3",
-          "storage_path": "/static/assets/images/DA-MD-10-0008.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0008.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:48:04.564+00:00"
+      "updated_at": "2026-10-29T11:43:00.759+00:00"
     },
     {
       "id": "prod-a317cae7-713a-42ba-ab23-62b78353ff4c",
@@ -6863,13 +6725,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0007)",
           "is_primary": true,
           "product_id": "prod-a317cae7-713a-42ba-ab23-62b78353ff4c",
-          "storage_path": "/static/assets/images/DA-MD-10-0007.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0007.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:47:41.113+00:00"
+      "updated_at": "2026-10-29T11:43:00.203+00:00"
     },
     {
       "id": "prod-f435ce4d-552e-45a1-8074-4d5791bc875e",
@@ -6904,13 +6766,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0006)",
           "is_primary": true,
           "product_id": "prod-f435ce4d-552e-45a1-8074-4d5791bc875e",
-          "storage_path": "/static/assets/images/DA-MD-10-0006.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0006.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:47:13.481+00:00"
+      "updated_at": "2026-10-29T11:42:59.361+00:00"
     },
     {
       "id": "prod-a1b452b0-5637-4cfb-9d0b-c1f5585d57c7",
@@ -6945,13 +6807,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0005)",
           "is_primary": true,
           "product_id": "prod-a1b452b0-5637-4cfb-9d0b-c1f5585d57c7",
-          "storage_path": "/static/assets/images/DA-MD-10-0005.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0005.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:46:08.355+00:00"
+      "updated_at": "2026-10-29T11:42:58.797+00:00"
     },
     {
       "id": "prod-0c170292-0600-4120-94df-0bf425d37d54",
@@ -6986,13 +6848,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0004)",
           "is_primary": true,
           "product_id": "prod-0c170292-0600-4120-94df-0bf425d37d54",
-          "storage_path": "/static/assets/images/DA-MD-10-0004.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0004.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:45:35.296+00:00"
+      "updated_at": "2026-10-29T11:42:58.216+00:00"
     },
     {
       "id": "prod-32f8ec2d-d590-4026-81dc-d333cdda5686",
@@ -7027,13 +6889,13 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-10-0001)",
           "is_primary": true,
           "product_id": "prod-32f8ec2d-d590-4026-81dc-d333cdda5686",
-          "storage_path": "/static/assets/images/DA-MD-10-0001.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-10-0001.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:44:58.046+00:00"
+      "updated_at": "2026-10-29T11:42:57.656+00:00"
     },
     {
       "id": "prod-58099a7b-6dc2-421b-972c-82eaca88052b",
@@ -7068,13 +6930,13 @@
           "alt_text": "Lippan Art Wall Hanging Set (DA-LP-SET-0003)",
           "is_primary": true,
           "product_id": "prod-58099a7b-6dc2-421b-972c-82eaca88052b",
-          "storage_path": "/static/assets/images/DA-LP-SET-0003.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-Set-0003.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:43:40.064+00:00"
+      "updated_at": "2026-10-29T11:42:57.046+00:00"
     },
     {
       "id": "prod-b0f44ac0-279d-42a3-ba7f-df290cba4a2a",
@@ -7109,13 +6971,13 @@
           "alt_text": "Lippan Art Wall Hanging Set (DA-LP-SET-0002)",
           "is_primary": true,
           "product_id": "prod-b0f44ac0-279d-42a3-ba7f-df290cba4a2a",
-          "storage_path": "/static/assets/images/DA-LP-SET-0002.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-Set-0002.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:41:43.994+00:00"
+      "updated_at": "2026-10-29T11:42:56.524+00:00"
     },
     {
       "id": "prod-0db27e1f-d18b-4040-8c89-977d56fddcdb",
@@ -7150,13 +7012,13 @@
           "alt_text": "Lippan Art Wall Hanging Set (DA-LP-SET-0001)",
           "is_primary": true,
           "product_id": "prod-0db27e1f-d18b-4040-8c89-977d56fddcdb",
-          "storage_path": "/static/assets/images/DA-LP-SET-0001.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-Set-0001.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:40:48.757+00:00"
+      "updated_at": "2026-10-29T11:42:55.911+00:00"
     },
     {
       "id": "prod-7f13e95e-745a-41e6-a4c3-f50c5c5158a0",
@@ -7191,13 +7053,13 @@
           "alt_text": "Lippan Wall Hanging (DA-LP-36-0001)",
           "is_primary": true,
           "product_id": "prod-7f13e95e-745a-41e6-a4c3-f50c5c5158a0",
-          "storage_path": "/static/assets/images/DA-LP-36-0001.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-36-0001.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:37:54.786+00:00"
+      "updated_at": "2026-10-29T11:42:53.715+00:00"
     },
     {
       "id": "prod-4ee9f75e-81da-46b2-af83-c3d850cef04c",
@@ -7232,136 +7094,13 @@
           "alt_text": "Lippan Wall Hanging (DA-LP-24X48-0001)",
           "is_primary": true,
           "product_id": "prod-4ee9f75e-81da-46b2-af83-c3d850cef04c",
-          "storage_path": "/static/assets/images/DA-LP-24X48-0001.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-24x48-0001.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:36:22.725+00:00"
-    },
-    {
-      "id": "prod-33155e6e-aea3-48ad-b433-6cff1522834d",
-      "sku": "DA-LP-18-0003",
-      "name": "Lippan Wall Hanging",
-      "short_description": "",
-      "description": "Circular hand-crafted and hand-painted lippan peacock artwork",
-      "category_id": "cat-lippan",
-      "category_name": "Lippan Wall Hangings",
-      "category_slug": "lippan-wall-hangings",
-      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Central Mirror, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "",
-      "customizable": true,
-      "creation_time": "8-10 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": true,
-      "extra_delivery_days": 3,
-      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
-      "base_price": 3000,
-      "base_size": "18 Inches",
-      "images": [
-        {
-          "id": "img-prod-33155e6e-aea3-48ad-b433-6cff1522834d-1",
-          "caption": "Lippan Wall Hanging",
-          "alt_text": "Lippan Wall Hanging (DA-LP-18-0003)",
-          "is_primary": true,
-          "product_id": "prod-33155e6e-aea3-48ad-b433-6cff1522834d",
-          "storage_path": "/static/assets/images/DA-LP-18-0003.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:34:53.235+00:00"
-    },
-    {
-      "id": "prod-818da539-e627-4afd-b2ac-dc3c7bb19d59",
-      "sku": "DA-LP-18-0002",
-      "name": "Lippan Wall Hanging",
-      "short_description": "",
-      "description": "Circular hand-crafted and hand-painted lippan Om artwork",
-      "category_id": "cat-lippan",
-      "category_name": "Lippan Wall Hangings",
-      "category_slug": "lippan-wall-hangings",
-      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Central Insert, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "",
-      "customizable": true,
-      "creation_time": "8-10 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": false,
-      "is_published": true,
-      "is_available": false,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": false,
-      "extra_delivery_days": 0,
-      "high_demand_message": "",
-      "base_price": 3000,
-      "base_size": "18 Inches",
-      "images": [
-        {
-          "id": "img-prod-818da539-e627-4afd-b2ac-dc3c7bb19d59-1",
-          "caption": "Lippan Wall Hanging",
-          "alt_text": "Lippan Wall Hanging (DA-LP-18-0002)",
-          "is_primary": true,
-          "product_id": "prod-818da539-e627-4afd-b2ac-dc3c7bb19d59",
-          "storage_path": "/static/assets/images/DA-LP-18-0002.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:34:03.861+00:00"
-    },
-    {
-      "id": "prod-90eddf75-d355-4915-9ade-b200eeccee1a",
-      "sku": "DA-LP-18-0001",
-      "name": "Lippan Wall Hanging",
-      "short_description": "",
-      "description": "Square hand-crafted and hand-painted lippan Ganesha artwork",
-      "category_id": "cat-lippan",
-      "category_name": "Lippan Wall Hangings",
-      "category_slug": "lippan-wall-hangings",
-      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "",
-      "customizable": true,
-      "creation_time": "8-10 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": false,
-      "extra_delivery_days": 0,
-      "high_demand_message": "",
-      "base_price": 3000,
-      "base_size": "18 Inches",
-      "images": [
-        {
-          "id": "img-prod-90eddf75-d355-4915-9ade-b200eeccee1a-1",
-          "caption": "Lippan Wall Hanging",
-          "alt_text": "Lippan Wall Hanging (DA-LP-18-0001)",
-          "is_primary": true,
-          "product_id": "prod-90eddf75-d355-4915-9ade-b200eeccee1a",
-          "storage_path": "/static/assets/images/DA-LP-18-0001.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:27:04.306+00:00"
+      "updated_at": "2026-10-29T11:42:53.182+00:00"
     },
     {
       "id": "prod-da-lp-18-0005",
@@ -7396,13 +7135,379 @@
           "alt_text": "Lippan Wall Hanging (DA-LP-18-0005)",
           "is_primary": true,
           "product_id": "prod-da-lp-18-0005",
-          "storage_path": "/static/assets/images/DA-LP-18-0005.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-18-0005.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T16:26:04.53858+00:00",
-      "updated_at": "2026-10-28T16:26:02.431+00:00"
+      "updated_at": "2026-10-29T11:42:52.055+00:00"
+    },
+    {
+      "id": "prod-da-lp-18-0004",
+      "sku": "DA-LP-18-0004",
+      "name": "Lippan Wall Hanging",
+      "short_description": "Authentic handcrafted mud and mirror Lippan artwork",
+      "description": "Authentic Kutch mud and mirror Lippan artwork handcrafted with traditional motifs and high-clarity mirrors.",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Moisture-resistant MDF board, High-grade clay paste, Mirrors, Protective Sealant",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "1-3 Days",
+      "shipping_info": "Worldwide insured shipping available",
+      "special_information": "Clean gently with a soft dry microfiber cloth.",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 3500,
+      "base_size": "18 Inches",
+      "images": [
+        {
+          "id": "img-prod-da-lp-18-0004-1",
+          "caption": "Lippan Wall Hanging",
+          "alt_text": "Lippan Wall Hanging (DA-LP-18-0004)",
+          "is_primary": true,
+          "product_id": "prod-da-lp-18-0004",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-18-0004.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T16:22:43.283836+00:00",
+      "updated_at": "2026-10-29T11:42:51.484+00:00"
+    },
+    {
+      "id": "prod-33155e6e-aea3-48ad-b433-6cff1522834d",
+      "sku": "DA-LP-18-0003",
+      "name": "Lippan Wall Hanging",
+      "short_description": "",
+      "description": "Circular hand-crafted and hand-painted lippan peacock artwork",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Central Mirror, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
+      "framing": "",
+      "customizable": true,
+      "creation_time": "8-10 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 3,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 3000,
+      "base_size": "18 Inches",
+      "images": [
+        {
+          "id": "img-prod-33155e6e-aea3-48ad-b433-6cff1522834d-1",
+          "caption": "Lippan Wall Hanging",
+          "alt_text": "Lippan Wall Hanging (DA-LP-18-0003)",
+          "is_primary": true,
+          "product_id": "prod-33155e6e-aea3-48ad-b433-6cff1522834d",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-18-0003.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T07:36:57.940983+00:00",
+      "updated_at": "2026-10-29T11:42:50.694+00:00"
+    },
+    {
+      "id": "prod-818da539-e627-4afd-b2ac-dc3c7bb19d59",
+      "sku": "DA-LP-18-0002",
+      "name": "Lippan Wall Hanging",
+      "short_description": "",
+      "description": "Circular hand-crafted and hand-painted lippan Om artwork",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Central Insert, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
+      "framing": "",
+      "customizable": true,
+      "creation_time": "8-10 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": false,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": "",
+      "base_price": 3000,
+      "base_size": "18 Inches",
+      "images": [
+        {
+          "id": "img-prod-818da539-e627-4afd-b2ac-dc3c7bb19d59-1",
+          "caption": "Lippan Wall Hanging",
+          "alt_text": "Lippan Wall Hanging (DA-LP-18-0002)",
+          "is_primary": true,
+          "product_id": "prod-818da539-e627-4afd-b2ac-dc3c7bb19d59",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-18-0002.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T07:36:57.940983+00:00",
+      "updated_at": "2026-10-29T11:42:50.098+00:00"
+    },
+    {
+      "id": "prod-90eddf75-d355-4915-9ade-b200eeccee1a",
+      "sku": "DA-LP-18-0001",
+      "name": "Lippan Wall Hanging",
+      "short_description": "",
+      "description": "Square hand-crafted and hand-painted lippan Ganesha artwork",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
+      "framing": "",
+      "customizable": true,
+      "creation_time": "8-10 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": "",
+      "base_price": 3000,
+      "base_size": "18 Inches",
+      "images": [
+        {
+          "id": "img-prod-90eddf75-d355-4915-9ade-b200eeccee1a-1",
+          "caption": "Lippan Wall Hanging",
+          "alt_text": "Lippan Wall Hanging (DA-LP-18-0001)",
+          "is_primary": true,
+          "product_id": "prod-90eddf75-d355-4915-9ade-b200eeccee1a",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-18-0001.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T07:36:57.940983+00:00",
+      "updated_at": "2026-10-29T11:42:49.554+00:00"
+    },
+    {
+      "id": "prod-f0bb2ab8-cfbf-4f3b-8db4-81d01e35b938",
+      "sku": "DA-LP-14-0001",
+      "name": "Lippan Wall Hanging",
+      "short_description": "",
+      "description": "Circular hand-crafted and hand-painted lippan artwork",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
+      "framing": "",
+      "customizable": true,
+      "creation_time": "4-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": "",
+      "base_price": 1600,
+      "base_size": "14 Inches",
+      "images": [
+        {
+          "id": "img-prod-f0bb2ab8-cfbf-4f3b-8db4-81d01e35b938-1",
+          "caption": "Lippan Wall Hanging",
+          "alt_text": "Lippan Wall Hanging (DA-LP-14-0001)",
+          "is_primary": true,
+          "product_id": "prod-f0bb2ab8-cfbf-4f3b-8db4-81d01e35b938",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-14-0001.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T07:36:57.940983+00:00",
+      "updated_at": "2026-10-29T11:42:48.456+00:00"
+    },
+    {
+      "id": "prod-a662ce91-d7cd-4add-827a-b0853ca362fc",
+      "sku": "DA-LP-10-0001",
+      "name": "Lippan Wall Hanging",
+      "short_description": "",
+      "description": "Circular hand-crafted and hand-painted lippan Ganesha artwork",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
+      "framing": "",
+      "customizable": true,
+      "creation_time": "4-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": false,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 0,
+      "high_demand_message": "",
+      "base_price": 800,
+      "base_size": "10 Inches",
+      "images": [
+        {
+          "id": "img-prod-a662ce91-d7cd-4add-827a-b0853ca362fc-1",
+          "caption": "Lippan Wall Hanging",
+          "alt_text": "Lippan Wall Hanging (DA-LP-10-0001)",
+          "is_primary": true,
+          "product_id": "prod-a662ce91-d7cd-4add-827a-b0853ca362fc",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-10-0001.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T07:36:57.940983+00:00",
+      "updated_at": "2026-10-29T11:42:47.738+00:00"
+    },
+    {
+      "id": "prod-1793268958321",
+      "sku": "DA-TC-CS-0004",
+      "name": "Casted Stone Tea Light Candle Holder set. Available as individual pieces as well. Small one (4 inches) costs INR 350 each and big one (6 inches) costs INR 550 each.",
+      "short_description": "",
+      "description": "Casted Stone Tea Light Candle Holder set. Available as individual pieces as well. Small one (4 inches) costs INR 350 each and big one (6 inches) costs INR 550 each.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Stone casted with casting powder, acrylic paint, pearls, rhinestones",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "5-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 5,
+      "high_demand_message": "",
+      "base_price": 1250,
+      "base_size": "Set of 3",
+      "images": [
+        {
+          "id": "img-1793268950494-crcg",
+          "alt_text": "DA-TC-CS-0004.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "/uploads/local-media-1793268950474-0sg6.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T10:15:58.311266+00:00",
+      "updated_at": "2026-10-29T10:15:59.918+00:00"
+    },
+    {
+      "id": "prod-1793268726017",
+      "sku": "DA-TC-CS-0003",
+      "name": "Casted Stone Tea Light Candle Holder",
+      "short_description": "",
+      "description": "Casted Stone Tea Light Candle Holder set. Available as individual pieces as well. Small one (4 inches) costs INR 350 each and big one (6 inches) costs INR 550 each.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Stone casted with casting powder, acrylic paint, pearls, rhinestones",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "5–7 working days",
+      "shipping_info": "All over the world (Bubble wrap and corrugated box)",
+      "special_information": "Wipe with dry microfiber cloth.",
+      "featured": true,
+      "is_published": true,
+      "is_available": false,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 1950,
+      "base_size": "Set of 5",
+      "images": [
+        {
+          "id": "img-1793268713324-1t1g",
+          "alt_text": "DA-TC-CS-0003.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "/uploads/local-media-1793268713304-xazl.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-29T10:12:06.019366+00:00",
+      "updated_at": "2026-10-29T10:12:07.627+00:00"
+    },
+    {
+      "id": "prod-tc-3-1793212038085",
+      "sku": "DA-TC-CS-0002",
+      "name": "Casted Stone Tea Light Candle Holder",
+      "short_description": "Handcrafted decorative tea light candle stand",
+      "description": "Casted Stone Tea Light Candle Holder set. Available as individual pieces as well. Small one (4 inches) costs INR 350 each and big one (6 inches) costs INR 550 each.",
+      "category_id": "cat-tea-light-candle-holders",
+      "category_name": "Tea Light Candle Holders",
+      "category_slug": "tea-light-candle-holders",
+      "material": "Stone casted with casting powder, acrylic paint, pearls, rhinestones",
+      "framing": "Ready to display",
+      "customizable": true,
+      "creation_time": "5-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 2,
+      "high_demand_message": "",
+      "base_price": 1250,
+      "base_size": "Set of 3",
+      "images": [
+        {
+          "id": "img-1793268643389-dn6j",
+          "alt_text": "DA-TC-CS-0002.jpg",
+          "is_primary": true,
+          "product_id": "prod-tc-3-1793212038085",
+          "storage_path": "/uploads/local-media-1793268643373-zqpg.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T18:27:17.992825+00:00",
+      "updated_at": "2026-10-29T10:11:00.612+00:00"
     },
     {
       "id": "prod-610d5e4f-5a01-4645-a512-44552db8b60a",
@@ -7446,47 +7551,6 @@
       "updated_at": "2026-10-28T16:24:07.658+00:00"
     },
     {
-      "id": "prod-da-lp-18-0004",
-      "sku": "DA-LP-18-0004",
-      "name": "Lippan Wall Hanging",
-      "short_description": "Authentic handcrafted mud and mirror Lippan artwork",
-      "description": "Authentic Kutch mud and mirror Lippan artwork handcrafted with traditional motifs and high-clarity mirrors.",
-      "category_id": "cat-lippan",
-      "category_name": "Lippan Wall Hangings",
-      "category_slug": "lippan-wall-hangings",
-      "material": "Moisture-resistant MDF board, High-grade clay paste, Mirrors, Protective Sealant",
-      "framing": "Ready to hang",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Worldwide insured shipping available",
-      "special_information": "Clean gently with a soft dry microfiber cloth.",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": true,
-      "extra_delivery_days": 5,
-      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
-      "base_price": 3500,
-      "base_size": "18 Inches",
-      "images": [
-        {
-          "id": "img-prod-da-lp-18-0004-1",
-          "caption": "Lippan Wall Hanging",
-          "alt_text": "Lippan Wall Hanging (DA-LP-18-0004)",
-          "is_primary": true,
-          "product_id": "prod-da-lp-18-0004",
-          "storage_path": "/static/assets/images/DA-LP-18-0004.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T16:22:43.283836+00:00",
-      "updated_at": "2026-10-28T16:22:41.186+00:00"
-    },
-    {
       "id": "prod-f6512851-fb8b-49c8-8471-3687245dc359",
       "sku": "DA-LP-14-0002",
       "name": "Lippan Wall Hanging",
@@ -7528,88 +7592,6 @@
       "updated_at": "2026-10-28T16:22:09.114+00:00"
     },
     {
-      "id": "prod-f0bb2ab8-cfbf-4f3b-8db4-81d01e35b938",
-      "sku": "DA-LP-14-0001",
-      "name": "Lippan Wall Hanging",
-      "short_description": "",
-      "description": "Circular hand-crafted and hand-painted lippan artwork",
-      "category_id": "cat-lippan",
-      "category_name": "Lippan Wall Hangings",
-      "category_slug": "lippan-wall-hangings",
-      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "",
-      "customizable": true,
-      "creation_time": "4-7 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": false,
-      "extra_delivery_days": 0,
-      "high_demand_message": "",
-      "base_price": 1600,
-      "base_size": "14 Inches",
-      "images": [
-        {
-          "id": "img-prod-f0bb2ab8-cfbf-4f3b-8db4-81d01e35b938-1",
-          "caption": "Lippan Wall Hanging",
-          "alt_text": "Lippan Wall Hanging (DA-LP-14-0001)",
-          "is_primary": true,
-          "product_id": "prod-f0bb2ab8-cfbf-4f3b-8db4-81d01e35b938",
-          "storage_path": "/static/assets/images/DA-LP-14-0001.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:19:54.73+00:00"
-    },
-    {
-      "id": "prod-a662ce91-d7cd-4add-827a-b0853ca362fc",
-      "sku": "DA-LP-10-0001",
-      "name": "Lippan Wall Hanging",
-      "short_description": "",
-      "description": "Circular hand-crafted and hand-painted lippan Ganesha artwork",
-      "category_id": "cat-lippan",
-      "category_name": "Lippan Wall Hangings",
-      "category_slug": "lippan-wall-hangings",
-      "material": "Moisture-resistant MDF board, Lippan Clay, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
-      "framing": "",
-      "customizable": true,
-      "creation_time": "4-7 Days",
-      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
-      "special_information": "Wipe with dry or damp soft cloth",
-      "featured": false,
-      "is_published": true,
-      "is_available": false,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": false,
-      "extra_delivery_days": 0,
-      "high_demand_message": "",
-      "base_price": 800,
-      "base_size": "10 Inches",
-      "images": [
-        {
-          "id": "img-prod-a662ce91-d7cd-4add-827a-b0853ca362fc-1",
-          "caption": "Lippan Wall Hanging",
-          "alt_text": "Lippan Wall Hanging (DA-LP-10-0001)",
-          "is_primary": true,
-          "product_id": "prod-a662ce91-d7cd-4add-827a-b0853ca362fc",
-          "storage_path": "/static/assets/images/DA-LP-10-0001.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T16:16:27.776+00:00"
-    },
-    {
       "id": "prod-f179267a-29ed-424b-9b6d-0ff041fc054e",
       "sku": "DA-MD-18-0032",
       "name": "Mandala Wall Hanging",
@@ -7642,16 +7624,181 @@
           "alt_text": "Mandala Wall Hanging (DA-MD-18-0032)",
           "is_primary": true,
           "product_id": "prod-f179267a-29ed-424b-9b6d-0ff041fc054e",
-          "storage_path": "/static/assets/images/DA-MD-18-0032.jpg",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0032.jpg",
           "display_order": 1
         }
       ],
       "variants": [],
       "created_at": "2026-10-28T07:36:57.940983+00:00",
-      "updated_at": "2026-10-28T18:19:17.5+00:00"
+      "updated_at": "2026-10-29T11:44:31.561+00:00"
     }
   ],
   "media": [
+    {
+      "id": "media-1793275756672-622be8",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A_1793275756672.jpeg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A_1793275756672.jpeg",
+      "title": "DA-TC-CS-0001A_1793275756672.jpeg",
+      "alt_text": "",
+      "caption": "",
+      "file_size": 132318,
+      "created_at": "2026-10-29T12:09:18.632Z"
+    },
+    {
+      "id": "media-1793274993951-e66953",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.jpg",
+      "title": "DA-TC-CS-0001A.jpg",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 174971,
+      "created_at": "2026-10-29T11:56:33.951Z"
+    },
+    {
+      "id": "media-1793274946803-efb0c9",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.jpg",
+      "title": "DA-TC-CS-0001A.jpg",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 174971,
+      "created_at": "2026-10-29T11:55:46.803Z"
+    },
+    {
+      "id": "media-1793274806116-68c44e",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.png",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.png",
+      "title": "DA-TC-CS-0001A.png",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 51369,
+      "created_at": "2026-10-29T11:53:26.116Z"
+    },
+    {
+      "id": "media-1793274699507-fbcfd3",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.jpg",
+      "title": "DA-TC-CS-0001A.jpg",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 178430,
+      "created_at": "2026-10-29T11:51:39.508Z"
+    },
+    {
+      "id": "media-1793274511563-adb427",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.jpg",
+      "title": "DA-TC-CS-0001A.jpg",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 149560,
+      "created_at": "2026-10-29T11:48:31.563Z"
+    },
+    {
+      "id": "media-1793274467376-951d7b",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.jpg",
+      "title": "DA-TC-CS-0001A.jpg",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 149560,
+      "created_at": "2026-10-29T11:47:47.376Z"
+    },
+    {
+      "id": "media-1793274454040-26496c",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.jpg",
+      "title": "DA-TC-CS-0001A.jpg",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 149560,
+      "created_at": "2026-10-29T11:47:34.040Z"
+    },
+    {
+      "id": "media-1793274375532-267068",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.jpg",
+      "title": "DA-TC-CS-0001A.jpg",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 178430,
+      "created_at": "2026-10-29T11:46:15.532Z"
+    },
+    {
+      "id": "media-1793274321393-0c1d9e",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.jpg",
+      "title": "DA-TC-CS-0001A.jpg",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 174971,
+      "created_at": "2026-10-29T11:45:21.393Z"
+    },
+    {
+      "id": "media-1793274301711-491ad5",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.jpg",
+      "title": "DA-TC-CS-0001A.jpg",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 181732,
+      "created_at": "2026-10-29T11:45:01.711Z"
+    },
+    {
+      "id": "media-1793274051718-eac2a4",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.jpg",
+      "title": "DA-TC-CS-0001A.jpg",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 178430,
+      "created_at": "2026-10-29T11:40:51.718Z"
+    },
+    {
+      "id": "media-1793273888341-1ca5c3",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpeg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001A.jpeg",
+      "title": "DA-TC-CS-0001A.jpeg",
+      "alt_text": "Casted Stone Tea Light Candle Holder photo",
+      "caption": "",
+      "file_size": 132318,
+      "created_at": "2026-10-29T11:38:08.342Z"
+    },
+    {
+      "id": "media-1793272375993-e4d472",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001.jpg",
+      "title": "DA-TC-CS-0001.jpg",
+      "alt_text": "",
+      "caption": "",
+      "file_size": 680093,
+      "created_at": "2026-10-29T11:12:55.993Z"
+    },
+    {
+      "id": "media-1793272331160-3ee538",
+      "storage_path": "https://faijoouprxkttsfrajya.supabase.co/rest/v1/storage/v1/object/public/product-images/DA-TC-CS-0001.jpg",
+      "media_type": "image",
+      "filename": "DA-TC-CS-0001.jpg",
+      "title": "DA-TC-CS-0001.jpg",
+      "alt_text": "",
+      "caption": "",
+      "file_size": 680093,
+      "created_at": "2026-10-29T11:12:11.160Z"
+    },
     {
       "id": "media-1793114375950-2a8baf",
       "storage_path": "/uploads/DA-LP-SM-0002-1793114375911-7658bd05.jpg",
@@ -8574,6 +8721,431 @@
     "featured_3d_image": "/static/assets/images/DA-MD-24-0001.jpg"
   },
   "audit_logs": [
+    {
+      "id": "log-1793275758640-2a811330",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793275756672-622be8",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A_1793275756672.jpeg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A_1793275756672.jpeg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T12:09:18.640Z"
+    },
+    {
+      "id": "log-1793274997832-2a1a8456",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:56:37.832Z"
+    },
+    {
+      "id": "log-1793274993959-26c97186",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793274993951-e66953",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:56:33.959Z"
+    },
+    {
+      "id": "log-1793274969482-45c29bb9",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:56:09.482Z"
+    },
+    {
+      "id": "log-1793274952453-f26ee9d6",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:55:52.453Z"
+    },
+    {
+      "id": "log-1793274946808-0ff4ec6a",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793274946803-efb0c9",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:55:46.808Z"
+    },
+    {
+      "id": "log-1793274813197-183def1f",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:53:33.197Z"
+    },
+    {
+      "id": "log-1793274806124-dfac8ada",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793274806116-68c44e",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.png",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.png",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:53:26.124Z"
+    },
+    {
+      "id": "log-1793274699959-14df5cb7",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:51:39.959Z"
+    },
+    {
+      "id": "log-1793274699517-092bcb23",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793274699507-fbcfd3",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:51:39.517Z"
+    },
+    {
+      "id": "log-1793274590289-a32ec584",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:49:50.289Z"
+    },
+    {
+      "id": "log-1793274559650-6dc3638c",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:49:19.650Z"
+    },
+    {
+      "id": "log-1793274513270-b1f35b9d",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:48:33.270Z"
+    },
+    {
+      "id": "log-1793274511570-3985494e",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793274511563-adb427",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:48:31.570Z"
+    },
+    {
+      "id": "log-1793274491668-ffeaaa01",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:48:11.668Z"
+    },
+    {
+      "id": "log-1793274475305-2765807a",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:47:55.305Z"
+    },
+    {
+      "id": "log-1793274467382-949cfd87",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793274467376-951d7b",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:47:47.382Z"
+    },
+    {
+      "id": "log-1793274454045-f9c2e3ba",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793274454040-26496c",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:47:34.045Z"
+    },
+    {
+      "id": "log-1793274395717-e4409d10",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:46:35.717Z"
+    },
+    {
+      "id": "log-1793274375538-86574363",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793274375532-267068",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:46:15.538Z"
+    },
+    {
+      "id": "log-1793274332572-36233a0a",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:45:32.573Z"
+    },
+    {
+      "id": "log-1793274321402-dfdd26af",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793274321393-0c1d9e",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:45:21.402Z"
+    },
+    {
+      "id": "log-1793274301723-0b71e6dd",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793274301711-491ad5",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:45:01.723Z"
+    },
+    {
+      "id": "log-1793274254105-360ab21f",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-MD-12-0011",
+        "name": "Mandala Wall Hanging"
+      },
+      "created_at": "2026-10-29T11:44:14.106Z"
+    },
+    {
+      "id": "log-1793274063506-a429dc1b",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:41:03.506Z"
+    },
+    {
+      "id": "log-1793274051724-6ee54906",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793274051718-eac2a4",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:40:51.724Z"
+    },
+    {
+      "id": "log-1793273899207-1675834d",
+      "admin_user_id": "admin",
+      "action": "product_updated",
+      "entity_type": "product",
+      "entity_id": "prod-1793212755174",
+      "safe_metadata_json": {
+        "sku": "DA-TC-CS-0001A",
+        "name": "Casted Stone Tea Light Candle Holder"
+      },
+      "created_at": "2026-10-29T11:38:19.207Z"
+    },
+    {
+      "id": "log-1793273888349-f42e9cde",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793273888341-1ca5c3",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001A.jpeg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001A.jpeg",
+        "sku": "DA-TC-CS-0001A",
+        "product_updated": true,
+        "supabase_uploaded": true
+      },
+      "created_at": "2026-10-29T11:38:08.349Z"
+    },
+    {
+      "id": "log-1793272375998-29e3c668",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793272375993-e4d472",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001.jpg",
+        "sku": "DA-TC-CS-0001",
+        "product_updated": true
+      },
+      "created_at": "2026-10-29T11:12:55.998Z"
+    },
+    {
+      "id": "log-1793272375632-de2611e7",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-29T11:12:55.632Z"
+    },
+    {
+      "id": "log-1793272331167-eb78b690",
+      "admin_user_id": "admin",
+      "action": "media_uploaded",
+      "entity_type": "media",
+      "entity_id": "media-1793272331160-3ee538",
+      "safe_metadata_json": {
+        "filename": "DA-TC-CS-0001.jpg",
+        "path": "https://faijoouprxkttsfrajya.supabase.co/rest/v1/storage/v1/object/public/product-images/DA-TC-CS-0001.jpg",
+        "sku": "DA-TC-CS-0001",
+        "product_updated": true
+      },
+      "created_at": "2026-10-29T11:12:11.167Z"
+    },
+    {
+      "id": "log-1793272330046-4575a30f",
+      "admin_user_id": "admin",
+      "action": "admin_login_success",
+      "entity_type": "auth",
+      "entity_id": "admin",
+      "safe_metadata_json": {
+        "ip": "127.0.0.1"
+      },
+      "created_at": "2026-10-29T11:12:10.046Z"
+    },
     {
       "id": "log-1793234190529-156e4cb5",
       "admin_user_id": "admin",
@@ -9619,6 +10191,6 @@
   ],
   "sync_flag": {
     "changed": true,
-    "updated_at": "2026-10-29T00:36:30.530Z"
+    "updated_at": "2026-10-29T12:09:18.640Z"
   }
 }

@@ -254,10 +254,13 @@ export async function handleClientFallbackApi<T = any>(
     try {
       let file: File | null = null;
       let altText = '';
+      let rawSku = '';
       if (options?.body instanceof FormData) {
         file = options.body.get('file') as File;
         altText = (options.body.get('alt_text') as string) || '';
+        rawSku = (options.body.get('sku') as string) || (options.body.get('product_sku') as string) || '';
       }
+      const cleanSku = rawSku.trim().toUpperCase();
 
       if (file) {
         return (async () => {
@@ -271,14 +274,17 @@ export async function handleClientFallbackApi<T = any>(
             });
 
             const assetId = `media-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
-            const filename = file.name || `upload-${Date.now()}.jpg`;
+            const filename = cleanSku ? `${cleanSku}.jpg` : (file.name || `upload-${Date.now()}.jpg`);
 
             // Store in persistent IndexedDB + Cache API
             const virtualPath = await saveLocalArtworkImage(assetId, dataUrl, filename);
+            const supabaseStorageUrl = cleanSku
+              ? `https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/${cleanSku}.jpg`
+              : virtualPath;
 
             const asset: MediaAsset = {
               id: assetId,
-              storage_path: virtualPath,
+              storage_path: supabaseStorageUrl,
               media_type: 'image',
               filename,
               title: filename,
@@ -290,7 +296,13 @@ export async function handleClientFallbackApi<T = any>(
             // Non-blocking firestore attempt
             saveFirestoreMediaAsset(asset).catch(() => {});
 
-            return jsonRes({ success: true, file_path: virtualPath, data_url: dataUrl, asset });
+            return jsonRes({
+              success: true,
+              file_path: supabaseStorageUrl,
+              public_url: supabaseStorageUrl,
+              data_url: dataUrl,
+              asset,
+            });
           } catch (readErr) {
             console.error('[clientFallbackApi] Image compression or read failed', readErr);
             return jsonRes({ success: false, error: 'Failed to process image' });
