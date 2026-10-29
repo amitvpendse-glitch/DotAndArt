@@ -23,6 +23,7 @@ import { setActiveWhatsAppNumber } from '../utils/whatsapp';
 import { AdminTestimonials } from './AdminTestimonials';
 import { AdminFAQs } from './AdminFAQs';
 import { compressImageFile, compressDataUrl } from '../utils/imageCompressor';
+import { uploadImageToSupabaseStorage } from '../lib/firestoreCatalog';
 
 interface AdminPagesCMSProps {
   token: string;
@@ -386,23 +387,41 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
     try {
       // Compress image client-side before upload to guarantee ultra-fast processing
       const compressedFile = await compressImageFile(file);
-      const formData = new FormData();
-      formData.append('file', compressedFile);
-      const data = await safeFetchJson<{ success?: boolean; file_path?: string; error?: string }>(
-        '/api/uploads',
-        {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        },
-        null
-      );
+      let uploadedUrl = '';
 
-      if (data && data.file_path) {
-        onDone(data.file_path);
+      // 1. Direct client-side upload to Supabase Storage
+      try {
+        const uploadResult = await uploadImageToSupabaseStorage(compressedFile, activePage.slug, file.name);
+        if (uploadResult.success && uploadResult.public_url) {
+          uploadedUrl = uploadResult.public_url;
+        }
+      } catch (sbErr) {
+        console.warn('[AdminPagesCMS] Supabase upload exception:', sbErr);
+      }
+
+      // 2. Fallback via safeFetchJson
+      if (!uploadedUrl) {
+        const formData = new FormData();
+        formData.append('file', compressedFile);
+        const data = await safeFetchJson<{ success?: boolean; file_path?: string; public_url?: string; error?: string }>(
+          '/api/uploads',
+          {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+          },
+          null
+        );
+        if (data && (data.public_url || data.file_path)) {
+          uploadedUrl = data.public_url || data.file_path || '';
+        }
+      }
+
+      if (uploadedUrl) {
+        onDone(uploadedUrl);
         setSuccessMsg('Image compressed & uploaded successfully!');
       } else {
-        setErrorMsg(data?.error || 'Failed to upload image.');
+        setErrorMsg('Failed to upload image.');
       }
     } catch {
       setErrorMsg('Error uploading image file.');
@@ -851,7 +870,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                                     </span>
                                     <input
                                       type="file"
-                                      accept="image/*"
+                                      accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
                                       className="hidden"
                                       onChange={(e) => {
                                         const file = e.target.files?.[0];
@@ -862,6 +881,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                                             file
                                           );
                                         }
+                                        e.target.value = '';
                                       }}
                                     />
                                   </label>
@@ -959,7 +979,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                                   <span>{uploadingField === `portal-${pIdx}` ? 'Uploading...' : 'Upload Image'}</span>
                                   <input
                                     type="file"
-                                    accept="image/*"
+                                    accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
                                     className="hidden"
                                     onChange={(e) => {
                                       const file = e.target.files?.[0];
@@ -970,6 +990,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                                           file
                                         );
                                       }
+                                      e.target.value = '';
                                     }}
                                   />
                                 </label>
@@ -1063,7 +1084,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                                   <span>{uploadingField === `plate-${plIdx}` ? 'Uploading...' : 'Upload Photo'}</span>
                                   <input
                                     type="file"
-                                    accept="image/*"
+                                    accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
                                     className="hidden"
                                     onChange={(e) => {
                                       const file = e.target.files?.[0];
@@ -1074,6 +1095,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                                           file
                                         );
                                       }
+                                      e.target.value = '';
                                     }}
                                   />
                                 </label>
@@ -1226,7 +1248,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                                     </span>
                                     <input
                                       type="file"
-                                      accept="image/*"
+                                      accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
                                       className="hidden"
                                       onChange={(e) => {
                                         const file = e.target.files?.[0];
@@ -1237,6 +1259,7 @@ export const AdminPagesCMS: React.FC<AdminPagesCMSProps> = ({ token }) => {
                                             file
                                           );
                                         }
+                                        e.target.value = '';
                                       }}
                                     />
                                   </label>

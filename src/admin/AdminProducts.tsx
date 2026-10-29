@@ -40,7 +40,14 @@ import { AvailableBadge } from '../components/AvailableBadge';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
 import { handleClientFallbackApi } from '../lib/clientFallbackApi';
 import { generateProfessionalCatalogPDF } from '../utils/pdfCatalogGenerator';
-import { deleteFirestoreProducts, updateFirestoreProducts, saveFirestoreProduct, getFirestoreDeletedIds, syncLocalCustomProductsToFirestore } from '../lib/firestoreCatalog';
+import {
+  deleteFirestoreProducts,
+  updateFirestoreProducts,
+  saveFirestoreProduct,
+  getFirestoreDeletedIds,
+  syncLocalCustomProductsToFirestore,
+  uploadImageToSupabaseStorage,
+} from '../lib/firestoreCatalog';
 import { isAwaitingPhoto } from '../utils/productUtils';
 import { compressImageFile } from '../utils/imageCompressor';
 import { saveLocalArtworkImage, saveLocalCustomProduct, exportLocalCatalogBackup, importLocalCatalogBackup } from '../utils/localImageCache';
@@ -750,16 +757,23 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     setDrawerOpen(true);
   };
 
-  // Upload multiple files or replace an existing photo (supports file input, drag-and-drop, and in-place replacement)
+  // Upload multiple files or replace an existing photo (supports mobile camera, file input, drag-and-drop, and in-place replacement)
   const processFiles = async (filesList: FileList | File[], targetReplaceIndex?: number) => {
     if (!filesList || filesList.length === 0) return;
 
     setUploadingImage(true);
     setErrorMessage('');
 
-    const filesArray = Array.from(filesList).filter((f) => f.type.startsWith('image/'));
+    // Robust file detection supporting mobile cameras, iOS HEIC/HEIF, and gallery pickers
+    const filesArray = Array.from(filesList).filter((f) => {
+      if (!f) return false;
+      const type = (f.type || '').toLowerCase();
+      if (type.startsWith('image/')) return true;
+      return /\.(jpe?g|png|webp|gif|heic|heif|jfif|bmp|tiff|avif)$/i.test(f.name || '');
+    });
+
     if (filesArray.length === 0) {
-      setErrorMessage('Please provide image files (JPG, PNG, WebP).');
+      setErrorMessage('Please select valid photos (JPG, PNG, WebP, HEIC).');
       setUploadingImage(false);
       return;
     }
@@ -770,70 +784,95 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
       const rawFile = filesArray[i];
 
       try {
-        // 1. Client-side compress before storing (drops 5MB-10MB photo down to ~60KB)
-        const compressedFile = await compressImageFile(rawFile, 1200, 1200, 0.8);
-        const dataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = () => reject(new Error('Failed to read image file'));
-          reader.readAsDataURL(compressedFile);
-        });
+        // 1. Client-side compress before storing (drops large mobile camera photos from 10MB down to ~100KB-180KB)
+        const compressedFile = await compressImageFile(rawFile, 1400, 1400, 0.85);
 
-        const localImgKey = `${cleanSku || 'artwork'}-${Date.now()}-${i + 1}`;
-
-        // 2. Persist immediately into IndexedDB and Service Worker Cache API
-        const localVirtualPath = await saveLocalArtworkImage(localImgKey, dataUrl, cleanSku);
-        let finalPath = localVirtualPath;
-
-        // 3. Attempt server/Supabase upload
+        // 2. Direct upload to Supabase Storage ('product-images' bucket)
+        // Works directly from client on desktop, iPhone, Android, and preview environments
+        let finalPath = '';
+        let uploadSucceeded = false;
         try {
-          const formData = new FormData();
-          formData.append('file', compressedFile);
-          formData.append('alt_text', `${name || 'Artwork'} photo`);
-          if (cleanSku) {
-            formData.append('sku', cleanSku);
-            formData.append('product_sku', cleanSku);
+          const uploadResult = await uploadImageToSupabaseStorage(compressedFile, cleanSku, rawFile.name);
+          if (uploadResult.success && uploadResult.public_url) {
+            finalPath = uploadResult.public_url;
+            uploadSucceeded = true;
+            console.log('[AdminProducts] Uploaded directly to Supabase storage:', finalPath);
+          } else {
+            console.warn('[AdminProducts] Direct Supabase upload warning:', uploadResult.error);
           }
-          if (editingProduct?.id) {
-            formData.append('product_id', editingProduct.id);
-          }
+        } catch (sbErr) {
+          console.warn('[AdminProducts] Direct Supabase storage exception:', sbErr);
+        }
 
-          const isDirectReplace = targetReplaceIndex !== undefined && targetReplaceIndex >= 0;
-          if (isDirectReplace) {
-            formData.append('replace_index', String(targetReplaceIndex));
-            formData.append('replace', 'true');
-          } else if (images.length === 1) {
-            formData.append('replace_index', '0');
-            formData.append('replace', 'true');
-          }
-
-          const data = await safeFetchJson<any>(
-            '/api/uploads',
-            {
-              method: 'POST',
-              headers: { Authorization: `Bearer ${token}` },
-              body: formData,
-            },
-            null
-          );
-
-          if (data && (data.success || data.public_url || data.file_path)) {
-            finalPath = data.public_url || data.file_path || data.asset?.storage_path || localVirtualPath;
-            if (data.product) {
-              setProducts((prevList) =>
-                prevList.map((p) =>
-                  p.id === data.product.id || (p.sku && data.product.sku && p.sku.toUpperCase() === data.product.sku.toUpperCase())
-                    ? { ...p, ...data.product }
-                    : p
-                )
-              );
+        // 3. Fallback to /api/uploads if direct Supabase upload was blocked by browser or network
+        if (!uploadSucceeded) {
+          try {
+            const formData = new FormData();
+            formData.append('file', compressedFile);
+            formData.append('alt_text', `${name || 'Artwork'} photo`);
+            if (cleanSku) {
+              formData.append('sku', cleanSku);
+              formData.append('product_sku', cleanSku);
             }
-            if (data.supabase_storage_uploaded === false && data.supabase_storage_error) {
-              console.warn('[AdminProducts] Supabase Storage upload note:', data.supabase_storage_error);
+            if (editingProduct?.id) {
+              formData.append('product_id', editingProduct.id);
             }
+
+            const isDirectReplace = targetReplaceIndex !== undefined && targetReplaceIndex >= 0;
+            if (isDirectReplace) {
+              formData.append('replace_index', String(targetReplaceIndex));
+              formData.append('replace', 'true');
+            } else if (images.length === 1) {
+              formData.append('replace_index', '0');
+              formData.append('replace', 'true');
+            }
+
+            const data = await safeFetchJson<any>(
+              '/api/uploads',
+              {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+              },
+              null
+            );
+
+            if (data && (data.success || data.public_url || data.file_path)) {
+              finalPath = data.public_url || data.file_path || data.asset?.storage_path || '';
+              uploadSucceeded = true;
+              if (data.product) {
+                setProducts((prevList) =>
+                  prevList.map((p) =>
+                    p.id === data.product.id || (p.sku && data.product.sku && p.sku.toUpperCase() === data.product.sku.toUpperCase())
+                      ? { ...p, ...data.product }
+                      : p
+                  )
+                );
+              }
+            }
+          } catch (uploadErr) {
+            console.warn('[AdminProducts] /api/uploads fallback exception:', uploadErr);
           }
-        } catch (uploadErr) {
-          console.warn('[AdminProducts] Upload exception:', uploadErr);
+        }
+
+        // 4. Local storage fallback if completely offline
+        if (!finalPath) {
+          try {
+            const dataUrl = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result as string);
+              reader.onerror = () => resolve('');
+              reader.readAsDataURL(compressedFile);
+            });
+            if (dataUrl) {
+              const localImgKey = `${cleanSku || 'artwork'}-${Date.now()}-${i + 1}`;
+              finalPath = await saveLocalArtworkImage(localImgKey, dataUrl, cleanSku);
+            }
+          } catch {}
+        }
+
+        if (!finalPath) {
+          throw new Error('Could not upload or store image file');
         }
 
         setImages((prev) => {
@@ -873,9 +912,9 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
         });
 
         setIsDrawerDirty(true);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Failed to process and store image', err);
-        setErrorMessage('Failed to process image file.');
+        setErrorMessage(err?.message || 'Failed to process image file.');
       }
     }
 
@@ -895,12 +934,14 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
     if (e.target.files && e.target.files.length > 0 && replaceTargetIndex !== null) {
       processFiles(e.target.files, replaceTargetIndex);
     }
+    e.target.value = ''; // Reset for mobile compatibility so picking again triggers change
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    if (e.target.files && e.target.files.length > 0) {
       processFiles(e.target.files);
     }
+    e.target.value = ''; // Reset for mobile compatibility so picking again triggers change
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -2252,7 +2293,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                     <span>Browse Files</span>
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
                       multiple
                       onChange={handleImageUpload}
                       className="hidden"
@@ -2261,7 +2302,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                 </div>
 
                 {uploadingImage && (
-                  <p className="text-xs text-[#C85A32] animate-pulse font-medium">Uploading photo to server storage...</p>
+                  <p className="text-xs text-[#C85A32] animate-pulse font-medium">Uploading photo directly to Supabase storage...</p>
                 )}
 
                 {/* Drag and Drop Zone */}
@@ -2283,7 +2324,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                   <input
                     id="artwork-drag-drop-input"
                     type="file"
-                    accept="image/*"
+                    accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
                     multiple
                     onChange={handleImageUpload}
                     className="hidden"
@@ -2336,12 +2377,12 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                             Cover
                           </span>
                         )}
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <div className="absolute inset-0 bg-black/40 sm:bg-black/60 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-1">
                           {!img.is_primary && (
                             <button
                               type="button"
                               onClick={() => handleSetPrimaryImage(idx)}
-                              className="p-1 rounded bg-white text-xs font-semibold text-[#2C2724] hover:bg-gray-100 transition-colors"
+                              className="p-1.5 rounded-lg bg-white text-xs font-semibold text-[#2C2724] hover:bg-gray-100 transition-colors shadow-xs"
                               title="Set as Cover"
                             >
                               ★
@@ -2350,18 +2391,18 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                           <button
                             type="button"
                             onClick={() => handleTriggerReplace(idx)}
-                            className="p-1 rounded bg-blue-600 hover:bg-blue-700 text-white cursor-pointer shadow-xs transition-colors"
+                            className="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white cursor-pointer shadow-xs transition-colors flex items-center justify-center"
                             title="Replace with new photo"
                           >
-                            <RefreshCw className="w-3.5 h-3.5" />
+                            <RefreshCw className="w-4 h-4" />
                           </button>
                           <button
                             type="button"
                             onClick={() => handleRemoveImage(idx)}
-                            className="p-1 rounded bg-red-600 hover:bg-red-700 text-white cursor-pointer shadow-xs transition-colors"
+                            className="p-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white cursor-pointer shadow-xs transition-colors flex items-center justify-center"
                             title="Remove Image"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </div>
@@ -2373,7 +2414,7 @@ DA-LIP-105,Tree of Life Lippan Art,Lippan Wall Hangings,3900,16 inches,Mud Paste
                 <input
                   ref={replaceFileInputRef}
                   type="file"
-                  accept="image/*"
+                  accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
                   onChange={handleReplaceFileChange}
                   className="hidden"
                 />

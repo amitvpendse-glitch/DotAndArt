@@ -5,6 +5,7 @@ import { WebsiteSettings, Product, ShowcaseBannerHotspot } from '../types';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
 import { setActiveWhatsAppNumber } from '../utils/whatsapp';
 import { compressImageFile } from '../utils/imageCompressor';
+import { uploadImageToSupabaseStorage } from '../lib/firestoreCatalog';
 
 interface AdminSettingsProps {
   token: string;
@@ -93,17 +94,35 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
 
     try {
       const compressed = await compressImageFile(file);
-      const formData = new FormData();
-      formData.append('file', compressed);
-      const res = await fetch('/api/uploads', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
+      let filePath = '';
 
-      const data = await safeResponseJson(res, {});
-      const filePath = data.file_path || data.url;
-      if (res.ok && filePath) {
+      // 1. Direct client-side upload to Supabase Storage
+      try {
+        const uploadResult = await uploadImageToSupabaseStorage(compressed, 'banner-3d', file.name);
+        if (uploadResult.success && uploadResult.public_url) {
+          filePath = uploadResult.public_url;
+        }
+      } catch (sbErr) {
+        console.warn('[AdminSettings] Supabase upload exception:', sbErr);
+      }
+
+      // 2. Fallback via safeFetchJson
+      if (!filePath) {
+        const formData = new FormData();
+        formData.append('file', compressed);
+        const data = await safeFetchJson<{ success?: boolean; file_path?: string; public_url?: string; error?: string }>(
+          '/api/uploads',
+          {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+          },
+          null
+        );
+        filePath = data?.public_url || data?.file_path || '';
+      }
+
+      if (filePath) {
         setSettings({
           ...settings,
           featured_3d_image: filePath,
@@ -111,7 +130,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
         setIsDirty(true);
         setSuccessMsg('New 3D Banner Image compressed & uploaded! Click "Save All Settings" to apply globally.');
       } else {
-        setErrorMsg(data?.error || 'Failed to upload banner image file.');
+        setErrorMsg('Failed to upload banner image file.');
       }
     } catch (err) {
       setErrorMsg('Error uploading image.');
@@ -302,12 +321,13 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
                     <span>{uploadingImage ? 'Uploading...' : 'Upload Image'}</span>
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
                       disabled={uploadingImage}
                       onChange={(e) => {
                         if (e.target.files?.[0]) {
                           handleBannerImageUpload(e.target.files[0]);
                         }
+                        e.target.value = '';
                       }}
                       className="hidden"
                     />

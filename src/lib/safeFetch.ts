@@ -30,9 +30,11 @@ export async function safeResponseJson<T = any>(
   try {
     const contentType = res.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
-      const data = await res.json();
+      let data = await res.json();
       if (data && typeof data === 'object') {
-        if (Array.isArray((data as any).products)) {
+        if (Array.isArray(data)) {
+          data = data.filter((p: any) => !isSkuBlocked(p?.sku, p?.id));
+        } else if (Array.isArray((data as any).products)) {
           (data as any).products = (data as any).products.filter((p: any) => !isSkuBlocked(p?.sku, p?.id));
           (data as any).total = (data as any).products.length;
         }

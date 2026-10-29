@@ -83,7 +83,9 @@ export function withTimeout<T>(promise: Promise<T>, ms: number, fallbackValue: T
 export async function getFirestoreDeletedIds(): Promise<Set<string>> {
   const defaultDeleted = new Set<string>([
     "DA-AP-10-0001", "DA-AP-10-0002", "DA-AP-10-0003", "DA-AP-10-0004", "DA-AP-10-0005",
-    "prod-da-ap-10-0001", "prod-da-ap-10-0002", "prod-da-ap-10-0003", "prod-da-ap-10-0004", "prod-da-ap-10-0005"
+    "prod-da-ap-10-0001", "prod-da-ap-10-0002", "prod-da-ap-10-0003", "prod-da-ap-10-0004", "prod-da-ap-10-0005",
+    "DA-TC-CS-0001-AMIT", "prod-tc-3-1793234378011",
+    "DA-TC-CS-0001-COPY-304", "DA-TC-CS-0001-COPY-585"
   ]);
 
   if (typeof window !== 'undefined' && window.localStorage) {
@@ -147,7 +149,9 @@ export function getLocalCustomProducts(): Product[] {
     const custom = localStorage.getItem('app_custom_products');
     if (custom) {
       const parsed = JSON.parse(custom);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        return parsed.filter((p) => p && !isSkuBlocked(p.sku, p.id));
+      }
     }
   } catch {}
   return [];
@@ -213,32 +217,18 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
           }))
           .filter((p) => !deletedSet.has(p.id) && !deletedSet.has(p.sku) && !isSkuBlocked(p.sku, p.id));
 
-        // Supabase is authoritative source of truth
-        const productMap = new Map<string, Product>();
-        items.forEach((p) => {
-          if (p && (p.id || p.sku)) {
-            productMap.set(p.sku ? p.sku.toUpperCase() : p.id, p);
-          }
-        });
-
-        // Retain truly un-synced offline local items if any
-        localCustom.forEach((p) => {
-          if (p && p.sku && !productMap.has(p.sku.toUpperCase()) && !deletedSet.has(p.sku) && !deletedSet.has(p.id) && !isSkuBlocked(p.sku, p.id)) {
-            productMap.set(p.sku.toUpperCase(), p);
-          }
-        });
-
-        const merged = Array.from(productMap.values());
-        cachedProducts = merged;
+        // Supabase is authoritative source of truth: synchronize directly with DB
+        cachedProducts = items;
         lastProductsFetchTime = now;
 
-        if (typeof window !== 'undefined' && window.localStorage && items.length > 0) {
+        if (typeof window !== 'undefined' && window.localStorage) {
           try {
-            localStorage.setItem('app_custom_products', JSON.stringify(merged));
+            // Overwrite and clean out any stale or deleted products in browser local storage
+            localStorage.setItem('app_custom_products', JSON.stringify(items));
           } catch {}
         }
 
-        return merged;
+        return items;
       }
     } catch (err) {
       console.warn('[Supabase] Products query fallback to local cache:', err);
@@ -280,10 +270,10 @@ export async function saveFirestoreProduct(product: Product): Promise<void> {
   console.log(`[SupabaseCatalog] saveFirestoreProduct called for SKU: ${product.sku}, name: ${product.name}, price: ${product.base_price}`);
   invalidateProductsCache();
 
-  // Check if product is in deleted set, if so, ensure it is deleted from Supabase and abort save
+  // Check if product is in deleted set or blocked, if so, ensure it is deleted from Supabase and abort save
   const deletedSet = await getFirestoreDeletedIds();
-  if (deletedSet.has(product.id) || (product.sku && deletedSet.has(product.sku.toUpperCase()))) {
-      console.warn(`[SupabaseCatalog] Product ${product.sku} is marked as deleted. Ensuring deletion from Supabase.`);
+  if (deletedSet.has(product.id) || (product.sku && deletedSet.has(product.sku.toUpperCase())) || isSkuBlocked(product.sku, product.id)) {
+      console.warn(`[SupabaseCatalog] Product ${product.sku} is marked as deleted/blocked. Ensuring deletion from Supabase.`);
       await deleteFirestoreProducts([product.id], [product.sku || '']).catch((err) => console.warn('Firestore forced delete error', err));
       return;
   }
@@ -747,42 +737,73 @@ export async function uploadImageToSupabaseStorage(
   const timestamp = Date.now();
   let ext = 'jpg';
 
-  if (originalFilename && originalFilename.includes('.')) {
-    ext = (originalFilename.split('.').pop() || 'jpg').toLowerCase();
-  } else if (file.type) {
+  if (file.type) {
     if (file.type.includes('png')) ext = 'png';
     else if (file.type.includes('webp')) ext = 'webp';
     else if (file.type.includes('jpeg') || file.type.includes('jpg')) ext = 'jpg';
+  } else if (originalFilename && originalFilename.includes('.')) {
+    const rawExt = (originalFilename.split('.').pop() || 'jpg').toLowerCase();
+    if (rawExt === 'png') ext = 'png';
+    else if (rawExt === 'webp') ext = 'webp';
+    else ext = 'jpg';
   }
 
   const fileName = cleanSku
     ? `${cleanSku}_${timestamp}.${ext}`
     : `${timestamp}-${Math.random().toString(36).substring(2, 6)}.${ext}`;
 
+  const contentType = file.type || 'image/jpeg';
+  const publicUrl = `https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/${fileName}`;
+
+  // Strategy 1: Supabase JS SDK upload
   if (sb) {
     try {
       const { data, error } = await sb.storage
         .from('product-images')
         .upload(fileName, file, {
-          contentType: file.type || 'image/jpeg',
+          contentType,
           upsert: true,
         });
 
       if (!error && data) {
-        const { data: pubData } = sb.storage.from('product-images').getPublicUrl(fileName);
-        const publicUrl = pubData?.publicUrl || `https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/${fileName}`;
-        console.log(`[SupabaseStorage] Successfully uploaded ${fileName} directly from client:`, publicUrl);
+        console.log(`[SupabaseStorage] JS SDK uploaded ${fileName} successfully:`, publicUrl);
         return { success: true, public_url: publicUrl, fileName };
       }
       if (error) {
-        console.warn('[uploadImageToSupabaseStorage] Supabase storage upload warning:', error.message);
-        return { success: false, public_url: '', fileName, error: error.message };
+        console.warn('[uploadImageToSupabaseStorage] JS SDK upload warning, trying direct REST:', error.message);
       }
     } catch (err: any) {
-      console.warn('[uploadImageToSupabaseStorage] Exception:', err);
-      return { success: false, public_url: '', fileName, error: err?.message || 'Storage upload error' };
+      console.warn('[uploadImageToSupabaseStorage] JS SDK exception, trying direct REST:', err);
     }
   }
 
-  return { success: false, public_url: '', fileName, error: 'Supabase client not initialized' };
+  // Strategy 2: Direct REST fetch upload (bypasses any browser JS SDK serialization bugs on mobile)
+  const supabaseKey = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_ANON_KEY) ||
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhaWpvb3VwcnhrdHRzZnJhanlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMzE2ODcsImV4cCI6MjEwODcwNzY4N30.dpQTTxbPZHp_yff109modnbzTRdCg0T0_zU8G_mmjFY';
+
+  try {
+    const directUploadUrl = `https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/product-images/${fileName}`;
+    const restRes = await fetch(directUploadUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${supabaseKey}`,
+        'apikey': supabaseKey,
+        'Content-Type': contentType,
+        'x-upsert': 'true',
+      },
+      body: file,
+    });
+
+    if (restRes.ok) {
+      console.log(`[SupabaseStorage] Direct REST uploaded ${fileName} successfully:`, publicUrl);
+      return { success: true, public_url: publicUrl, fileName };
+    } else {
+      const errTxt = await restRes.text().catch(() => '');
+      console.warn('[SupabaseStorage] Direct REST upload response not ok:', restRes.status, errTxt);
+      return { success: false, public_url: '', fileName, error: `Upload error (${restRes.status})` };
+    }
+  } catch (restErr: any) {
+    console.error('[SupabaseStorage] Direct REST fetch failed:', restErr);
+    return { success: false, public_url: '', fileName, error: restErr?.message || 'Network upload error' };
+  }
 }

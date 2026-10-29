@@ -86,7 +86,9 @@ function getStoredProducts(): Product[] {
 
   let deletedSet = new Set<string>([
     "DA-AP-10-0001", "DA-AP-10-0002", "DA-AP-10-0003", "DA-AP-10-0004", "DA-AP-10-0005",
-    "prod-da-ap-10-0001", "prod-da-ap-10-0002", "prod-da-ap-10-0003", "prod-da-ap-10-0004", "prod-da-ap-10-0005"
+    "prod-da-ap-10-0001", "prod-da-ap-10-0002", "prod-da-ap-10-0003", "prod-da-ap-10-0004", "prod-da-ap-10-0005",
+    "DA-TC-CS-0001-AMIT", "prod-tc-3-1793234378011",
+    "DA-TC-CS-0001-COPY-304", "DA-TC-CS-0001-COPY-585"
   ]);
   try {
     const del = localStorage.getItem('app_deleted_product_ids');

@@ -238,11 +238,11 @@ function deduplicateProducts(products: Product[]): Product[] {
   if (!Array.isArray(products)) return [];
   const deletedSkus = new Set<string>([
     'DA-AP-10-0001', 'DA-AP-10-0002', 'DA-AP-10-0003', 'DA-AP-10-0004', 'DA-AP-10-0005',
-    'DA-TC-CS-0001-COPY-304', 'DA-TC-CS-0001-COPY-585'
+    'DA-TC-CS-0001-COPY-304', 'DA-TC-CS-0001-COPY-585', 'DA-TC-CS-0001-AMIT'
   ]);
   const deletedIds = new Set<string>([
     'prod-da-ap-10-0001', 'prod-da-ap-10-0002', 'prod-da-ap-10-0003', 'prod-da-ap-10-0004', 'prod-da-ap-10-0005',
-    'prod-1792707793419'
+    'prod-1792707793419', 'prod-tc-3-1793234378011'
   ]);
 
   const seenIds = new Set<string>();
@@ -283,23 +283,9 @@ function deduplicateProducts(products: Product[]): Product[] {
 
 function mergeSupabaseProducts(fsProducts: Product[]): Product[] {
   if (!Array.isArray(fsProducts) || fsProducts.length === 0) return deduplicateProducts(db.products);
-  const sbMap = new Map<string, Product>();
-  fsProducts.forEach((p) => {
-    if (p && (p.id || p.sku)) {
-      sbMap.set(p.sku ? p.sku.toUpperCase() : p.id, p);
-    }
-  });
-
-  (db.products || []).forEach((p) => {
-    if (p && (p.id || p.sku)) {
-      const key = p.sku ? p.sku.toUpperCase() : p.id;
-      if (!sbMap.has(key)) {
-        sbMap.set(key, p);
-      }
-    }
-  });
-
-  return deduplicateProducts(Array.from(sbMap.values()));
+  // Supabase is the single authoritative source of truth for products.
+  // Synchronize directly with Supabase products table without resurrecting deleted or unlisted products.
+  return deduplicateProducts(fsProducts);
 }
 
 // Load or initialize DB
@@ -1190,7 +1176,13 @@ app.get('/api/categories', async (req: Request, res: Response) => {
 });
 
 // Products (Public Catalog with search, filter, sort, pagination)
-function isServerSkuBlocked(_sku?: string): boolean {
+function isServerSkuBlocked(sku?: string, id?: string): boolean {
+  if (!sku && !id) return false;
+  const s = (sku || '').trim().toUpperCase();
+  const pid = (id || '').trim();
+  if (s === 'DA-TC-CS-0001-AMIT' || s === 'DA-TC-CS-0001-COPY-304' || s === 'DA-TC-CS-0001-COPY-585') return true;
+  if (pid === 'prod-tc-3-1793234378011' || pid === 'prod-1792707793419') return true;
+  if (s.startsWith('DA-AP-10-')) return true;
   return false;
 }
 
@@ -1842,7 +1834,7 @@ app.get('/api/admin/products', requireAdmin, async (req: Request, res: Response)
     }
   } catch {}
 
-  let list = deduplicateProducts(db.products);
+  let list = deduplicateProducts(db.products).filter((p) => !isServerSkuBlocked(p.sku, p.id));
   const { search, category, published, missing_images } = req.query;
 
   if (category && typeof category === 'string' && category !== 'all') {
