@@ -225,6 +225,40 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateTab, t
             Security Settings <ArrowRight className="w-3.5 h-3.5" />
           </span>
         </div>
+
+        <div
+          onClick={async () => {
+            if (confirm('Are you sure you want to force a full database sync? This will reload the application.')) {
+              try {
+                setLoading(true);
+                await safeFetchJson('/api/admin/pull-sync', {
+                  method: 'POST',
+                  headers: { Authorization: `Bearer ${token}` },
+                }, {});
+                alert('Database synchronized successfully. Reloading...');
+                window.location.reload();
+              } catch (e) {
+                console.error(e);
+                alert('Sync failed. Please try again.');
+                setLoading(false);
+              }
+            }
+          }}
+          className="p-6 rounded-2xl glass-card border border-theme-glass craft-shadow hover:border-orange-500 cursor-pointer transition-all space-y-2 group"
+        >
+          <div className="w-10 h-10 rounded-xl bg-orange-500/15 text-orange-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <History className="w-5 h-5" />
+          </div>
+          <h3 className="font-serif text-lg font-semibold text-theme-primary">
+            Force Database Sync
+          </h3>
+          <p className="text-xs text-theme-muted leading-relaxed">
+            Force a full synchronization between Supabase and local cache across all devices.
+          </p>
+          <span className="text-xs font-bold text-orange-600 flex items-center gap-1 pt-1">
+            Sync Now <ArrowRight className="w-3.5 h-3.5" />
+          </span>
+        </div>
       </div>
     </div>
   );
