@@ -24,8 +24,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
   // Dynamic Categories State
   const [navCategories, setNavCategories] = useState<Category[]>([
     { id: 'cat-mandala', name: 'Mandala Wall Hangings', slug: 'mandala-wall-hangings', description: '', display_order: 1, is_active: true, created_at: '', updated_at: '' },
-    { id: 'cat-lippan', name: 'Lippan Wall Hangings', slug: 'lippan-wall-hangings', description: '', display_order: 2, is_active: true, created_at: '', updated_at: '' },
-    { id: 'cat-lippan-mud-mirror-art', name: 'Lippan Mud-Mirror Art', slug: 'lippan-mud-mirror-art', description: '', display_order: 3, is_active: true, created_at: '', updated_at: '' }
+    { id: 'cat-lippan', name: 'Lippan Wall Hangings', slug: 'lippan-wall-hangings', description: '', display_order: 2, is_active: true, created_at: '', updated_at: '' }
   ]);
 
   useEffect(() => {

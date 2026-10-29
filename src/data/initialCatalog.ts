@@ -6177,12 +6177,6 @@ export const INITIAL_CATEGORIES: any[] = [
     "description": "Traditional Kutch mud and mirror art"
   },
   {
-    "id": "cat-lippan-mud-mirror-art",
-    "name": "Lippan Mud-Mirror Art",
-    "slug": "lippan-mud-mirror-art",
-    "description": "Handcrafted traditional Lippan artwork"
-  },
-  {
     "id": "cat-tea-light-candle-holders",
     "name": "Tea Light Candle Holders",
     "slug": "tea-light-candle-holders",
