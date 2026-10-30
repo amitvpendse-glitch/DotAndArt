@@ -102,26 +102,28 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
       const isEdit = Boolean(editing);
       const url = isEdit ? `/api/admin/testimonials/${targetId}` : '/api/admin/testimonials';
 
-      await fetch(url, {
-        method: 'POST',
+      const res = await fetch(url, {
+        method: isEdit ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(testimonial),
       }).catch(async () => {
-        // Fallback PUT in case proxy requires PUT
-        await fetch(url, {
-          method: 'PUT',
+        // Fallback POST/PUT
+        return await fetch(url, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(testimonial),
-        }).catch(() => {});
+        }).catch(() => null);
       });
 
-      await saveFirestoreTestimonial(testimonial).catch(() => {});
+      if (!res || !res.ok) {
+        await saveFirestoreTestimonial(testimonial).catch(() => {});
+      }
 
       window.dispatchEvent(new Event('app_testimonials_updated'));
       setModalOpen(false);

@@ -1391,13 +1391,13 @@ app.post(['/api/testimonials', '/api/testimonials-submit'], async (req: Request,
   const now = new Date().toISOString();
 
   const newTestimonial: Testimonial = {
-    id: `test-user-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
+    id: (req.body.id || '').trim() || `test-user-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
     customer_name: customer_name.trim(),
     content: content.trim(),
     rating: cleanRating,
     location: (location || '').trim(),
     artwork_purchased: (artwork_purchased || '').trim(),
-    image_path: '',
+    image_path: (req.body.image_path || '').trim(),
     display_order: (db.testimonials || []).length + 1,
     is_published: true, // Published immediately for public appreciation
     created_at: now,
@@ -3075,7 +3075,7 @@ app.post('/api/testimonials', async (req: Request, res: Response) => {
   }
 
   const item: Testimonial = {
-    id: `test-user-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
+    id: (req.body.id || '').trim() || `test-user-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
     customer_name: customer_name.trim(),
     content: content.trim(),
     rating: Number(rating) || 5,

@@ -609,48 +609,48 @@ export async function getFirestoreTestimonials(): Promise<Testimonial[]> {
   return [];
 }
 
-export async function saveFirestoreTestimonial(testimonial: Testimonial): Promise<void> {
+export async function saveFirestoreTestimonial(testimonial: Testimonial): Promise<boolean> {
   const sb = getSupabase();
-  if (!sb || !testimonial || !testimonial.id) return;
+  if (!sb || !testimonial || !testimonial.id) return false;
 
   const candidatePayloads: Record<string, any>[] = [
-    // Candidate 1: Both naming conventions
+    // Candidate 1: Live Supabase schema (author_name, author_location, avatar_url, is_active)
     {
       id: testimonial.id,
-      customer_name: testimonial.customer_name || 'Collector',
-      author_name: testimonial.customer_name || 'Collector',
+      author_name: testimonial.customer_name || (testimonial as any).author_name || 'Collector',
       content: testimonial.content || '',
       rating: Number(testimonial.rating) || 5,
-      location: testimonial.location || '',
-      author_location: testimonial.location || '',
+      author_location: testimonial.location || (testimonial as any).author_location || '',
       artwork_purchased: testimonial.artwork_purchased || '',
-      avatar_url: testimonial.image_path || '',
-      image_path: testimonial.image_path || '',
-      is_published: testimonial.is_published !== false,
+      avatar_url: testimonial.image_path || (testimonial as any).avatar_url || '',
       is_active: testimonial.is_published !== false,
       updated_at: new Date().toISOString(),
     },
-    // Candidate 2: Standard customer_name / location / image_path / is_published
+    // Candidate 2: Alternative schema (customer_name, location, image_path, is_published)
     {
       id: testimonial.id,
-      customer_name: testimonial.customer_name || 'Collector',
+      customer_name: testimonial.customer_name || (testimonial as any).author_name || 'Collector',
       content: testimonial.content || '',
       rating: Number(testimonial.rating) || 5,
-      location: testimonial.location || '',
+      location: testimonial.location || (testimonial as any).author_location || '',
       artwork_purchased: testimonial.artwork_purchased || '',
-      image_path: testimonial.image_path || '',
+      image_path: testimonial.image_path || (testimonial as any).avatar_url || '',
       is_published: testimonial.is_published !== false,
       updated_at: new Date().toISOString(),
     },
-    // Candidate 3: author_name / author_location / avatar_url / is_active
+    // Candidate 3: Both column conventions
     {
       id: testimonial.id,
-      author_name: testimonial.customer_name || 'Collector',
+      customer_name: testimonial.customer_name || (testimonial as any).author_name || 'Collector',
+      author_name: testimonial.customer_name || (testimonial as any).author_name || 'Collector',
       content: testimonial.content || '',
       rating: Number(testimonial.rating) || 5,
-      author_location: testimonial.location || '',
+      location: testimonial.location || (testimonial as any).author_location || '',
+      author_location: testimonial.location || (testimonial as any).author_location || '',
       artwork_purchased: testimonial.artwork_purchased || '',
-      avatar_url: testimonial.image_path || '',
+      avatar_url: testimonial.image_path || (testimonial as any).avatar_url || '',
+      image_path: testimonial.image_path || (testimonial as any).avatar_url || '',
+      is_published: testimonial.is_published !== false,
       is_active: testimonial.is_published !== false,
       updated_at: new Date().toISOString(),
     },
@@ -661,26 +661,29 @@ export async function saveFirestoreTestimonial(testimonial: Testimonial): Promis
       const { error } = await sb.from('testimonials').upsert(payload, { onConflict: 'id' });
       if (!error) {
         console.log(`[SupabaseCatalog] Testimonial ${testimonial.id} saved successfully to Supabase.`);
-        return;
-      } else {
-        console.warn('[SupabaseCatalog] Testimonial upsert candidate notice:', error.message);
+        return true;
       }
     } catch (e) {
       console.warn('[SupabaseCatalog] saveFirestoreTestimonial exception:', e);
     }
   }
+  return false;
 }
 
-export async function deleteFirestoreTestimonial(id: string): Promise<void> {
+export async function deleteFirestoreTestimonial(id: string): Promise<boolean> {
   const sb = getSupabase();
   if (sb && id) {
     try {
-      await sb.from('testimonials').delete().eq('id', id);
-      console.log(`[SupabaseCatalog] Testimonial ${id} deleted from Supabase.`);
+      const { error } = await sb.from('testimonials').delete().eq('id', id);
+      if (!error) {
+        console.log(`[SupabaseCatalog] Testimonial ${id} deleted from Supabase.`);
+        return true;
+      }
     } catch (e) {
       console.warn('[SupabaseCatalog] deleteFirestoreTestimonial exception:', e);
     }
   }
+  return false;
 }
 
 export async function getFirestoreFAQs(): Promise<FAQ[]> {

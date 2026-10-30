@@ -180,6 +180,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            id: newTestimonial.id,
             customer_name: publicName.trim(),
             content: publicContent.trim(),
             rating: publicRating,
@@ -190,13 +191,12 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
         null
       );
 
-      await saveFirestoreTestimonial(newTestimonial).catch(() => {});
-
-      if (res?.testimonial) {
-        setTestimonials((prev) => [res.testimonial!, ...prev.filter((t) => t.id !== res.testimonial!.id)]);
-      } else {
-        setTestimonials((prev) => [newTestimonial, ...prev]);
+      const savedItem = res?.testimonial || newTestimonial;
+      if (!res?.testimonial && !res?.success) {
+        await saveFirestoreTestimonial(newTestimonial).catch(() => {});
       }
+
+      setTestimonials((prev) => [savedItem, ...prev.filter((t) => t.id !== savedItem.id)]);
 
       window.dispatchEvent(new Event('app_testimonials_updated'));
 
@@ -288,9 +288,8 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
         body: JSON.stringify(updatedItem),
       });
 
-      await saveFirestoreTestimonial(updatedItem).catch(() => {});
-
       if (!res.ok) {
+        await saveFirestoreTestimonial(updatedItem).catch(() => {});
         const errData = await res.json().catch(() => ({}));
         if (res.status === 401) {
           setAdminError('Admin authorization token invalid or expired. Please re-login.');
