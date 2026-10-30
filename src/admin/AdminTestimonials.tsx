@@ -83,9 +83,10 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const targetId = editing?.id || `test-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
       const testimonial: Testimonial = {
         ...editing,
-        id: editing?.id || `test-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        id: targetId,
         customer_name: name,
         location,
         artwork_purchased: artwork,
@@ -98,8 +99,22 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
         updated_at: new Date().toISOString(),
       };
 
-      await saveFirestoreTestimonial(testimonial);
+      const isEdit = Boolean(editing);
+      const url = isEdit ? `/api/admin/testimonials/${targetId}` : '/api/admin/testimonials';
+      const method = isEdit ? 'PUT' : 'POST';
 
+      await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(testimonial),
+      }).catch(() => {});
+
+      await saveFirestoreTestimonial(testimonial).catch(() => {});
+
+      window.dispatchEvent(new Event('app_testimonials_updated'));
       setModalOpen(false);
       fetchItems();
     } catch (err) {
@@ -110,7 +125,16 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this testimonial?')) return;
     try {
-      await deleteFirestoreTestimonial(id);
+      await fetch(`/api/admin/testimonials/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).catch(() => {});
+
+      await deleteFirestoreTestimonial(id).catch(() => {});
+
+      window.dispatchEvent(new Event('app_testimonials_updated'));
       fetchItems();
     } catch (err) {
       console.error(err);

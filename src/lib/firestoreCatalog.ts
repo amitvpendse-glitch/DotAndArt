@@ -579,7 +579,7 @@ export async function getFirestoreTestimonials(): Promise<Testimonial[]> {
   if (sb) {
     try {
       const { data, error } = await sb.from('testimonials').select('*').order('created_at', { ascending: false });
-      if (!error && Array.isArray(data) && data.length > 0) {
+      if (!error && Array.isArray(data)) {
         return data.map((row: any) => ({
           id: row.id,
           customer_name: row.author_name || 'Collector',

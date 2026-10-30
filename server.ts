@@ -416,7 +416,7 @@ async function syncFromFirestoreOnBoot() {
       changed = true;
     }
 
-    if (Array.isArray(fsTestimonials) && fsTestimonials.length > 0) {
+    if (Array.isArray(fsTestimonials)) {
       db.testimonials = fsTestimonials;
       changed = true;
     }
@@ -3045,11 +3045,56 @@ app.put('/api/admin/pages/:slug', requireAdmin, (req: Request, res: Response) =>
   res.json(db.pages[index]);
 });
 
+/* =========================================================
+   PUBLIC TESTIMONIALS ENDPOINTS
+========================================================= */
+
+app.get('/api/testimonials', async (_req: Request, res: Response) => {
+  try {
+    const fsTestimonials = await getFirestoreTestimonials();
+    if (Array.isArray(fsTestimonials)) {
+      db.testimonials = fsTestimonials;
+      saveDB(db, false);
+    }
+  } catch {}
+  const list = (db.testimonials || []).filter((t) => t.is_published !== false);
+  res.json(list);
+});
+
+app.post('/api/testimonials', async (req: Request, res: Response) => {
+  const { customer_name, content, rating, location, artwork_purchased, image_path } = req.body;
+
+  if (!customer_name || !customer_name.trim() || !content || !content.trim()) {
+    res.status(400).json({ error: 'Customer name and review content are required.' });
+    return;
+  }
+
+  const item: Testimonial = {
+    id: `test-user-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
+    customer_name: customer_name.trim(),
+    content: content.trim(),
+    rating: Number(rating) || 5,
+    location: (location || '').trim(),
+    artwork_purchased: (artwork_purchased || '').trim(),
+    image_path: (image_path || '').trim(),
+    display_order: 0,
+    is_published: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+
+  (db.testimonials = db.testimonials || []).unshift(item);
+  saveDB(db);
+  await saveFirestoreTestimonial(item).catch((e) => console.warn('[server] Firestore testimonial save error:', e));
+  logAudit('public_testimonial_submitted', 'testimonial', item.id, { name: item.customer_name });
+  res.json({ success: true, testimonial: item });
+});
+
 // Admin Testimonials CRUD
 app.get('/api/admin/testimonials', requireAdmin, async (_req: Request, res: Response) => {
   try {
     const fsTestimonials = await getFirestoreTestimonials();
-    if (Array.isArray(fsTestimonials) && fsTestimonials.length > 0) {
+    if (Array.isArray(fsTestimonials)) {
       db.testimonials = fsTestimonials;
       saveDB(db, false);
     }
@@ -3069,62 +3114,75 @@ app.post('/api/admin/testimonials', requireAdmin, async (req: Request, res: Resp
   }
 
   const item: Testimonial = {
-    id: `test-${Date.now()}`,
+    id: req.body.id || `test-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
     customer_name: customer_name.trim(),
     content: content.trim(),
     rating: Number(rating) || 5,
     location: location || '',
     artwork_purchased: artwork_purchased || '',
     image_path: image_path || '',
-    display_order: Number(display_order) || db.testimonials.length + 1,
+    display_order: Number(display_order) || (db.testimonials?.length || 0) + 1,
     is_published: is_published ?? true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
 
-  (db.testimonials = db.testimonials || []).push(item);
+  (db.testimonials = db.testimonials || []).unshift(item);
   saveDB(db);
-  saveFirestoreTestimonial(item).catch((e) => console.warn('[server] Firestore testimonial save error', e));
+  await saveFirestoreTestimonial(item).catch((e) => console.warn('[server] Firestore testimonial save error', e));
   logAudit('testimonial_created', 'testimonial', item.id, { customer_name: item.customer_name });
   res.json(item);
 });
 
 app.put('/api/admin/testimonials/:id', requireAdmin, async (req: Request, res: Response) => {
   const { id } = req.params;
-  const index = (db.testimonials || []).findIndex((t) => t.id === id);
+  let index = (db.testimonials || []).findIndex((t) => t.id === id);
+  const body = req.body;
+  let updatedItem: Testimonial;
+
   if (index === -1) {
-    res.status(404).json({ error: 'Testimonial not found' });
-    return;
+    updatedItem = {
+      id,
+      customer_name: (body.customer_name || 'Collector').trim(),
+      content: (body.content || '').trim(),
+      rating: Number(body.rating) || 5,
+      location: body.location || '',
+      artwork_purchased: body.artwork_purchased || '',
+      image_path: body.image_path || '',
+      display_order: Number(body.display_order) || 1,
+      is_published: body.is_published !== false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    (db.testimonials = db.testimonials || []).unshift(updatedItem);
+  } else {
+    if (body.customer_name) db.testimonials[index].customer_name = body.customer_name.trim();
+    if (body.content) db.testimonials[index].content = body.content.trim();
+    if (body.rating !== undefined) db.testimonials[index].rating = Number(body.rating);
+    if (body.location !== undefined) db.testimonials[index].location = body.location;
+    if (body.artwork_purchased !== undefined) db.testimonials[index].artwork_purchased = body.artwork_purchased;
+    if (body.image_path !== undefined) db.testimonials[index].image_path = body.image_path;
+    if (body.display_order !== undefined) db.testimonials[index].display_order = Number(body.display_order);
+    if (body.is_published !== undefined) db.testimonials[index].is_published = Boolean(body.is_published);
+    db.testimonials[index].updated_at = new Date().toISOString();
+    updatedItem = db.testimonials[index];
   }
 
-  const body = req.body;
-  if (body.customer_name) db.testimonials[index].customer_name = body.customer_name;
-  if (body.content) db.testimonials[index].content = body.content;
-  if (body.rating !== undefined) db.testimonials[index].rating = Number(body.rating);
-  if (body.location !== undefined) db.testimonials[index].location = body.location;
-  if (body.artwork_purchased !== undefined) db.testimonials[index].artwork_purchased = body.artwork_purchased;
-  if (body.image_path !== undefined) db.testimonials[index].image_path = body.image_path;
-  if (body.display_order !== undefined) db.testimonials[index].display_order = Number(body.display_order);
-  if (body.is_published !== undefined) db.testimonials[index].is_published = Boolean(body.is_published);
-
-  db.testimonials[index].updated_at = new Date().toISOString();
   saveDB(db);
-  saveFirestoreTestimonial(db.testimonials[index]).catch((e) => console.warn('[server] Firestore testimonial update error', e));
+  await saveFirestoreTestimonial(updatedItem).catch((e) => console.warn('[server] Firestore testimonial update error', e));
   logAudit('testimonial_updated', 'testimonial', id);
-  res.json(db.testimonials[index]);
+  res.json(updatedItem);
 });
 
 app.delete('/api/admin/testimonials/:id', requireAdmin, async (req: Request, res: Response) => {
   const { id } = req.params;
   const index = (db.testimonials || []).findIndex((t) => t.id === id);
-  if (index === -1) {
-    res.status(404).json({ error: 'Testimonial not found' });
-    return;
+  if (index !== -1) {
+    db.testimonials.splice(index, 1);
   }
-  const deleted = db.testimonials.splice(index, 1)[0];
   saveDB(db);
   await deleteFirestoreTestimonial(id).catch((e) => console.warn('[server] Firestore testimonial delete error', e));
-  logAudit('testimonial_deleted', 'testimonial', id, { customer_name: deleted.customer_name });
+  logAudit('testimonial_deleted', 'testimonial', id);
   res.json({ success: true, message: 'Testimonial deleted' });
 });
 

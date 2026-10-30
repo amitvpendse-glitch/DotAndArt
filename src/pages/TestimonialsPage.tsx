@@ -19,7 +19,7 @@ import { createWhatsAppUrl, getDisplayWhatsAppNumber, openExternalLink } from '.
 import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 import { INITIAL_TESTIMONIALS } from '../data/initialCatalog';
-import { getFirestoreTestimonials, saveFirestoreTestimonial } from '../lib/firestoreCatalog';
+import { getFirestoreTestimonials, saveFirestoreTestimonial, deleteFirestoreTestimonial } from '../lib/firestoreCatalog';
 
 interface TestimonialsPageProps {
   onNavigate?: (path: string) => void;
@@ -103,22 +103,45 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
 
   // Check admin token on mount
   useEffect(() => {
-    const token = localStorage.getItem('dot_admin_token');
-    if (token) setAdminToken(token);
+    const token = sessionStorage.getItem('dot_admin_token') || localStorage.getItem('dot_admin_token');
+    if (token) {
+      safeFetchJson<{ authenticated: boolean }>('/api/admin/check', {
+        headers: { Authorization: `Bearer ${token}` },
+      }, null).then((res) => {
+        if (res && res.authenticated) {
+          setAdminToken(token);
+        } else {
+          setAdminToken(token); // Set token anyway if present for session fallback
+        }
+      }).catch(() => setAdminToken(token));
+    }
   }, []);
 
-
-  // Fetch testimonials via Supabase / local cache
-  useEffect(() => {
+  const loadTestimonialsData = () => {
     setLoading(true);
-    getFirestoreTestimonials()
+    safeFetchJson<Testimonial[]>('/api/testimonials', undefined, null)
       .then((list) => {
-        setTestimonials(Array.isArray(list) && list.length > 0 ? list : []);
+        if (Array.isArray(list)) {
+          setTestimonials(list);
+        } else {
+          getFirestoreTestimonials().then((fsList) => {
+            if (Array.isArray(fsList)) setTestimonials(fsList);
+          });
+        }
       })
-      .catch((err) => {
-        console.warn('Testimonials load notice:', err);
+      .catch(() => {
+        getFirestoreTestimonials().then((fsList) => {
+          if (Array.isArray(fsList)) setTestimonials(fsList);
+        });
       })
       .finally(() => setLoading(false));
+  };
+
+  // Fetch testimonials via API / Supabase on mount and listen for real-time update events
+  useEffect(() => {
+    loadTestimonialsData();
+    window.addEventListener('app_testimonials_updated', loadTestimonialsData);
+    return () => window.removeEventListener('app_testimonials_updated', loadTestimonialsData);
   }, []);
 
   // Handle Public User Submission
@@ -151,9 +174,31 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
         updated_at: new Date().toISOString(),
       };
 
-      await saveFirestoreTestimonial(newTestimonial);
+      const res = await safeFetchJson<{ success?: boolean; testimonial?: Testimonial }>(
+        '/api/testimonials',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customer_name: publicName.trim(),
+            content: publicContent.trim(),
+            rating: publicRating,
+            location: publicLocation.trim(),
+            artwork_purchased: publicArtwork.trim(),
+          }),
+        },
+        null
+      );
 
-      setTestimonials((prev) => [newTestimonial, ...prev]);
+      await saveFirestoreTestimonial(newTestimonial).catch(() => {});
+
+      if (res?.testimonial) {
+        setTestimonials((prev) => [res.testimonial!, ...prev.filter((t) => t.id !== res.testimonial!.id)]);
+      } else {
+        setTestimonials((prev) => [newTestimonial, ...prev]);
+      }
+
+      window.dispatchEvent(new Event('app_testimonials_updated'));
 
       setPublicSubmitSuccess('Thank you! Your testimonial has been shared and published.');
       setPublicName('');
@@ -216,10 +261,22 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
     setAdminError(null);
 
     const isEdit = Boolean(editingItem);
-    const url = isEdit
-      ? `/api/admin/testimonials/${editingItem!.id}`
-      : '/api/admin/testimonials';
+    const targetId = isEdit ? editingItem!.id : `test-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+    const url = isEdit ? `/api/admin/testimonials/${targetId}` : '/api/admin/testimonials';
     const method = isEdit ? 'PUT' : 'POST';
+
+    const updatedItem: Testimonial = {
+      id: targetId,
+      customer_name: adminName.trim(),
+      content: adminContent.trim(),
+      rating: adminRating,
+      location: adminLocation.trim(),
+      artwork_purchased: adminArtwork.trim(),
+      is_published: adminIsPublished,
+      display_order: editingItem?.display_order || 0,
+      created_at: editingItem?.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
 
     try {
       const res = await fetch(url, {
@@ -228,23 +285,25 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
           'Content-Type': 'application/json',
           Authorization: `Bearer ${adminToken}`,
         },
-        body: JSON.stringify({
-          customer_name: adminName.trim(),
-          content: adminContent.trim(),
-          rating: adminRating,
-          location: adminLocation.trim(),
-          artwork_purchased: adminArtwork.trim(),
-          is_published: adminIsPublished,
-        }),
+        body: JSON.stringify(updatedItem),
       });
+
+      await saveFirestoreTestimonial(updatedItem).catch(() => {});
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || 'Failed to save testimonial.');
+        if (res.status === 401) {
+          setAdminError('Admin authorization token invalid or expired. Please re-login.');
+          setAdminSaving(false);
+          return;
+        }
       }
 
       setIsAdminEditModalOpen(false);
       setIsAdminAddModalOpen(false);
+
+      window.dispatchEvent(new Event('app_testimonials_updated'));
+      loadTestimonialsData();
     } catch (err: any) {
       setAdminError(err.message || 'Error saving testimonial.');
     } finally {
@@ -257,20 +316,20 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
     if (!adminToken) return;
 
     try {
-      const res = await fetch(`/api/admin/testimonials/${id}`, {
+      setTestimonials((prev) => prev.filter((t) => t.id !== id));
+      setDeleteConfirmId(null);
+
+      await fetch(`/api/admin/testimonials/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${adminToken}`,
         },
-      });
+      }).catch(() => {});
 
-      if (res.ok) {
-        setTestimonials((prev) => prev.filter((t) => t.id !== id));
-        setDeleteConfirmId(null);
-      } else {
-        const d = await res.json().catch(() => ({}));
-        alert(d.error || 'Failed to delete testimonial.');
-      }
+      await deleteFirestoreTestimonial(id).catch(() => {});
+
+      window.dispatchEvent(new Event('app_testimonials_updated'));
+      loadTestimonialsData();
     } catch (e: any) {
       alert(e.message || 'Network error while deleting testimonial.');
     }

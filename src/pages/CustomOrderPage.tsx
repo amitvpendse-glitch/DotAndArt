@@ -170,6 +170,11 @@ export const CustomOrderPage: React.FC = () => {
       return;
     }
 
+    if (!formData.desired_size.trim()) {
+      setErrorMessage('Please enter your desired diameter or size.');
+      return;
+    }
+
     if (isSingleImage && isCopyingImage) {
       setErrorMessage('Please wait a moment while the reference artwork photo is prepared for WhatsApp...');
       return;
@@ -355,19 +360,33 @@ export const CustomOrderPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-theme-primary mb-1">
-                  Desired Diameter / Size
+                  Desired Diameter / Size <span className="text-red-500">*</span>
                 </label>
-                <select
+                <input
+                  type="text"
+                  required
                   value={formData.desired_size}
                   onChange={(e) => setFormData({ ...formData, desired_size: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary cursor-pointer"
-                >
+                  placeholder="e.g. 18 inches, 2.5 ft diameter, 30x30 cm, etc."
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary"
+                />
+                <div className="mt-2 flex flex-wrap gap-1.5 items-center">
+                  <span className="text-[10px] text-theme-muted font-medium mr-1">Quick Select:</span>
                   {sizeOptions.map((opt) => (
-                    <option key={opt} value={opt}>
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, desired_size: opt })}
+                      className={`px-2.5 py-1 rounded-full text-[10px] border transition-colors cursor-pointer ${
+                        formData.desired_size === opt
+                          ? 'bg-theme-accent text-white border-theme-accent font-semibold'
+                          : 'bg-theme-page/60 text-theme-muted hover:text-theme-primary border-theme-glass hover:border-theme-accent/40'
+                      }`}
+                    >
                       {opt}
-                    </option>
+                    </button>
                   ))}
-                </select>
+                </div>
               </div>
 
               <div>
