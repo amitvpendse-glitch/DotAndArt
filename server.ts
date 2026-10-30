@@ -45,6 +45,7 @@ import {
   saveFirestoreCategory,
   saveFirestoreFAQ,
   deleteFirestoreFAQ,
+  getFirestoreFAQs,
   saveFirestoreMediaAsset,
   invalidateProductsCache,
 } from './src/lib/firestoreCatalog.ts';
@@ -3199,12 +3200,37 @@ app.delete('/api/admin/testimonials/:id', requireAdmin, handleTestimonialDelete)
 app.post('/api/admin/testimonials/:id/delete', requireAdmin, handleTestimonialDelete);
 app.delete('/api/admin/testimonials/:id/delete', requireAdmin, handleTestimonialDelete);
 
+/* =========================================================
+   PUBLIC FAQs ENDPOINTS
+========================================================= */
+
+app.get('/api/faqs', async (_req: Request, res: Response) => {
+  try {
+    const fsFaqs = await getFirestoreFAQs();
+    if (Array.isArray(fsFaqs) && fsFaqs.length > 0) {
+      db.faqs = fsFaqs;
+      saveDB(db, false);
+    }
+  } catch {}
+  const list = (db.faqs || []).filter((f) => f.is_published !== false);
+  res.json(list);
+});
+
 // Admin FAQs CRUD
-app.get('/api/admin/faqs', requireAdmin, (_req: Request, res: Response) => {
+app.get('/api/admin/faqs', requireAdmin, async (_req: Request, res: Response) => {
+  try {
+    const fsFaqs = await getFirestoreFAQs();
+    if (Array.isArray(fsFaqs) && fsFaqs.length > 0) {
+      db.faqs = fsFaqs;
+      saveDB(db, false);
+    }
+  } catch (e) {
+    console.error('[server] Failed to refresh FAQs from Supabase:', e);
+  }
   res.json(db.faqs);
 });
 
-app.post('/api/admin/faqs', requireAdmin, (req: Request, res: Response) => {
+app.post('/api/admin/faqs', requireAdmin, async (req: Request, res: Response) => {
   const { question, answer, category, display_order, is_published } = req.body;
   if (!question || !answer) {
     res.status(400).json({ error: 'Question and answer are required' });
@@ -3212,11 +3238,11 @@ app.post('/api/admin/faqs', requireAdmin, (req: Request, res: Response) => {
   }
 
   const faq: FAQ = {
-    id: `faq-${Date.now()}`,
+    id: req.body.id || `faq-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
     question: question.trim(),
     answer: answer.trim(),
     category: category || 'General',
-    display_order: Number(display_order) || db.faqs.length + 1,
+    display_order: Number(display_order) || (db.faqs?.length || 0) + 1,
     is_published: is_published ?? true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -3224,46 +3250,65 @@ app.post('/api/admin/faqs', requireAdmin, (req: Request, res: Response) => {
 
   (db.faqs = db.faqs || []).push(faq);
   saveDB(db);
-  saveFirestoreFAQ(faq).catch((e) => console.warn('[server] Firestore FAQ save error', e));
+  await saveFirestoreFAQ(faq).catch((e) => console.warn('[server] Firestore FAQ save error', e));
   logAudit('faq_created', 'faq', faq.id, { question: faq.question });
   res.json(faq);
 });
 
-app.put('/api/admin/faqs/:id', requireAdmin, (req: Request, res: Response) => {
+const handleFaqUpdate = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const index = (db.faqs || []).findIndex((f) => f.id === id);
-  if (index === -1) {
-    res.status(404).json({ error: 'FAQ not found' });
-    return;
-  }
-
+  let index = (db.faqs || []).findIndex((f) => f.id === id);
   const body = req.body;
-  if (body.question) db.faqs[index].question = body.question;
-  if (body.answer) db.faqs[index].answer = body.answer;
-  if (body.category) db.faqs[index].category = body.category;
-  if (body.display_order !== undefined) db.faqs[index].display_order = Number(body.display_order);
-  if (body.is_published !== undefined) db.faqs[index].is_published = Boolean(body.is_published);
+  let updatedFaq: FAQ;
 
-  db.faqs[index].updated_at = new Date().toISOString();
+  if (index === -1) {
+    updatedFaq = {
+      id,
+      question: (body.question || '').trim(),
+      answer: (body.answer || '').trim(),
+      category: (body.category || 'General').trim(),
+      display_order: Number(body.display_order) || 1,
+      is_published: body.is_published !== false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    (db.faqs = db.faqs || []).push(updatedFaq);
+  } else {
+    if (body.question) db.faqs[index].question = body.question.trim();
+    if (body.answer) db.faqs[index].answer = body.answer.trim();
+    if (body.category) db.faqs[index].category = body.category.trim();
+    if (body.display_order !== undefined) db.faqs[index].display_order = Number(body.display_order);
+    if (body.is_published !== undefined) db.faqs[index].is_published = Boolean(body.is_published);
+    db.faqs[index].updated_at = new Date().toISOString();
+    updatedFaq = db.faqs[index];
+  }
+
   saveDB(db);
-  saveFirestoreFAQ(db.faqs[index]).catch((e) => console.warn('[server] Firestore FAQ update error', e));
+  await saveFirestoreFAQ(updatedFaq).catch((e) => console.warn('[server] Firestore FAQ update error', e));
   logAudit('faq_updated', 'faq', id);
-  res.json(db.faqs[index]);
-});
+  res.json(updatedFaq);
+};
 
-app.delete('/api/admin/faqs/:id', requireAdmin, (req: Request, res: Response) => {
+app.put('/api/admin/faqs/:id', requireAdmin, handleFaqUpdate);
+app.post('/api/admin/faqs/:id', requireAdmin, handleFaqUpdate);
+app.patch('/api/admin/faqs/:id', requireAdmin, handleFaqUpdate);
+
+const handleFaqDelete = async (req: Request, res: Response) => {
   const { id } = req.params;
   const index = (db.faqs || []).findIndex((f) => f.id === id);
-  if (index === -1) {
-    res.status(404).json({ error: 'FAQ not found' });
-    return;
+  if (index !== -1) {
+    db.faqs.splice(index, 1);
   }
-  const deleted = db.faqs.splice(index, 1)[0];
   saveDB(db);
-  deleteFirestoreFAQ(id).catch((e) => console.warn('[server] Firestore FAQ delete error', e));
-  logAudit('faq_deleted', 'faq', id, { question: deleted.question });
+  await deleteFirestoreFAQ(id).catch((e) => console.warn('[server] Firestore FAQ delete error', e));
+  logAudit('faq_deleted', 'faq', id);
   res.json({ success: true, message: 'FAQ deleted' });
-});
+};
+
+app.delete('/api/admin/faqs/:id', requireAdmin, handleFaqDelete);
+app.post('/api/admin/faqs/:id/delete', requireAdmin, handleFaqDelete);
+app.delete('/api/admin/faqs/:id/delete', requireAdmin, handleFaqDelete);
+
 
 // Admin Settings CRUD
 app.get('/api/admin/settings', requireAdmin, (_req: Request, res: Response) => {

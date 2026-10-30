@@ -691,48 +691,131 @@ export async function getFirestoreFAQs(): Promise<FAQ[]> {
   if (sb) {
     try {
       const { data, error } = await sb.from('faqs').select('*').order('display_order', { ascending: true });
-      if (!error && Array.isArray(data) && data.length > 0) {
-        return data.map((row: any) => ({
-          id: row.id,
+      if (!error && Array.isArray(data)) {
+        const items = data.map((row: any) => ({
+          id: String(row.id),
           question: row.question || '',
           answer: row.answer || '',
           category: row.category || 'General',
           display_order: Number(row.display_order) || 1,
-          is_published: row.is_published !== false,
+          is_published: row.is_published !== undefined && row.is_published !== null
+            ? Boolean(row.is_published)
+            : (row.is_active !== undefined && row.is_active !== null ? Boolean(row.is_active) : true),
           created_at: row.created_at || new Date().toISOString(),
           updated_at: row.updated_at || new Date().toISOString(),
         }));
+        if (typeof window !== 'undefined' && window.localStorage) {
+          try {
+            localStorage.setItem('app_custom_faqs', JSON.stringify(items));
+          } catch {}
+        }
+        return items;
+      }
+    } catch (e) {
+      console.warn('[SupabaseCatalog] getFirestoreFAQs exception:', e);
+    }
+  }
+
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const stored = localStorage.getItem('app_custom_faqs');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
     } catch {}
   }
+
   return INITIAL_FAQS;
 }
 
-export async function saveFirestoreFAQ(faq: FAQ): Promise<void> {
+export async function saveFirestoreFAQ(faq: FAQ): Promise<boolean> {
+  if (!faq || !faq.id) return false;
+
+  // 1. Update local storage cache
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const stored = localStorage.getItem('app_custom_faqs');
+      let list: FAQ[] = stored ? JSON.parse(stored) : [...INITIAL_FAQS];
+      if (!Array.isArray(list)) list = [];
+      const idx = list.findIndex((f) => f.id === faq.id);
+      if (idx >= 0) {
+        list[idx] = faq;
+      } else {
+        list.push(faq);
+      }
+      localStorage.setItem('app_custom_faqs', JSON.stringify(list));
+    } catch {}
+  }
+
+  // 2. Sync to Supabase
+  const sb = getSupabase();
+  if (!sb) return true;
+
+  const candidatePayloads: Record<string, any>[] = [
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+      display_order: Number(faq.display_order) || 1,
+      is_published: faq.is_published !== false,
+      created_at: faq.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+      display_order: Number(faq.display_order) || 1,
+      is_active: faq.is_published !== false,
+      created_at: faq.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+  ];
+
+  for (const payload of candidatePayloads) {
+    try {
+      const { error } = await sb.from('faqs').upsert(payload, { onConflict: 'id' });
+      if (!error) return true;
+    } catch (e) {
+      console.warn('[SupabaseCatalog] saveFirestoreFAQ exception:', e);
+    }
+  }
+  return false;
+}
+
+export async function deleteFirestoreFAQ(id: string): Promise<boolean> {
+  if (!id) return false;
+
+  // 1. Remove from local storage cache
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const stored = localStorage.getItem('app_custom_faqs');
+      if (stored) {
+        const list = JSON.parse(stored);
+        if (Array.isArray(list)) {
+          const filtered = list.filter((f: any) => f.id !== id);
+          localStorage.setItem('app_custom_faqs', JSON.stringify(filtered));
+        }
+      }
+    } catch {}
+  }
+
+  // 2. Remove from Supabase
   const sb = getSupabase();
   if (sb) {
     try {
-      await sb.from('faqs').upsert({
-        id: faq.id,
-        category: faq.category || 'General',
-        question: faq.question,
-        answer: faq.answer,
-        display_order: Number(faq.display_order) || 1,
-        is_published: faq.is_published !== false,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'id' });
-    } catch {}
+      const { error } = await sb.from('faqs').delete().eq('id', id);
+      if (!error) return true;
+    } catch (e) {
+      console.warn('[SupabaseCatalog] deleteFirestoreFAQ exception:', e);
+    }
   }
+  return false;
 }
 
-export async function deleteFirestoreFAQ(id: string): Promise<void> {
-  const sb = getSupabase();
-  if (sb && id) {
-    try {
-      await sb.from('faqs').delete().eq('id', id);
-    } catch {}
-  }
-}
 
 export async function saveFirestoreMediaAsset(asset: MediaAsset): Promise<void> {
   const sb = getSupabase();

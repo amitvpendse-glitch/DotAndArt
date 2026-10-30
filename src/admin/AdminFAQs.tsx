@@ -57,9 +57,10 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const targetId = editing?.id || `faq-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
       const faq: FAQ = {
         ...editing,
-        id: editing?.id || `faq-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        id: targetId,
         question,
         answer,
         category,
@@ -69,8 +70,32 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
         updated_at: new Date().toISOString(),
       };
 
-      await saveFirestoreFAQ(faq);
+      const isEdit = Boolean(editing);
+      const url = isEdit ? `/api/admin/faqs/${targetId}` : '/api/admin/faqs';
 
+      const res = await fetch(url, {
+        method: isEdit ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(faq),
+      }).catch(async () => {
+        return await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(faq),
+        }).catch(() => null);
+      });
+
+      if (!res || !res.ok) {
+        await saveFirestoreFAQ(faq).catch(() => {});
+      }
+
+      window.dispatchEvent(new Event('app_faqs_updated'));
       setModalOpen(false);
       fetchFaqs();
     } catch (err) {
@@ -81,7 +106,25 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this FAQ entry?')) return;
     try {
-      await deleteFirestoreFAQ(id);
+      const res = await fetch(`/api/admin/faqs/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).catch(() => null);
+
+      if (!res || !res.ok) {
+        await fetch(`/api/admin/faqs/${id}/delete`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).catch(() => {});
+      }
+
+      await deleteFirestoreFAQ(id).catch(() => {});
+
+      window.dispatchEvent(new Event('app_faqs_updated'));
       fetchFaqs();
     } catch (err) {
       console.error(err);

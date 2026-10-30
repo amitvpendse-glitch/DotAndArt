@@ -24,6 +24,9 @@ import {
   getFirestoreTestimonials,
   saveFirestoreTestimonial,
   deleteFirestoreTestimonial,
+  getFirestoreFAQs,
+  saveFirestoreFAQ,
+  deleteFirestoreFAQ,
 } from './firestoreCatalog';
 import { isAwaitingPhoto, isProductHighDemand } from '../utils/productUtils';
 import { isSkuBlocked } from './blockedSkus';
@@ -1156,7 +1159,69 @@ export async function handleClientFallbackApi<T = any>(
 
   // 6. GET /api/faqs or /api/admin/faqs
   if ((pathname === '/api/faqs' || pathname === '/api/admin/faqs') && method === 'GET') {
-    return jsonRes(INITIAL_FAQS);
+    try {
+      const faqs = await getFirestoreFAQs();
+      if (pathname === '/api/faqs') {
+        return jsonRes((faqs || []).filter((f) => f.is_published !== false));
+      }
+      return jsonRes(faqs || []);
+    } catch {
+      return jsonRes(INITIAL_FAQS);
+    }
+  }
+
+  // 6b. POST /api/faqs or /api/admin/faqs
+  if ((pathname === '/api/faqs' || pathname === '/api/admin/faqs') && method === 'POST') {
+    try {
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+      const newFaq: FAQ = {
+        id: body.id || `faq-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        question: (body.question || '').trim(),
+        answer: (body.answer || '').trim(),
+        category: (body.category || 'General').trim(),
+        display_order: Number(body.display_order) || 1,
+        is_published: body.is_published !== false,
+        created_at: body.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      await saveFirestoreFAQ(newFaq);
+      return jsonRes(newFaq);
+    } catch {
+      return jsonRes({ success: false, error: 'Failed to save FAQ' });
+    }
+  }
+
+  // 6c. PUT/POST/PATCH /api/admin/faqs/:id
+  if (pathname.startsWith('/api/admin/faqs/') && (method === 'PUT' || method === 'POST' || method === 'PATCH')) {
+    const id = pathname.replace('/api/admin/faqs/', '').replace('/delete', '');
+    if (pathname.endsWith('/delete')) {
+      await deleteFirestoreFAQ(id).catch(() => {});
+      return jsonRes({ success: true, message: 'FAQ deleted' });
+    }
+    try {
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+      const updatedFaq: FAQ = {
+        id,
+        question: (body.question || '').trim(),
+        answer: (body.answer || '').trim(),
+        category: (body.category || 'General').trim(),
+        display_order: Number(body.display_order) || 1,
+        is_published: body.is_published !== false,
+        created_at: body.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      await saveFirestoreFAQ(updatedFaq);
+      return jsonRes(updatedFaq);
+    } catch {
+      return jsonRes({ success: false, error: 'Failed to update FAQ' });
+    }
+  }
+
+  // 6d. DELETE /api/admin/faqs/:id
+  if (pathname.startsWith('/api/admin/faqs/') && method === 'DELETE') {
+    const id = pathname.replace('/api/admin/faqs/', '');
+    await deleteFirestoreFAQ(id).catch(() => {});
+    return jsonRes({ success: true, message: 'FAQ deleted' });
   }
 
   // 7. GET /api/pages or /api/admin/pages or /api/pages/:slug or PUT /api/admin/pages/:slug

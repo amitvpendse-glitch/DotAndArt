@@ -159,9 +159,8 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           queryParams.append('minPrice', '10000');
         }
 
-        if (selectedSizeFilter !== 'all' && !searchQuery.trim()) {
-          queryParams.append('size', selectedSizeFilter);
-        }
+        // Note: Size filtering is handled client-side in displayedProducts to ensure
+        // all size filter options remain visible and selectable in the dropdown on both laptop and mobile viewports.
 
         const prodRes = await safeFetchJson<{ products: Product[] }>(`/api/products?${queryParams.toString()}`, undefined, { products: [] });
         const prods = prodRes?.products || [];
@@ -213,7 +212,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
 
     window.addEventListener('app_products_updated', fetchProducts);
     return () => window.removeEventListener('app_products_updated', fetchProducts);
-  }, [selectedCategory, searchQuery, selectedSizeFilter, priceTier, sortBy, highDemandOnly]);
+  }, [selectedCategory, searchQuery, priceTier, sortBy, highDemandOnly]);
 
   // Dynamic sizes according to selected category (Item 3)
   const availableSizes = useMemo(() => {
@@ -271,14 +270,46 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
 
   // Reset size filter when category changes if the size is not valid for new category
   useEffect(() => {
-    if (selectedSizeFilter !== 'all' && !availableSizes.includes(selectedSizeFilter)) {
+    if (selectedSizeFilter !== 'all' && availableSizes.length > 0 && !availableSizes.includes(selectedSizeFilter)) {
       setSelectedSizeFilter('all');
     }
   }, [availableSizes, selectedSizeFilter]);
 
-  // Price wise sorting & filtering client-side for immediate responsiveness
+  // Client-side filtering & sorting for size, high demand, and price
   const displayedProducts = useMemo(() => {
     let list = [...products];
+
+    if (selectedSizeFilter !== 'all') {
+      const targetSize = selectedSizeFilter.toLowerCase().trim();
+      const targetNum = parseInt(targetSize) || null;
+
+      list = list.filter((p) => {
+        const normalizeSize = (s: string) => {
+          return (s || '')
+            .toLowerCase()
+            .replace(/inches/g, 'inch')
+            .replace(/\s+/g, ' ')
+            .trim();
+        };
+
+        const checkMatch = (s: string) => {
+          if (!s) return false;
+          const norm = normalizeSize(s);
+          if (norm === targetSize || norm.includes(targetSize)) return true;
+          if (targetNum) {
+            const numInS = parseInt(norm);
+            if (numInS && numInS === targetNum) return true;
+          }
+          return false;
+        };
+
+        const baseMatch = checkMatch(p.base_size);
+        const variantMatch = p.variants?.some((v: any) => checkMatch(v.size || v.size_name));
+
+        return baseMatch || variantMatch;
+      });
+    }
+
     if (highDemandOnly) {
       list = list.filter((p) => isProductHighDemand(p));
     }
@@ -300,7 +331,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
       });
     }
     return list;
-  }, [products, sortBy, highDemandOnly]);
+  }, [products, selectedSizeFilter, sortBy, highDemandOnly]);
 
   const handleDirectArtworkEnquiry = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();

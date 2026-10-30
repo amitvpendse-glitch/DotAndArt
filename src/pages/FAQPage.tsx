@@ -15,25 +15,33 @@ export const FAQPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
-    safeFetchJson<FAQ[]>('/api/faqs', undefined, [])
-      .then((faqData) => {
-        const list = Array.isArray(faqData) ? faqData : ((faqData as any)?.faqs || []);
-        if (Array.isArray(list) && list.length >= 10) {
-          setFaqs(list);
-        } else if (Array.isArray(list) && list.length > 0) {
-          // Merge to ensure at least 10 FAQs
-          const existingQ = new Set(list.map((f: any) => (f.question || '').toLowerCase().trim()));
-          const merged = [...list];
-          INITIAL_FAQS.forEach((initFaq) => {
-            if (!existingQ.has((initFaq.question || '').toLowerCase().trim())) {
-              merged.push(initFaq);
-            }
-          });
-          setFaqs(merged);
-        } else {
-          setFaqs(INITIAL_FAQS);
-        }
-      });
+    const loadFaqs = () => {
+      safeFetchJson<FAQ[]>('/api/faqs', undefined, [])
+        .then((faqData) => {
+          const list = Array.isArray(faqData) ? faqData : ((faqData as any)?.faqs || []);
+          if (Array.isArray(list) && list.length >= 10) {
+            setFaqs(list);
+          } else if (Array.isArray(list) && list.length > 0) {
+            // Merge to ensure at least 10 FAQs
+            const existingQ = new Set(list.map((f: any) => (f.question || '').toLowerCase().trim()));
+            const merged = [...list];
+            INITIAL_FAQS.forEach((initFaq) => {
+              if (!existingQ.has((initFaq.question || '').toLowerCase().trim())) {
+                merged.push(initFaq);
+              }
+            });
+            setFaqs(merged);
+          } else {
+            setFaqs(INITIAL_FAQS);
+          }
+        });
+    };
+
+    loadFaqs();
+    window.addEventListener('app_faqs_updated', loadFaqs);
+    return () => {
+      window.removeEventListener('app_faqs_updated', loadFaqs);
+    };
   }, []);
 
   const headerSec = cmsPage?.sections?.find(

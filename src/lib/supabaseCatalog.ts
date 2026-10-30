@@ -191,27 +191,40 @@ export async function getSupabaseTestimonials(): Promise<Testimonial[]> {
  * Save / Upsert FAQ in Supabase
  */
 export async function saveSupabaseFAQ(faq: FAQ): Promise<boolean> {
-  if (!supabase) return false;
-  try {
-    const payload = {
+  if (!supabase || !faq || !faq.id) return false;
+
+  const candidatePayloads: Record<string, any>[] = [
+    // Standard schema
+    {
       id: faq.id,
       category: faq.category || 'General',
-      question: faq.question,
-      answer: faq.answer,
+      question: faq.question || '',
+      answer: faq.answer || '',
       display_order: Number(faq.display_order) || 1,
       is_published: faq.is_published !== false,
       created_at: faq.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString(),
-    };
-    const { error } = await supabase.from('faqs').upsert(payload, { onConflict: 'id' });
-    if (error) {
-      console.warn('[Supabase] Error saving FAQ:', error.message);
-      return false;
-    }
-    return true;
-  } catch {
-    return false;
+    },
+    // Alternative active column fallback
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+      display_order: Number(faq.display_order) || 1,
+      is_active: faq.is_published !== false,
+      created_at: faq.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+  ];
+
+  for (const payload of candidatePayloads) {
+    try {
+      const { error } = await supabase.from('faqs').upsert(payload, { onConflict: 'id' });
+      if (!error) return true;
+    } catch {}
   }
+  return false;
 }
 
 /**
@@ -222,11 +235,36 @@ export async function getSupabaseFAQs(): Promise<FAQ[]> {
   try {
     const { data, error } = await supabase.from('faqs').select('*').order('display_order', { ascending: true });
     if (error || !Array.isArray(data)) return [];
-    return data as FAQ[];
+    return data.map((row: any) => ({
+      id: String(row.id),
+      question: row.question || '',
+      answer: row.answer || '',
+      category: row.category || 'General',
+      display_order: Number(row.display_order) || 1,
+      is_published: row.is_published !== undefined && row.is_published !== null
+        ? Boolean(row.is_published)
+        : (row.is_active !== undefined && row.is_active !== null ? Boolean(row.is_active) : true),
+      created_at: row.created_at || new Date().toISOString(),
+      updated_at: row.updated_at || new Date().toISOString(),
+    }));
   } catch {
     return [];
   }
 }
+
+/**
+ * Delete FAQ from Supabase
+ */
+export async function deleteSupabaseFAQ(id: string): Promise<boolean> {
+  if (!supabase || !id) return false;
+  try {
+    const { error } = await supabase.from('faqs').delete().eq('id', id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
 
 /**
  * Save Media Asset in Supabase
