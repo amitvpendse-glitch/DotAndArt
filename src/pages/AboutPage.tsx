@@ -328,43 +328,43 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 rounded-2xl bg-theme-page border border-theme-glass space-y-2">
-            <div className="w-8 h-8 rounded-full bg-[#C85A32]/10 text-[#C85A32] flex items-center justify-center">
-              <Heart className="w-4 h-4" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="p-3 sm:p-5 rounded-2xl bg-theme-page border border-theme-glass space-y-1.5 sm:space-y-2">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#C85A32]/10 text-[#C85A32] flex items-center justify-center">
+              <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <h4 className="font-serif font-bold text-sm text-theme-primary">{content.discipline.feature_1_title}</h4>
-            <p className="text-xs text-theme-muted font-light leading-relaxed">{content.discipline.feature_1_desc}</p>
+            <h4 className="font-serif font-bold text-xs sm:text-sm text-theme-primary leading-tight">{content.discipline.feature_1_title}</h4>
+            <p className="text-[11px] sm:text-xs text-theme-muted font-light leading-snug">{content.discipline.feature_1_desc}</p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-theme-page border border-theme-glass space-y-2">
-            <div className="w-8 h-8 rounded-full bg-[#C85A32]/10 text-[#C85A32] flex items-center justify-center">
-              <Heart className="w-4 h-4" />
+          <div className="p-3 sm:p-5 rounded-2xl bg-theme-page border border-theme-glass space-y-1.5 sm:space-y-2">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#C85A32]/10 text-[#C85A32] flex items-center justify-center">
+              <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <h4 className="font-serif font-bold text-sm text-theme-primary">{content.discipline.feature_2_title}</h4>
-            <p className="text-xs text-theme-muted font-light leading-relaxed">{content.discipline.feature_2_desc}</p>
+            <h4 className="font-serif font-bold text-xs sm:text-sm text-theme-primary leading-tight">{content.discipline.feature_2_title}</h4>
+            <p className="text-[11px] sm:text-xs text-theme-muted font-light leading-snug">{content.discipline.feature_2_desc}</p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-theme-page border border-theme-glass space-y-2">
-            <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
-              <CheckCircle2 className="w-4 h-4" />
+          <div className="p-3 sm:p-5 rounded-2xl bg-theme-page border border-theme-glass space-y-1.5 sm:space-y-2">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+              <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <h4 className="font-serif font-bold text-sm text-theme-primary">{content.discipline.feature_3_title}</h4>
-            <p className="text-xs text-theme-muted font-light leading-relaxed">{content.discipline.feature_3_desc}</p>
+            <h4 className="font-serif font-bold text-xs sm:text-sm text-theme-primary leading-tight">{content.discipline.feature_3_title}</h4>
+            <p className="text-[11px] sm:text-xs text-theme-muted font-light leading-snug">{content.discipline.feature_3_desc}</p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-theme-page border border-theme-glass space-y-2">
-            <div className="w-8 h-8 rounded-full bg-[#C85A32]/10 text-[#C85A32] flex items-center justify-center">
-              <ShieldCheck className="w-4 h-4" />
+          <div className="p-3 sm:p-5 rounded-2xl bg-theme-page border border-theme-glass space-y-1.5 sm:space-y-2">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#C85A32]/10 text-[#C85A32] flex items-center justify-center">
+              <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <h4 className="font-serif font-bold text-sm text-theme-primary">{content.discipline.feature_4_title}</h4>
-            <p className="text-xs text-theme-muted font-light leading-relaxed">{content.discipline.feature_4_desc}</p>
+            <h4 className="font-serif font-bold text-xs sm:text-sm text-theme-primary leading-tight">{content.discipline.feature_4_title}</h4>
+            <p className="text-[11px] sm:text-xs text-theme-muted font-light leading-snug">{content.discipline.feature_4_desc}</p>
           </div>
         </div>
       </div>
 
       {/* 4. The Creation Process Section */}
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         <div className="text-center max-w-xl mx-auto space-y-1">
           <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#C85A32] font-bold">
             {content.process.process_badge}
@@ -374,29 +374,29 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="p-6 rounded-3xl glass-card border border-theme-glass space-y-2 bg-theme-card/60">
-            <span className="font-serif text-2xl font-bold text-[#C85A32]">01</span>
-            <h4 className="font-serif font-bold text-base text-theme-primary">{content.process.step_1_title}</h4>
-            <p className="text-xs text-theme-muted font-light leading-relaxed">{content.process.step_1_desc}</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+          <div className="p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl glass-card border border-theme-glass space-y-1.5 sm:space-y-2 bg-theme-card/60">
+            <span className="font-serif text-xl sm:text-2xl font-bold text-[#C85A32]">01</span>
+            <h4 className="font-serif font-bold text-xs sm:text-base text-theme-primary leading-tight">{content.process.step_1_title}</h4>
+            <p className="text-[11px] sm:text-xs text-theme-muted font-light leading-snug">{content.process.step_1_desc}</p>
           </div>
 
-          <div className="p-6 rounded-3xl glass-card border border-theme-glass space-y-2 bg-theme-card/60">
-            <span className="font-serif text-2xl font-bold text-[#C85A32]">02</span>
-            <h4 className="font-serif font-bold text-base text-theme-primary">{content.process.step_2_title}</h4>
-            <p className="text-xs text-theme-muted font-light leading-relaxed">{content.process.step_2_desc}</p>
+          <div className="p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl glass-card border border-theme-glass space-y-1.5 sm:space-y-2 bg-theme-card/60">
+            <span className="font-serif text-xl sm:text-2xl font-bold text-[#C85A32]">02</span>
+            <h4 className="font-serif font-bold text-xs sm:text-base text-theme-primary leading-tight">{content.process.step_2_title}</h4>
+            <p className="text-[11px] sm:text-xs text-theme-muted font-light leading-snug">{content.process.step_2_desc}</p>
           </div>
 
-          <div className="p-6 rounded-3xl glass-card border border-theme-glass space-y-2 bg-theme-card/60">
-            <span className="font-serif text-2xl font-bold text-[#C85A32]">03</span>
-            <h4 className="font-serif font-bold text-base text-theme-primary">{content.process.step_3_title}</h4>
-            <p className="text-xs text-theme-muted font-light leading-relaxed">{content.process.step_3_desc}</p>
+          <div className="p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl glass-card border border-theme-glass space-y-1.5 sm:space-y-2 bg-theme-card/60">
+            <span className="font-serif text-xl sm:text-2xl font-bold text-[#C85A32]">03</span>
+            <h4 className="font-serif font-bold text-xs sm:text-base text-theme-primary leading-tight">{content.process.step_3_title}</h4>
+            <p className="text-[11px] sm:text-xs text-theme-muted font-light leading-snug">{content.process.step_3_desc}</p>
           </div>
 
-          <div className="p-6 rounded-3xl glass-card border border-theme-glass space-y-2 bg-theme-card/60">
-            <span className="font-serif text-2xl font-bold text-[#C85A32]">04</span>
-            <h4 className="font-serif font-bold text-base text-theme-primary">{content.process.step_4_title}</h4>
-            <p className="text-xs text-theme-muted font-light leading-relaxed">{content.process.step_4_desc}</p>
+          <div className="p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl glass-card border border-theme-glass space-y-1.5 sm:space-y-2 bg-theme-card/60">
+            <span className="font-serif text-xl sm:text-2xl font-bold text-[#C85A32]">04</span>
+            <h4 className="font-serif font-bold text-xs sm:text-base text-theme-primary leading-tight">{content.process.step_4_title}</h4>
+            <p className="text-[11px] sm:text-xs text-theme-muted font-light leading-snug">{content.process.step_4_desc}</p>
           </div>
         </div>
       </div>
