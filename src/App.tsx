@@ -55,10 +55,8 @@ export default function App() {
   const [shopCategoryFilter, setShopCategoryFilter] = useState<string>('all');
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
 
-  // Admin Auth State
-  const [adminToken, setAdminToken] = useState<string | null>(() => {
-    return localStorage.getItem('dot_admin_token') || null;
-  });
+  // Admin Auth State (Always requires password entry when site is opened or refreshed)
+  const [adminToken, setAdminToken] = useState<string | null>(null);
   const [adminUsername, setAdminUsername] = useState<string>('admin');
   const [adminTab, setAdminTab] = useState<string>('dashboard');
   const [productFilterMissingImages, setProductFilterMissingImages] = useState<boolean>(false);
@@ -161,7 +159,7 @@ export default function App() {
     };
     window.addEventListener('app_sync_refresh', handleSyncRefresh);
 
-    // Periodic cross-browser background sync interval (polls central server if Firestore is quota-limited)
+    // Periodic cross-browser background sync interval
     const syncInterval = setInterval(() => {
       window.dispatchEvent(new CustomEvent('app_products_updated'));
     }, 20000);
@@ -173,42 +171,72 @@ export default function App() {
     };
   }, []);
 
-  // Check admin session on mount
-  useEffect(() => {
-    if (adminToken) {
-      safeFetchJson<{ authenticated: boolean; username?: string }>(
-        '/api/admin/check',
-        { headers: { Authorization: `Bearer ${adminToken}` } },
-        { authenticated: false }
-      ).then((data) => {
-        if (!data || !data.authenticated) {
-          setAdminToken(null);
-          localStorage.removeItem('dot_admin_token');
-        } else {
-          setAdminUsername(data.username || 'admin');
-        }
-      });
+  const handleAdminLogout = async () => {
+    try {
+      if (adminToken) {
+        await fetch('/api/admin/logout', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${adminToken}` },
+        });
+      }
+    } catch {
+      // ignore
     }
-  }, [adminToken]);
+    setAdminToken(null);
+    sessionStorage.removeItem('dot_admin_token');
+    localStorage.removeItem('dot_admin_token');
+  };
 
   const handleAdminLoginSuccess = (token: string, username: string) => {
     setAdminToken(token);
     setAdminUsername(username);
   };
 
-  const handleAdminLogout = async () => {
-    try {
-      await fetch('/api/admin/logout', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${adminToken}` },
-      });
-    } catch {
-      // ignore
-    }
-    setAdminToken(null);
-    localStorage.removeItem('dot_admin_token');
-    navigate('/');
-  };
+  // Idle Inactivity Timeout (10 minutes) & Disaster Recovery Auto-Logout
+  useEffect(() => {
+    if (!adminToken) return;
+
+    let lastActivityTime = Date.now();
+    const IDLE_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes idle limit
+
+    const updateActivity = () => {
+      lastActivityTime = Date.now();
+    };
+
+    const userActivityEvents = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
+    userActivityEvents.forEach((evt) => window.addEventListener(evt, updateActivity, { passive: true }));
+
+    // Check for idle period every 5 seconds
+    const idleCheckInterval = setInterval(() => {
+      if (Date.now() - lastActivityTime > IDLE_TIMEOUT_MS) {
+        console.warn('Admin session expired due to 10 minutes of inactivity.');
+        handleAdminLogout();
+      }
+    }, 5000);
+
+    // Disaster Recovery Auto-Logout triggers
+    const handleDisasterError = () => {
+      console.error('Disaster recovery event detected. Automatically logging out admin.');
+      handleAdminLogout();
+    };
+
+    const handleOffline = () => {
+      console.warn('Network offline disaster event detected. Automatically logging out admin.');
+      handleAdminLogout();
+    };
+
+    window.addEventListener('error', handleDisasterError);
+    window.addEventListener('unhandledrejection', handleDisasterError);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      userActivityEvents.forEach((evt) => window.removeEventListener(evt, updateActivity));
+      clearInterval(idleCheckInterval);
+      window.removeEventListener('error', handleDisasterError);
+      window.removeEventListener('unhandledrejection', handleDisasterError);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [adminToken]);
 
   const handleSelectProduct = (sku: string) => {
     setSelectedSku(sku);

@@ -75,7 +75,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
       );
 
       if (data && data.token && data.success !== false) {
-        localStorage.setItem('dot_admin_token', data.token);
+        sessionStorage.setItem('dot_admin_token', data.token);
         onLoginSuccess(data.token, data.username || 'admin');
         return;
       }
