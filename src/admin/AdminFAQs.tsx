@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, HelpCircle } from 'lucide-react';
-import { FloatingSaveButton } from './FloatingSaveButton';
 import { FAQ } from '../types';
 import { getFirestoreFAQs, saveFirestoreFAQ, deleteFirestoreFAQ } from '../lib/firestoreCatalog';
 
@@ -18,6 +17,17 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
   const [answer, setAnswer] = useState('');
   const [category, setCategory] = useState('Ordering');
   const [isPublished, setIsPublished] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const isDirty = editing
+    ? question !== editing.question ||
+      answer !== editing.answer ||
+      category !== editing.category ||
+      isPublished !== editing.is_published
+    : question.trim().length > 0 || answer.trim().length > 0;
+
+  const isValid = question.trim().length > 0 && answer.trim().length > 0;
+  const canSave = isValid && (editing ? isDirty : true);
 
   const fetchFaqs = async () => {
     setLoading(true);
@@ -56,14 +66,16 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValid) return;
+    setIsSaving(true);
     try {
       const targetId = editing?.id || `faq-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
       const faq: FAQ = {
         ...editing,
         id: targetId,
-        question,
-        answer,
-        category,
+        question: question.trim(),
+        answer: answer.trim(),
+        category: category.trim() || 'Ordering',
         is_published: isPublished,
         display_order: editing?.display_order || 0,
         created_at: editing?.created_at || new Date().toISOString(),
@@ -100,6 +112,8 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
       fetchFaqs();
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -271,8 +285,30 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
                 </label>
               </div>
 
-              </form>
-            <FloatingSaveButton onSave={() => handleSave({ preventDefault: () => {} } as React.FormEvent)} />
+              <div className="pt-4 flex justify-end gap-3 border-t border-theme-glass">
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="px-4 py-2 rounded-xl glass-button text-theme-primary cursor-pointer hover:bg-theme-accent/10 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!canSave || isSaving}
+                  className="px-5 py-2 rounded-xl bg-theme-accent hover:opacity-90 disabled:opacity-50 text-white font-semibold cursor-pointer transition-all flex items-center gap-2"
+                >
+                  {isSaving ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <span>Save FAQ Entry</span>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

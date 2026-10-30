@@ -42,7 +42,7 @@ export const FloatingSaveButton: React.FC<FloatingSaveButtonProps> = ({
           ? 'bg-[#C85A32] text-white cursor-wait opacity-100 shadow-xl'
           : justSaved
           ? 'bg-emerald-900/90 text-emerald-200 border border-emerald-600/60 cursor-default opacity-90 shadow-md'
-          : !isDirty || isButtonDisabled
+          : isButtonDisabled
           ? 'bg-stone-800/90 text-stone-400 border border-stone-700/60 cursor-not-allowed opacity-75 shadow-none'
           : 'bg-[#C85A32] hover:bg-[#A03E1B] text-white cursor-pointer shadow-2xl transform hover:-translate-y-1 hover:scale-105 active:scale-95 ring-2 ring-orange-500/30'
       }`}
