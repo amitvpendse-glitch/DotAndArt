@@ -194,7 +194,6 @@ export async function saveSupabaseFAQ(faq: FAQ): Promise<boolean> {
   if (!supabase || !faq || !faq.id) return false;
 
   const candidatePayloads: Record<string, any>[] = [
-    // Standard schema
     {
       id: faq.id,
       category: faq.category || 'General',
@@ -205,7 +204,6 @@ export async function saveSupabaseFAQ(faq: FAQ): Promise<boolean> {
       created_at: faq.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString(),
     },
-    // Alternative active column fallback
     {
       id: faq.id,
       category: faq.category || 'General',
@@ -215,6 +213,47 @@ export async function saveSupabaseFAQ(faq: FAQ): Promise<boolean> {
       is_active: faq.is_published !== false,
       created_at: faq.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString(),
+    },
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+      display_order: Number(faq.display_order) || 1,
+      is_published: faq.is_published !== false,
+    },
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+      display_order: Number(faq.display_order) || 1,
+      is_active: faq.is_published !== false,
+    },
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+      is_published: faq.is_published !== false,
+    },
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+      is_active: faq.is_published !== false,
+    },
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+    },
+    {
+      id: faq.id,
+      question: faq.question || '',
+      answer: faq.answer || '',
     },
   ];
 

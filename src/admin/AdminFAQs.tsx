@@ -85,27 +85,22 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
       const isEdit = Boolean(editing);
       const url = isEdit ? `/api/admin/faqs/${targetId}` : '/api/admin/faqs';
 
-      const res = await fetch(url, {
-        method: isEdit ? 'PUT' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(faq),
-      }).catch(async () => {
-        return await fetch(url, {
-          method: 'POST',
+      // Attempt server API call silently (fails with 405 on static hosting environments like dotandart.in)
+      try {
+        await fetch(url, {
+          method: isEdit ? 'PUT' : 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(faq),
-        }).catch(() => null);
-      });
-
-      if (!res || !res.ok) {
-        await saveFirestoreFAQ(faq).catch(() => {});
+        });
+      } catch (e) {
+        // Ignored API proxy error on static web host
       }
+
+      // Direct client save to Supabase DB & local storage cache
+      await saveFirestoreFAQ(faq).catch((e) => console.warn('[AdminFAQs] Direct save warning:', e));
 
       window.dispatchEvent(new Event('app_faqs_updated'));
       setModalOpen(false);
@@ -120,20 +115,15 @@ export const AdminFAQs: React.FC<AdminFAQsProps> = ({ token }) => {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this FAQ entry?')) return;
     try {
-      const res = await fetch(`/api/admin/faqs/${id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).catch(() => null);
-
-      if (!res || !res.ok) {
-        await fetch(`/api/admin/faqs/${id}/delete`, {
-          method: 'POST',
+      try {
+        await fetch(`/api/admin/faqs/${id}`, {
+          method: 'DELETE',
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }).catch(() => {});
+        });
+      } catch (e) {
+        // Ignored API proxy error on static web host
       }
 
       await deleteFirestoreFAQ(id).catch(() => {});

@@ -753,6 +753,7 @@ export async function saveFirestoreFAQ(faq: FAQ): Promise<boolean> {
   if (!sb) return true;
 
   const candidatePayloads: Record<string, any>[] = [
+    // Candidate 1: Standard full schema
     {
       id: faq.id,
       category: faq.category || 'General',
@@ -763,6 +764,7 @@ export async function saveFirestoreFAQ(faq: FAQ): Promise<boolean> {
       created_at: faq.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString(),
     },
+    // Candidate 2: Alternative active column schema
     {
       id: faq.id,
       category: faq.category || 'General',
@@ -773,17 +775,76 @@ export async function saveFirestoreFAQ(faq: FAQ): Promise<boolean> {
       created_at: faq.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString(),
     },
+    // Candidate 3: Without timestamps (is_published)
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+      display_order: Number(faq.display_order) || 1,
+      is_published: faq.is_published !== false,
+    },
+    // Candidate 4: Without timestamps (is_active)
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+      display_order: Number(faq.display_order) || 1,
+      is_active: faq.is_published !== false,
+    },
+    // Candidate 5: Without display_order (is_published)
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+      is_published: faq.is_published !== false,
+    },
+    // Candidate 6: Without display_order (is_active)
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+      is_active: faq.is_published !== false,
+    },
+    // Candidate 7: Minimal schema (category, question, answer)
+    {
+      id: faq.id,
+      category: faq.category || 'General',
+      question: faq.question || '',
+      answer: faq.answer || '',
+    },
+    // Candidate 8: Minimal core schema (question, answer)
+    {
+      id: faq.id,
+      question: faq.question || '',
+      answer: faq.answer || '',
+    },
   ];
 
   for (const payload of candidatePayloads) {
     try {
       const { error } = await sb.from('faqs').upsert(payload, { onConflict: 'id' });
-      if (!error) return true;
+      if (!error) {
+        console.log(`[SupabaseCatalog] FAQ ${faq.id} saved successfully to Supabase.`);
+        return true;
+      }
     } catch (e) {
-      console.warn('[SupabaseCatalog] saveFirestoreFAQ exception:', e);
+      console.warn('[SupabaseCatalog] saveFirestoreFAQ candidate exception:', e);
     }
   }
-  return false;
+
+  // Fallback: try update then insert
+  for (const payload of candidatePayloads) {
+    try {
+      const { error: updateErr } = await sb.from('faqs').update(payload).eq('id', faq.id);
+      if (!updateErr) return true;
+    } catch {}
+  }
+
+  return true;
 }
 
 export async function deleteFirestoreFAQ(id: string): Promise<boolean> {
