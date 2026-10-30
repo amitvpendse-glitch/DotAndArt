@@ -42,7 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
   }, []);
 
   // Mobile accordion states
-  const [mobileArtExpanded, setMobileArtExpanded] = useState(true);
+  const [mobileArtExpanded, setMobileArtExpanded] = useState(false);
   const [mobileAboutExpanded, setMobileAboutExpanded] = useState(false);
 
   const artDropdownRef = useRef<HTMLDivElement>(null);
@@ -111,25 +111,25 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
         <div className="flex items-center justify-between py-2.5 sm:py-3 min-h-[4.75rem] md:min-h-[5.25rem]">
           
           {/* Left: Brand Identity (Logo + Name) */}
-          <div className="flex items-center gap-4 lg:gap-8">
+          <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-8 min-w-0 flex-1 mr-2">
             {/* Mobile Hamburger Button */}
-            <div className="flex items-center gap-3 md:hidden">
+            <div className="flex items-center md:hidden shrink-0">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-xl text-theme-primary hover:bg-theme-glass transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl text-theme-primary hover:bg-theme-glass transition-colors cursor-pointer"
                 aria-label="Toggle mobile menu"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
               </button>
             </div>
 
             {/* Brand Logo & Wordmark */}
             <div
               onClick={() => handleLinkClick('/')}
-              className="flex items-center gap-3 cursor-pointer group select-none shrink-0"
+              className="flex items-center gap-2 sm:gap-3 cursor-pointer group select-none min-w-0 flex-1"
               title="Dot And Art — Handcrafted Artwork Studio"
             >
-              <div className="relative shrink-0 w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 rounded-full overflow-hidden filter drop-shadow-md ring-2 ring-[#C85A32]/25 transition-transform duration-300 group-hover:scale-105">
+              <div className="relative shrink-0 w-9 h-9 sm:w-11 sm:h-11 md:w-14 md:h-14 rounded-full overflow-hidden filter drop-shadow-md ring-2 ring-[#C85A32]/25 transition-transform duration-300 group-hover:scale-105">
                 <img
                   src="/static/assets/images/DotAndArt_Logo.jpeg"
                   alt="Dot And Art Logo"
@@ -137,12 +137,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
                   onError={(e) => { e.currentTarget.src = '/logo.png'; }}
                 />
               </div>
-              <div className="flex flex-col">
-                <span className="font-serif tracking-widest text-base sm:text-lg md:text-xl font-bold text-theme-primary leading-tight group-hover:text-theme-accent transition-colors">
+              <div className="flex flex-col min-w-0">
+                <span className="font-serif tracking-widest text-xs sm:text-base md:text-xl font-bold text-theme-primary leading-tight group-hover:text-theme-accent transition-colors truncate">
                   DOT AND ART
                 </span>
-                <span className="text-[9px] sm:text-[10px] tracking-[0.2em] uppercase font-sans text-theme-accent font-semibold">
-                  Handcrafted Mandalas & Lippan
+                <span className="text-[8px] sm:text-[10px] tracking-[0.1em] sm:tracking-[0.2em] uppercase font-sans text-theme-accent font-semibold truncate max-w-[110px] min-[360px]:max-w-[150px] sm:max-w-none">
+                  Handcrafted Mandalas
                 </span>
               </div>
             </div>
@@ -290,16 +290,16 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
             </nav>
           </div>
 
-          {/* Right Actions: Enquire Button (from reference), Theme, Admin, Cart */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Right Actions: Enquire WhatsApp, Theme, Admin, Cart */}
+          <div className="flex items-center gap-1 sm:gap-2.5 shrink-0 ml-auto">
             {/* Standard WhatsApp Enquire Icon Button */}
             <button
               onClick={handleEnquireClick}
-              className="p-2 sm:p-2.5 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-md hover:shadow-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+              className="p-1.5 sm:p-2.5 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-md hover:shadow-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
               title="Enquire on WhatsApp"
               aria-label="Enquire on WhatsApp"
             >
-              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24">
                 <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.964 9.964 0 001.333 4.993L2 22l5.233-1.237a9.982 9.982 0 004.779 1.221h.004c5.505 0 9.988-4.478 9.989-9.985 0-2.668-1.037-5.176-2.922-7.062A9.92 9.92 0 0012.012 2zm5.835 14.168c-.246.691-1.224 1.263-1.688 1.343-.464.08-1.07.136-3.088-.698-2.578-1.066-4.237-3.682-4.366-3.854-.129-.172-1.045-1.391-1.045-2.654 0-1.263.662-1.884.898-2.141.236-.257.514-.321.685-.321.172 0 .343.003.493.01.16.007.375-.06.586.446.214.514.729 1.778.793 1.907.064.129.107.279.021.45-.086.171-.129.278-.257.428-.129.15-.271.335-.386.45-.128.129-.262.269-.113.526.15.257.662 1.092 1.42 1.767.976.87 1.798 1.14 2.055 1.269.257.129.407.107.557-.064.15-.171.643-.75.814-1.007.171-.257.343-.214.578-.129.236.086 1.499.707 1.756.836.257.129.428.193.492.3.064.107.064.622-.182 1.313z" />
               </svg>
             </button>
@@ -307,37 +307,39 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
             {/* Theme Selector Button */}
             <button
               onClick={openThemeModal}
-              className="p-2 sm:px-3 sm:py-1.5 rounded-full glass-button text-xs font-semibold text-theme-primary transition-all cursor-pointer border border-theme-glass hover:bg-theme-glass"
+              className="p-1.5 sm:px-3 sm:py-1.5 rounded-full glass-button text-xs font-semibold text-theme-primary transition-all cursor-pointer border border-theme-glass hover:bg-theme-glass flex items-center justify-center shrink-0"
               title="Change Website Theme Style"
+              aria-label="Change Theme"
             >
               <Palette className="w-4 h-4 text-theme-accent" />
               <span className="hidden xl:inline ml-1.5 text-[11px]">Theme</span>
             </button>
 
-            {/* Admin CMS Pill */}
+            {/* Admin CMS Button (Visible on top navbar across mobile & desktop) */}
             <button
               onClick={() => handleLinkClick('/admin')}
-              className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-xs transition-all cursor-pointer border ${
+              className={`p-1.5 sm:px-3 sm:py-1.5 rounded-full text-xs font-semibold shadow-xs transition-all cursor-pointer border shrink-0 flex items-center justify-center ${
                 currentPath === '/admin'
                   ? 'bg-theme-accent text-white border-theme-glass'
-                  : 'bg-theme-dark/10 hover:bg-theme-dark/20 text-theme-primary border-theme-glass'
+                  : 'glass-button text-theme-primary border-theme-glass hover:bg-theme-glass'
               }`}
               title="Open Admin CMS Console"
+              aria-label="Admin CMS Console"
             >
-              <ShieldCheck className="w-3.5 h-3.5 text-theme-accent" />
-              <span className="hidden xl:inline text-[11px]">Admin</span>
+              <ShieldCheck className="w-4 h-4 text-theme-accent" />
+              <span className="hidden xl:inline ml-1.5 text-[11px]">Admin</span>
             </button>
 
             {/* Shopping Bag Icon with Badge */}
             <button
               onClick={openDrawer}
-              className="relative p-2.5 rounded-full glass-button text-theme-primary cursor-pointer border border-theme-glass hover:bg-theme-glass transition-colors"
+              className="relative p-1.5 sm:p-2.5 rounded-full glass-button text-theme-primary cursor-pointer border border-theme-glass hover:bg-theme-glass transition-colors shrink-0"
               title="View Cart"
               aria-label="View Cart"
             >
-              <ShoppingBag className="w-5 h-5 text-theme-primary" />
+              <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-theme-primary" />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#C85A32] text-white text-[10px] font-bold flex items-center justify-center shadow-md animate-scale-in">
+                <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#C85A32] text-white text-[9px] sm:text-[10px] font-bold flex items-center justify-center shadow-md animate-scale-in">
                   {totalItems}
                 </span>
               )}
@@ -470,31 +472,11 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
             <div className="pt-3 border-t border-theme-glass flex flex-col gap-2">
               <button
                 onClick={handleEnquireClick}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#C85A32] text-white font-semibold text-xs shadow-md cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold text-xs shadow-md cursor-pointer transition-colors"
               >
                 <MessageCircle className="w-4 h-4 fill-white" />
-                <span>Enquire on WhatsApp ({DISPLAY_WHATSAPP_NUMBER})</span>
+                <span>Enquire</span>
               </button>
-
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    openThemeModal();
-                  }}
-                  className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-theme-glass text-theme-primary text-xs font-medium hover:bg-theme-glass"
-                >
-                  <Palette className="w-3.5 h-3.5 text-theme-accent" />
-                  <span>Theme Style</span>
-                </button>
-                <button
-                  onClick={() => handleLinkClick('/admin')}
-                  className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-theme-glass text-theme-primary text-xs font-medium hover:bg-theme-glass"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5 text-theme-accent" />
-                  <span>Admin CMS</span>
-                </button>
-              </div>
             </div>
           </div>
         </div>
