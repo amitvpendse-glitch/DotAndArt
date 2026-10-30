@@ -216,15 +216,29 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
               <p className="text-xs text-theme-primary leading-relaxed italic">"{t.content}"</p>
             </div>
 
-            <div className="pt-3 border-t border-theme-glass flex items-center justify-between">
-              <div>
-                <h4 className="font-serif font-semibold text-sm text-theme-primary">{t.customer_name}</h4>
-                <p className="text-[10px] text-theme-muted">
-                  {t.location} {t.artwork_purchased ? `• ${t.artwork_purchased}` : ''}
-                </p>
+            <div className="pt-3 border-t border-theme-glass flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                {(t.image_path || (t as any).avatar_url) ? (
+                  <img
+                    src={t.image_path || (t as any).avatar_url}
+                    alt={t.customer_name}
+                    className="w-9 h-9 rounded-full object-cover border border-theme-accent/40 shrink-0 shadow-xs"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
+                ) : (
+                  <div className="w-9 h-9 rounded-full bg-theme-accent/15 text-theme-accent flex items-center justify-center font-serif font-bold text-xs shrink-0 border border-theme-glass">
+                    {t.customer_name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-serif font-semibold text-sm text-theme-primary truncate">{t.customer_name}</h4>
+                  <p className="text-[10px] text-theme-muted truncate">
+                    {t.location} {t.artwork_purchased ? `• ${t.artwork_purchased}` : ''}
+                  </p>
+                </div>
               </div>
 
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 shrink-0">
                 <button
                   onClick={() => handleOpenEdit(t)}
                   className="p-1.5 rounded text-theme-primary hover:bg-theme-accent/15 cursor-pointer"

@@ -13,13 +13,16 @@ import {
   Sparkles,
   Quote,
   SlidersHorizontal,
+  Upload,
+  ImageIcon,
 } from 'lucide-react';
 import { Testimonial } from '../types';
 import { createWhatsAppUrl, getDisplayWhatsAppNumber, openExternalLink } from '../utils/whatsapp';
 import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 import { INITIAL_TESTIMONIALS } from '../data/initialCatalog';
-import { getFirestoreTestimonials, saveFirestoreTestimonial, deleteFirestoreTestimonial } from '../lib/firestoreCatalog';
+import { getFirestoreTestimonials, saveFirestoreTestimonial, deleteFirestoreTestimonial, uploadImageToSupabaseStorage } from '../lib/firestoreCatalog';
+import { compressImageFile } from '../utils/imageCompressor';
 
 interface TestimonialsPageProps {
   onNavigate?: (path: string) => void;
@@ -86,6 +89,8 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
   const [publicContent, setPublicContent] = useState<string>('');
   const [publicLocation, setPublicLocation] = useState<string>('');
   const [publicArtwork, setPublicArtwork] = useState<string>('');
+  const [publicImagePath, setPublicImagePath] = useState<string>('');
+  const [uploadingPublicPhoto, setUploadingPublicPhoto] = useState<boolean>(false);
   const [submittingPublic, setSubmittingPublic] = useState<boolean>(false);
   const [publicSubmitSuccess, setPublicSubmitSuccess] = useState<string | null>(null);
   const [publicSubmitError, setPublicSubmitError] = useState<string | null>(null);
@@ -97,9 +102,43 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
   const [adminRating, setAdminRating] = useState<number>(5);
   const [adminLocation, setAdminLocation] = useState<string>('');
   const [adminArtwork, setAdminArtwork] = useState<string>('');
+  const [adminImagePath, setAdminImagePath] = useState<string>('');
+  const [uploadingAdminPhoto, setUploadingAdminPhoto] = useState<boolean>(false);
   const [adminIsPublished, setAdminIsPublished] = useState<boolean>(true);
   const [adminSaving, setAdminSaving] = useState<boolean>(false);
   const [adminError, setAdminError] = useState<string | null>(null);
+
+  const handleUploadPublicPhoto = async (file: File) => {
+    if (!file) return;
+    setUploadingPublicPhoto(true);
+    try {
+      const compressed = await compressImageFile(file, 800, 800, 0.85);
+      const res = await uploadImageToSupabaseStorage(compressed, 'collector-review', file.name);
+      if (res.success && res.public_url) {
+        setPublicImagePath(res.public_url);
+      }
+    } catch (err) {
+      console.warn('Upload error', err);
+    } finally {
+      setUploadingPublicPhoto(false);
+    }
+  };
+
+  const handleUploadAdminPhoto = async (file: File) => {
+    if (!file) return;
+    setUploadingAdminPhoto(true);
+    try {
+      const compressed = await compressImageFile(file, 800, 800, 0.85);
+      const res = await uploadImageToSupabaseStorage(compressed, 'collector-review', file.name);
+      if (res.success && res.public_url) {
+        setAdminImagePath(res.public_url);
+      }
+    } catch (err) {
+      console.warn('Upload error', err);
+    } finally {
+      setUploadingAdminPhoto(false);
+    }
+  };
 
   // Check admin token on mount
   useEffect(() => {
@@ -168,6 +207,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
         rating: publicRating,
         location: publicLocation.trim(),
         artwork_purchased: publicArtwork.trim(),
+        image_path: publicImagePath,
         is_published: true,
         display_order: 0,
         created_at: new Date().toISOString(),
@@ -186,6 +226,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
             rating: publicRating,
             location: publicLocation.trim(),
             artwork_purchased: publicArtwork.trim(),
+            image_path: publicImagePath,
           }),
         },
         null
@@ -205,6 +246,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
       setPublicContent('');
       setPublicLocation('');
       setPublicArtwork('');
+      setPublicImagePath('');
       setPublicRating(5);
 
       setTimeout(() => {
@@ -226,6 +268,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
     setAdminRating(t.rating || 5);
     setAdminLocation(t.location || '');
     setAdminArtwork(t.artwork_purchased || '');
+    setAdminImagePath(t.image_path || (t as any).avatar_url || '');
     setAdminIsPublished(t.is_published ?? true);
     setAdminError(null);
     setIsAdminEditModalOpen(true);
@@ -239,6 +282,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
     setAdminRating(5);
     setAdminLocation('');
     setAdminArtwork('');
+    setAdminImagePath('');
     setAdminIsPublished(true);
     setAdminError(null);
     setIsAdminAddModalOpen(true);
@@ -272,6 +316,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
       rating: adminRating,
       location: adminLocation.trim(),
       artwork_purchased: adminArtwork.trim(),
+      image_path: adminImagePath,
       is_published: adminIsPublished,
       display_order: editingItem?.display_order || 0,
       created_at: editingItem?.created_at || new Date().toISOString(),
@@ -504,15 +549,30 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
               </div>
 
               {/* Author & Artwork Details */}
-              <div className="pt-2 sm:pt-4 border-t border-theme-glass flex items-center justify-between gap-1.5">
-                <div className="min-w-0 flex-1">
-                  <h4 className="font-serif font-bold text-xs sm:text-base text-theme-primary truncate">
-                    {t.customer_name}
-                  </h4>
-                  <p className="text-[9px] sm:text-[11px] text-theme-muted truncate">
-                    {t.location || 'Art Collector'}
-                    {t.artwork_purchased ? ` • ${t.artwork_purchased}` : ''}
-                  </p>
+              <div className="pt-2 sm:pt-4 border-t border-theme-glass flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  {(t.image_path || (t as any).avatar_url) ? (
+                    <img
+                      src={t.image_path || (t as any).avatar_url}
+                      alt={t.customer_name}
+                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-theme-accent/40 shrink-0 shadow-xs"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  ) : (
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-theme-accent/15 text-theme-accent flex items-center justify-center font-serif font-bold text-xs sm:text-sm shrink-0 border border-theme-accent/30">
+                      {t.customer_name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-serif font-bold text-xs sm:text-base text-theme-primary truncate">
+                      {t.customer_name}
+                    </h4>
+                    <p className="text-[9px] sm:text-[11px] text-theme-muted truncate">
+                      {t.location || 'Art Collector'}
+                      {t.artwork_purchased ? ` • ${t.artwork_purchased}` : ''}
+                    </p>
+                  </div>
                 </div>
 
                 <div
@@ -693,6 +753,46 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
                   />
                 </div>
 
+                {/* Photo Upload (Optional) */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-theme-primary mb-1">
+                    Photo of Collector or Artwork <span className="text-theme-muted text-[10px] font-normal">(optional)</span>
+                  </label>
+                  <div className="flex items-center gap-3">
+                    {publicImagePath ? (
+                      <img src={publicImagePath} alt="Photo Preview" className="w-12 h-12 rounded-xl object-cover border border-theme-glass shrink-0 shadow-xs" />
+                    ) : (
+                      <div className="w-12 h-12 rounded-xl bg-theme-card border border-theme-glass flex items-center justify-center shrink-0">
+                        <ImageIcon className="w-5 h-5 text-theme-muted" />
+                      </div>
+                    )}
+                    <label className="px-3.5 py-2 rounded-xl bg-theme-accent/15 text-theme-accent hover:bg-theme-accent hover:text-white font-semibold text-xs flex items-center gap-1.5 cursor-pointer shrink-0 transition-all">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{uploadingPublicPhoto ? 'Uploading...' : 'Upload Photo'}</span>
+                      <input
+                        type="file"
+                        accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
+                        className="hidden"
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            handleUploadPublicPhoto(e.target.files[0]);
+                          }
+                          e.target.value = '';
+                        }}
+                      />
+                    </label>
+                    {publicImagePath && (
+                      <button
+                        type="button"
+                        onClick={() => setPublicImagePath('')}
+                        className="text-xs text-red-500 hover:underline"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 <div className="pt-2 flex items-center justify-end gap-3">
                   <button
                     type="button"
@@ -839,6 +939,44 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
                 />
               </div>
 
+              {/* Photo Upload (Optional) */}
+              <div>
+                <label className="block text-xs font-bold uppercase text-theme-primary mb-1">
+                  Collector / Artwork Photo (Optional)
+                </label>
+                <div className="flex items-center gap-3">
+                  {adminImagePath ? (
+                    <img src={adminImagePath} alt="Photo Preview" className="w-12 h-12 rounded-xl object-cover border border-theme-glass shrink-0 shadow-xs" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-xl bg-theme-card border border-theme-glass flex items-center justify-center shrink-0">
+                      <ImageIcon className="w-5 h-5 text-theme-muted" />
+                    </div>
+                  )}
+                  <input
+                    type="text"
+                    value={adminImagePath}
+                    onChange={(e) => setAdminImagePath(e.target.value)}
+                    placeholder="https://... or upload photo"
+                    className="flex-1 px-3 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary text-xs focus:outline-none focus:border-theme-accent"
+                  />
+                  <label className="px-3.5 py-2 rounded-xl bg-theme-accent/15 text-theme-accent hover:bg-theme-accent hover:text-white font-semibold text-xs flex items-center gap-1.5 cursor-pointer shrink-0 transition-all">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{uploadingAdminPhoto ? '...' : 'Upload'}</span>
+                    <input
+                      type="file"
+                      accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                          handleUploadAdminPhoto(e.target.files[0]);
+                        }
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
+
               {/* Published toggle */}
               <div className="flex items-center gap-2 pt-1">
                 <input
@@ -939,21 +1077,45 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
               </p>
             </div>
 
+            {/* Collector / Artwork Image if available */}
+            {(viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url) && (
+              <div className="rounded-2xl overflow-hidden border border-theme-glass max-h-64 bg-black/20 flex items-center justify-center">
+                <img
+                  src={viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url}
+                  alt={viewedTestimonial.customer_name}
+                  className="w-full h-full object-cover max-h-64 rounded-2xl"
+                />
+              </div>
+            )}
+
             {/* Author & Artwork Information */}
-            <div className="pt-4 border-t border-theme-glass space-y-1.5">
-              <h3 className="font-serif font-bold text-base sm:text-lg text-theme-primary">
-                {viewedTestimonial.customer_name}
-              </h3>
-              {viewedTestimonial.location && (
-                <p className="text-xs text-theme-muted">
-                  Location: <span className="text-theme-primary font-medium">{viewedTestimonial.location}</span>
-                </p>
+            <div className="pt-4 border-t border-theme-glass flex items-center gap-3">
+              {(viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url) ? (
+                <img
+                  src={viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url}
+                  alt={viewedTestimonial.customer_name}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-theme-accent shrink-0 shadow-sm"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center font-serif font-bold text-base shrink-0 border border-theme-accent/30">
+                  {viewedTestimonial.customer_name.charAt(0).toUpperCase()}
+                </div>
               )}
-              {viewedTestimonial.artwork_purchased && (
-                <p className="text-xs text-theme-accent font-medium">
-                  Artwork: {viewedTestimonial.artwork_purchased}
-                </p>
-              )}
+              <div className="space-y-0.5">
+                <h3 className="font-serif font-bold text-base sm:text-lg text-theme-primary">
+                  {viewedTestimonial.customer_name}
+                </h3>
+                {viewedTestimonial.location && (
+                  <p className="text-xs text-theme-muted">
+                    Location: <span className="text-theme-primary font-medium">{viewedTestimonial.location}</span>
+                  </p>
+                )}
+                {viewedTestimonial.artwork_purchased && (
+                  <p className="text-xs text-theme-accent font-medium">
+                    Artwork: {viewedTestimonial.artwork_purchased}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Action Buttons */}
