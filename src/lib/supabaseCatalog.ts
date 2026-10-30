@@ -105,30 +105,55 @@ export async function getSupabaseSettings(): Promise<WebsiteSettings | null> {
  * Save / Upsert Testimonial in Supabase
  */
 export async function saveSupabaseTestimonial(testimonial: Testimonial): Promise<boolean> {
-  if (!supabase) return false;
-  try {
-    const payload = {
+  if (!supabase || !testimonial || !testimonial.id) return false;
+
+  const candidatePayloads: Record<string, any>[] = [
+    {
       id: testimonial.id,
+      customer_name: testimonial.customer_name || 'Collector',
       author_name: testimonial.customer_name || 'Collector',
-      author_location: testimonial.location || '',
+      content: testimonial.content || '',
       rating: Number(testimonial.rating) || 5,
-      content: testimonial.content,
+      location: testimonial.location || '',
+      author_location: testimonial.location || '',
       artwork_purchased: testimonial.artwork_purchased || '',
       avatar_url: testimonial.image_path || '',
+      image_path: testimonial.image_path || '',
       is_published: testimonial.is_published !== false,
-      display_order: testimonial.display_order || 1,
-      created_at: testimonial.created_at || new Date().toISOString(),
+      is_active: testimonial.is_published !== false,
       updated_at: new Date().toISOString(),
-    };
-    const { error } = await supabase.from('testimonials').upsert(payload, { onConflict: 'id' });
-    if (error) {
-      console.warn('[Supabase] Error saving testimonial:', error.message);
-      return false;
-    }
-    return true;
-  } catch {
-    return false;
+    },
+    {
+      id: testimonial.id,
+      customer_name: testimonial.customer_name || 'Collector',
+      content: testimonial.content || '',
+      rating: Number(testimonial.rating) || 5,
+      location: testimonial.location || '',
+      artwork_purchased: testimonial.artwork_purchased || '',
+      image_path: testimonial.image_path || '',
+      is_published: testimonial.is_published !== false,
+      updated_at: new Date().toISOString(),
+    },
+    {
+      id: testimonial.id,
+      author_name: testimonial.customer_name || 'Collector',
+      content: testimonial.content || '',
+      rating: Number(testimonial.rating) || 5,
+      author_location: testimonial.location || '',
+      artwork_purchased: testimonial.artwork_purchased || '',
+      avatar_url: testimonial.image_path || '',
+      is_active: testimonial.is_published !== false,
+      updated_at: new Date().toISOString(),
+    },
+  ];
+
+  for (const payload of candidatePayloads) {
+    try {
+      const { error } = await supabase.from('testimonials').upsert(payload, { onConflict: 'id' });
+      if (!error) return true;
+    } catch {}
   }
+  return false;
 }
 
 /**
@@ -139,7 +164,21 @@ export async function getSupabaseTestimonials(): Promise<Testimonial[]> {
   try {
     const { data, error } = await supabase.from('testimonials').select('*').order('created_at', { ascending: false });
     if (error || !Array.isArray(data)) return [];
-    return data as Testimonial[];
+    return data.map((row: any) => ({
+      id: String(row.id),
+      customer_name: row.customer_name || row.author_name || 'Collector',
+      content: row.content || '',
+      rating: Number(row.rating) || 5,
+      location: row.location || row.author_location || '',
+      artwork_purchased: row.artwork_purchased || '',
+      image_path: row.image_path || row.avatar_url || '',
+      display_order: Number(row.display_order) || 1,
+      is_published: row.is_published !== undefined && row.is_published !== null
+        ? Boolean(row.is_published)
+        : (row.is_active !== undefined && row.is_active !== null ? Boolean(row.is_active) : true),
+      created_at: row.created_at || new Date().toISOString(),
+      updated_at: row.updated_at || new Date().toISOString(),
+    }));
   } catch {
     return [];
   }

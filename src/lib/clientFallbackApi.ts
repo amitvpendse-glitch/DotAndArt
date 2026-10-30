@@ -21,6 +21,9 @@ import {
   saveFirestoreMediaAsset,
   saveFirestoreCategory,
   uploadImageToSupabaseStorage,
+  getFirestoreTestimonials,
+  saveFirestoreTestimonial,
+  deleteFirestoreTestimonial,
 } from './firestoreCatalog';
 import { isAwaitingPhoto, isProductHighDemand } from '../utils/productUtils';
 import { isSkuBlocked } from './blockedSkus';
@@ -1080,7 +1083,75 @@ export async function handleClientFallbackApi<T = any>(
 
   // 5. GET /api/testimonials or /api/admin/testimonials
   if ((pathname === '/api/testimonials' || pathname === '/api/admin/testimonials') && method === 'GET') {
-    return jsonRes(INITIAL_TESTIMONIALS);
+    try {
+      const testimonials = await getFirestoreTestimonials();
+      if (pathname === '/api/testimonials') {
+        return jsonRes((testimonials || []).filter((t) => t.is_published !== false));
+      }
+      return jsonRes(testimonials || []);
+    } catch {
+      return jsonRes([]);
+    }
+  }
+
+  // 5b. POST /api/testimonials or /api/admin/testimonials
+  if ((pathname === '/api/testimonials' || pathname === '/api/admin/testimonials') && method === 'POST') {
+    try {
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+      const newTest: Testimonial = {
+        id: body.id || `test-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        customer_name: (body.customer_name || body.author_name || 'Collector').trim(),
+        content: (body.content || '').trim(),
+        rating: Number(body.rating) || 5,
+        location: (body.location || body.author_location || '').trim(),
+        artwork_purchased: (body.artwork_purchased || '').trim(),
+        image_path: (body.image_path || body.avatar_url || '').trim(),
+        display_order: Number(body.display_order) || 1,
+        is_published: body.is_published !== false,
+        created_at: body.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      await saveFirestoreTestimonial(newTest);
+      return jsonRes({ success: true, testimonial: newTest });
+    } catch {
+      return jsonRes({ success: false, error: 'Failed to save testimonial' });
+    }
+  }
+
+  // 5c. PUT /api/admin/testimonials/:id
+  if (pathname.startsWith('/api/admin/testimonials/') && (method === 'PUT' || method === 'POST')) {
+    const id = pathname.replace('/api/admin/testimonials/', '').replace('/delete', '');
+    if (pathname.endsWith('/delete')) {
+      await deleteFirestoreTestimonial(id).catch(() => {});
+      return jsonRes({ success: true, message: 'Testimonial deleted' });
+    }
+    try {
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+      const updatedTest: Testimonial = {
+        id,
+        customer_name: (body.customer_name || body.author_name || 'Collector').trim(),
+        content: (body.content || '').trim(),
+        rating: Number(body.rating) || 5,
+        location: (body.location || body.author_location || '').trim(),
+        artwork_purchased: (body.artwork_purchased || '').trim(),
+        image_path: (body.image_path || body.avatar_url || '').trim(),
+        display_order: Number(body.display_order) || 1,
+        is_published: body.is_published !== false,
+        created_at: body.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      await saveFirestoreTestimonial(updatedTest);
+      return jsonRes(updatedTest);
+    } catch {
+      return jsonRes({ success: false, error: 'Failed to update testimonial' });
+    }
+  }
+
+  // 5d. DELETE /api/admin/testimonials/:id
+  if (pathname.startsWith('/api/admin/testimonials/') && method === 'DELETE') {
+    const id = pathname.replace('/api/admin/testimonials/', '');
+    await deleteFirestoreTestimonial(id).catch(() => {});
+    return jsonRes({ success: true, message: 'Testimonial deleted' });
   }
 
   // 6. GET /api/faqs or /api/admin/faqs

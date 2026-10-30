@@ -325,8 +325,8 @@ function loadDB(): DBState {
       if (cleanedProducts.length !== originalProducts.length) {
         saveDB(data, false);
       }
-      if (!Array.isArray(data.testimonials) || data.testimonials.length === 0) {
-        data.testimonials = [...INITIAL_TESTIMONIALS];
+      if (!Array.isArray(data.testimonials)) {
+        data.testimonials = [];
       }
       if (!Array.isArray(data.faqs) || data.faqs.length === 0) {
         data.faqs = [...INITIAL_FAQS];
@@ -363,7 +363,7 @@ function loadDB(): DBState {
     products: deduplicateProducts(INITIAL_PRODUCTS),
     media: [],
     pages: INITIAL_PAGES,
-    testimonials: INITIAL_TESTIMONIALS,
+    testimonials: [],
     faqs: INITIAL_FAQS,
     settings: INITIAL_SETTINGS,
     audit_logs: [
@@ -1354,13 +1354,18 @@ app.get('/api/products/:idOrSku', async (req: Request, res: Response) => {
 });
 
 // Testimonials (Public GET)
-app.get('/api/testimonials', (_req: Request, res: Response) => {
-  if (!Array.isArray(db.testimonials) || db.testimonials.length === 0) {
-    db.testimonials = [...INITIAL_TESTIMONIALS];
-    saveDB(db);
+app.get('/api/testimonials', async (_req: Request, res: Response) => {
+  try {
+    const fsTestimonials = await getFirestoreTestimonials();
+    if (Array.isArray(fsTestimonials)) {
+      db.testimonials = fsTestimonials;
+      saveDB(db, false);
+    }
+  } catch (e) {
+    console.warn('[server] Error fetching testimonials from Supabase:', e);
   }
   const list = (db.testimonials || [])
-    .filter((t) => t.is_published)
+    .filter((t) => t.is_published !== false)
     .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
   res.json(list);
 });
@@ -3191,7 +3196,6 @@ const handleTestimonialDelete = async (req: Request, res: Response) => {
 };
 
 app.delete('/api/admin/testimonials/:id', requireAdmin, handleTestimonialDelete);
-app.post('/api/admin/testimonials/:id', requireAdmin, handleTestimonialDelete);
 app.post('/api/admin/testimonials/:id/delete', requireAdmin, handleTestimonialDelete);
 app.delete('/api/admin/testimonials/:id/delete', requireAdmin, handleTestimonialDelete);
 

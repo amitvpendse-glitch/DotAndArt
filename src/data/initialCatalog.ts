@@ -6184,73 +6184,7 @@ export const INITIAL_CATEGORIES: any[] = [
   }
 ];
 
-export const INITIAL_TESTIMONIALS: any[] = [
-  {
-    "id": "test-dummy-001",
-    "customer_name": "Pooja Sharma",
-    "content": "The precision of every single dot is astonishing! It has transformed our living room and meditation corner into a sanctuary of calm. Arrived impeccably packed in a custom wooden-reinforced crate without a single scratch.",
-    "rating": 5,
-    "location": "Mumbai, Maharashtra",
-    "artwork_purchased": "24-Inch Golden Harmony Dot Mandala",
-    "image_path": "",
-    "display_order": 1,
-    "is_published": true,
-    "created_at": "2026-10-15T10:00:00.000Z",
-    "updated_at": "2026-10-15T10:00:00.000Z"
-  },
-  {
-    "id": "test-dummy-002",
-    "customer_name": "Dr. Rajesh Kulkarni",
-    "content": "We commissioned a custom Lippan piece for our clinic reception. Shital kept us updated throughout the process and incorporated our requested clay relief patterns and mirrors. Patients constantly compliment the craftsmanship.",
-    "rating": 5,
-    "location": "Pune, Maharashtra",
-    "artwork_purchased": "Traditional Kutch Lippan Mud-Mirror Art",
-    "image_path": "",
-    "display_order": 2,
-    "is_published": true,
-    "created_at": "2026-10-16T11:30:00.000Z",
-    "updated_at": "2026-10-16T11:30:00.000Z"
-  },
-  {
-    "id": "test-dummy-003",
-    "customer_name": "Ananya Deshmukh",
-    "content": "Photos simply do not do justice to the tactile depth and gloss finish. The mirrors catch the morning sun in the most magical way. You can feel the hours of patient devotion in every concentric circle.",
-    "rating": 5,
-    "location": "Bengaluru, Karnataka",
-    "artwork_purchased": "Teal & Gold Harmonic Lotus Mandala",
-    "image_path": "",
-    "display_order": 3,
-    "is_published": true,
-    "created_at": "2026-10-17T09:15:00.000Z",
-    "updated_at": "2026-10-17T09:15:00.000Z"
-  },
-  {
-    "id": "test-dummy-004",
-    "customer_name": "Siddharth & Meera Nair",
-    "content": "Working with Shital on our custom anniversary piece was a delight. She tailored the color palette to our dining room wall perfectly. The unboxing experience felt like opening a royal gift.",
-    "rating": 5,
-    "location": "Hyderabad, Telangana",
-    "artwork_purchased": "Custom 30-Inch Multi-Tier Floral Mandala",
-    "image_path": "",
-    "display_order": 4,
-    "is_published": true,
-    "created_at": "2026-10-18T14:20:00.000Z",
-    "updated_at": "2026-10-18T14:20:00.000Z"
-  },
-  {
-    "id": "test-dummy-005",
-    "customer_name": "Elena Rostova",
-    "content": "Ordered international delivery to Dubai and it arrived within 5 days safely in flawless condition. Outstanding craftsmanship, mesmerizing symmetry, and responsive communication from the artist.",
-    "rating": 5,
-    "location": "Dubai, UAE",
-    "artwork_purchased": "Harmonic Geometry Lippan Mirror Hanging",
-    "image_path": "",
-    "display_order": 5,
-    "is_published": true,
-    "created_at": "2026-10-19T16:45:00.000Z",
-    "updated_at": "2026-10-19T16:45:00.000Z"
-  }
-];
+export const INITIAL_TESTIMONIALS: any[] = [];
 
 export const INITIAL_FAQS: any[] = [
   {

@@ -68,7 +68,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
     'Browse our handcrafted catalog or discuss a custom diameter and custom color palette directly with Shital Thosar.';
   const ctaBtnText = ctaSec.button_text || 'Chat on WhatsApp';
 
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(INITIAL_TESTIMONIALS);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [adminToken, setAdminToken] = useState<string | null>(null);
 
@@ -319,12 +319,21 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
       setTestimonials((prev) => prev.filter((t) => t.id !== id));
       setDeleteConfirmId(null);
 
-      await fetch(`/api/admin/testimonials/${id}`, {
+      const res = await fetch(`/api/admin/testimonials/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${adminToken}`,
         },
-      }).catch(() => {});
+      }).catch(() => null);
+
+      if (!res || !res.ok) {
+        await fetch(`/api/admin/testimonials/${id}/delete`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
+        }).catch(() => {});
+      }
 
       await deleteFirestoreTestimonial(id).catch(() => {});
 

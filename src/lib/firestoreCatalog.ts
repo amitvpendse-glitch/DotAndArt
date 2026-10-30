@@ -580,31 +580,70 @@ export async function getFirestoreTestimonials(): Promise<Testimonial[]> {
     try {
       const { data, error } = await sb.from('testimonials').select('*').order('created_at', { ascending: false });
       if (!error && Array.isArray(data)) {
-        return data.map((row: any) => ({
-          id: row.id,
-          customer_name: row.author_name || row.customer_name || 'Collector',
-          content: row.content || '',
-          rating: Number(row.rating) || 5,
-          location: row.author_location || row.location || '',
-          artwork_purchased: row.artwork_purchased || '',
-          image_path: row.avatar_url || row.image_path || '',
-          display_order: Number(row.display_order) || 1,
-          is_published: row.is_active !== undefined ? Boolean(row.is_active) : (row.is_published !== false),
-          created_at: row.created_at || new Date().toISOString(),
-          updated_at: row.updated_at || new Date().toISOString(),
-        }));
+        return data.map((row: any) => {
+          const name = row.customer_name || row.author_name || 'Collector';
+          const loc = row.location || row.author_location || '';
+          const img = row.image_path || row.avatar_url || '';
+          const pub = row.is_published !== undefined && row.is_published !== null
+            ? Boolean(row.is_published)
+            : (row.is_active !== undefined && row.is_active !== null ? Boolean(row.is_active) : true);
+          return {
+            id: String(row.id),
+            customer_name: name,
+            content: row.content || '',
+            rating: Number(row.rating) || 5,
+            location: loc,
+            artwork_purchased: row.artwork_purchased || '',
+            image_path: img,
+            display_order: Number(row.display_order) || 1,
+            is_published: pub,
+            created_at: row.created_at || new Date().toISOString(),
+            updated_at: row.updated_at || new Date().toISOString(),
+          };
+        });
       }
-    } catch {}
+    } catch (e) {
+      console.warn('[SupabaseCatalog] getFirestoreTestimonials exception:', e);
+    }
   }
-  return INITIAL_TESTIMONIALS;
+  return [];
 }
 
 export async function saveFirestoreTestimonial(testimonial: Testimonial): Promise<void> {
   const sb = getSupabase();
   if (!sb || !testimonial || !testimonial.id) return;
 
-  try {
-    const payload: Record<string, any> = {
+  const candidatePayloads: Record<string, any>[] = [
+    // Candidate 1: Both naming conventions
+    {
+      id: testimonial.id,
+      customer_name: testimonial.customer_name || 'Collector',
+      author_name: testimonial.customer_name || 'Collector',
+      content: testimonial.content || '',
+      rating: Number(testimonial.rating) || 5,
+      location: testimonial.location || '',
+      author_location: testimonial.location || '',
+      artwork_purchased: testimonial.artwork_purchased || '',
+      avatar_url: testimonial.image_path || '',
+      image_path: testimonial.image_path || '',
+      is_published: testimonial.is_published !== false,
+      is_active: testimonial.is_published !== false,
+      updated_at: new Date().toISOString(),
+    },
+    // Candidate 2: Standard customer_name / location / image_path / is_published
+    {
+      id: testimonial.id,
+      customer_name: testimonial.customer_name || 'Collector',
+      content: testimonial.content || '',
+      rating: Number(testimonial.rating) || 5,
+      location: testimonial.location || '',
+      artwork_purchased: testimonial.artwork_purchased || '',
+      image_path: testimonial.image_path || '',
+      is_published: testimonial.is_published !== false,
+      updated_at: new Date().toISOString(),
+    },
+    // Candidate 3: author_name / author_location / avatar_url / is_active
+    {
       id: testimonial.id,
       author_name: testimonial.customer_name || 'Collector',
       content: testimonial.content || '',
@@ -614,16 +653,21 @@ export async function saveFirestoreTestimonial(testimonial: Testimonial): Promis
       avatar_url: testimonial.image_path || '',
       is_active: testimonial.is_published !== false,
       updated_at: new Date().toISOString(),
-    };
+    },
+  ];
 
-    const res = await sb.from('testimonials').upsert(payload).select();
-    if (res.error) {
-      console.warn('[SupabaseCatalog] Testimonial upsert notice:', res.error.message);
-    } else {
-      console.log(`[SupabaseCatalog] Testimonial ${testimonial.id} saved successfully to Supabase.`);
+  for (const payload of candidatePayloads) {
+    try {
+      const { error } = await sb.from('testimonials').upsert(payload, { onConflict: 'id' });
+      if (!error) {
+        console.log(`[SupabaseCatalog] Testimonial ${testimonial.id} saved successfully to Supabase.`);
+        return;
+      } else {
+        console.warn('[SupabaseCatalog] Testimonial upsert candidate notice:', error.message);
+      }
+    } catch (e) {
+      console.warn('[SupabaseCatalog] saveFirestoreTestimonial exception:', e);
     }
-  } catch (e) {
-    console.warn('[SupabaseCatalog] saveFirestoreTestimonial exception:', e);
   }
 }
 
@@ -632,7 +676,10 @@ export async function deleteFirestoreTestimonial(id: string): Promise<void> {
   if (sb && id) {
     try {
       await sb.from('testimonials').delete().eq('id', id);
-    } catch {}
+      console.log(`[SupabaseCatalog] Testimonial ${id} deleted from Supabase.`);
+    } catch (e) {
+      console.warn('[SupabaseCatalog] deleteFirestoreTestimonial exception:', e);
+    }
   }
 }
 

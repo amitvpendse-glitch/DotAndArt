@@ -134,26 +134,21 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this testimonial?')) return;
     try {
-      await fetch(`/api/admin/testimonials/${id}`, {
-        method: 'POST',
+      const res = await fetch(`/api/admin/testimonials/${id}`, {
+        method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }).catch(async () => {
+      }).catch(() => null);
+
+      if (!res || !res.ok) {
         await fetch(`/api/admin/testimonials/${id}/delete`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }).catch(async () => {
-          await fetch(`/api/admin/testimonials/${id}`, {
-            method: 'DELETE',
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }).catch(() => {});
-        });
-      });
+        }).catch(() => {});
+      }
 
       await deleteFirestoreTestimonial(id).catch(() => {});
 
