@@ -3134,7 +3134,7 @@ app.post('/api/admin/testimonials', requireAdmin, async (req: Request, res: Resp
   res.json(item);
 });
 
-app.put('/api/admin/testimonials/:id', requireAdmin, async (req: Request, res: Response) => {
+const handleTestimonialUpdate = async (req: Request, res: Response) => {
   const { id } = req.params;
   let index = (db.testimonials || []).findIndex((t) => t.id === id);
   const body = req.body;
@@ -3172,9 +3172,13 @@ app.put('/api/admin/testimonials/:id', requireAdmin, async (req: Request, res: R
   await saveFirestoreTestimonial(updatedItem).catch((e) => console.warn('[server] Firestore testimonial update error', e));
   logAudit('testimonial_updated', 'testimonial', id);
   res.json(updatedItem);
-});
+};
 
-app.delete('/api/admin/testimonials/:id', requireAdmin, async (req: Request, res: Response) => {
+app.put('/api/admin/testimonials/:id', requireAdmin, handleTestimonialUpdate);
+app.post('/api/admin/testimonials/:id', requireAdmin, handleTestimonialUpdate);
+app.patch('/api/admin/testimonials/:id', requireAdmin, handleTestimonialUpdate);
+
+const handleTestimonialDelete = async (req: Request, res: Response) => {
   const { id } = req.params;
   const index = (db.testimonials || []).findIndex((t) => t.id === id);
   if (index !== -1) {
@@ -3184,7 +3188,12 @@ app.delete('/api/admin/testimonials/:id', requireAdmin, async (req: Request, res
   await deleteFirestoreTestimonial(id).catch((e) => console.warn('[server] Firestore testimonial delete error', e));
   logAudit('testimonial_deleted', 'testimonial', id);
   res.json({ success: true, message: 'Testimonial deleted' });
-});
+};
+
+app.delete('/api/admin/testimonials/:id', requireAdmin, handleTestimonialDelete);
+app.post('/api/admin/testimonials/:id', requireAdmin, handleTestimonialDelete);
+app.post('/api/admin/testimonials/:id/delete', requireAdmin, handleTestimonialDelete);
+app.delete('/api/admin/testimonials/:id/delete', requireAdmin, handleTestimonialDelete);
 
 // Admin FAQs CRUD
 app.get('/api/admin/faqs', requireAdmin, (_req: Request, res: Response) => {

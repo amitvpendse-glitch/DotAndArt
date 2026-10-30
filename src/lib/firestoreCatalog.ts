@@ -601,21 +601,58 @@ export async function getFirestoreTestimonials(): Promise<Testimonial[]> {
 
 export async function saveFirestoreTestimonial(testimonial: Testimonial): Promise<void> {
   const sb = getSupabase();
-  if (sb) {
-    try {
-      await sb.from('testimonials').upsert({
+  if (!sb || !testimonial || !testimonial.id) return;
+
+  try {
+    const { data: existing } = await sb
+      .from('testimonials')
+      .select('id')
+      .eq('id', testimonial.id)
+      .maybeSingle();
+
+    const row: Record<string, any> = {
+      id: testimonial.id,
+      author_name: testimonial.customer_name,
+      content: testimonial.content,
+      rating: Number(testimonial.rating) || 5,
+      author_location: testimonial.location || '',
+      artwork_purchased: testimonial.artwork_purchased || '',
+      avatar_url: testimonial.image_path || '',
+      display_order: Number(testimonial.display_order) || 1,
+      is_published: testimonial.is_published !== false,
+      updated_at: new Date().toISOString(),
+    };
+
+    let res;
+    if (existing && existing.id) {
+      res = await sb.from('testimonials').update(row).eq('id', testimonial.id).select();
+    } else {
+      res = await sb.from('testimonials').insert(row).select();
+    }
+
+    if (res.error) {
+      console.warn('[SupabaseCatalog] Primary testimonial save notice:', res.error.message, 'Trying alternate column structure...');
+      const altRow: Record<string, any> = {
         id: testimonial.id,
-        author_name: testimonial.customer_name,
-        author_location: testimonial.location || '',
-        rating: Number(testimonial.rating) || 5,
+        customer_name: testimonial.customer_name,
         content: testimonial.content,
+        rating: Number(testimonial.rating) || 5,
+        location: testimonial.location || '',
         artwork_purchased: testimonial.artwork_purchased || '',
-        avatar_url: testimonial.image_path || '',
-        display_order: testimonial.display_order || 1,
+        image_path: testimonial.image_path || '',
+        display_order: Number(testimonial.display_order) || 1,
         is_published: testimonial.is_published !== false,
         updated_at: new Date().toISOString(),
-      }, { onConflict: 'id' });
-    } catch {}
+      };
+
+      if (existing && existing.id) {
+        await sb.from('testimonials').update(altRow).eq('id', testimonial.id);
+      } else {
+        await sb.from('testimonials').insert(altRow);
+      }
+    }
+  } catch (e) {
+    console.warn('[SupabaseCatalog] saveFirestoreTestimonial exception:', e);
   }
 }
 

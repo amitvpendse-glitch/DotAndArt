@@ -101,16 +101,25 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
 
       const isEdit = Boolean(editing);
       const url = isEdit ? `/api/admin/testimonials/${targetId}` : '/api/admin/testimonials';
-      const method = isEdit ? 'PUT' : 'POST';
 
       await fetch(url, {
-        method,
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(testimonial),
-      }).catch(() => {});
+      }).catch(async () => {
+        // Fallback PUT in case proxy requires PUT
+        await fetch(url, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(testimonial),
+        }).catch(() => {});
+      });
 
       await saveFirestoreTestimonial(testimonial).catch(() => {});
 
@@ -126,11 +135,25 @@ export const AdminTestimonials: React.FC<AdminTestimonialsProps> = ({ token }) =
     if (!window.confirm('Delete this testimonial?')) return;
     try {
       await fetch(`/api/admin/testimonials/${id}`, {
-        method: 'DELETE',
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }).catch(() => {});
+      }).catch(async () => {
+        await fetch(`/api/admin/testimonials/${id}/delete`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).catch(async () => {
+          await fetch(`/api/admin/testimonials/${id}`, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }).catch(() => {});
+        });
+      });
 
       await deleteFirestoreTestimonial(id).catch(() => {});
 
