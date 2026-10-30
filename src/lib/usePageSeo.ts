@@ -65,12 +65,7 @@ export function usePageSeo(slug: string, defaultTitle: string, defaultDesc?: str
     fetchPageSeo();
 
     const handlePagesUpdated = () => {
-      const refreshed = getInitialPage(slug);
-      if (refreshed) {
-        setPage(refreshed);
-      } else {
-        fetchPageSeo();
-      }
+      fetchPageSeo();
     };
 
     window.addEventListener('app_pages_updated', handlePagesUpdated);

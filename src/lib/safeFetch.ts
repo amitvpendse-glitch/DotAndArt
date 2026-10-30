@@ -275,8 +275,16 @@ export async function safeFetchJson<T = any>(
     }
   }
 
-  // 4b. Direct Cloud Firestore Read for Website Pages
-  if (method === 'GET' && (urlString === '/api/admin/pages' || urlString.startsWith('/api/pages/'))) {
+  // 4b. Direct Supabase / Cloud Read for Website Pages
+  if (
+    method === 'GET' &&
+    (
+      urlString === '/api/pages' ||
+      urlString === '/api/admin/pages' ||
+      urlString.startsWith('/api/pages/') ||
+      urlString.startsWith('/api/admin/pages/')
+    )
+  ) {
     try {
       const pages = await getFirestorePages();
       if (pages && pages.length > 0) {

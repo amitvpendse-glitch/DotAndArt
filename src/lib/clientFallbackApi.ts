@@ -1088,8 +1088,14 @@ export async function handleClientFallbackApi<T = any>(
     return jsonRes(INITIAL_FAQS);
   }
 
-  // 7. GET /api/pages/:slug or /api/admin/pages or PUT /api/admin/pages/:slug
-  if (pathname === '/api/admin/pages' && method === 'GET') {
+  // 7. GET /api/pages or /api/admin/pages or /api/pages/:slug or PUT /api/admin/pages/:slug
+  if ((pathname === '/api/admin/pages' || pathname === '/api/pages') && method === 'GET') {
+    try {
+      const fsPages = await getFirestorePages();
+      if (fsPages && fsPages.length > 0) {
+        return jsonRes(fsPages);
+      }
+    } catch {}
     return jsonRes(getStoredPages());
   }
   if (pathname.startsWith('/api/pages/') && method === 'GET') {
@@ -1101,7 +1107,7 @@ export async function handleClientFallbackApi<T = any>(
         return jsonRes({
           ...found,
           sections: (found.sections || [])
-            .filter((s) => s.is_visible !== false)
+            .filter((s) => s.is_visible !== false && s.enabled !== false)
             .sort((a, b) => (a.display_order || 0) - (b.display_order || 0)),
         });
       }
