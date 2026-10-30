@@ -582,14 +582,14 @@ export async function getFirestoreTestimonials(): Promise<Testimonial[]> {
       if (!error && Array.isArray(data)) {
         return data.map((row: any) => ({
           id: row.id,
-          customer_name: row.author_name || 'Collector',
+          customer_name: row.author_name || row.customer_name || 'Collector',
           content: row.content || '',
           rating: Number(row.rating) || 5,
-          location: row.author_location || '',
+          location: row.author_location || row.location || '',
           artwork_purchased: row.artwork_purchased || '',
-          image_path: row.avatar_url || '',
+          image_path: row.avatar_url || row.image_path || '',
           display_order: Number(row.display_order) || 1,
-          is_published: row.is_published !== false,
+          is_published: row.is_active !== undefined ? Boolean(row.is_active) : (row.is_published !== false),
           created_at: row.created_at || new Date().toISOString(),
           updated_at: row.updated_at || new Date().toISOString(),
         }));
@@ -604,85 +604,23 @@ export async function saveFirestoreTestimonial(testimonial: Testimonial): Promis
   if (!sb || !testimonial || !testimonial.id) return;
 
   try {
-    const { data: existing } = await sb
-      .from('testimonials')
-      .select('id')
-      .eq('id', testimonial.id)
-      .maybeSingle();
-
-    // Primary row structure (excluding display_order as it does not exist in Supabase schema)
-    let candidateRow: Record<string, any> = {
+    const payload: Record<string, any> = {
       id: testimonial.id,
-      author_name: testimonial.customer_name,
-      content: testimonial.content,
+      author_name: testimonial.customer_name || 'Collector',
+      content: testimonial.content || '',
       rating: Number(testimonial.rating) || 5,
       author_location: testimonial.location || '',
       artwork_purchased: testimonial.artwork_purchased || '',
       avatar_url: testimonial.image_path || '',
-      is_published: testimonial.is_published !== false,
+      is_active: testimonial.is_published !== false,
       updated_at: new Date().toISOString(),
     };
 
-    let attempts = 0;
-    while (attempts < 5) {
-      attempts++;
-      let res;
-      if (existing && existing.id) {
-        res = await sb.from('testimonials').update(candidateRow).eq('id', testimonial.id).select();
-      } else {
-        res = await sb.from('testimonials').insert(candidateRow).select();
-      }
-
-      if (!res.error) {
-        console.log(`[SupabaseCatalog] Testimonial ${testimonial.id} saved successfully to Supabase.`);
-        return;
-      }
-
-      const errMsg = res.error.message || '';
-      console.warn(`[SupabaseCatalog] Testimonial save attempt ${attempts} notice:`, errMsg);
-
-      // Check if error mentions a missing column in Supabase schema e.g. "Could not find the 'display_order' column..."
-      const missingColMatch = errMsg.match(/Could not find the '([^']+)' column/i);
-      if (missingColMatch && missingColMatch[1] && missingColMatch[1] in candidateRow) {
-        const missingCol = missingColMatch[1];
-        console.warn(`[SupabaseCatalog] Removing non-existent column '${missingCol}' from payload and retrying...`);
-        delete candidateRow[missingCol];
-        continue;
-      }
-
-      // Column alias fallbacks
-      if (errMsg.includes('author_name') && 'author_name' in candidateRow) {
-        delete candidateRow.author_name;
-        candidateRow.customer_name = testimonial.customer_name;
-        continue;
-      }
-      if (errMsg.includes('author_location') && 'author_location' in candidateRow) {
-        delete candidateRow.author_location;
-        candidateRow.location = testimonial.location || '';
-        continue;
-      }
-      if (errMsg.includes('avatar_url') && 'avatar_url' in candidateRow) {
-        delete candidateRow.avatar_url;
-        candidateRow.image_path = testimonial.image_path || '';
-        continue;
-      }
-
-      // Secondary fallback: Try alternate naming structure
-      if (attempts === 1) {
-        candidateRow = {
-          id: testimonial.id,
-          customer_name: testimonial.customer_name,
-          content: testimonial.content,
-          rating: Number(testimonial.rating) || 5,
-          location: testimonial.location || '',
-          artwork_purchased: testimonial.artwork_purchased || '',
-          image_path: testimonial.image_path || '',
-          is_published: testimonial.is_published !== false,
-          updated_at: new Date().toISOString(),
-        };
-      } else {
-        break;
-      }
+    const res = await sb.from('testimonials').upsert(payload).select();
+    if (res.error) {
+      console.warn('[SupabaseCatalog] Testimonial upsert notice:', res.error.message);
+    } else {
+      console.log(`[SupabaseCatalog] Testimonial ${testimonial.id} saved successfully to Supabase.`);
     }
   } catch (e) {
     console.warn('[SupabaseCatalog] saveFirestoreTestimonial exception:', e);
