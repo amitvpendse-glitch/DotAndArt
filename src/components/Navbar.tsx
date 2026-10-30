@@ -141,9 +141,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, announc
                 <span className="font-serif tracking-widest text-xs sm:text-base md:text-xl font-bold text-theme-primary leading-tight group-hover:text-theme-accent transition-colors truncate">
                   DOT AND ART
                 </span>
-                <span className="text-[8px] sm:text-[10px] tracking-[0.1em] sm:tracking-[0.2em] uppercase font-sans text-theme-accent font-semibold truncate max-w-[110px] min-[360px]:max-w-[150px] sm:max-w-none">
-                  Handcrafted Mandalas
-                </span>
               </div>
             </div>
 
