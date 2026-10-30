@@ -206,6 +206,20 @@ export default function App() {
     const userActivityEvents = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
     userActivityEvents.forEach((evt) => window.addEventListener(evt, updateActivity, { passive: true }));
 
+    // Periodic Session Validation (Polls server to check if logged in on another device or tab)
+    const sessionValidationInterval = setInterval(() => {
+      safeFetchJson<{ authenticated: boolean }>(
+        '/api/admin/check',
+        { headers: { Authorization: `Bearer ${adminToken}` } },
+        { authenticated: false }
+      ).then((res) => {
+        if (!res || !res.authenticated) {
+          console.warn('Admin session invalidated by another device or tab login.');
+          handleAdminLogout();
+        }
+      });
+    }, 4000);
+
     // Check for idle period every 5 seconds
     const idleCheckInterval = setInterval(() => {
       if (Date.now() - lastActivityTime > IDLE_TIMEOUT_MS) {
@@ -232,6 +246,7 @@ export default function App() {
     return () => {
       userActivityEvents.forEach((evt) => window.removeEventListener(evt, updateActivity));
       clearInterval(idleCheckInterval);
+      clearInterval(sessionValidationInterval);
       window.removeEventListener('error', handleDisasterError);
       window.removeEventListener('unhandledrejection', handleDisasterError);
       window.removeEventListener('offline', handleOffline);

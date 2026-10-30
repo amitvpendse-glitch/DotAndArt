@@ -779,24 +779,24 @@ function requireAdmin(req: Request, res: Response, next: NextFunction) {
   const token = (authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null) || cookies['dot_admin_session'];
 
   const now = Date.now();
-  if (token) {
-    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
-    let sessionIndex = (db.sessions || []).findIndex((s) => s.token_hash === tokenHash);
-    if (sessionIndex === -1) {
-      (db.sessions = db.sessions || []).push({
-        token_hash: tokenHash,
-        admin_username: 'admin',
-        expires_at: now + 24 * 60 * 60 * 1000,
-        created_at: new Date().toISOString(),
-      });
-      sessionIndex = db.sessions.length - 1;
-    } else {
-      db.sessions[sessionIndex].expires_at = now + 24 * 60 * 60 * 1000;
-    }
-    saveDB(db, false);
+  if (!token) {
+    res.status(401).json({ error: 'Unauthorized. Admin PIN required.' });
+    return;
   }
 
-  (req as any).adminUser = 'admin';
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  const session = (db.sessions || []).find((s) => s.token_hash === tokenHash && s.expires_at > now);
+
+  if (!session) {
+    res.status(401).json({ error: 'Session expired or logged out from another device/tab.' });
+    return;
+  }
+
+  // Extend active session expiration on valid requests
+  session.expires_at = now + 10 * 60 * 1000; // 10 minutes rolling idle window
+  saveDB(db, false);
+
+  (req as any).adminUser = session.admin_username || 'admin';
   next();
 }
 
@@ -869,15 +869,18 @@ app.post('/api/admin/login', async (req: Request, res: Response) => {
     saveDB(db);
   }
 
-  // Login successful
+  // Login successful - Enforce Session Exclusivity (Clear all previous logins)
   resetAuthFailures(ip);
 
-  // Generate 64-char cryptographically random session token
+  // Flush all previous sessions across any devices, tabs, or browsers
+  db.sessions = [];
+
+  // Generate 64-char cryptographically random new session token
   const rawToken = crypto.randomBytes(32).toString('hex');
   const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
-  const expiresAt = Date.now() + 2 * 60 * 60 * 1000; // 2 hours idle timeout
+  const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes rolling idle timeout
 
-  (db.sessions = db.sessions || []).push({
+  db.sessions.push({
     token_hash: tokenHash,
     admin_username: getAdminUsername(),
     expires_at: expiresAt,
@@ -892,7 +895,7 @@ app.post('/api/admin/login', async (req: Request, res: Response) => {
   // Set secure same-site cookie
   res.setHeader(
     'Set-Cookie',
-    `dot_admin_session=${rawToken}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${2 * 3600}`
+    `dot_admin_session=${rawToken}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${10 * 60}`
   );
 
   res.json({
