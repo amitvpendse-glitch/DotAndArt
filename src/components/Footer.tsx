@@ -24,44 +24,44 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, settings }) => {
     <footer className="bg-theme-dark text-theme-primary pt-16 pb-12 border-t border-theme-glass transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Trust Badges Bar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-12 border-b border-theme-glass">
-          <div className="flex items-center gap-3.5 p-4 rounded-xl glass-card border border-theme-glass">
-            <div className="w-10 h-10 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
-              <Heart className="w-5 h-5" />
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6 pb-8 sm:pb-12 border-b border-theme-glass">
+          <div className="flex items-start sm:items-center gap-2.5 sm:gap-3.5 p-3 sm:p-4 rounded-xl glass-card border border-theme-glass">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
+              <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-theme-primary">100% Handcrafted</h4>
-              <p className="text-xs text-theme-muted">No mass printing. Pure manual devotion.</p>
+              <h4 className="text-xs sm:text-sm font-semibold text-theme-primary leading-tight">100% Handcrafted</h4>
+              <p className="text-[10px] sm:text-xs text-theme-muted mt-0.5 line-clamp-2">No mass printing. Pure manual devotion.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-4 rounded-xl glass-card border border-theme-glass">
-            <div className="w-10 h-10 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
-              <Truck className="w-5 h-5" />
+          <div className="flex items-start sm:items-center gap-2.5 sm:gap-3.5 p-3 sm:p-4 rounded-xl glass-card border border-theme-glass">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
+              <Truck className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-theme-primary">Worldwide Shipping</h4>
-              <p className="text-xs text-theme-muted">Packed in protective bubble wrap and corrugated box.</p>
+              <h4 className="text-xs sm:text-sm font-semibold text-theme-primary leading-tight">Worldwide Shipping</h4>
+              <p className="text-[10px] sm:text-xs text-theme-muted mt-0.5 line-clamp-2">Packed in protective bubble wrap &amp; box.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-4 rounded-xl glass-card border border-theme-glass">
-            <div className="w-10 h-10 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-5 h-5" />
+          <div className="flex items-start sm:items-center gap-2.5 sm:gap-3.5 p-3 sm:p-4 rounded-xl glass-card border border-theme-glass">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-theme-primary">Transparent Payment</h4>
-              <p className="text-xs text-theme-muted">50% advance, 50% prior to dispatch.</p>
+              <h4 className="text-xs sm:text-sm font-semibold text-theme-primary leading-tight">Transparent Payment</h4>
+              <p className="text-[10px] sm:text-xs text-theme-muted mt-0.5 line-clamp-2">50% advance, 50% prior to dispatch.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-4 rounded-xl glass-card border border-theme-glass">
-            <div className="w-10 h-10 rounded-full bg-[#25D366]/20 text-[#25D366] flex items-center justify-center shrink-0">
-              <RefreshCw className="w-5 h-5" />
+          <div className="flex items-start sm:items-center gap-2.5 sm:gap-3.5 p-3 sm:p-4 rounded-xl glass-card border border-theme-glass">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#25D366]/20 text-[#25D366] flex items-center justify-center shrink-0">
+              <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-theme-primary">Custom Orders & Sizing</h4>
-              <p className="text-xs text-theme-muted">Tailored diameters, colors, and authentic motifs.</p>
+              <h4 className="text-xs sm:text-sm font-semibold text-theme-primary leading-tight">Custom Orders &amp; Sizing</h4>
+              <p className="text-[10px] sm:text-xs text-theme-muted mt-0.5 line-clamp-2">Tailored diameters, colors &amp; motifs.</p>
             </div>
           </div>
         </div>

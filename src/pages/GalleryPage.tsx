@@ -126,56 +126,41 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
           High-definition visual archive of our handmade mandalas and Kutch Lippan mud-mirror pieces. Click any artwork to view details or enquire.
         </p>
 
-        {/* Dynamic Category & High Demand Filter Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
-          <button
-            onClick={() => setSelectedCategory('all')}
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-              selectedCategory === 'all'
-                ? 'bg-theme-accent text-white shadow-xs ring-2 ring-theme-accent/30'
-                : 'glass-button text-theme-primary border border-theme-glass hover:bg-theme-accent/10'
-            }`}
-          >
-            All Works
-          </button>
+        {/* Category Dropdown & High Demand Filter Bar */}
+        <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 max-w-lg mx-auto">
+          {/* Category Dropdown */}
+          <div className="relative flex-1">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full text-xs font-semibold px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary cursor-pointer appearance-none pr-8 shadow-xs hover:border-theme-accent/50 transition-colors h-10"
+            >
+              <option value="all">All Category Artworks</option>
+              {activeCategories.map((cat) => (
+                <option key={cat.id || cat.slug} value={cat.slug}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-theme-muted">
+              ▼
+            </div>
+          </div>
 
-          {activeCategories.map((cat) => {
-            const catSlug = (cat.slug || '').toLowerCase();
-            const selCat = (selectedCategory || '').toLowerCase();
-            const isSelected =
-              selCat !== 'all' &&
-              (selCat === catSlug ||
-                (catSlug.includes('mandala') && selCat.includes('mandala')) ||
-                (catSlug.includes('lippan') && selCat.includes('lippan')) ||
-                ((catSlug.includes('tea-light') || catSlug.includes('candle')) && (selCat.includes('tea-light') || selCat.includes('candle'))));
-
-            return (
-              <button
-                key={cat.id || cat.slug}
-                onClick={() => setSelectedCategory(cat.slug)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-theme-accent text-white shadow-xs ring-2 ring-theme-accent/30'
-                    : 'glass-button text-theme-primary border border-theme-glass hover:bg-theme-accent/10'
-                }`}
-              >
-                {cat.name}
-              </button>
-            );
-          })}
-
-          {/* High Demand Toggle */}
+          {/* High Demand Toggle Button */}
           <button
             onClick={() => setHighDemandOnly(!highDemandOnly)}
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`h-10 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
               highDemandOnly
                 ? 'bg-amber-600 text-white shadow-md ring-2 ring-amber-400'
                 : 'glass-button text-amber-700 border border-amber-300/60 hover:bg-amber-500/10'
             }`}
+            title="Filter High Demand Artworks"
+            aria-label="Filter High Demand Artworks"
           >
-            <Flame className={`w-3.5 h-3.5 ${highDemandOnly ? 'text-white fill-white' : 'text-amber-600 fill-amber-500'}`} />
-            <span>High Demand</span>
-            {highDemandOnly && <Check className="w-3 h-3 ml-0.5" />}
+            <Flame className={`w-4 h-4 ${highDemandOnly ? 'text-white fill-white' : 'text-amber-600 fill-amber-500'}`} />
+            <span className="hidden sm:inline">High Demand</span>
+            {highDemandOnly && <Check className="w-3.5 h-3.5 ml-0.5" />}
           </button>
         </div>
       </div>

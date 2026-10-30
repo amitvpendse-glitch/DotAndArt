@@ -123,7 +123,7 @@ export function HomePage({
   );
 
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'mandala' | 'lippan'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [zoomedProduct, setZoomedProduct] = useState<Product | null>(null);
   const [enquiryProduct, setEnquiryProduct] = useState<Product | null>(null);
@@ -249,21 +249,22 @@ export function HomePage({
 
   const filteredFeatured = featuredProducts.filter((p) => {
     if (selectedCategory === 'all') return true;
-    if (selectedCategory === 'mandala') {
-      return (
-        p.category_slug === 'mandala-wall-hangings' ||
-        p.sku.startsWith('DA-MD') ||
-        p.name.toLowerCase().includes('mandala')
-      );
+    const cat = selectedCategory.toLowerCase();
+    const pSlug = (p.category_slug || '').toLowerCase();
+    const pId = (p.category_id || '').toLowerCase();
+    const name = (p.name || '').toLowerCase();
+    const sku = (p.sku || '').toUpperCase();
+
+    if (cat === 'mandala') {
+      return pSlug.includes('mandala') || pId.includes('mandala') || sku.startsWith('DA-MD') || name.includes('mandala');
     }
-    if (selectedCategory === 'lippan') {
-      return (
-        p.category_slug === 'lippan-wall-hangings' ||
-        p.sku.startsWith('DA-LP') ||
-        p.name.toLowerCase().includes('lippan')
-      );
+    if (cat === 'lippan') {
+      return pSlug.includes('lippan') || pId.includes('lippan') || sku.startsWith('DA-LP') || name.includes('lippan');
     }
-    return true;
+    if (cat === 'tea-light') {
+      return pSlug.includes('tea-light') || pSlug.includes('candle') || sku.startsWith('DA-TC') || name.includes('tea light') || name.includes('candle');
+    }
+    return pSlug === cat || pId === cat;
   });
 
   const isSectionVisible = (sec?: any) => {
@@ -398,24 +399,24 @@ export function HomePage({
       {/* 2. "WHERE WOULD YOU LIKE TO BEGIN?" PORTALS                               */}
       {/* ========================================================================= */}
       {isSectionVisible(beginPortalsSec) && (
-        <section className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-24">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4 border-b border-theme-glass gap-3">
+        <section className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12 py-10 sm:py-16">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 pb-3 border-b border-theme-glass gap-2">
             <div>
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-theme-primary tracking-tight">
+              <h2 className="font-serif text-xl sm:text-2xl lg:text-3xl font-light text-theme-primary tracking-tight">
                 Where would you like to begin?
               </h2>
             </div>
-            <span className="text-xs uppercase font-mono tracking-widest text-theme-accent font-semibold">
+            <span className="text-[10px] sm:text-xs uppercase font-mono tracking-widest text-theme-accent font-semibold">
               TAP A CARD TO EXPLORE
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-3 gap-2.5 sm:gap-6">
             {portals.map((p: any, idx: number) => (
               <div
                 key={idx}
                 onClick={() => onNavigate(p.link || '/shop')}
-                className="group relative h-96 sm:h-[420px] rounded-3xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1.5 border border-theme-glass"
+                className="group relative h-48 sm:h-80 md:h-[380px] rounded-xl sm:rounded-3xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1 border border-theme-glass"
               >
                 <img
                   src={p.image}
@@ -424,14 +425,14 @@ export function HomePage({
                   onError={(e) => { e.currentTarget.src = '/static/assets/images/Home_page_banner.jpeg'; }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                <div className="absolute top-4 left-4 font-mono text-xs text-white/70 tracking-widest font-bold">
+                <div className="absolute top-2 left-2 sm:top-4 sm:left-4 font-mono text-[9px] sm:text-xs text-white/70 tracking-widest font-bold">
                   0{idx + 1}
                 </div>
-                <div className="absolute bottom-6 left-6 right-6 space-y-1 text-white">
-                  <h3 className="font-serif text-2xl font-medium tracking-wide group-hover:text-[#F7D8BA] transition-colors">
+                <div className="absolute bottom-2 left-2 right-2 sm:bottom-6 sm:left-6 sm:right-6 space-y-0.5 sm:space-y-1 text-white">
+                  <h3 className="font-serif text-xs sm:text-xl lg:text-2xl font-medium tracking-wide group-hover:text-[#F7D8BA] transition-colors leading-tight line-clamp-2">
                     {p.title}
                   </h3>
-                  <p className="text-xs text-stone-300 font-light leading-relaxed">
+                  <p className="text-[9px] sm:text-xs text-stone-300 font-light leading-snug line-clamp-2 hidden sm:block">
                     {p.subtitle}
                   </p>
                 </div>
@@ -552,53 +553,37 @@ export function HomePage({
       {/* ========================================================================= */}
       {/* 4. FEATURED HAND-PAINTED PIECES (Supports up to 50 items)                */}
       {/* ========================================================================= */}
-      <section className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-24">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-theme-glass gap-4">
+      <section className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12 py-10 sm:py-20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 pb-3 border-b border-theme-glass gap-3">
           <div>
-            <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#C85A32] font-bold">
+            <span className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-[#C85A32] font-bold">
               HANDCRAFTED CATALOG
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-light text-theme-primary mt-1">
+            <h2 className="font-serif text-xl sm:text-2xl lg:text-3xl font-light text-theme-primary mt-0.5">
               Featured Hand-Painted Pieces
             </h2>
           </div>
 
-          <div className="flex items-center gap-1.5 p-1 rounded-full bg-theme-card border border-theme-glass">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                selectedCategory === 'all'
-                  ? 'bg-[#C85A32] text-white shadow-xs'
-                  : 'text-theme-muted hover:text-theme-primary'
-              }`}
+          {/* Category Dropdown (Including Tea Light Candle Holders) */}
+          <div className="relative min-w-[200px] sm:min-w-[240px]">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full text-xs font-semibold px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary cursor-pointer appearance-none pr-8 shadow-xs hover:border-theme-accent/50 transition-colors"
             >
-              All Pieces
-            </button>
-            <button
-              onClick={() => setSelectedCategory('mandala')}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                selectedCategory === 'mandala'
-                  ? 'bg-[#C85A32] text-white shadow-xs'
-                  : 'text-theme-muted hover:text-theme-primary'
-              }`}
-            >
-              Dot Mandalas
-            </button>
-            <button
-              onClick={() => setSelectedCategory('lippan')}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                selectedCategory === 'lippan'
-                  ? 'bg-[#C85A32] text-white shadow-xs'
-                  : 'text-theme-muted hover:text-theme-primary'
-              }`}
-            >
-              Lippan Kaam
-            </button>
+              <option value="all">All Category Pieces</option>
+              <option value="mandala">Mandala Wall Hangings</option>
+              <option value="lippan">Lippan Wall Hangings</option>
+              <option value="tea-light">Tea Light Candle Holders</option>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-theme-muted">
+              ▼
+            </div>
           </div>
         </div>
 
-        {/* Product Cards Grid - Up to 50 featured items supported */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Product Cards Grid - 2 cols on mobile (4 items fit nicely on 1 page view), 4 cols on desktop */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
           {filteredFeatured.slice(0, 50).map((product) => {
             const primaryImg = product?.images?.find((img) => img.is_primary) || product?.images?.[0];
             const qty = getItemQuantity(product.id || product.sku);
@@ -606,11 +591,11 @@ export function HomePage({
             return (
               <div
                 key={product.id || product.sku}
-                className="group rounded-3xl glass-card overflow-hidden transition-all duration-300 flex flex-col border border-theme-glass bg-theme-card/80 hover:shadow-xl hover:border-theme-accent/40"
+                className="group rounded-2xl sm:rounded-3xl glass-card overflow-hidden transition-all duration-300 flex flex-col border border-theme-glass bg-theme-card/80 hover:shadow-xl hover:border-theme-accent/40"
               >
                 <div
                   onClick={() => onSelectProduct(product.sku)}
-                  className="relative aspect-square bg-theme-page overflow-hidden cursor-pointer flex items-center justify-center p-3"
+                  className="relative aspect-square bg-theme-page overflow-hidden cursor-pointer flex items-center justify-center p-1.5 sm:p-3"
                 >
                   <SafeProductImage
                     src={primaryImg?.storage_path}
@@ -619,7 +604,7 @@ export function HomePage({
                     sku={product.sku}
                     category_slug={product.category_slug}
                     fit="contain"
-                    className="w-full h-full object-contain p-1 transition-transform duration-300 group-hover:scale-102"
+                    className="w-full h-full object-contain p-0.5 sm:p-1 transition-transform duration-300 group-hover:scale-102"
                   />
 
                   <button
@@ -627,27 +612,27 @@ export function HomePage({
                       e.stopPropagation();
                       setZoomedProduct(product);
                     }}
-                    className="absolute top-3 right-3 p-2 rounded-full bg-black/60 hover:bg-black/85 text-white opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-md cursor-pointer"
+                    className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-full bg-black/60 hover:bg-black/85 text-white opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-md cursor-pointer"
                     title="Zoom High-Resolution Artwork"
                   >
-                    <Maximize2 className="w-3.5 h-3.5" />
+                    <Maximize2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   </button>
 
-                  <div className="absolute bottom-3 left-3">
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-black/70 text-white backdrop-blur-md">
+                  <div className="absolute bottom-1.5 left-1.5 sm:bottom-3 sm:left-3">
+                    <span className="px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-mono font-bold uppercase tracking-wider bg-black/70 text-white backdrop-blur-md">
                       {product.base_size || 'Standard'}
                     </span>
                   </div>
                 </div>
 
-                <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
+                <div className="p-2.5 sm:p-5 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
                   <div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-theme-accent block">
+                    <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-theme-accent block">
                       {product.sku}
                     </span>
                     <h3
                       onClick={() => onSelectProduct(product.sku)}
-                      className="font-serif text-base font-semibold text-theme-primary hover:text-theme-accent transition-colors cursor-pointer line-clamp-1"
+                      className="font-serif text-xs sm:text-base font-semibold text-theme-primary hover:text-theme-accent transition-colors cursor-pointer line-clamp-1"
                     >
                       {product.name}
                     </h3>
@@ -790,19 +775,21 @@ export function HomePage({
       {/* 6. 4 TRUST TEXT BOXES (CMS Editable)                                    */}
       {/* ========================================================================= */}
       {isSectionVisible(trustBoxesSec) && trustBoxes.length > 0 && (
-        <section className="bg-theme-card/30 border-t border-theme-glass py-12 sm:py-16">
+        <section className="bg-theme-card/30 border-t border-theme-glass py-8 sm:py-16">
           <div className="max-w-7xl 2xl:max-w-[1500px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
               {trustBoxes.map((box: any, i: number) => (
                 <div
                   key={i}
-                  className="p-6 rounded-2xl glass-card border border-theme-glass space-y-2 bg-theme-page/60 hover:shadow-md transition-shadow"
+                  className="p-3 sm:p-6 rounded-xl sm:rounded-2xl glass-card border border-theme-glass space-y-1 sm:space-y-2 bg-theme-page/60 hover:shadow-md transition-shadow flex flex-col justify-between"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[#C85A32]/10 text-[#C85A32] flex items-center justify-center font-bold text-lg mb-3">
-                    {i === 0 ? <Sparkles className="w-5 h-5" /> : i === 1 ? <ShieldCheck className="w-5 h-5" /> : i === 2 ? <Layers className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#C85A32]/10 text-[#C85A32] flex items-center justify-center font-bold text-base sm:text-lg mb-1.5 sm:mb-3 shrink-0">
+                    {i === 0 ? <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" /> : i === 1 ? <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" /> : i === 2 ? <Layers className="w-4 h-4 sm:w-5 sm:h-5" /> : <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />}
                   </div>
-                  <h4 className="font-serif font-bold text-base text-theme-primary">{box.title}</h4>
-                  <p className="text-xs text-theme-muted font-light leading-relaxed">{box.description}</p>
+                  <div>
+                    <h4 className="font-serif font-bold text-xs sm:text-base text-theme-primary leading-tight">{box.title}</h4>
+                    <p className="text-[10px] sm:text-xs text-theme-muted font-light leading-snug sm:leading-relaxed mt-1 line-clamp-3 sm:line-clamp-none">{box.description}</p>
+                  </div>
                 </div>
               ))}
             </div>
