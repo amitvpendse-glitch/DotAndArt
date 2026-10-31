@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { SyncProvider } from './context/SyncContext';
+
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { EnquiryDrawer } from './components/EnquiryDrawer';
@@ -159,15 +159,9 @@ export default function App() {
     };
     window.addEventListener('app_sync_refresh', handleSyncRefresh);
 
-    // Periodic cross-browser background sync interval
-    const syncInterval = setInterval(() => {
-      window.dispatchEvent(new CustomEvent('app_products_updated'));
-    }, 20000);
-
     return () => {
       window.removeEventListener('app_settings_updated', handleSettingsUpdate);
       window.removeEventListener('app_sync_refresh', handleSyncRefresh);
-      clearInterval(syncInterval);
     };
   }, []);
 
@@ -401,7 +395,6 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <SyncProvider>
         <CartProvider>
           <div className="min-h-screen flex flex-col font-sans antialiased bg-theme-page text-theme-primary transition-colors duration-500 overflow-x-clip">
             <Navbar
@@ -430,7 +423,6 @@ export default function App() {
             <FloatingActions />
           </div>
         </CartProvider>
-      </SyncProvider>
     </ThemeProvider>
   );
 }
