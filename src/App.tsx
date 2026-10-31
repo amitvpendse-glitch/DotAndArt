@@ -55,8 +55,14 @@ export default function App() {
   const [shopCategoryFilter, setShopCategoryFilter] = useState<string>('all');
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
 
-  // Admin Auth State (Always requires password entry when site is opened or refreshed)
-  const [adminToken, setAdminToken] = useState<string | null>(null);
+  // Admin Auth State (Persists across page refreshes)
+  const [adminToken, setAdminToken] = useState<string | null>(() => {
+    try {
+      return sessionStorage.getItem('dot_admin_token') || localStorage.getItem('dot_admin_token') || null;
+    } catch {
+      return null;
+    }
+  });
   const [adminUsername, setAdminUsername] = useState<string>('admin');
   const [adminTab, setAdminTab] = useState<string>('dashboard');
   const [productFilterMissingImages, setProductFilterMissingImages] = useState<boolean>(false);
@@ -209,50 +215,33 @@ export default function App() {
     const userActivityEvents = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
     userActivityEvents.forEach((evt) => window.addEventListener(evt, updateActivity, { passive: true }));
 
-    // Periodic Session Validation (Polls server to check if logged in on another device or tab)
+    // Periodic Session Validation
     const sessionValidationInterval = setInterval(() => {
       safeFetchJson<{ authenticated: boolean }>(
         '/api/admin/check',
         { headers: { Authorization: `Bearer ${adminToken}` } },
-        { authenticated: false }
+        { authenticated: true }
       ).then((res) => {
-        if (!res || !res.authenticated) {
-          console.warn('Admin session invalidated by another device or tab login.');
+        // Only log out if explicit invalidation was returned by the server
+        if (res && res.authenticated === false) {
+          console.warn('Admin session invalidated.');
           handleAdminLogout();
         }
       });
-    }, 4000);
+    }, 30000);
 
-    // Check for idle period every 5 seconds
+    // Check for idle period every 30 seconds
     const idleCheckInterval = setInterval(() => {
       if (Date.now() - lastActivityTime > IDLE_TIMEOUT_MS) {
         console.warn('Admin session expired due to 10 minutes of inactivity.');
         handleAdminLogout();
       }
-    }, 5000);
-
-    // Disaster Recovery Auto-Logout triggers
-    const handleDisasterError = () => {
-      console.error('Disaster recovery event detected. Automatically logging out admin.');
-      handleAdminLogout();
-    };
-
-    const handleOffline = () => {
-      console.warn('Network offline disaster event detected. Automatically logging out admin.');
-      handleAdminLogout();
-    };
-
-    window.addEventListener('error', handleDisasterError);
-    window.addEventListener('unhandledrejection', handleDisasterError);
-    window.addEventListener('offline', handleOffline);
+    }, 30000);
 
     return () => {
       userActivityEvents.forEach((evt) => window.removeEventListener(evt, updateActivity));
       clearInterval(idleCheckInterval);
       clearInterval(sessionValidationInterval);
-      window.removeEventListener('error', handleDisasterError);
-      window.removeEventListener('unhandledrejection', handleDisasterError);
-      window.removeEventListener('offline', handleOffline);
     };
   }, [adminToken]);
 
