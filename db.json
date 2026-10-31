@@ -216,6 +216,137 @@
   ],
   "products": [
     {
+      "id": "prod-da-lp-18-0005",
+      "sku": "DA-LP-18-0005",
+      "name": "Lippan Wall Hanging",
+      "short_description": "Authentic handcrafted mud and mirror Lippan artwork",
+      "description": "Authentic Kutch mud and mirror Lippan artwork handcrafted with traditional motifs and high-clarity mirrors.",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Moisture-resistant MDF board, High-grade clay paste, Mirrors, Protective Sealant",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "1-3 Days",
+      "shipping_info": "Worldwide insured shipping available",
+      "special_information": "Clean gently with a soft dry microfiber cloth.",
+      "featured": false,
+      "is_published": true,
+      "is_available": false,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 3500,
+      "base_size": "18 Inches",
+      "images": [
+        {
+          "id": "img-prod-da-lp-18-0005-1",
+          "caption": "Lippan Wall Hanging",
+          "alt_text": "Lippan Wall Hanging (DA-LP-18-0005)",
+          "is_primary": true,
+          "product_id": "prod-da-lp-18-0005",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-18-0005.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T16:26:04.53858+00:00",
+      "updated_at": "2026-10-31T16:16:14.575+00:00"
+    },
+    {
+      "id": "prod-da-lp-18-0004",
+      "sku": "DA-LP-18-0004",
+      "name": "Lippan Wall Hanging",
+      "short_description": "Authentic handcrafted mud and mirror Lippan artwork",
+      "description": "Authentic Kutch mud and mirror Lippan artwork handcrafted with traditional motifs and high-clarity mirrors.",
+      "category_id": "cat-lippan",
+      "category_name": "Lippan Wall Hangings",
+      "category_slug": "lippan-wall-hangings",
+      "material": "Moisture-resistant MDF board, High-grade clay paste, Mirrors, Protective Sealant",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "1-3 Days",
+      "shipping_info": "Worldwide insured shipping available",
+      "special_information": "Clean gently with a soft dry microfiber cloth.",
+      "featured": false,
+      "is_published": true,
+      "is_available": false,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": true,
+      "extra_delivery_days": 5,
+      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
+      "base_price": 3500,
+      "base_size": "18 Inches",
+      "images": [
+        {
+          "id": "img-prod-da-lp-18-0004-1",
+          "caption": "Lippan Wall Hanging",
+          "alt_text": "Lippan Wall Hanging (DA-LP-18-0004)",
+          "is_primary": true,
+          "product_id": "prod-da-lp-18-0004",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-18-0004.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [],
+      "created_at": "2026-10-28T16:22:43.283836+00:00",
+      "updated_at": "2026-10-31T16:16:02.79+00:00"
+    },
+    {
+      "id": "prod-1793462344635",
+      "sku": "DA-MD-18-0033",
+      "name": "Mandala Wall Hanging",
+      "short_description": "",
+      "description": "Circular hand-painted dot mandala",
+      "category_id": "cat-mandala",
+      "category_name": "Mandala Wall Hangings",
+      "category_slug": "mandala-wall-hangings",
+      "material": "Moisture-resistant MDF board, Acrylic Paints, Mirrors, Spray Varnish, Hanging Hook and Stabilizer",
+      "framing": "Ready to hang",
+      "customizable": true,
+      "creation_time": "4-7 Days",
+      "shipping_info": "Packed carefully in bubble wrap and shipped in a corrugated box",
+      "special_information": "Wipe with dry or damp soft cloth",
+      "featured": false,
+      "is_published": true,
+      "is_available": true,
+      "available_badge_text": "Available",
+      "unavailable_badge_text": "Made to Order",
+      "show_available_badge": true,
+      "is_high_demand": false,
+      "extra_delivery_days": 5,
+      "high_demand_message": "",
+      "base_price": 2300,
+      "base_size": "18 Inches",
+      "images": [
+        {
+          "id": "img-1793462331752-0-3wdp",
+          "alt_text": "DA-MD-18-0033.jpg",
+          "is_primary": true,
+          "product_id": "",
+          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-MD-18-0033_1793462330580.jpg",
+          "display_order": 1
+        }
+      ],
+      "variants": [
+        {
+          "id": "v-1793462273874-1",
+          "size": "12 inches diameter",
+          "price": 2500,
+          "product_id": "",
+          "is_available": true,
+          "display_order": 1
+        }
+      ],
+      "created_at": "2026-10-31T15:59:03.42864+00:00",
+      "updated_at": "2026-10-31T15:59:06.558+00:00"
+    },
+    {
       "id": "prod-1793280613767",
       "sku": "DA-TC-CS-0008",
       "name": "Casted Stone Tea Light Candle Holder",
@@ -7982,88 +8113,6 @@
       "updated_at": "2026-10-29T11:42:53.182+00:00"
     },
     {
-      "id": "prod-da-lp-18-0005",
-      "sku": "DA-LP-18-0005",
-      "name": "Lippan Wall Hanging",
-      "short_description": "Authentic handcrafted mud and mirror Lippan artwork",
-      "description": "Authentic Kutch mud and mirror Lippan artwork handcrafted with traditional motifs and high-clarity mirrors.",
-      "category_id": "cat-lippan",
-      "category_name": "Lippan Wall Hangings",
-      "category_slug": "lippan-wall-hangings",
-      "material": "Moisture-resistant MDF board, High-grade clay paste, Mirrors, Protective Sealant",
-      "framing": "Ready to hang",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Worldwide insured shipping available",
-      "special_information": "Clean gently with a soft dry microfiber cloth.",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": true,
-      "extra_delivery_days": 5,
-      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
-      "base_price": 3500,
-      "base_size": "18 Inches",
-      "images": [
-        {
-          "id": "img-prod-da-lp-18-0005-1",
-          "caption": "Lippan Wall Hanging",
-          "alt_text": "Lippan Wall Hanging (DA-LP-18-0005)",
-          "is_primary": true,
-          "product_id": "prod-da-lp-18-0005",
-          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-18-0005.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T16:26:04.53858+00:00",
-      "updated_at": "2026-10-29T11:42:52.055+00:00"
-    },
-    {
-      "id": "prod-da-lp-18-0004",
-      "sku": "DA-LP-18-0004",
-      "name": "Lippan Wall Hanging",
-      "short_description": "Authentic handcrafted mud and mirror Lippan artwork",
-      "description": "Authentic Kutch mud and mirror Lippan artwork handcrafted with traditional motifs and high-clarity mirrors.",
-      "category_id": "cat-lippan",
-      "category_name": "Lippan Wall Hangings",
-      "category_slug": "lippan-wall-hangings",
-      "material": "Moisture-resistant MDF board, High-grade clay paste, Mirrors, Protective Sealant",
-      "framing": "Ready to hang",
-      "customizable": true,
-      "creation_time": "1-3 Days",
-      "shipping_info": "Worldwide insured shipping available",
-      "special_information": "Clean gently with a soft dry microfiber cloth.",
-      "featured": false,
-      "is_published": true,
-      "is_available": true,
-      "available_badge_text": "Available",
-      "unavailable_badge_text": "Made to Order",
-      "show_available_badge": true,
-      "is_high_demand": true,
-      "extra_delivery_days": 5,
-      "high_demand_message": "Loved by collectors! Due to high artisan demand and intricate mirror curing, please allow 5 additional days for our master artist to craft and perfect your authentic piece.",
-      "base_price": 3500,
-      "base_size": "18 Inches",
-      "images": [
-        {
-          "id": "img-prod-da-lp-18-0004-1",
-          "caption": "Lippan Wall Hanging",
-          "alt_text": "Lippan Wall Hanging (DA-LP-18-0004)",
-          "is_primary": true,
-          "product_id": "prod-da-lp-18-0004",
-          "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-LP-18-0004.jpg",
-          "display_order": 1
-        }
-      ],
-      "variants": [],
-      "created_at": "2026-10-28T16:22:43.283836+00:00",
-      "updated_at": "2026-10-29T11:42:51.484+00:00"
-    },
-    {
       "id": "prod-33155e6e-aea3-48ad-b433-6cff1522834d",
       "sku": "DA-LP-18-0003",
       "name": "Lippan Wall Hanging",
@@ -8860,180 +8909,6 @@
       "updated_at": "2026-10-28T09:13:02.238+00:00"
     },
     {
-      "id": "page-home",
-      "slug": "home",
-      "title": "Home Page — Dot And Art Studio",
-      "seo_title": "Dot And Art Studio — Handcrafted Mandalas & Lippan Mirror Art",
-      "meta_description": "Discover authentic hand-painted dot mandalas and traditional Kutch Lippan mud-mirror art by artist Shital Thosar.",
-      "status": "published",
-      "sections": [
-        {
-          "id": "sec-home-slideshow",
-          "page_id": "page-home",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-29T16:07:04.959Z",
-          "section_key": "slideshow",
-          "content_json": {
-            "title": "Handcrafted Artwork Showcase",
-            "slides": [
-              {
-                "image": "/static/assets/images/Home_page_banner.jpeg",
-                "title": "PEARL-STUDDED ELEGENT 30\" DOT MANDALA",
-                "subtext": "Hand-painted dot mandala art by Shital Thosar"
-              },
-              {
-                "image": "/static/assets/images/DA-MD-24-0001.jpg",
-                "title": "CELESTIAL RADIANCE · 24\" GEOMETRY DOT MANDALA",
-                "subtext": "Meticulously placed acrylic dots"
-              },
-              {
-                "image": "/static/assets/images/DA-LP-24x48-0001.jpg",
-                "title": "KUTCH TRADITION · 24\"x48\" ASPICIOUS SYMBOLS LIPPAN KAAM",
-                "subtext": "Reflective mirror clay relief panel"
-              },
-              {
-                "image": "/static/assets/images/DA-MD-24-0005.jpg",
-                "title": "RICH MULTICOLOR VIBRANT 24\" DOT MANDALA",
-                "subtext": "Deep blue hues with gold highlights"
-              },
-              {
-                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289628268.jpg",
-                "title": "SHIVA THEME 24\" DOT MANDALA",
-                "subtext": "Handcrafted artwork"
-              },
-              {
-                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289657335.jpg",
-                "title": "KRISHNA THEME 24\" DOT MANDALA",
-                "subtext": "Handcrafted artwork"
-              },
-              {
-                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289709469.jpg",
-                "title": "RED AND ORANGE CASTED TEA LIGHT CANDLE HOLDER SET",
-                "subtext": "Handcrafted artwork"
-              },
-              {
-                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289721423.jpg",
-                "title": "VIBRANT MULTICOLOR LIPPAN TEA LIGHT CANDLE HOLDER SET",
-                "subtext": "Handcrafted artwork"
-              },
-              {
-                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289748984.jpg",
-                "title": "PURPLE CASTED TEA LIGHT CANDLE HOLDER SET",
-                "subtext": "Handcrafted artwork"
-              },
-              {
-                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289765457.jpg",
-                "title": "ELEGENT LIPPAN TEA LIGHT CANDLE HOLDER SET",
-                "subtext": "Handcrafted artwork"
-              }
-            ]
-          },
-          "section_type": "slideshow",
-          "display_order": 1
-        },
-        {
-          "id": "sec-home-begin-portals",
-          "page_id": "page-home",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-29T16:07:54.175Z",
-          "section_key": "begin_portals",
-          "content_json": {
-            "title": "Where would you like to begin?",
-            "portals": [
-              {
-                "link": "/shop",
-                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793290052829.jpg",
-                "title": "Artworks Collection",
-                "subtitle": "Explore handcrafted Dot Mandalas & Lippan Mirrors"
-              },
-              {
-                "link": "/custom-order",
-                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793290073125.jpg",
-                "title": "Commissions Studio",
-                "subtitle": "Personalized sizes, color palettes & photo art"
-              },
-              {
-                "link": "/about",
-                "image": "/static/assets/images/Home_page_banner.jpeg",
-                "title": "Artist & Studio Story",
-                "subtitle": "Meet Shital Thosar and read collector reviews"
-              }
-            ],
-            "subtitle": "Select a category to explore our authentic collection or start a custom order."
-          },
-          "section_type": "begin_portals",
-          "display_order": 2
-        },
-        {
-          "id": "sec-home-featured",
-          "page_id": "page-home",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "featured_artworks",
-          "content_json": {
-            "badge": "Studio Highlights",
-            "title": "Featured Hand-Painted Pieces",
-            "description": "Explore our most sought-after Dot Mandalas and Lippan Mud-Mirror Art, each piece individually hand-painted."
-          },
-          "section_type": "featured_artworks",
-          "display_order": 4
-        },
-        {
-          "id": "sec-home-large-mandalas",
-          "page_id": "page-home",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-29T16:12:59.233Z",
-          "section_key": "large_mandalas_banner",
-          "content_json": {
-            "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793290377436.jpg",
-            "quote": "You choose the colours and the inspiration. I create the mandala. Together, it creates magic.",
-            "title": "Made to enthrall,\nup close and across the room.",
-            "author": "— Shital Thosar",
-            "eyebrow": "CUSTOM COMMISSIONS · LARGE SIZED MANDALAS",
-            "paragraph": "At this scale a mandala holds you still for a moment. From the doorway it reads as one bold form. Step closer and the nuance arrives: the concentric rings, the subtle gradients, the thousands of individual dots and light-reflecting mirrors that built it."
-          },
-          "section_type": "large_mandalas_banner",
-          "display_order": 5
-        },
-        {
-          "id": "sec-home-trust-boxes",
-          "page_id": "page-home",
-          "created_at": "2026-10-15T08:00:00.000Z",
-          "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
-          "section_key": "trust_boxes",
-          "content_json": {
-            "boxes": [
-              {
-                "title": "100% Handcrafted Originals",
-                "description": "Every dot and clay relief pattern is meticulously handcrafted by artist Shital Thosar."
-              },
-              {
-                "title": "Protective Varnish Finish",
-                "description": "Sealed with professional UV & moisture resistant varnish for long-lasting vibrant artwork."
-              },
-              {
-                "title": "Safe Worldwide Delivery",
-                "description": "Multi-layered custom wooden crate & foam bubble packaging ensures 100% safe transit."
-              },
-              {
-                "title": "Direct Artist Support",
-                "description": "Direct communication with the artist for color advice, wall sizing & custom creations."
-              }
-            ]
-          },
-          "section_type": "trust_boxes",
-          "display_order": 6
-        }
-      ],
-      "created_at": "2026-10-28T09:13:02.237+00:00",
-      "updated_at": "2026-10-29T16:20:27.573+00:00"
-    },
-    {
       "id": "page-about",
       "slug": "about",
       "title": "About Shital Thosar — Dot And Art Studio",
@@ -9098,12 +8973,12 @@
           "page_id": "page-about",
           "created_at": "2026-10-15T08:00:00.000Z",
           "is_visible": true,
-          "updated_at": "2026-10-29T16:13:37.225Z",
+          "updated_at": "2026-10-30T06:00:09.407Z",
           "section_key": "artist_card",
           "content_json": {
             "name": "Shital Thosar",
             "role": "FOUNDER & MASTER ARTIST",
-            "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/ABOUT_1793290415940.jpg"
+            "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793295335033.jpg"
           },
           "section_type": "profile_card",
           "display_order": 4
@@ -9145,16 +9020,16 @@
           "page_id": "page-about",
           "created_at": "2026-10-15T08:00:00.000Z",
           "is_visible": true,
-          "updated_at": "2026-10-15T08:00:00.000Z",
+          "updated_at": "2026-10-30T15:45:46.667Z",
           "section_key": "meditative_discipline",
           "content_json": {
             "feature_1_desc": "Every circle, arc, and mirror placement is created manually using traditional dotting tools.",
             "feature_2_desc": "Designs rooted in ancient Vedic proportions that balance energy and harmony in living spaces.",
             "feature_3_desc": "Coated with professional artist varnish to safeguard colors and mirrors against dust and humidity.",
-            "feature_4_desc": "Custom shock-absorbent multi-ply packaging ensures your delicate artwork arrives flawless.",
+            "feature_4_desc": "Carefully wrapping in bubble wrap and shipping in corrugated box ensures your delicate artwork arrives flawless.",
             "feature_1_title": "No Mechanization",
             "feature_2_title": "Authentic Geometry",
-            "feature_3_title": "Weather Protective Seal",
+            "feature_3_title": "Weather Protective Seal i.e., Varnish",
             "feature_4_title": "Transit Safe Crate",
             "discipline_badge": "THE MEDITATIVE DISCIPLINE",
             "discipline_title": "Every Dot Placed with Breath, Patience & Devotion",
@@ -9201,74 +9076,318 @@
         }
       ],
       "created_at": "2026-10-28T09:13:02.238+00:00",
-      "updated_at": "2026-10-29T16:13:42.669+00:00"
+      "updated_at": "2026-10-30T15:45:52.545+00:00"
+    },
+    {
+      "id": "page-home",
+      "slug": "home",
+      "title": "Home Page — Dot And Art Studio",
+      "seo_title": "Dot And Art Studio — Handcrafted Mandalas & Lippan Mirror Art",
+      "meta_description": "Discover authentic hand-painted dot mandalas and traditional Kutch Lippan mud-mirror art by artist Shital Thosar.",
+      "status": "published",
+      "sections": [
+        {
+          "id": "sec-home-slideshow",
+          "page_id": "page-home",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-31T04:15:13.943Z",
+          "section_key": "slideshow",
+          "content_json": {
+            "title": "Handcrafted Artwork Showcase",
+            "slides": [
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289628268.jpg",
+                "title": "SHIVA THEME 24\" DOT MANDALA",
+                "subtext": "Hand-painted dot mandala with central Shiva photo"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793361592226.jpg",
+                "title": "CLASSY MULTICOLOR 24\" DOT MANDALA",
+                "subtext": "Hand-painted dot mandala"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289709469.jpg",
+                "title": "CASTED STONE TEA LIGHT CANDLE HOLDER SET",
+                "subtext": "Hand-casted and painted stones"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793289721423.jpg",
+                "title": "LIPPAN TEA LIGHT CANDLE HOLDER SET",
+                "subtext": "Hand-crafted lippan kaam"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793361637194.jpg",
+                "title": "GANESHA THEME 18\" DOT MANDALA",
+                "subtext": "Hand-painted dot mandala with central Ganesha photo"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793361648134.jpg",
+                "title": "KRISHNA AND PEACOCK THEME 18\" DOT MANDALA",
+                "subtext": "Hand-painted dot mandala with central Krishna photo"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793361716872.jpg",
+                "title": "FIRE THEME 18\" SQUARE DOT MANDALA",
+                "subtext": "Hand-painted dot mandala"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793361769577.jpg",
+                "title": "LIPPAN PEACOCK MIRROR 18\"",
+                "subtext": "Hand-crafted and painted lippan kaam"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793361842230.jpg",
+                "title": "VIBRANT MULTICOLOR 24\" DOT MANDALA",
+                "subtext": "Hand-painted dot mandala"
+              },
+              {
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793361896229.jpg",
+                "title": "ELEGENT GRAY AND BLUE 15\" DOT MANDALA",
+                "subtext": "Hand-painted dot mandala"
+              }
+            ]
+          },
+          "section_type": "slideshow",
+          "display_order": 1
+        },
+        {
+          "id": "sec-home-begin-portals",
+          "page_id": "page-home",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-30T12:09:44.725Z",
+          "section_key": "begin_portals",
+          "content_json": {
+            "title": "Where would you like to begin?",
+            "portals": [
+              {
+                "link": "/shop",
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793338991153.jpg",
+                "title": "Artworks Collection",
+                "subtitle": "Explore handcrafted Dot Mandalas & Lippan Mirrors"
+              },
+              {
+                "link": "/custom-order",
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793333214133.jpg",
+                "title": "Commissions Studio",
+                "subtitle": "Personalized sizes, color palettes & photo art"
+              },
+              {
+                "link": "/about",
+                "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/HOME_1793362182983.jpg",
+                "title": "Artist & Studio Story",
+                "subtitle": "Meet Shital Thosar and read collector reviews"
+              }
+            ],
+            "subtitle": "Select a category to explore our authentic collection or start a custom order."
+          },
+          "section_type": "begin_portals",
+          "display_order": 2
+        },
+        {
+          "id": "sec-home-detail-plates",
+          "page_id": "page-home",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": false,
+          "updated_at": "2026-10-30T04:09:06.933Z",
+          "section_key": "detail_plates",
+          "content_json": {
+            "title": "Details you can feel before you touch it.",
+            "plates": [
+              {
+                "sku": "DA-MD-12-0001",
+                "src": "/static/assets/images/DA-MD-12-0001.jpg",
+                "name": "Celestial Teal Mandala",
+                "size": "12\""
+              },
+              {
+                "sku": "DA-MD-18-0002",
+                "src": "/static/assets/images/DA-MD-18-0002.jpg",
+                "name": "Peacock Bloom Mandala",
+                "size": "18\""
+              },
+              {
+                "sku": "DA-LP-14-0001",
+                "src": "/static/assets/images/DA-LP-14-0001.jpg",
+                "name": "Radiant Lippan Kaam Mirror",
+                "size": "14\""
+              },
+              {
+                "sku": "DA-MD-10-0001",
+                "src": "/static/assets/images/DA-MD-10-0001.jpg",
+                "name": "Harmonic Ochre Mandala",
+                "size": "10\""
+              },
+              {
+                "sku": "DA-MD-15-0001",
+                "src": "/static/assets/images/DA-MD-15-0001.jpg",
+                "name": "Multi-Colour Symphony",
+                "size": "15\""
+              },
+              {
+                "sku": "DA-LP-18-0001",
+                "src": "/static/assets/images/DA-LP-18-0001.jpg",
+                "name": "Concentric Lippan Relief",
+                "size": "18\""
+              },
+              {
+                "sku": "DA-LP-Set-0001",
+                "src": "/static/assets/images/DA-LP-Set-0001.jpg",
+                "name": "Kutch Diya & Mirror Inlay",
+                "size": "Set"
+              },
+              {
+                "sku": "DA-MD-12-0006",
+                "src": "/static/assets/images/DA-MD-12-0006.jpg",
+                "name": "Blush Lotus Mandala",
+                "size": "12\""
+              },
+              {
+                "sku": "DA-MD-24-0001",
+                "src": "/static/assets/images/DA-MD-24-0001.jpg",
+                "name": "Royal Emerald Monumental",
+                "size": "24\""
+              }
+            ],
+            "subtitle": "Zoom in on the raised acrylic dots, clay mud relief, and sparkling mirrorwork."
+          },
+          "section_type": "detail_plates",
+          "display_order": 3
+        },
+        {
+          "id": "sec-home-featured",
+          "page_id": "page-home",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "featured_artworks",
+          "content_json": {
+            "badge": "Studio Highlights",
+            "title": "Featured Hand-Painted Pieces",
+            "description": "Explore our most sought-after Dot Mandalas and Lippan Mud-Mirror Art, each piece individually hand-painted."
+          },
+          "section_type": "featured_artworks",
+          "display_order": 4
+        },
+        {
+          "id": "sec-home-large-mandalas",
+          "page_id": "page-home",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-30T04:05:44.597Z",
+          "section_key": "large_mandalas_banner",
+          "content_json": {
+            "image": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/ABOUT_1793290415940.jpg",
+            "quote": "You choose the colours and the inspiration. I create the mandala. Together, it creates magic.",
+            "title": "Made to enthrall,\nup close and across the room.",
+            "author": "— Shital Thosar",
+            "eyebrow": "CUSTOM COMMISSIONS · LARGE SIZED MANDALAS",
+            "paragraph": "At this scale a mandala holds you still for a moment. From the doorway it reads as one bold form. Step closer and the nuance arrives: the concentric rings, the subtle gradients, the thousands of individual dots and light-reflecting mirrors that built it."
+          },
+          "section_type": "large_mandalas_banner",
+          "display_order": 5
+        },
+        {
+          "id": "sec-home-trust-boxes",
+          "page_id": "page-home",
+          "created_at": "2026-10-15T08:00:00.000Z",
+          "is_visible": true,
+          "updated_at": "2026-10-15T08:00:00.000Z",
+          "section_key": "trust_boxes",
+          "content_json": {
+            "boxes": [
+              {
+                "title": "100% Handcrafted Originals",
+                "description": "Every dot and clay relief pattern is meticulously handcrafted by artist Shital Thosar."
+              },
+              {
+                "title": "Protective Varnish Finish",
+                "description": "Sealed with professional UV & moisture resistant varnish for long-lasting vibrant artwork."
+              },
+              {
+                "title": "Safe Worldwide Delivery",
+                "description": "Multi-layered custom wooden crate & foam bubble packaging ensures 100% safe transit."
+              },
+              {
+                "title": "Direct Artist Support",
+                "description": "Direct communication with the artist for color advice, wall sizing & custom creations."
+              }
+            ]
+          },
+          "section_type": "trust_boxes",
+          "display_order": 6
+        }
+      ],
+      "created_at": "2026-10-28T09:13:02.237+00:00",
+      "updated_at": "2026-10-31T04:15:19.826+00:00"
     }
   ],
   "testimonials": [
     {
+      "id": "test-1793383271411-wm3uo3",
+      "customer_name": "Pranjali",
+      "content": "Your Ganapati art piece got lots of compliments here in USA. Had gifted it to my friend for her house warming and she just loved it!!",
+      "rating": 5,
+      "location": "Michigan, USA",
+      "artwork_purchased": "Ganapati Dot Mandala",
+      "image_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/COLLECTOR-REVIEW_1793383527444.jpg",
+      "display_order": 1,
+      "is_published": true,
+      "created_at": "2026-10-30T18:01:12.505766+00:00",
+      "updated_at": "2026-10-30T18:05:41.834+00:00"
+    },
+    {
+      "id": "test-1793382855865-3ytbz7",
+      "customer_name": "Shital",
+      "content": "My family, plus the person I gifted this artwork to, just loved it. Thanks for the beautiful and stunning artwork.",
+      "rating": 5,
+      "location": "Pune, India",
+      "artwork_purchased": "Rainbow Colors Dot Mandala with Krishna photo",
+      "image_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/COLLECTOR-REVIEW_1793386390369.jpg",
+      "display_order": 1,
+      "is_published": true,
+      "created_at": "2026-10-30T17:54:17.207877+00:00",
+      "updated_at": "2026-10-30T18:53:16.272+00:00"
+    },
+    {
+      "id": "test-1793382714639-csx0xz",
+      "customer_name": "Pranjali",
+      "content": "All 3 of my friends, who received the artworks as gifts from me, were really impressed with the intricate detailing and beautiful work. Thank you for the incredible work and for making the delivery process so smooth.",
+      "rating": 5,
+      "location": "Michigan, USA",
+      "artwork_purchased": "Multiple orders of Dot Mandala and Tea Light Candle Holders",
+      "image_path": "",
+      "display_order": 1,
+      "is_published": true,
+      "created_at": "2026-10-30T17:51:55.884741+00:00",
+      "updated_at": "2026-10-30T18:04:21.846+00:00"
+    },
+    {
+      "id": "test-1793382446045-dce2xc",
+      "customer_name": "Aarti",
+      "content": "I ordered mandala wall hangings as return gifts for a function. Every single artwork was unique, colorful, exquisitely crafted and neatly done. All praises the artworks so much, and gift packaging was wonderfully too. It's a fantastic option for gifting or home decor, highly recommended. Thanks Shital.",
+      "rating": 5,
+      "location": "Pune, India",
+      "artwork_purchased": "Dot Mandala Bulk Order of 20",
+      "image_path": "",
+      "display_order": 1,
+      "is_published": true,
+      "created_at": "2026-10-30T17:47:27.191352+00:00",
+      "updated_at": "2026-10-30T17:47:26.126+00:00"
+    },
+    {
       "id": "test-dummy-005",
-      "customer_name": "Amit",
+      "customer_name": "Amit Pendse",
       "content": "Ordered international delivery to Dubai and it arrived within 5 days safely in flawless condition. Outstanding craftsmanship, mesmerizing symmetry, and responsive communication from the artist.",
       "rating": 5,
-      "location": "",
+      "location": "Dubai",
       "artwork_purchased": "Harmonic Geometry Lippan Mirror Hanging",
       "image_path": "",
       "display_order": 1,
       "is_published": true,
       "created_at": "2026-10-19T16:45:00+00:00",
-      "updated_at": "2026-10-19T16:45:00+00:00"
-    },
-    {
-      "id": "test-dummy-004",
-      "customer_name": "Abhijit",
-      "content": "Working with Shital on our custom anniversary piece was a delight. She tailored the color palette to our dining room wall perfectly. The unboxing experience felt like opening a royal gift.",
-      "rating": 5,
-      "location": "",
-      "artwork_purchased": "Custom 30-Inch Multi-Tier Floral Mandala",
-      "image_path": "",
-      "display_order": 1,
-      "is_published": true,
-      "created_at": "2026-10-18T14:20:00+00:00",
-      "updated_at": "2026-10-18T14:20:00+00:00"
-    },
-    {
-      "id": "test-dummy-003",
-      "customer_name": "Samit",
-      "content": "Photos simply do not do justice to the tactile depth and gloss finish. The mirrors catch the morning sun in the most magical way. You can feel the hours of patient devotion in every concentric circle.",
-      "rating": 5,
-      "location": "",
-      "artwork_purchased": "Teal & Gold Harmonic Lotus Mandala",
-      "image_path": "",
-      "display_order": 1,
-      "is_published": true,
-      "created_at": "2026-10-17T09:15:00+00:00",
-      "updated_at": "2026-10-17T09:15:00+00:00"
-    },
-    {
-      "id": "test-dummy-002",
-      "customer_name": "Pranit",
-      "content": "We commissioned a custom Lippan piece for our clinic reception. Shital kept us updated throughout the process and incorporated our requested clay relief patterns and mirrors. Patients constantly compliment the craftsmanship.",
-      "rating": 5,
-      "location": "",
-      "artwork_purchased": "Traditional Kutch Lippan Mud-Mirror Art",
-      "image_path": "",
-      "display_order": 1,
-      "is_published": true,
-      "created_at": "2026-10-16T11:30:00+00:00",
-      "updated_at": "2026-10-16T11:30:00+00:00"
-    },
-    {
-      "id": "test-dummy-001",
-      "customer_name": "Guru",
-      "content": "The precision of every single dot is astonishing! It has transformed our living room and meditation corner into a sanctuary of calm. Arrived impeccably packed in a custom wooden-reinforced crate without a single scratch.",
-      "rating": 5,
-      "location": "",
-      "artwork_purchased": "24-Inch Golden Harmony Dot Mandala",
-      "image_path": "",
-      "display_order": 1,
-      "is_published": true,
-      "created_at": "2026-10-15T10:00:00+00:00",
-      "updated_at": "2026-10-15T10:00:00+00:00"
+      "updated_at": "2026-10-31T14:34:51.606+00:00"
     }
   ],
   "faqs": [

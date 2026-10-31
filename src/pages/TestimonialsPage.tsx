@@ -186,6 +186,28 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate, 
     return () => window.removeEventListener('app_testimonials_updated', loadTestimonialsData);
   }, []);
 
+  // Keyboard navigation for full detail modal
+  useEffect(() => {
+    if (!viewedTestimonial || testimonials.length <= 1) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setViewedTestimonial(null);
+      } else if (e.key === 'ArrowLeft') {
+        const currentIndex = testimonials.findIndex((t) => t.id === viewedTestimonial.id);
+        const prevIdx = currentIndex <= 0 ? testimonials.length - 1 : currentIndex - 1;
+        setViewedTestimonial(testimonials[prevIdx]);
+      } else if (e.key === 'ArrowRight') {
+        const currentIndex = testimonials.findIndex((t) => t.id === viewedTestimonial.id);
+        const nextIdx = currentIndex >= testimonials.length - 1 ? 0 : currentIndex + 1;
+        setViewedTestimonial(testimonials[nextIdx]);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [viewedTestimonial, testimonials]);
+
   // Handle Public User Submission
   const handlePublicSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

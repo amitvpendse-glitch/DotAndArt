@@ -45,7 +45,27 @@ const DEFAULT_CATEGORIES: Category[] = [
     created_at: new Date('2025-01-01').toISOString(),
     updated_at: new Date('2025-01-01').toISOString(),
   },
+  {
+    id: 'cat-tea-light-candle-holders',
+    name: 'Tea Light Candle Holders',
+    slug: 'tea-light-candle-holders',
+    description: 'Handcrafted authentic tea light candle holders',
+    display_order: 3,
+    is_active: true,
+    created_at: new Date('2025-01-01').toISOString(),
+    updated_at: new Date('2025-01-01').toISOString(),
+  },
 ];
+
+export function normalizeCategorySlug(rawSlug?: string): string {
+  if (!rawSlug) return 'all';
+  const s = rawSlug.toLowerCase().trim();
+  if (s === 'all' || s === '') return 'all';
+  if (s.includes('mandala')) return 'mandala-wall-hangings';
+  if (s.includes('lippan')) return 'lippan-wall-hangings';
+  if (s.includes('tea-light') || s.includes('candle')) return 'tea-light-candle-holders';
+  return s;
+}
 
 export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectProduct, onNavigate }) => {
   usePageSeo('shop', 'Shop Handcrafted Mandalas & Lippan Wall Hangings — Dot And Art');
@@ -59,7 +79,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   const [downloadingSku, setDownloadingSku] = useState<string | null>(null);
 
   // Filters State
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'all');
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => normalizeCategorySlug(initialCategory));
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSizeFilter, setSelectedSizeFilter] = useState<string>('all');
   const [priceTier, setPriceTier] = useState<string>('all');
@@ -67,26 +87,19 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   const [highDemandOnly, setHighDemandOnly] = useState<boolean>(false);
 
   const handleSelectCategory = (slug: string) => {
-    setSelectedCategory(slug);
+    const norm = normalizeCategorySlug(slug);
+    setSelectedCategory(norm);
     setSelectedSizeFilter('all');
+    if (onNavigate) {
+      onNavigate(norm === 'all' ? '/shop' : `/shop?category=${norm}`);
+    }
   };
 
   useEffect(() => {
-    if (initialCategory && initialCategory !== 'all') {
-      setSelectedCategory(initialCategory);
+    if (initialCategory !== undefined) {
+      const norm = normalizeCategorySlug(initialCategory);
+      setSelectedCategory(norm);
       setSelectedSizeFilter('all');
-    } else {
-      const savedFilters = sessionStorage.getItem('shop_filters');
-      if (savedFilters) {
-        try {
-          const { category, size, price, sort, highDemand } = JSON.parse(savedFilters);
-          if (category && !initialCategory) setSelectedCategory(category);
-          if (size) setSelectedSizeFilter(size);
-          if (price) setPriceTier(price);
-          if (sort) setSortBy(sort);
-          if (highDemand !== undefined) setHighDemandOnly(highDemand);
-        } catch {}
-      }
     }
   }, [initialCategory]);
 
@@ -284,9 +297,44 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
     }
   }, [availableSizes, selectedSizeFilter]);
 
-  // Client-side filtering & sorting for size, high demand, and price
+  // Client-side filtering & sorting for category, size, high demand, and price
   const displayedProducts = useMemo(() => {
     let list = [...products];
+
+    // 1. Strict Category filter enforcement
+    if (selectedCategory !== 'all') {
+      const catLower = selectedCategory.toLowerCase().trim();
+      const isMandalaReq = catLower.includes('mandala');
+      const isLippanReq = catLower.includes('lippan');
+      const isTeaLightReq = catLower.includes('tea-light') || catLower.includes('candle');
+
+      list = list.filter((p) => {
+        const pSlug = (p.category_slug || '').toLowerCase().trim();
+        const pId = (p.category_id || '').toLowerCase().trim();
+        const pName = (p.category_name || '').toLowerCase().trim();
+        const pSku = (p.sku || '').toUpperCase().trim();
+
+        const isMandalaProd =
+          pSlug.includes('mandala') || pId.includes('mandala') || pName.includes('mandala') || pSku.startsWith('DA-MD');
+        const isLippanProd =
+          pSlug.includes('lippan') || pId.includes('lippan') || pName.includes('lippan') || pSku.startsWith('DA-LP');
+        const isTeaLightProd =
+          pSlug.includes('tea-light') || pId.includes('tea-light') || pName.includes('tea-light') || pSku.startsWith('DA-TC');
+
+        if (isMandalaReq) return isMandalaProd && !isLippanProd;
+        if (isLippanReq) return isLippanProd && !isMandalaProd;
+        if (isTeaLightReq) return isTeaLightProd;
+
+        return (
+          pSlug === catLower ||
+          pId === catLower ||
+          pSlug === `cat-${catLower}` ||
+          pId === `cat-${catLower}` ||
+          pSlug.includes(catLower) ||
+          pId.includes(catLower)
+        );
+      });
+    }
 
     if (selectedSizeFilter !== 'all') {
       const targetSize = selectedSizeFilter.toLowerCase().trim();
@@ -340,7 +388,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
       });
     }
     return list;
-  }, [products, selectedSizeFilter, sortBy, highDemandOnly]);
+  }, [products, selectedCategory, selectedSizeFilter, sortBy, highDemandOnly]);
 
   const handleDirectArtworkEnquiry = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
@@ -765,13 +813,35 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
         </div>
       )}
 
-      {/* Image Zoom Modal for Catalog Items */}
-      <ImageZoomModal
-        product={zoomedProduct}
-        isOpen={!!zoomedProduct}
-        onClose={() => setZoomedProduct(null)}
-        onSelectProduct={onSelectProduct}
-      />
+      {/* Image Zoom Modal for Catalog Items with Previous / Next Arrows */}
+      {zoomedProduct && (() => {
+        const currentIdx = displayedProducts.findIndex(
+          (p) => p.sku === zoomedProduct.sku || p.id === zoomedProduct.id
+        );
+        const handlePrevProduct = () => {
+          if (displayedProducts.length <= 1) return;
+          const prevIdx = currentIdx <= 0 ? displayedProducts.length - 1 : currentIdx - 1;
+          setZoomedProduct(displayedProducts[prevIdx]);
+        };
+        const handleNextProduct = () => {
+          if (displayedProducts.length <= 1) return;
+          const nextIdx = currentIdx >= displayedProducts.length - 1 ? 0 : currentIdx + 1;
+          setZoomedProduct(displayedProducts[nextIdx]);
+        };
+
+        return (
+          <ImageZoomModal
+            product={zoomedProduct}
+            isOpen={!!zoomedProduct}
+            onClose={() => setZoomedProduct(null)}
+            onSelectProduct={onSelectProduct}
+            onPrevProduct={handlePrevProduct}
+            onNextProduct={handleNextProduct}
+            hasPrevProduct={displayedProducts.length > 1}
+            hasNextProduct={displayedProducts.length > 1}
+          />
+        );
+      })()}
 
       {/* Single Artwork Copy Modal for Direct Enquiry */}
       {enquiryProduct && (

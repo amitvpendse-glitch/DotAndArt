@@ -385,12 +385,34 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
         </div>
       )}
       {/* Image Zoom Modal */}
-      <ImageZoomModal
-        product={zoomedProduct}
-        isOpen={!!zoomedProduct}
-        onClose={() => setZoomedProduct(null)}
-        onSelectProduct={onSelectProduct}
-      />
+      {zoomedProduct && (() => {
+        const currentIdx = filtered.findIndex(
+          (p) => p.sku === zoomedProduct.sku || p.id === zoomedProduct.id
+        );
+        const handlePrevGalleryItem = () => {
+          if (filtered.length <= 1) return;
+          const prevIdx = currentIdx <= 0 ? filtered.length - 1 : currentIdx - 1;
+          setZoomedProduct(filtered[prevIdx]);
+        };
+        const handleNextGalleryItem = () => {
+          if (filtered.length <= 1) return;
+          const nextIdx = currentIdx >= filtered.length - 1 ? 0 : currentIdx + 1;
+          setZoomedProduct(filtered[nextIdx]);
+        };
+
+        return (
+          <ImageZoomModal
+            product={zoomedProduct}
+            isOpen={!!zoomedProduct}
+            onClose={() => setZoomedProduct(null)}
+            onSelectProduct={onSelectProduct}
+            onPrevProduct={handlePrevGalleryItem}
+            onNextProduct={handleNextGalleryItem}
+            hasPrevProduct={filtered.length > 1}
+            hasNextProduct={filtered.length > 1}
+          />
+        );
+      })()}
     </div>
   );
 };

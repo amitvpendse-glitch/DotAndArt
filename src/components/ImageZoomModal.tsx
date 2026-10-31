@@ -23,6 +23,10 @@ interface ImageZoomModalProps {
   onClose: () => void;
   initialImageIndex?: number;
   onSelectProduct?: (sku: string) => void;
+  onPrevProduct?: () => void;
+  onNextProduct?: () => void;
+  hasPrevProduct?: boolean;
+  hasNextProduct?: boolean;
 }
 
 export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
@@ -31,6 +35,10 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
   onClose,
   initialImageIndex = 0,
   onSelectProduct,
+  onPrevProduct,
+  onNextProduct,
+  hasPrevProduct = true,
+  hasNextProduct = true,
 }) => {
   const [activeImageIndex, setActiveImageIndex] = useState<number>(initialImageIndex);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
@@ -48,7 +56,7 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
     setPanPosition({ x: 0, y: 0 });
   }, [product, initialImageIndex, isOpen]);
 
-  // Keyboard controls (Esc to close, Left/Right arrows to switch photos)
+  // Keyboard controls (Esc to close, Left/Right arrows to switch artworks or photos)
   useEffect(() => {
     if (!isOpen) return;
 
@@ -56,9 +64,21 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
       if (e.key === 'Escape') {
         onClose();
       } else if (e.key === 'ArrowLeft') {
-        handlePrevImage();
+        if (zoomLevel <= 1) {
+          if (onPrevProduct) {
+            onPrevProduct();
+          } else {
+            handlePrevImage();
+          }
+        }
       } else if (e.key === 'ArrowRight') {
-        handleNextImage();
+        if (zoomLevel <= 1) {
+          if (onNextProduct) {
+            onNextProduct();
+          } else {
+            handleNextImage();
+          }
+        }
       } else if (e.key === '+' || e.key === '=') {
         handleZoomIn();
       } else if (e.key === '-') {
@@ -70,7 +90,7 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, activeImageIndex, product, zoomLevel]);
+  }, [isOpen, activeImageIndex, product, zoomLevel, onPrevProduct, onNextProduct]);
 
   if (!isOpen || !product) return null;
 
@@ -252,25 +272,43 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
             />
           </div>
 
-          {/* Previous / Next Image Navigation overlay buttons */}
-          {imagesList.length > 1 && (
-            <>
-              <button
-                onClick={handlePrevImage}
-                className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-slate-900/80 hover:bg-slate-800 text-white backdrop-blur-md border border-white/10 shadow-xl transition-all cursor-pointer hover:scale-110"
-                title="Previous Image"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
+          {/* Previous / Next Product & Image Navigation overlay buttons */}
+          {(onPrevProduct || imagesList.length > 1) && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onPrevProduct) {
+                  onPrevProduct();
+                } else if (imagesList.length > 1 && activeImageIndex > 0) {
+                  handlePrevImage();
+                } else {
+                  handlePrevImage();
+                }
+              }}
+              className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 p-3 sm:p-3.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white backdrop-blur-md border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+              title="Previous Artwork Item"
+            >
+              <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" />
+            </button>
+          )}
 
-              <button
-                onClick={handleNextImage}
-                className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-slate-900/80 hover:bg-slate-800 text-white backdrop-blur-md border border-white/10 shadow-xl transition-all cursor-pointer hover:scale-110"
-                title="Next Image"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </>
+          {(onNextProduct || imagesList.length > 1) && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onNextProduct) {
+                  onNextProduct();
+                } else if (imagesList.length > 1 && activeImageIndex < imagesList.length - 1) {
+                  handleNextImage();
+                } else {
+                  handleNextImage();
+                }
+              }}
+              className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 p-3 sm:p-3.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white backdrop-blur-md border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+              title="Next Artwork Item"
+            >
+              <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7" />
+            </button>
           )}
 
           {/* Floating Zoom Control Bar */}

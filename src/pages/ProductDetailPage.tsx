@@ -282,6 +282,60 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     addToCart(product, selectedVariant, customizationNotes);
   };
 
+  // Filter catalog by same category and size (e.g. Mandala size 10)
+  const categorySizeFilteredProducts = React.useMemo(() => {
+    if (!product) return [];
+    const activeSizeNum = (currentSize || product.base_size || '').replace(/[^0-9]/g, '');
+
+    const pool = [...getLocalCustomProducts(), ...INITIAL_PRODUCTS].filter((p) => {
+      if (!p || isSkuBlocked(p.sku, p.id) || p.is_published === false) return false;
+
+      // 1. Same Category Check
+      const sameCat =
+        (p.category_id && product.category_id && p.category_id === product.category_id) ||
+        (p.category_slug && product.category_slug && p.category_slug === product.category_slug) ||
+        (!product.category_id && !product.category_slug);
+
+      if (!sameCat) return false;
+
+      // 2. Same Size Check (e.g. size 10)
+      if (!activeSizeNum) return true;
+      const pBaseSizeNum = (p.base_size || '').replace(/[^0-9]/g, '');
+      const hasVarSize = p.variants?.some(
+        (v: any) => (v.size || v.size_name || '').replace(/[^0-9]/g, '') === activeSizeNum
+      );
+
+      return pBaseSizeNum === activeSizeNum || hasVarSize;
+    });
+
+    // Deduplicate by SKU or ID
+    const seen = new Set<string>();
+    return pool.filter((p) => {
+      const key = p.sku || p.id;
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [product, currentSize]);
+
+  const currentIndexInPool = categorySizeFilteredProducts.findIndex(
+    (p) => p.sku === product.sku || p.id === product.id
+  );
+
+  const handlePrevCatalogItem = () => {
+    if (categorySizeFilteredProducts.length <= 1) return;
+    const prevIdx =
+      currentIndexInPool <= 0 ? categorySizeFilteredProducts.length - 1 : currentIndexInPool - 1;
+    onSelectProduct(categorySizeFilteredProducts[prevIdx].sku);
+  };
+
+  const handleNextCatalogItem = () => {
+    if (categorySizeFilteredProducts.length <= 1) return;
+    const nextIdx =
+      currentIndexInPool >= categorySizeFilteredProducts.length - 1 ? 0 : currentIndexInPool + 1;
+    onSelectProduct(categorySizeFilteredProducts[nextIdx].sku);
+  };
+
   const rawProduct = product as (Product & { image_url?: string; image_path?: string }) | null;
   const fallbackImg = rawProduct?.image_url || rawProduct?.image_path;
   const imagesList =
@@ -333,9 +387,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-102"
               />
 
-              {/* Top Left: Product Code Pill & Available Badge */}
+              {/* Top Left: SKU Pill & Available Badge */}
               <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
-                <div className="px-3 py-1 rounded-md bg-theme-card/95 backdrop-blur-xs text-xs font-mono font-semibold text-theme-primary border border-theme-glass shadow-xs">
+                <div className="px-3 py-1 rounded-md bg-theme-card/95 backdrop-blur-xs text-xs font-mono font-bold text-theme-primary border border-theme-glass shadow-xs">
                   {product.sku}
                 </div>
                 {product.show_available_badge !== false && (
@@ -349,73 +403,30 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
 
               {/* Catalog Previous & Next Item Arrows (filtered by same category and size) */}
-              {(() => {
-                const activeSizeNum = (currentSize || product.base_size || '').replace(/[^0-9]/g, '');
-
-                const pool = [...getLocalCustomProducts(), ...INITIAL_PRODUCTS].filter(
-                  (p) => {
-                    if (!p || isSkuBlocked(p.sku, p.id) || p.is_published === false) return false;
-
-                    // 1. Same Category Check
-                    const sameCat =
-                      (p.category_id && product.category_id && p.category_id === product.category_id) ||
-                      (p.category_slug && product.category_slug && p.category_slug === product.category_slug) ||
-                      (!product.category_id && !product.category_slug);
-
-                    if (!sameCat) return false;
-
-                    // 2. Same Size Check
-                    if (!activeSizeNum) return true;
-                    const pBaseSizeNum = (p.base_size || '').replace(/[^0-9]/g, '');
-                    const hasVarSize = p.variants?.some((v: any) => (v.size || v.size_name || '').replace(/[^0-9]/g, '') === activeSizeNum);
-
-                    return pBaseSizeNum === activeSizeNum || hasVarSize;
-                  }
-                );
-
-                // Deduplicate by SKU or ID
-                const seen = new Set<string>();
-                const uniquePool = pool.filter((p) => {
-                  const key = p.sku || p.id;
-                  if (!key || seen.has(key)) return false;
-                  seen.add(key);
-                  return true;
-                });
-                const currentIndex = uniquePool.findIndex((p) => p.sku === product.sku || p.id === product.id);
-
-                return uniquePool.length > 1 ? (
-                  <>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (currentIndex > 0) {
-                          onSelectProduct(uniquePool[currentIndex - 1].sku);
-                        } else {
-                          onSelectProduct(uniquePool[uniquePool.length - 1].sku);
-                        }
-                      }}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white border border-white/20 shadow-xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
-                      title="Previous Catalog Item in Same Category & Size"
-                    >
-                      <ChevronLeft className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (currentIndex >= 0 && currentIndex < uniquePool.length - 1) {
-                          onSelectProduct(uniquePool[currentIndex + 1].sku);
-                        } else {
-                          onSelectProduct(uniquePool[0].sku);
-                        }
-                      }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white border border-white/20 shadow-xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
-                      title="Next Catalog Item in Same Category & Size"
-                    >
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                  </>
-                ) : null;
-              })()}
+              {categorySizeFilteredProducts.length > 1 && (
+                <>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePrevCatalogItem();
+                    }}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white border border-white/20 shadow-xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                    title="Previous Artwork in Same Category & Size"
+                  >
+                    <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNextCatalogItem();
+                    }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white border border-white/20 shadow-xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                    title="Next Artwork in Same Category & Size"
+                  >
+                    <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
@@ -423,9 +434,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           {(() => {
             const detailQty = getItemQuantity(product.id, selectedVariant?.size);
             return (
-              <div className="flex items-center justify-between px-3.5 sm:px-4 py-2.5 bg-theme-card/90 rounded-2xl border border-theme-glass text-xs shadow-md">
-                {/* Price & Dimensions — Hidden on mobile to prevent buttons from wrapping/becoming round */}
-                <div className="hidden sm:flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 px-3.5 sm:px-4 py-3 bg-theme-card/90 rounded-2xl border border-theme-glass text-xs shadow-md">
+                {/* Price, Shipping & Size — Visible on BOTH mobile and desktop */}
+                <div className="flex items-center justify-between sm:justify-start gap-3">
                   <div>
                     <span className="text-[9px] uppercase tracking-wider text-theme-muted font-semibold block leading-none">Price</span>
                     <p className="font-sans font-bold text-base sm:text-lg text-theme-accent mt-0.5 flex items-baseline gap-1">
@@ -443,8 +454,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   </div>
                 </div>
 
-                {/* Sleek Action Buttons (Enquire & Add to Cart) — Full breathing room on mobile */}
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                {/* Sleek Action Buttons (Enquire & Add to Cart) */}
+                <div className="flex items-center gap-2 justify-end pt-1 sm:pt-0 border-t sm:border-t-0 border-theme-glass/60">
                   {/* Enquire Button */}
                   <button
                     onClick={handleDirectWhatsApp}
@@ -638,6 +649,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           {/* Craft Specifications Grid - Complete Official Specifications */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 p-4 rounded-2xl glass-panel border border-theme-glass text-xs">
+            <div className="space-y-1">
+              <span className="text-[10px] uppercase font-bold text-theme-muted flex items-center gap-1">
+                <Info className="w-3 h-3 text-theme-accent" /> Artwork Code
+              </span>
+              <p className="font-mono font-bold text-theme-primary">{product.sku}</p>
+            </div>
+
             <div className="space-y-1">
               <span className="text-[10px] uppercase font-bold text-theme-muted flex items-center gap-1">
                 <Ruler className="w-3 h-3 text-theme-accent" /> Size / Dimensions
@@ -837,6 +855,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         isOpen={isZoomOpen}
         onClose={() => setIsZoomOpen(false)}
         initialImageIndex={activeImageIndex}
+        onSelectProduct={onSelectProduct}
+        onPrevProduct={handlePrevCatalogItem}
+        onNextProduct={handleNextCatalogItem}
+        hasPrevProduct={categorySizeFilteredProducts.length > 1}
+        hasNextProduct={categorySizeFilteredProducts.length > 1}
       />
     </div>
   );
