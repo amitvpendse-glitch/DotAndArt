@@ -386,16 +386,16 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           )}
         </div>
 
-        {/* Row 1: Compact Category Dropdown & High Demand Button Side-by-Side */}
+        {/* Row 1: Compact Category Dropdown & High Demand Button Side-by-Side in One Line */}
         <div className="pt-2 border-t border-theme-glass flex items-center gap-2 sm:gap-3">
-          {/* Category Dropdown (Reduced size) */}
-          <div className="relative flex-1 max-w-[220px] sm:max-w-xs">
+          {/* Category Dropdown */}
+          <div className="relative flex-1 min-w-0 max-w-xs">
             <select
               value={selectedCategory}
               onChange={(e) => handleSelectCategory(e.target.value)}
               className="w-full text-xs font-semibold pl-3 pr-7 py-2 rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary cursor-pointer appearance-none shadow-xs hover:border-theme-accent/50 transition-colors h-9 sm:h-10 truncate"
             >
-              <option value="all">All Artworks</option>
+              <option value="all">All Category Artworks</option>
               {(categories && categories.length > 0 ? categories : DEFAULT_CATEGORIES).map((cat) => (
                 <option key={cat.id || cat.slug} value={cat.slug}>
                   {cat.name}
@@ -405,7 +405,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
             <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-theme-muted absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
-          {/* High Demand Button (Flame icon only on mobile display) */}
+          {/* High Demand Button (Only flame icon button on mobile display, full text on tablet/desktop) */}
           <button
             onClick={() => setHighDemandOnly(!highDemandOnly)}
             className={`h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
@@ -418,7 +418,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
           >
             <Flame className={`w-4 h-4 ${highDemandOnly ? 'text-white fill-white' : 'text-amber-600 fill-amber-500'}`} />
             <span className="hidden sm:inline">High Demand</span>
-            {highDemandOnly && <Check className="w-3.5 h-3.5 ml-0.5" />}
+            {highDemandOnly && <Check className="w-3.5 h-3.5 ml-0.5 hidden sm:inline" />}
           </button>
         </div>
 
