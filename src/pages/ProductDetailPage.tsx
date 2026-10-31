@@ -348,14 +348,31 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 )}
               </div>
 
-              {/* Catalog Previous & Next Item Arrows (filtered by same category) */}
+              {/* Catalog Previous & Next Item Arrows (filtered by same category and size) */}
               {(() => {
+                const activeSizeNum = (currentSize || product.base_size || '').replace(/[^0-9]/g, '');
+
                 const pool = [...getLocalCustomProducts(), ...INITIAL_PRODUCTS].filter(
-                  (p) => p && !isSkuBlocked(p.sku, p.id) && p.is_published !== false &&
-                  ((p.category_id && product.category_id && p.category_id === product.category_id) ||
-                   (p.category_slug && product.category_slug && p.category_slug === product.category_slug) ||
-                   (!product.category_id && !product.category_slug))
+                  (p) => {
+                    if (!p || isSkuBlocked(p.sku, p.id) || p.is_published === false) return false;
+
+                    // 1. Same Category Check
+                    const sameCat =
+                      (p.category_id && product.category_id && p.category_id === product.category_id) ||
+                      (p.category_slug && product.category_slug && p.category_slug === product.category_slug) ||
+                      (!product.category_id && !product.category_slug);
+
+                    if (!sameCat) return false;
+
+                    // 2. Same Size Check
+                    if (!activeSizeNum) return true;
+                    const pBaseSizeNum = (p.base_size || '').replace(/[^0-9]/g, '');
+                    const hasVarSize = p.variants?.some((v: any) => (v.size || v.size_name || '').replace(/[^0-9]/g, '') === activeSizeNum);
+
+                    return pBaseSizeNum === activeSizeNum || hasVarSize;
+                  }
                 );
+
                 // Deduplicate by SKU or ID
                 const seen = new Set<string>();
                 const uniquePool = pool.filter((p) => {
@@ -378,7 +395,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                         }
                       }}
                       className="absolute left-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white border border-white/20 shadow-xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
-                      title="Previous Catalog Item"
+                      title="Previous Catalog Item in Same Category & Size"
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </button>
@@ -392,7 +409,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                         }
                       }}
                       className="absolute right-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white border border-white/20 shadow-xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
-                      title="Next Catalog Item"
+                      title="Next Catalog Item in Same Category & Size"
                     >
                       <ChevronRight className="w-5 h-5" />
                     </button>

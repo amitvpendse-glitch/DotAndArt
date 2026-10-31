@@ -1205,20 +1205,32 @@ app.get('/api/products', async (req: Request, res: Response) => {
   const { category, search, minPrice, maxPrice, size, sort, featured, highDemand } = req.query;
 
   if (category && typeof category === 'string' && category !== 'all') {
-    const catLower = category.toLowerCase();
+    const catLower = category.toLowerCase().trim();
     list = list.filter((p) => {
-      const pSlug = (p.category_slug || '').toLowerCase();
-      const pId = (p.category_id || '').toLowerCase();
+      const pSlug = (p.category_slug || '').toLowerCase().trim();
+      const pId = (p.category_id || '').toLowerCase().trim();
+      const pName = (p.category_name || '').toLowerCase().trim();
+
+      const isMandalaReq = catLower.includes('mandala');
+      const isLippanReq = catLower.includes('lippan');
+      const isTeaLightReq = catLower.includes('tea-light') || catLower.includes('candle');
+
+      const isMandalaProd = pSlug.includes('mandala') || pId.includes('mandala') || pName.includes('mandala') || p.sku?.toUpperCase().startsWith('DA-MD');
+      const isLippanProd = pSlug.includes('lippan') || pId.includes('lippan') || pName.includes('lippan') || p.sku?.toUpperCase().startsWith('DA-LP');
+      const isTeaLightProd = pSlug.includes('tea-light') || pId.includes('tea-light') || pName.includes('tea-light') || p.sku?.toUpperCase().startsWith('DA-TC');
+
+      if (isMandalaReq) return isMandalaProd && !isLippanProd;
+      if (isLippanReq) return isLippanProd && !isMandalaProd;
+      if (isTeaLightReq) return isTeaLightProd;
+
       return (
         pSlug === catLower ||
         pId === catLower ||
+        pSlug === `cat-${catLower}` ||
+        pId === `cat-${catLower}` ||
         pSlug.includes(catLower) ||
-        pId.includes(catLower) ||
-        (catLower.includes('mandala') && pSlug.includes('mandala')) ||
-        (catLower.includes('lippan') && pSlug.includes('lippan')) ||
-        ((catLower.includes('tea-light') || catLower.includes('candle')) && (pSlug.includes('tea-light') || pSlug.includes('candle') || p.sku?.toUpperCase().startsWith('DA-TC')))
+        pId.includes(catLower)
       );
-
     });
   }
 
