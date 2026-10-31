@@ -186,6 +186,28 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate, 
     return () => window.removeEventListener('app_testimonials_updated', loadTestimonialsData);
   }, []);
 
+  // Keyboard navigation when testimonial detail modal is open
+  useEffect(() => {
+    if (!viewedTestimonial || testimonials.length <= 1) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        const currentIndex = testimonials.findIndex((t) => t.id === viewedTestimonial.id);
+        const nextIdx = currentIndex <= 0 ? testimonials.length - 1 : currentIndex - 1;
+        setViewedTestimonial(testimonials[nextIdx]);
+      } else if (e.key === 'ArrowRight') {
+        const currentIndex = testimonials.findIndex((t) => t.id === viewedTestimonial.id);
+        const nextIdx = currentIndex >= testimonials.length - 1 ? 0 : currentIndex + 1;
+        setViewedTestimonial(testimonials[nextIdx]);
+      } else if (e.key === 'Escape') {
+        setViewedTestimonial(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [viewedTestimonial, testimonials]);
+
   // Handle Public User Submission
   const handlePublicSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1050,116 +1072,127 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate, 
         </div>
       )}
       {viewedTestimonial && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
-          {testimonials.length > 1 && (
-            <>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const currentIndex = testimonials.findIndex((t) => t.id === viewedTestimonial.id);
-                  const nextIdx = currentIndex <= 0 ? testimonials.length - 1 : currentIndex - 1;
-                  setViewedTestimonial(testimonials[nextIdx]);
-                }}
-                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
-                title="Previous Review"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const currentIndex = testimonials.findIndex((t) => t.id === viewedTestimonial.id);
-                  const nextIdx = currentIndex >= testimonials.length - 1 ? 0 : currentIndex + 1;
-                  setViewedTestimonial(testimonials[nextIdx]);
-                }}
-                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
-                title="Next Review"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </>
-          )}
-
-          <div className="bg-theme-page border border-theme-glass rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto relative">
-            <button
-              onClick={() => setViewedTestimonial(null)}
-              className="absolute top-4 right-4 p-2 rounded-full text-theme-muted hover:text-theme-primary hover:bg-theme-glass transition-colors cursor-pointer"
-              aria-label="Close review"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            {/* Rating & Verified Tag */}
-            <div className="space-y-2.5 pt-2">
-              <div className="flex items-center gap-1 text-amber-400">
-                {[...Array(viewedTestimonial.rating || 5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
-              <div className="inline-flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                <span>✓ Verified Collector Review</span>
-              </div>
-            </div>
-
-            {/* Complete Review Text */}
-            <div className="relative pt-2">
-              <Quote className="w-8 h-8 text-theme-accent/25 absolute -top-1 -left-2 pointer-events-none" />
-              <p className="text-sm sm:text-base text-theme-primary leading-relaxed italic font-serif pt-3 pl-3">
-                "{viewedTestimonial.content}"
-              </p>
-            </div>
-
-            {/* Collector / Artwork Image if available */}
-            {(viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url) && (
-              <div
-                className="rounded-2xl overflow-hidden border border-theme-glass h-64 sm:h-72 bg-black/40 flex items-center justify-center p-2"
-              >
-                <img
-                  src={viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url}
-                  alt={viewedTestimonial.customer_name}
-                  className="w-full h-full object-contain rounded-xl"
-                />
-              </div>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 bg-black/75 backdrop-blur-md animate-fade-in"
+          onClick={() => setViewedTestimonial(null)}
+        >
+          {/* Centered card container - positions navigation arrows right next to the review box in laptop and desktop view */}
+          <div
+            className="relative max-w-lg w-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {testimonials.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const currentIndex = testimonials.findIndex((t) => t.id === viewedTestimonial.id);
+                    const nextIdx = currentIndex <= 0 ? testimonials.length - 1 : currentIndex - 1;
+                    setViewedTestimonial(testimonials[nextIdx]);
+                  }}
+                  className="absolute -left-3 sm:-left-14 md:-left-16 top-1/2 -translate-y-1/2 z-50 p-2.5 sm:p-3 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                  title="Previous Review (Left Arrow)"
+                  aria-label="Previous Review"
+                >
+                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const currentIndex = testimonials.findIndex((t) => t.id === viewedTestimonial.id);
+                    const nextIdx = currentIndex >= testimonials.length - 1 ? 0 : currentIndex + 1;
+                    setViewedTestimonial(testimonials[nextIdx]);
+                  }}
+                  className="absolute -right-3 sm:-right-14 md:-right-16 top-1/2 -translate-y-1/2 z-50 p-2.5 sm:p-3 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                  title="Next Review (Right Arrow)"
+                  aria-label="Next Review"
+                >
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              </>
             )}
 
-            {/* Author & Artwork Information */}
-            <div className="pt-4 border-t border-theme-glass flex items-center gap-3">
-              {(viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url) ? (
-                <img
-                  src={viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url}
-                  alt={viewedTestimonial.customer_name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-theme-accent shrink-0 shadow-sm"
-                />
-              ) : (
-                <div className="w-12 h-12 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center font-serif font-bold text-base shrink-0 border border-theme-accent/30">
-                  {viewedTestimonial.customer_name.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <div className="space-y-0.5">
-                <h3 className="font-serif font-bold text-base sm:text-lg text-theme-primary">
-                  {viewedTestimonial.customer_name}
-                </h3>
-                {viewedTestimonial.location && (
-                  <p className="text-xs text-theme-muted">
-                    Location: <span className="text-theme-primary font-medium">{viewedTestimonial.location}</span>
-                  </p>
-                )}
-                {viewedTestimonial.artwork_purchased && (
-                  <p className="text-xs text-theme-accent font-medium">
-                    Artwork: {viewedTestimonial.artwork_purchased}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="pt-2 flex items-center justify-end">
+            <div className="bg-theme-page border border-theme-glass rounded-3xl shadow-2xl w-full p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto relative">
               <button
                 onClick={() => setViewedTestimonial(null)}
-                className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-theme-accent hover:opacity-90 text-white text-xs font-bold shadow-xs cursor-pointer"
+                className="absolute top-4 right-4 p-2 rounded-full text-theme-muted hover:text-theme-primary hover:bg-theme-glass transition-colors cursor-pointer"
+                aria-label="Close review"
               >
-                Close Review
+                <X className="w-5 h-5" />
               </button>
+
+              {/* Rating & Verified Tag */}
+              <div className="space-y-2.5 pt-2">
+                <div className="flex items-center gap-1 text-amber-400">
+                  {[...Array(viewedTestimonial.rating || 5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <div className="inline-flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                  <span>✓ Verified Collector Review</span>
+                </div>
+              </div>
+
+              {/* Complete Review Text */}
+              <div className="relative pt-2">
+                <Quote className="w-8 h-8 text-theme-accent/25 absolute -top-1 -left-2 pointer-events-none" />
+                <p className="text-sm sm:text-base text-theme-primary leading-relaxed italic font-serif pt-3 pl-3">
+                  "{viewedTestimonial.content}"
+                </p>
+              </div>
+
+              {/* Collector / Artwork Image if available */}
+              {(viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url) && (
+                <div
+                  className="rounded-2xl overflow-hidden border border-theme-glass h-64 sm:h-72 bg-black/40 flex items-center justify-center p-2"
+                >
+                  <img
+                    src={viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url}
+                    alt={viewedTestimonial.customer_name}
+                    className="w-full h-full object-contain rounded-xl"
+                  />
+                </div>
+              )}
+
+              {/* Author & Artwork Information */}
+              <div className="pt-4 border-t border-theme-glass flex items-center gap-3">
+                {(viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url) ? (
+                  <img
+                    src={viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url}
+                    alt={viewedTestimonial.customer_name}
+                    className="w-12 h-12 rounded-full object-cover border-2 border-theme-accent shrink-0 shadow-sm"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-theme-accent/20 text-theme-accent flex items-center justify-center font-serif font-bold text-base shrink-0 border border-theme-accent/30">
+                    {viewedTestimonial.customer_name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="space-y-0.5">
+                  <h3 className="font-serif font-bold text-base sm:text-lg text-theme-primary">
+                    {viewedTestimonial.customer_name}
+                  </h3>
+                  {viewedTestimonial.location && (
+                    <p className="text-xs text-theme-muted">
+                      Location: <span className="text-theme-primary font-medium">{viewedTestimonial.location}</span>
+                    </p>
+                  )}
+                  {viewedTestimonial.artwork_purchased && (
+                    <p className="text-xs text-theme-accent font-medium">
+                      Artwork: {viewedTestimonial.artwork_purchased}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-2 flex items-center justify-end">
+                <button
+                  onClick={() => setViewedTestimonial(null)}
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-theme-accent hover:opacity-90 text-white text-xs font-bold shadow-xs cursor-pointer"
+                >
+                  Close Review
+                </button>
+              </div>
             </div>
           </div>
         </div>
