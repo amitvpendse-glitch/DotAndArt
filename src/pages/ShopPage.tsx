@@ -72,25 +72,23 @@ export const ShopPage: React.FC<ShopPageProps> = ({ initialCategory, onSelectPro
   };
 
   useEffect(() => {
-    if (initialCategory) {
+    if (initialCategory && initialCategory !== 'all') {
       setSelectedCategory(initialCategory);
       setSelectedSizeFilter('all');
+    } else {
+      const savedFilters = sessionStorage.getItem('shop_filters');
+      if (savedFilters) {
+        try {
+          const { category, size, price, sort, highDemand } = JSON.parse(savedFilters);
+          if (category && !initialCategory) setSelectedCategory(category);
+          if (size) setSelectedSizeFilter(size);
+          if (price) setPriceTier(price);
+          if (sort) setSortBy(sort);
+          if (highDemand !== undefined) setHighDemandOnly(highDemand);
+        } catch {}
+      }
     }
   }, [initialCategory]);
-
-  useEffect(() => {
-    const savedFilters = sessionStorage.getItem('shop_filters');
-    if (savedFilters) {
-      try {
-        const { category, size, price, sort, highDemand } = JSON.parse(savedFilters);
-        if (category) setSelectedCategory(category);
-        if (size) setSelectedSizeFilter(size);
-        if (price) setPriceTier(price);
-        if (sort) setSortBy(sort);
-        if (highDemand !== undefined) setHighDemandOnly(highDemand);
-      } catch {}
-    }
-  }, []);
 
   useEffect(() => {
     sessionStorage.setItem('shop_filters', JSON.stringify({
