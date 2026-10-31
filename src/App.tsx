@@ -91,8 +91,10 @@ export default function App() {
     }
 
     if (path.includes('?category=')) {
-      const cat = path.split('?category=')[1];
+      const cat = path.split('?category=')[1].split('&')[0];
       setShopCategoryFilter(cat);
+    } else {
+      setShopCategoryFilter('all');
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -101,13 +103,20 @@ export default function App() {
   // Browser back/forward navigation
   useEffect(() => {
     const onPopState = () => {
+      const fullUrl = window.location.pathname + window.location.search;
       const p = window.location.pathname;
-      setCurrentPath(p);
+      setCurrentPath(fullUrl);
       if (p.startsWith('/product/')) {
         const raw = p.replace('/product/', '').split('?')[0].split('#')[0].replace(/\/$/, '').trim();
         setSelectedSku(decodeURIComponent(raw));
       } else {
         setSelectedSku(null);
+      }
+      if (fullUrl.includes('?category=')) {
+        const cat = fullUrl.split('?category=')[1].split('&')[0];
+        setShopCategoryFilter(cat);
+      } else {
+        setShopCategoryFilter('all');
       }
     };
     window.addEventListener('popstate', onPopState);
