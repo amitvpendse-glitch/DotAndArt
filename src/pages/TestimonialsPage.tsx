@@ -21,14 +21,15 @@ import { createWhatsAppUrl, getDisplayWhatsAppNumber, openExternalLink } from '.
 import { safeFetchJson } from '../lib/safeFetch';
 import { usePageSeo } from '../lib/usePageSeo';
 import { INITIAL_TESTIMONIALS } from '../data/initialCatalog';
-import { getFirestoreTestimonials, saveFirestoreTestimonial, deleteFirestoreTestimonial, uploadImageToSupabaseStorage } from '../lib/firestoreCatalog';
+import { getFirestoreTestimonials, saveFirestoreTestimonial, deleteFirestoreTestimonial, uploadImageToSupabaseStorage, getFirestoreProducts } from '../lib/firestoreCatalog';
 import { compressImageFile } from '../utils/imageCompressor';
 
 interface TestimonialsPageProps {
   onNavigate?: (path: string) => void;
+  onSelectProduct?: (sku: string) => void;
 }
 
-export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }) => {
+export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate, onSelectProduct }) => {
   const { page: cmsPage } = usePageSeo('testimonials', 'Collector Testimonials & Reviews — Dot And Art');
 
   const heroSec = cmsPage?.sections?.find(
@@ -1079,11 +1080,13 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate }
 
             {/* Collector / Artwork Image if available */}
             {(viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url) && (
-              <div className="rounded-2xl overflow-hidden border border-theme-glass max-h-64 bg-black/20 flex items-center justify-center">
+              <div
+                className="rounded-2xl overflow-hidden border border-theme-glass h-64 sm:h-72 bg-black/40 flex items-center justify-center p-2"
+              >
                 <img
                   src={viewedTestimonial.image_path || (viewedTestimonial as any).avatar_url}
                   alt={viewedTestimonial.customer_name}
-                  className="w-full h-full object-cover max-h-64 rounded-2xl"
+                  className="w-full h-full object-contain rounded-xl"
                 />
               </div>
             )}

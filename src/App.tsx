@@ -374,7 +374,7 @@ export default function App() {
     }
 
     if (currentPath === '/testimonials' || currentPath === '/about/testimonials') {
-      return <TestimonialsPage onNavigate={navigate} />;
+      return <TestimonialsPage onNavigate={navigate} onSelectProduct={handleSelectProduct} />;
     }
 
     if (currentPath === '/faq' || currentPath === '/faqs') {
