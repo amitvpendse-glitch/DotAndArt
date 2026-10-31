@@ -23,10 +23,6 @@ interface ImageZoomModalProps {
   onClose: () => void;
   initialImageIndex?: number;
   onSelectProduct?: (sku: string) => void;
-  onPrevProduct?: () => void;
-  onNextProduct?: () => void;
-  hasPrevProduct?: boolean;
-  hasNextProduct?: boolean;
 }
 
 export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
@@ -35,10 +31,6 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
   onClose,
   initialImageIndex = 0,
   onSelectProduct,
-  onPrevProduct,
-  onNextProduct,
-  hasPrevProduct = true,
-  hasNextProduct = true,
 }) => {
   const [activeImageIndex, setActiveImageIndex] = useState<number>(initialImageIndex);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
@@ -64,21 +56,9 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
       if (e.key === 'Escape') {
         onClose();
       } else if (e.key === 'ArrowLeft') {
-        if (zoomLevel <= 1) {
-          if (onPrevProduct) {
-            onPrevProduct();
-          } else {
-            handlePrevImage();
-          }
-        }
+        if (zoomLevel <= 1) handlePrevImage();
       } else if (e.key === 'ArrowRight') {
-        if (zoomLevel <= 1) {
-          if (onNextProduct) {
-            onNextProduct();
-          } else {
-            handleNextImage();
-          }
-        }
+        if (zoomLevel <= 1) handleNextImage();
       } else if (e.key === '+' || e.key === '=') {
         handleZoomIn();
       } else if (e.key === '-') {
@@ -90,7 +70,7 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, activeImageIndex, product, zoomLevel, onPrevProduct, onNextProduct]);
+  }, [isOpen, activeImageIndex, product, zoomLevel]);
 
   if (!isOpen || !product) return null;
 
@@ -272,43 +252,30 @@ export const ImageZoomModal: React.FC<ImageZoomModalProps> = ({
             />
           </div>
 
-          {/* Previous / Next Product & Image Navigation overlay buttons */}
-          {(onPrevProduct || imagesList.length > 1) && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onPrevProduct) {
-                  onPrevProduct();
-                } else if (imagesList.length > 1 && activeImageIndex > 0) {
+          {/* Previous / Next Image Navigation overlay buttons */}
+          {imagesList.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
                   handlePrevImage();
-                } else {
-                  handlePrevImage();
-                }
-              }}
-              className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 p-3 sm:p-3.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white backdrop-blur-md border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
-              title="Previous Artwork Item"
-            >
-              <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" />
-            </button>
-          )}
-
-          {(onNextProduct || imagesList.length > 1) && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onNextProduct) {
-                  onNextProduct();
-                } else if (imagesList.length > 1 && activeImageIndex < imagesList.length - 1) {
+                }}
+                className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 p-3 sm:p-3.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white backdrop-blur-md border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                title="Previous Image"
+              >
+                <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
                   handleNextImage();
-                } else {
-                  handleNextImage();
-                }
-              }}
-              className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 p-3 sm:p-3.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white backdrop-blur-md border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
-              title="Next Artwork Item"
-            >
-              <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7" />
-            </button>
+                }}
+                className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 p-3 sm:p-3.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white backdrop-blur-md border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                title="Next Image"
+              >
+                <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7" />
+              </button>
+            </>
           )}
 
           {/* Floating Zoom Control Bar */}

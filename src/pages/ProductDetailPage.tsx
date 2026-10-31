@@ -651,13 +651,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 p-4 rounded-2xl glass-panel border border-theme-glass text-xs">
             <div className="space-y-1">
               <span className="text-[10px] uppercase font-bold text-theme-muted flex items-center gap-1">
-                <Info className="w-3 h-3 text-theme-accent" /> Artwork Code
-              </span>
-              <p className="font-mono font-bold text-theme-primary">{product.sku}</p>
-            </div>
-
-            <div className="space-y-1">
-              <span className="text-[10px] uppercase font-bold text-theme-muted flex items-center gap-1">
                 <Ruler className="w-3 h-3 text-theme-accent" /> Size / Dimensions
               </span>
               <p className="font-semibold text-theme-accent">{currentSize}</p>
@@ -855,11 +848,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         isOpen={isZoomOpen}
         onClose={() => setIsZoomOpen(false)}
         initialImageIndex={activeImageIndex}
-        onSelectProduct={onSelectProduct}
-        onPrevProduct={handlePrevCatalogItem}
-        onNextProduct={handleNextCatalogItem}
-        hasPrevProduct={categorySizeFilteredProducts.length > 1}
-        hasNextProduct={categorySizeFilteredProducts.length > 1}
       />
     </div>
   );

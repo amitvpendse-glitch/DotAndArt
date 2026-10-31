@@ -9,7 +9,7 @@ import { setActiveWhatsAppNumber } from './utils/whatsapp';
 
 // Customer Pages
 import { HomePage } from './pages/HomePage';
-import { ShopPage, normalizeCategorySlug } from './pages/ShopPage';
+import { ShopPage } from './pages/ShopPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { CustomOrderPage } from './pages/CustomOrderPage';
 import { AboutPage } from './pages/AboutPage';
@@ -41,7 +41,7 @@ import { SideArtStreams } from './components/SideArtStreams';
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState<string>(() => {
-    return (window.location.pathname || '/') + (window.location.search || '');
+    return window.location.pathname || '/';
   });
 
   const [selectedSku, setSelectedSku] = useState<string | null>(() => {
@@ -52,16 +52,7 @@ export default function App() {
     }
     return null;
   });
-  const [shopCategoryFilter, setShopCategoryFilter] = useState<string>(() => {
-    const search = window.location.search || '';
-    if (search.includes('category=')) {
-      const match = search.match(/category=([^&]+)/);
-      if (match && match[1]) {
-        return normalizeCategorySlug(decodeURIComponent(match[1]));
-      }
-    }
-    return 'all';
-  });
+  const [shopCategoryFilter, setShopCategoryFilter] = useState<string>('all');
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
 
   // Admin Auth State (Always requires password entry when site is opened or refreshed)
@@ -99,13 +90,9 @@ export default function App() {
       setSelectedSku(null);
     }
 
-    if (path.includes('category=')) {
-      const match = path.match(/category=([^&]+)/);
-      if (match && match[1]) {
-        setShopCategoryFilter(normalizeCategorySlug(decodeURIComponent(match[1])));
-      } else {
-        setShopCategoryFilter('all');
-      }
+    if (path.includes('?category=')) {
+      const cat = path.split('?category=')[1].split('&')[0];
+      setShopCategoryFilter(cat);
     } else {
       setShopCategoryFilter('all');
     }
@@ -125,13 +112,9 @@ export default function App() {
       } else {
         setSelectedSku(null);
       }
-      if (fullUrl.includes('category=')) {
-        const match = fullUrl.match(/category=([^&]+)/);
-        if (match && match[1]) {
-          setShopCategoryFilter(normalizeCategorySlug(decodeURIComponent(match[1])));
-        } else {
-          setShopCategoryFilter('all');
-        }
+      if (fullUrl.includes('?category=')) {
+        const cat = fullUrl.split('?category=')[1].split('&')[0];
+        setShopCategoryFilter(cat);
       } else {
         setShopCategoryFilter('all');
       }
