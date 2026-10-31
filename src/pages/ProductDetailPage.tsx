@@ -15,6 +15,8 @@ import {
   Eye,
   ZoomIn,
   Flame,
+  Ruler,
+  Maximize2,
 } from 'lucide-react';
 import { Product, ProductVariant } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
@@ -228,7 +230,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       <div className="max-w-3xl mx-auto px-4 py-20 text-center space-y-6 bg-theme-page text-theme-primary">
         <div className="space-y-2">
           <span className="text-xs font-mono text-theme-muted bg-theme-accent/10 px-3 py-1 rounded-full border border-theme-glass">
-            Product Code: {cleanSku || 'Unknown'}
+            {cleanSku || 'Unknown'}
           </span>
           <h2 className="font-serif text-3xl font-bold text-theme-primary">Artwork Not Found</h2>
           <p className="text-xs text-theme-muted max-w-md mx-auto leading-relaxed">
@@ -332,7 +334,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               {/* Top Left: Product Code Pill & Available Badge */}
               <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
                 <div className="px-3 py-1 rounded-md bg-theme-card/95 backdrop-blur-xs text-xs font-mono font-semibold text-theme-primary border border-theme-glass shadow-xs">
-                  Product Code: {product.sku}
+                  {product.sku}
                 </div>
                 {product.show_available_badge !== false && (
                   <AvailableBadge
@@ -352,16 +354,21 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             return (
               <div className="flex items-center justify-between px-3.5 sm:px-4 py-2.5 bg-theme-card/90 rounded-2xl border border-theme-glass text-xs shadow-md">
                 {/* Price & Dimensions — Hidden on mobile to prevent buttons from wrapping/becoming round */}
-                <div className="hidden sm:flex items-center gap-2.5">
+                <div className="hidden sm:flex items-center gap-3">
                   <div>
                     <span className="text-[9px] uppercase tracking-wider text-theme-muted font-semibold block leading-none">Price</span>
-                    <p className="font-sans font-bold text-base sm:text-lg text-theme-accent mt-0.5">
-                      ₹{currentPrice.toLocaleString('en-IN')}
+                    <p className="font-sans font-bold text-base sm:text-lg text-theme-accent mt-0.5 flex items-baseline gap-1">
+                      <span>₹{currentPrice.toLocaleString('en-IN')}</span>
+                      <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium font-sans">+ Shipping at actuals</span>
                     </p>
                   </div>
                   <span className="text-theme-glass text-sm">|</span>
-                  <div className="text-[11px] text-theme-muted font-mono font-medium">
-                    {currentSize}
+                  <div>
+                    <span className="text-[9px] uppercase tracking-wider text-theme-muted font-semibold block leading-none">Size / Dimensions</span>
+                    <p className="text-xs text-theme-primary font-bold mt-0.5 flex items-center gap-1">
+                      <Ruler className="w-3.5 h-3.5 text-theme-accent shrink-0" />
+                      <span>{currentSize}</span>
+                    </p>
                   </div>
                 </div>
 
@@ -451,7 +458,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </span>
               <span>•</span>
               <span className="text-xs font-mono text-theme-muted bg-theme-accent/10 px-2 py-0.5 rounded border border-theme-glass">
-                Product Code: {product.sku}
+                {product.sku}
               </span>
             </div>
 
@@ -459,9 +466,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               {product.name}
             </h1>
 
-            <div className="pt-2 flex items-baseline gap-3">
+            <div className="pt-2 flex flex-wrap items-center gap-3">
               <span className="font-sans text-3xl font-bold text-theme-accent">
                 ₹{currentPrice.toLocaleString('en-IN')}
+              </span>
+              <span className="text-xs font-semibold text-amber-700 dark:text-amber-300 bg-amber-500/15 px-3 py-1 rounded-full border border-amber-500/30 flex items-center gap-1.5">
+                <Ruler className="w-3.5 h-3.5 text-amber-500" />
+                <span>Size: {currentSize}</span>
+              </span>
+              <span className="text-xs font-medium text-theme-muted bg-theme-accent/10 px-2.5 py-1 rounded-full border border-theme-glass">
+                + Shipping at actuals
               </span>
             </div>
 
@@ -555,6 +569,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 p-4 rounded-2xl glass-panel border border-theme-glass text-xs">
             <div className="space-y-1">
               <span className="text-[10px] uppercase font-bold text-theme-muted flex items-center gap-1">
+                <Ruler className="w-3 h-3 text-theme-accent" /> Size / Dimensions
+              </span>
+              <p className="font-semibold text-theme-accent">{currentSize}</p>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[10px] uppercase font-bold text-theme-muted flex items-center gap-1">
                 <Hammer className="w-3 h-3 text-theme-accent" /> Material
               </span>
               <p className="font-medium text-theme-primary">{product.material}</p>
@@ -587,8 +608,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </span>
               <p className="font-medium text-theme-primary">
                 {product.shipping_info.toLowerCase().includes('bubble wrap')
-                  ? product.shipping_info
-                  : `${product.shipping_info} • Bubble wrap and corrugated box`}
+                  ? `${product.shipping_info} (+ Shipping extra at actuals)`
+                  : `${product.shipping_info} • Bubble wrap & corrugated box (+ Shipping extra at actuals)`}
               </p>
             </div>
           </div>
@@ -670,8 +691,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           })()}
 
           {/* Policy summary */}
-          <div className="text-[11px] text-theme-muted text-center pt-2">
-            <span>Payment Policy: 50% advance upon order confirmation • 50% prior to dispatch.</span>
+          <div className="text-[11px] text-theme-muted text-center pt-2 space-y-1">
+            <div className="font-medium text-amber-700 dark:text-amber-300">
+              * Note: Product prices exclude shipping charges. Shipping is charged extra at actuals based on weight and delivery address.
+            </div>
+            <div>
+              <span>Payment Policy: 50% advance upon order confirmation • 50% prior to dispatch.</span>
+            </div>
           </div>
         </div>
       </div>

@@ -1009,3 +1009,168 @@ export async function uploadImageToSupabaseStorage(
     return { success: false, public_url: '', fileName, error: restErr?.message || 'Network upload error' };
   }
 }
+
+/**
+ * Delete a specific file from Supabase Storage given its public URL or filename.
+ */
+export async function deleteImageFromSupabaseStorage(
+  imageUrlOrFilename: string,
+  bucketName = 'product-images'
+): Promise<boolean> {
+  if (!imageUrlOrFilename) return false;
+  const sb = getSupabase();
+
+  let fileName = imageUrlOrFilename.trim();
+  if (fileName.includes('/')) {
+    fileName = fileName.split('/').pop()?.split('?')[0] || fileName;
+  }
+  if (!fileName) return false;
+
+  // 1. Try Supabase SDK
+  if (sb) {
+    try {
+      const { error } = await sb.storage.from(bucketName).remove([fileName]);
+      if (!error) {
+        console.log(`[SupabaseStorage] Deleted ${fileName} from ${bucketName}`);
+        return true;
+      }
+    } catch (e) {
+      console.warn('[deleteImageFromSupabaseStorage] SDK exception:', e);
+    }
+  }
+
+  // 2. Fallback direct REST
+  const supabaseKey = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_ANON_KEY) ||
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhaWpvb3VwcnhrdHRzZnJhanlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMzE2ODcsImV4cCI6MjEwODcwNzY4N30.dpQTTxbPZHp_yff109modnbzTRdCg0T0_zU8G_mmjFY';
+
+  try {
+    const deleteUrl = `https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/${bucketName}/${fileName}`;
+    const res = await fetch(deleteUrl, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${supabaseKey}`,
+        apikey: supabaseKey,
+      },
+    });
+    return res.ok;
+  } catch (e) {
+    console.error('[deleteImageFromSupabaseStorage] REST delete failed:', e);
+    return false;
+  }
+}
+
+/**
+ * Scans Supabase Storage buckets, gathers all image URLs currently in use across
+ * products, testimonials, pages CMS, categories, and settings, and permanently purges
+ * any unused/orphaned image files from the bucket to save storage quota.
+ */
+export async function cleanupUnusedSupabaseStorageImages(
+  bucketName = 'product-images'
+): Promise<{ success: boolean; deletedCount: number; freedSpaceMB?: number; message: string }> {
+  const sb = getSupabase();
+  if (!sb) {
+    return { success: false, deletedCount: 0, message: 'Supabase client not initialized.' };
+  }
+
+  try {
+    // 1. List files in bucket
+    const { data: filesInBucket, error: listErr } = await sb.storage.from(bucketName).list('', { limit: 1000 });
+    if (listErr || !Array.isArray(filesInBucket)) {
+      return { success: false, deletedCount: 0, message: `Could not inspect storage bucket: ${listErr?.message || 'Error'}` };
+    }
+
+    if (filesInBucket.length === 0) {
+      return { success: true, deletedCount: 0, message: 'Supabase storage bucket is completely empty. No orphan files found.' };
+    }
+
+    // 2. Gather active image references across database
+    const usedFilenames = new Set<string>();
+
+    // Products
+    try {
+      const { data: prods } = await sb.from('products').select('*');
+      if (Array.isArray(prods)) {
+        prods.forEach((p: any) => {
+          if (p.image_path) usedFilenames.add(p.image_path.split('/').pop()?.split('?')[0] || '');
+          if (Array.isArray(p.images)) {
+            p.images.forEach((img: any) => {
+              const url = typeof img === 'string' ? img : img?.storage_path;
+              if (url) usedFilenames.add(url.split('/').pop()?.split('?')[0] || '');
+            });
+          }
+          if (Array.isArray(p.variants)) {
+            p.variants.forEach((v: any) => {
+              if (v.image) usedFilenames.add(v.image.split('/').pop()?.split('?')[0] || '');
+            });
+          }
+        });
+      }
+    } catch {}
+
+    // Testimonials
+    try {
+      const { data: tests } = await sb.from('testimonials').select('*');
+      if (Array.isArray(tests)) {
+        tests.forEach((t: any) => {
+          if (t.image_path) usedFilenames.add(t.image_path.split('/').pop()?.split('?')[0] || '');
+          if (t.avatar_url) usedFilenames.add(t.avatar_url.split('/').pop()?.split('?')[0] || '');
+        });
+      }
+    } catch {}
+
+    // Pages CMS
+    try {
+      const { data: pages } = await sb.from('pages').select('*');
+      if (Array.isArray(pages)) {
+        const str = JSON.stringify(pages);
+        filesInBucket.forEach((f) => {
+          if (f.name && str.includes(f.name)) usedFilenames.add(f.name);
+        });
+      }
+    } catch {}
+
+    // Settings
+    try {
+      const { data: settingsData } = await sb.from('settings').select('*');
+      if (Array.isArray(settingsData)) {
+        const str = JSON.stringify(settingsData);
+        filesInBucket.forEach((f) => {
+          if (f.name && str.includes(f.name)) usedFilenames.add(f.name);
+        });
+      }
+    } catch {}
+
+    // 3. Identify orphan files
+    const orphanFiles = filesInBucket.filter((f) => {
+      if (!f.name || f.name.startsWith('.')) return false;
+      return !usedFilenames.has(f.name);
+    });
+
+    if (orphanFiles.length === 0) {
+      return {
+        success: true,
+        deletedCount: 0,
+        message: `All ${filesInBucket.length} files in Supabase Storage are actively used. Zero orphan files found!`,
+      };
+    }
+
+    const fileNamesToDelete = orphanFiles.map((f) => f.name);
+    const totalBytes = orphanFiles.reduce((acc, f) => acc + (f.metadata?.size || 0), 0);
+    const freedMB = Number((totalBytes / (1024 * 1024)).toFixed(2));
+
+    // 4. Delete orphan files
+    const { error: removeErr } = await sb.storage.from(bucketName).remove(fileNamesToDelete);
+    if (removeErr) {
+      return { success: false, deletedCount: 0, message: `Deletion failed: ${removeErr.message}` };
+    }
+
+    return {
+      success: true,
+      deletedCount: orphanFiles.length,
+      freedSpaceMB: freedMB,
+      message: `Successfully purged ${orphanFiles.length} unused image file(s) from Supabase Storage (${freedMB} MB reclaimed).`,
+    };
+  } catch (err: any) {
+    return { success: false, deletedCount: 0, message: err.message || 'Cleanup error.' };
+  }
+}

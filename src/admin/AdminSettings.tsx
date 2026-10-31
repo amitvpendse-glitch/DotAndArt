@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FloatingSaveButton } from './FloatingSaveButton';
-import { Save, CheckCircle2, AlertCircle, UploadCloud, ImageIcon, Plus, Trash2, MapPin, Sliders } from 'lucide-react';
+import { Save, CheckCircle2, AlertCircle, UploadCloud, ImageIcon, Plus, Trash2, MapPin, Sliders, Database, Sparkles } from 'lucide-react';
 import { WebsiteSettings, Product, ShowcaseBannerHotspot } from '../types';
 import { safeFetchJson, safeResponseJson } from '../lib/safeFetch';
 import { setActiveWhatsAppNumber } from '../utils/whatsapp';
 import { compressImageFile } from '../utils/imageCompressor';
-import { uploadImageToSupabaseStorage, saveFirestoreSettings } from '../lib/firestoreCatalog';
+import { uploadImageToSupabaseStorage, saveFirestoreSettings, cleanupUnusedSupabaseStorageImages } from '../lib/firestoreCatalog';
 
 interface AdminSettingsProps {
   token: string;
@@ -18,6 +18,8 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
   const [saving, setSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [cleaningStorage, setCleaningStorage] = useState(false);
+  const [storageResult, setStorageResult] = useState<{ success: boolean; message: string } | null>(null);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -138,6 +140,22 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
       setErrorMsg('Error uploading image.');
     } finally {
       setUploadingImage(false);
+    }
+  };
+
+  const handleStorageCleanup = async () => {
+    setCleaningStorage(true);
+    setStorageResult(null);
+    try {
+      const res = await cleanupUnusedSupabaseStorageImages('product-images');
+      setStorageResult(res);
+    } catch (err: any) {
+      setStorageResult({
+        success: false,
+        message: err?.message || 'Error executing storage cleanup.',
+      });
+    } finally {
+      setCleaningStorage(false);
     }
   };
 
@@ -994,6 +1012,68 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ token }) => {
                   className="w-full px-3.5 py-2 rounded-xl bg-theme-card border border-theme-glass text-theme-primary text-xs font-semibold"
                 />
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 6. Supabase Storage Maintenance & Garbage Collector */}
+        <div className="space-y-4 pt-4 border-t border-theme-glass">
+          <div className="flex items-center justify-between">
+            <h3 className="font-serif text-base font-bold text-theme-accent uppercase tracking-wider flex items-center gap-2">
+              <Database className="w-4 h-4 text-theme-accent" />
+              <span>6. Supabase Storage Maintenance &amp; Garbage Collector</span>
+            </h3>
+            <span className="text-[10px] font-semibold text-sky-800 bg-sky-100 dark:bg-sky-950 dark:text-sky-300 px-2 py-0.5 rounded-full">
+              Automated Bucket Cleanup
+            </span>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-theme-page border border-theme-glass space-y-4">
+            <div>
+              <h4 className="font-bold text-xs text-theme-primary mb-1">
+                Purge Unused &amp; Orphaned Bucket Images
+              </h4>
+              <p className="text-xs text-theme-muted leading-relaxed">
+                When product images or banners are repeatedly updated, old image files remain stored inside your Supabase Storage bucket (<code className="font-mono text-[11px] text-theme-accent">product-images</code>). Click below to automatically scan all active catalog products, testimonials, and CMS pages, and permanently purge any orphaned images to free up bucket quota.
+              </p>
+            </div>
+
+            {storageResult && (
+              <div
+                className={`p-3.5 rounded-xl border text-xs flex items-center gap-2 ${
+                  storageResult.success
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+                    : 'bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-300'
+                }`}
+              >
+                {storageResult.success ? (
+                  <Sparkles className="w-4 h-4 text-emerald-500 shrink-0" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+                )}
+                <span>{storageResult.message}</span>
+              </div>
+            )}
+
+            <div className="flex items-center gap-3 pt-1">
+              <button
+                type="button"
+                disabled={cleaningStorage}
+                onClick={handleStorageCleanup}
+                className="px-5 py-2.5 rounded-xl bg-theme-accent hover:opacity-90 disabled:opacity-50 text-white font-semibold text-xs flex items-center gap-2 shadow-xs cursor-pointer transition-all"
+              >
+                {cleaningStorage ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Scanning &amp; Purging Orphan Images...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    <span>Purge Unused Bucket Images Now</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
