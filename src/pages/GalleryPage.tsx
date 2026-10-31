@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, ZoomIn, Eye, Flame, Check } from 'lucide-react';
+import { X, ZoomIn, Eye, Flame, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product, Category } from '../types';
 import { ArtworkPlaceholder } from '../components/ArtworkPlaceholder';
 import { SafeProductImage } from '../components/SafeProductImage';
@@ -216,9 +216,14 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
                   </p>
                 </div>
 
-                <div className="flex items-center gap-1 text-[10px] sm:text-xs text-theme-accent font-medium">
-                  <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span>Enlarge Preview</span>
+                <div className="flex items-center justify-between text-[10px] sm:text-xs text-theme-accent font-medium">
+                  <div className="flex items-center gap-1">
+                    <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span>Enlarge Preview</span>
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-theme-accent text-white flex items-center justify-center shadow-md">
+                    <Eye className="w-4 h-4" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -229,6 +234,36 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
       {/* Full-Screen Lightbox Modal */}
       {activeLightbox && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          {/* Previous & Next Floating Lightbox Arrows */}
+          {filtered.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentIndex = filtered.findIndex((p) => p.sku === activeLightbox.sku || p.id === activeLightbox.id);
+                  const nextIdx = currentIndex <= 0 ? filtered.length - 1 : currentIndex - 1;
+                  setActiveLightbox(filtered[nextIdx]);
+                }}
+                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                title="Previous Artwork"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentIndex = filtered.findIndex((p) => p.sku === activeLightbox.sku || p.id === activeLightbox.id);
+                  const nextIdx = currentIndex >= filtered.length - 1 ? 0 : currentIndex + 1;
+                  setActiveLightbox(filtered[nextIdx]);
+                }}
+                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                title="Next Artwork"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </>
+          )}
+
           <div className="relative max-w-3xl w-full glass-panel rounded-3xl overflow-hidden shadow-2xl border border-theme-glass">
             {/* Close Button */}
             <button

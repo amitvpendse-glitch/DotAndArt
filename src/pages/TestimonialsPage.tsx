@@ -15,6 +15,8 @@ import {
   SlidersHorizontal,
   Upload,
   ImageIcon,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Testimonial } from '../types';
 import { createWhatsAppUrl, getDisplayWhatsAppNumber, openExternalLink } from '../utils/whatsapp';
@@ -1049,6 +1051,35 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({ onNavigate, 
       )}
       {viewedTestimonial && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
+          {testimonials.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentIndex = testimonials.findIndex((t) => t.id === viewedTestimonial.id);
+                  const nextIdx = currentIndex <= 0 ? testimonials.length - 1 : currentIndex - 1;
+                  setViewedTestimonial(testimonials[nextIdx]);
+                }}
+                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                title="Previous Review"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentIndex = testimonials.findIndex((t) => t.id === viewedTestimonial.id);
+                  const nextIdx = currentIndex >= testimonials.length - 1 ? 0 : currentIndex + 1;
+                  setViewedTestimonial(testimonials[nextIdx]);
+                }}
+                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white border border-white/20 shadow-2xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                title="Next Review"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </>
+          )}
+
           <div className="bg-theme-page border border-theme-glass rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto relative">
             <button
               onClick={() => setViewedTestimonial(null)}

@@ -17,6 +17,8 @@ import {
   Flame,
   Ruler,
   Maximize2,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Product, ProductVariant } from '../types';
 import { safeFetchJson } from '../lib/safeFetch';
@@ -345,6 +347,58 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   />
                 )}
               </div>
+
+              {/* Catalog Previous & Next Item Arrows (filtered by same category) */}
+              {(() => {
+                const pool = [...getLocalCustomProducts(), ...INITIAL_PRODUCTS].filter(
+                  (p) => p && !isSkuBlocked(p.sku, p.id) && p.is_published !== false &&
+                  ((p.category_id && product.category_id && p.category_id === product.category_id) ||
+                   (p.category_slug && product.category_slug && p.category_slug === product.category_slug) ||
+                   (!product.category_id && !product.category_slug))
+                );
+                // Deduplicate by SKU or ID
+                const seen = new Set<string>();
+                const uniquePool = pool.filter((p) => {
+                  const key = p.sku || p.id;
+                  if (!key || seen.has(key)) return false;
+                  seen.add(key);
+                  return true;
+                });
+                const currentIndex = uniquePool.findIndex((p) => p.sku === product.sku || p.id === product.id);
+
+                return uniquePool.length > 1 ? (
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (currentIndex > 0) {
+                          onSelectProduct(uniquePool[currentIndex - 1].sku);
+                        } else {
+                          onSelectProduct(uniquePool[uniquePool.length - 1].sku);
+                        }
+                      }}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white border border-white/20 shadow-xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                      title="Previous Catalog Item"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (currentIndex >= 0 && currentIndex < uniquePool.length - 1) {
+                          onSelectProduct(uniquePool[currentIndex + 1].sku);
+                        } else {
+                          onSelectProduct(uniquePool[0].sku);
+                        }
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white border border-white/20 shadow-xl transition-all cursor-pointer hover:scale-110 flex items-center justify-center"
+                      title="Next Catalog Item"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </>
+                ) : null;
+              })()}
             </div>
           </div>
 
