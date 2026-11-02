@@ -87,8 +87,9 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     }
   };
 
-  // Optimize Supabase egress: If initialCleanSrc points to Supabase public storage and local static asset/thumbnail exists,
-  // load the local static asset from Vercel edge CDN to eliminate Supabase Storage egress bandwidth completely.
+  // Egress Bandwidth Optimization:
+  // If initialCleanSrc is a Supabase Storage URL and a matching static asset/thumbnail exists on disk,
+  // load the local static file from Vercel Edge CDN first to eliminate Supabase Storage egress completely.
   const isSupabaseStorageUrl = Boolean(initialCleanSrc && initialCleanSrc.includes('supabase.co/storage/v1/object/public/'));
   const hasLocalStaticAsset = Boolean(staticArtPath || thumbnailPath || uppercaseStaticArtPath || uppercaseThumbnailPath);
 
@@ -106,25 +107,15 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     }
     addCandidate(initialCleanSrc);
   } else {
-    if (useThumbnail && (thumbnailPath || uppercaseThumbnailPath)) {
+    if (initialCleanSrc) {
+      addCandidate(initialCleanSrc);
+    }
+    if (useThumbnail) {
       addCandidate(thumbnailPath);
       addCandidate(uppercaseThumbnailPath);
     }
-    addCandidate(initialCleanSrc);
     addCandidate(staticArtPath);
-    addCandidate(thumbnailPath);
     addCandidate(uppercaseStaticArtPath);
-    addCandidate(uppercaseThumbnailPath);
-  }
-
-  // Reliable Public Domain Fallbacks for Mandalas and Lippan Art
-  const isLippanArt = isLippan || cleanSku.startsWith('DA-LP');
-  if (isLippanArt) {
-    addCandidate('https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=800&auto=format&fit=crop&q=80');
-    addCandidate('https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&auto=format&fit=crop&q=80');
-  } else {
-    addCandidate('https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=800&auto=format&fit=crop&q=80');
-    addCandidate('https://images.unsplash.com/photo-1579783926121-a2fb3d178225?w=800&auto=format&fit=crop&q=80');
   }
 
   const [candidateIndex, setCandidateIndex] = useState<number>(0);
@@ -138,19 +129,17 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     setLocalSrc(null);
 
     const checkLocal = async () => {
-      // If src is already a remote Supabase/cloud URL, don't override it with old local cached images
+      // If src is a remote Supabase/cloud URL, never override it with old local IndexedDB cached images
       if (src && (src.startsWith('http://') || src.startsWith('https://'))) {
         return;
       }
+      // Only check IndexedDB if src is explicitly a local uploaded path, base64 data URL, or blob
       let cached: string | null = null;
       if (src && (src.startsWith('/uploads/') || src.startsWith('data:') || src.startsWith('blob:'))) {
         cached = await getLocalArtworkImage(src);
-      }
-      if (!cached && cleanSku) {
-        cached = await getLocalArtworkImage(cleanSku);
-      }
-      if (!cached && src) {
-        cached = await getLocalArtworkImage(src);
+        if (!cached && cleanSku) {
+          cached = await getLocalArtworkImage(cleanSku);
+        }
       }
       if (active && cached) {
         setLocalSrc(cached);

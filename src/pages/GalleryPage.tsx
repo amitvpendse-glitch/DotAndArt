@@ -126,14 +126,14 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
           High-definition visual archive of our handmade mandalas and Kutch Lippan mud-mirror pieces. Click any artwork to view details or enquire.
         </p>
 
-        {/* Category Dropdown & High Demand Filter Bar in One Single Line on Mobile */}
-        <div className="pt-4 flex items-center justify-center gap-2 sm:gap-3 max-w-lg mx-auto">
+        {/* Category Dropdown & High Demand Filter Bar */}
+        <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 max-w-lg mx-auto">
           {/* Category Dropdown */}
-          <div className="relative flex-1 min-w-0">
+          <div className="relative flex-1">
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full text-xs font-semibold pl-3.5 pr-8 py-2 rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary cursor-pointer appearance-none shadow-xs hover:border-theme-accent/50 transition-colors h-10 truncate"
+              className="w-full text-xs font-semibold px-3.5 py-2 rounded-xl bg-theme-page border border-theme-glass focus:outline-none focus:border-theme-accent text-theme-primary cursor-pointer appearance-none pr-8 shadow-xs hover:border-theme-accent/50 transition-colors h-10"
             >
               <option value="all">All Category Artworks</option>
               {activeCategories.map((cat) => (
@@ -147,10 +147,10 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
             </div>
           </div>
 
-          {/* High Demand Toggle Button (Flame icon only on mobile display, full text on tablet/desktop) */}
+          {/* High Demand Toggle Button */}
           <button
             onClick={() => setHighDemandOnly(!highDemandOnly)}
-            className={`h-10 px-2.5 sm:px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
+            className={`h-10 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
               highDemandOnly
                 ? 'bg-amber-600 text-white shadow-md ring-2 ring-amber-400'
                 : 'glass-button text-amber-700 border border-amber-300/60 hover:bg-amber-500/10'
@@ -160,7 +160,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onSelectProduct }) => 
           >
             <Flame className={`w-4 h-4 ${highDemandOnly ? 'text-white fill-white' : 'text-amber-600 fill-amber-500'}`} />
             <span className="hidden sm:inline">High Demand</span>
-            {highDemandOnly && <Check className="w-3.5 h-3.5 ml-0.5 hidden sm:inline" />}
+            {highDemandOnly && <Check className="w-3.5 h-3.5 ml-0.5" />}
           </button>
         </div>
       </div>

@@ -15,6 +15,19 @@ async function generateThumbnails() {
     fs.mkdirSync(THUMBNAILS_DIR, { recursive: true });
   }
 
+  // 1. Clean up orphan thumbnails whose source image no longer exists on disk
+  const existingThumbs = fs.readdirSync(THUMBNAILS_DIR);
+  for (const thumb of existingThumbs) {
+    const srcPath = path.join(IMAGES_DIR, thumb);
+    if (!fs.existsSync(srcPath)) {
+      try {
+        fs.unlinkSync(path.join(THUMBNAILS_DIR, thumb));
+        console.log(`[Thumbnails] Removed orphan thumbnail: ${thumb}`);
+      } catch {}
+    }
+  }
+
+  // 2. Generate/verify thumbnails
   const files = fs.readdirSync(IMAGES_DIR).filter((f) => /\.(jpe?g|png|webp)$/i.test(f));
   console.log(`[Thumbnails] Found ${files.length} images to process...`);
 

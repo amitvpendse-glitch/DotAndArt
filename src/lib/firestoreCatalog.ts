@@ -172,7 +172,7 @@ let lastTestimonialsFetchTime = 0;
 let cachedFAQs: FAQ[] | null = null;
 let lastFAQsFetchTime = 0;
 
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5-minute smart cache TTL to minimize Supabase database egress bandwidth
+const CACHE_TTL_MS = 15 * 60 * 1000; // 15-minute persistent cache TTL to eliminate Supabase DB queries during browsing
 
 export function invalidateProductsCache(): void {
   cachedProducts = null;
@@ -188,12 +188,32 @@ export function invalidateProductsCache(): void {
 }
 
 /**
- * Retrieves all products from Supabase with smart local cache fallback
+ * Retrieves all products from Supabase with persistent local cache
  */
 export async function getFirestoreProducts(forceFresh = false): Promise<Product[]> {
   const now = Date.now();
-  if (!forceFresh && cachedProducts && now - lastProductsFetchTime < CACHE_TTL_MS) {
-    return cachedProducts;
+  
+  if (!forceFresh) {
+    if (cachedProducts && now - lastProductsFetchTime < CACHE_TTL_MS) {
+      return cachedProducts;
+    }
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem('app_custom_products');
+        const lastSync = Number(localStorage.getItem('app_products_last_sync') || 0);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const valid = parsed.filter((p) => p && !isSkuBlocked(p.sku, p.id));
+            cachedProducts = valid;
+            lastProductsFetchTime = lastSync || now;
+            if (now - lastSync < CACHE_TTL_MS) {
+              return valid;
+            }
+          }
+        }
+      } catch {}
+    }
   }
 
   const localCustom = getLocalCustomProducts();
@@ -246,6 +266,7 @@ export async function getFirestoreProducts(forceFresh = false): Promise<Product[
           try {
             // Overwrite and clean out any stale or deleted products in browser local storage
             localStorage.setItem('app_custom_products', JSON.stringify(items));
+            localStorage.setItem('app_products_last_sync', String(now));
           } catch {}
         }
 
@@ -485,8 +506,24 @@ export async function bulkImportFirestoreProducts(products: Product[]): Promise<
 
 export async function getFirestoreCategories(forceFresh = false): Promise<Category[]> {
   const now = Date.now();
-  if (!forceFresh && cachedCategories && now - lastCategoriesFetchTime < CACHE_TTL_MS) {
-    return cachedCategories;
+  if (!forceFresh) {
+    if (cachedCategories && now - lastCategoriesFetchTime < CACHE_TTL_MS) {
+      return cachedCategories;
+    }
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem('app_custom_categories');
+        const lastSync = Number(localStorage.getItem('app_categories_last_sync') || 0);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            cachedCategories = parsed;
+            lastCategoriesFetchTime = lastSync || now;
+            if (now - lastSync < CACHE_TTL_MS) return parsed;
+          }
+        }
+      } catch {}
+    }
   }
 
   const sb = getSupabase();
@@ -496,12 +533,16 @@ export async function getFirestoreCategories(forceFresh = false): Promise<Catego
       if (!error && Array.isArray(data) && data.length > 0) {
         cachedCategories = data as Category[];
         lastCategoriesFetchTime = now;
+        if (typeof window !== 'undefined' && window.localStorage) {
+          try {
+            localStorage.setItem('app_custom_categories', JSON.stringify(data));
+            localStorage.setItem('app_categories_last_sync', String(now));
+          } catch {}
+        }
         return cachedCategories;
       }
     } catch {}
   }
-  cachedCategories = INITIAL_CATEGORIES;
-  lastCategoriesFetchTime = now;
   return INITIAL_CATEGORIES;
 }
 
@@ -526,8 +567,24 @@ export async function saveFirestoreCategory(category: Category): Promise<void> {
 
 export async function getFirestoreSettings(forceFresh = false): Promise<WebsiteSettings | null> {
   const now = Date.now();
-  if (!forceFresh && cachedSettings && now - lastSettingsFetchTime < CACHE_TTL_MS) {
-    return cachedSettings;
+  if (!forceFresh) {
+    if (cachedSettings && now - lastSettingsFetchTime < CACHE_TTL_MS) {
+      return cachedSettings;
+    }
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem('app_custom_settings');
+        const lastSync = Number(localStorage.getItem('app_settings_last_sync') || 0);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && typeof parsed === 'object') {
+            cachedSettings = parsed;
+            lastSettingsFetchTime = lastSync || now;
+            if (now - lastSync < CACHE_TTL_MS) return parsed;
+          }
+        }
+      } catch {}
+    }
   }
 
   const sb = getSupabase();
@@ -535,7 +592,7 @@ export async function getFirestoreSettings(forceFresh = false): Promise<WebsiteS
     try {
       const { data, error } = await sb.from('settings').select('*').limit(1).single();
       if (!error && data) {
-        cachedSettings = {
+        const compiled: WebsiteSettings = {
           business_name: data.business_name || INITIAL_SETTINGS.business_name,
           tagline: data.tagline || INITIAL_SETTINGS.tagline,
           domain: data.domain || INITIAL_SETTINGS.domain,
@@ -551,13 +608,18 @@ export async function getFirestoreSettings(forceFresh = false): Promise<WebsiteS
           announcement_banner: data.announcement_bar || INITIAL_SETTINGS.announcement_banner,
           default_seo: INITIAL_SETTINGS.default_seo,
         };
+        cachedSettings = compiled;
         lastSettingsFetchTime = now;
-        return cachedSettings;
+        if (typeof window !== 'undefined' && window.localStorage) {
+          try {
+            localStorage.setItem('app_custom_settings', JSON.stringify(compiled));
+            localStorage.setItem('app_settings_last_sync', String(now));
+          } catch {}
+        }
+        return compiled;
       }
     } catch {}
   }
-  cachedSettings = INITIAL_SETTINGS;
-  lastSettingsFetchTime = now;
   return INITIAL_SETTINGS;
 }
 
@@ -617,8 +679,24 @@ export async function saveFirestorePage(page: WebsitePage): Promise<void> {
 
 export async function getFirestoreTestimonials(forceFresh = false): Promise<Testimonial[]> {
   const now = Date.now();
-  if (!forceFresh && cachedTestimonials && now - lastTestimonialsFetchTime < CACHE_TTL_MS) {
-    return cachedTestimonials;
+  if (!forceFresh) {
+    if (cachedTestimonials && now - lastTestimonialsFetchTime < CACHE_TTL_MS) {
+      return cachedTestimonials;
+    }
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem('app_custom_testimonials');
+        const lastSync = Number(localStorage.getItem('app_testimonials_last_sync') || 0);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            cachedTestimonials = parsed;
+            lastTestimonialsFetchTime = lastSync || now;
+            if (now - lastSync < CACHE_TTL_MS) return parsed;
+          }
+        }
+      } catch {}
+    }
   }
 
   const sb = getSupabase();
@@ -626,7 +704,7 @@ export async function getFirestoreTestimonials(forceFresh = false): Promise<Test
     try {
       const { data, error } = await sb.from('testimonials').select('*').order('created_at', { ascending: false });
       if (!error && Array.isArray(data)) {
-        cachedTestimonials = data.map((row: any) => {
+        const items = data.map((row: any) => {
           const name = row.customer_name || row.author_name || 'Collector';
           const loc = row.location || row.author_location || '';
           const img = row.image_path || row.avatar_url || '';
@@ -647,8 +725,15 @@ export async function getFirestoreTestimonials(forceFresh = false): Promise<Test
             updated_at: row.updated_at || new Date().toISOString(),
           };
         });
+        cachedTestimonials = items;
         lastTestimonialsFetchTime = now;
-        return cachedTestimonials;
+        if (typeof window !== 'undefined' && window.localStorage) {
+          try {
+            localStorage.setItem('app_custom_testimonials', JSON.stringify(items));
+            localStorage.setItem('app_testimonials_last_sync', String(now));
+          } catch {}
+        }
+        return items;
       }
     } catch (e) {
       console.warn('[SupabaseCatalog] getFirestoreTestimonials exception:', e);
@@ -658,6 +743,7 @@ export async function getFirestoreTestimonials(forceFresh = false): Promise<Test
 }
 
 export async function saveFirestoreTestimonial(testimonial: Testimonial): Promise<boolean> {
+  cachedTestimonials = null;
   const sb = getSupabase();
   if (!sb || !testimonial || !testimonial.id) return false;
 
@@ -736,8 +822,24 @@ export async function deleteFirestoreTestimonial(id: string): Promise<boolean> {
 
 export async function getFirestoreFAQs(forceFresh = false): Promise<FAQ[]> {
   const now = Date.now();
-  if (!forceFresh && cachedFAQs && now - lastFAQsFetchTime < CACHE_TTL_MS) {
-    return cachedFAQs;
+  if (!forceFresh) {
+    if (cachedFAQs && now - lastFAQsFetchTime < CACHE_TTL_MS) {
+      return cachedFAQs;
+    }
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem('app_custom_faqs');
+        const lastSync = Number(localStorage.getItem('app_faqs_last_sync') || 0);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            cachedFAQs = parsed;
+            lastFAQsFetchTime = lastSync || now;
+            if (now - lastSync < CACHE_TTL_MS) return parsed;
+          }
+        }
+      } catch {}
+    }
   }
 
   const sb = getSupabase();
@@ -762,6 +864,7 @@ export async function getFirestoreFAQs(forceFresh = false): Promise<FAQ[]> {
         if (typeof window !== 'undefined' && window.localStorage) {
           try {
             localStorage.setItem('app_custom_faqs', JSON.stringify(items));
+            localStorage.setItem('app_faqs_last_sync', String(now));
           } catch {}
         }
         return items;
@@ -785,13 +888,10 @@ export async function getFirestoreFAQs(forceFresh = false): Promise<FAQ[]> {
     } catch {}
   }
 
-  cachedFAQs = INITIAL_FAQS;
-  lastFAQsFetchTime = now;
   return INITIAL_FAQS;
 }
 
 export async function saveFirestoreFAQ(faq: FAQ): Promise<boolean> {
-  cachedFAQs = null;
   if (!faq || !faq.id) return false;
 
   // 1. Update local storage cache
@@ -910,7 +1010,6 @@ export async function saveFirestoreFAQ(faq: FAQ): Promise<boolean> {
 }
 
 export async function deleteFirestoreFAQ(id: string): Promise<boolean> {
-  cachedFAQs = null;
   if (!id) return false;
 
   // 1. Remove from local storage cache

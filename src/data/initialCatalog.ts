@@ -6146,17 +6146,7 @@ export const INITIAL_PRODUCTS: any[] = [
     "is_high_demand": true,
     "base_price": 1200,
     "base_size": "4 Inches",
-    "images": [
-      {
-        "id": "img-prod-da-tc-cs-0001-1",
-        "product_id": "prod-da-tc-cs-0001",
-        "storage_path": "https://faijoouprxkttsfrajya.supabase.co/storage/v1/object/public/product-images/DA-TC-CS-0001.jpg",
-        "alt_text": "Tea Light Candle Holder (DA-TC-CS-0001)",
-        "caption": "Tea Light Candle Holder",
-        "display_order": 1,
-        "is_primary": true
-      }
-    ],
+    "images": [],
     "variants": [],
     "created_at": "2026-10-20T10:06:11.947Z",
     "updated_at": "2026-10-20T12:48:39.694Z"

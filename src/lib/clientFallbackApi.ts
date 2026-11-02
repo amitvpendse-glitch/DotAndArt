@@ -41,23 +41,12 @@ function normalizeProduct(p: Product): Product {
     return path.startsWith('/public/') ? path.replace(/^\/public/, '') : path;
   };
 
-  if (!Array.isArray(p.images) || p.images.length === 0) {
-    const cleanSku = (p.sku || '').trim().toUpperCase();
-    const fallbackPath = cleanSku ? `/static/assets/images/${cleanSku}.jpg` : '/static/assets/images/DA-MD-10-0001.jpg';
-    return {
-      ...p,
-      images: [
-        {
-          id: `img-${p.id || p.sku || 'gen'}-1`,
-          product_id: p.id || p.sku || 'prod',
-          storage_path: fallbackPath,
-          alt_text: `${p.name} (${p.sku})`,
-          caption: p.name,
-          display_order: 1,
-          is_primary: true,
-        },
-      ],
-    };
+  if (!Array.isArray(p.images)) {
+    return { ...p, images: [] };
+  }
+
+  if (p.images.length === 0) {
+    return { ...p, images: [] };
   }
 
   return {
