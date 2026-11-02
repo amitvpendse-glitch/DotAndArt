@@ -210,6 +210,67 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     };
   }, [cleanSku, synchronousProduct]);
 
+  // Inject Product Schema.org JSON-LD & Dynamic SEO Title
+  useEffect(() => {
+    if (!product) return;
+
+    const pageTitle = `${product.name} (${product.sku}) — Handcrafted Artwork | Dot And Art`;
+    document.title = pageTitle;
+
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute(
+        'content',
+        product.description || product.short_description || `${product.name} (${product.sku}) authentic hand-painted dot mandala or Lippan art creation.`
+      );
+    }
+
+    const scriptId = 'product-json-ld';
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      script.type = 'application/ld+json';
+      document.head.appendChild(script);
+    }
+
+    const primaryImage = product.images?.find((i) => i.is_primary)?.storage_path || product.images?.[0]?.storage_path || '/static/assets/images/DotAndArt_Logo.jpeg';
+    const fullImageUrl = primaryImage.startsWith('http') ? primaryImage : `https://www.dotandart.in${primaryImage.startsWith('/') ? '' : '/'}${primaryImage}`;
+
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      'name': `${product.name} (${product.sku})`,
+      'sku': product.sku,
+      'image': [fullImageUrl],
+      'description': product.description || product.short_description || `${product.name} (${product.sku}) handcrafted artwork by Dot And Art Studio.`,
+      'category': product.category_name || 'Handcrafted Artwork',
+      'brand': {
+        '@type': 'Brand',
+        'name': 'Dot And Art Studio'
+      },
+      'offers': {
+        '@type': 'Offer',
+        'url': `https://www.dotandart.in/product/${encodeURIComponent(product.sku)}`,
+        'priceCurrency': 'INR',
+        'price': product.base_price || 0,
+        'availability': product.is_available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+        'itemCondition': 'https://schema.org/NewCondition',
+        'seller': {
+          '@type': 'Organization',
+          'name': 'Dot And Art Studio'
+        }
+      }
+    };
+
+    script.textContent = JSON.stringify(jsonLd);
+
+    return () => {
+      const existing = document.getElementById(scriptId);
+      if (existing) existing.remove();
+    };
+  }, [product]);
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center bg-theme-page text-theme-primary space-y-4">

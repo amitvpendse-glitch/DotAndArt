@@ -44,6 +44,44 @@ export const FAQPage: React.FC = () => {
     };
   }, []);
 
+  // Inject FAQPage Schema.org JSON-LD for Search Rich Snippets
+  useEffect(() => {
+    if (!Array.isArray(faqs) || faqs.length === 0) return;
+
+    const scriptId = 'faq-json-ld';
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      script.type = 'application/ld+json';
+      document.head.appendChild(script);
+    }
+
+    const mainEntity = faqs
+      .filter((f) => f.is_published !== false)
+      .map((f) => ({
+        '@type': 'Question',
+        'name': f.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': f.answer,
+        },
+      }));
+
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': mainEntity,
+    };
+
+    script.textContent = JSON.stringify(jsonLd);
+
+    return () => {
+      const existing = document.getElementById(scriptId);
+      if (existing) existing.remove();
+    };
+  }, [faqs]);
+
   const headerSec = cmsPage?.sections?.find(
     (s: any) => s.section_type === 'header' || s.section_key === 'faqs_header'
   );

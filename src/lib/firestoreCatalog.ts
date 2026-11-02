@@ -159,11 +159,32 @@ export function getLocalCustomProducts(): Product[] {
 
 let cachedProducts: Product[] | null = null;
 let lastProductsFetchTime = 0;
-const CACHE_TTL_MS = 3000; // 3 second smart cache TTL to ensure instant Supabase sync across pages/devices
+
+let cachedCategories: Category[] | null = null;
+let lastCategoriesFetchTime = 0;
+
+let cachedSettings: WebsiteSettings | null = null;
+let lastSettingsFetchTime = 0;
+
+let cachedTestimonials: Testimonial[] | null = null;
+let lastTestimonialsFetchTime = 0;
+
+let cachedFAQs: FAQ[] | null = null;
+let lastFAQsFetchTime = 0;
+
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5-minute smart cache TTL to minimize Supabase database egress bandwidth
 
 export function invalidateProductsCache(): void {
   cachedProducts = null;
   lastProductsFetchTime = 0;
+  cachedCategories = null;
+  lastCategoriesFetchTime = 0;
+  cachedSettings = null;
+  lastSettingsFetchTime = 0;
+  cachedTestimonials = null;
+  lastTestimonialsFetchTime = 0;
+  cachedFAQs = null;
+  lastFAQsFetchTime = 0;
 }
 
 /**
@@ -462,20 +483,30 @@ export async function bulkImportFirestoreProducts(products: Product[]): Promise<
   }
 }
 
-export async function getFirestoreCategories(): Promise<Category[]> {
+export async function getFirestoreCategories(forceFresh = false): Promise<Category[]> {
+  const now = Date.now();
+  if (!forceFresh && cachedCategories && now - lastCategoriesFetchTime < CACHE_TTL_MS) {
+    return cachedCategories;
+  }
+
   const sb = getSupabase();
   if (sb) {
     try {
       const { data, error } = await sb.from('categories').select('*').order('display_order', { ascending: true });
       if (!error && Array.isArray(data) && data.length > 0) {
-        return data as Category[];
+        cachedCategories = data as Category[];
+        lastCategoriesFetchTime = now;
+        return cachedCategories;
       }
     } catch {}
   }
+  cachedCategories = INITIAL_CATEGORIES;
+  lastCategoriesFetchTime = now;
   return INITIAL_CATEGORIES;
 }
 
 export async function saveFirestoreCategory(category: Category): Promise<void> {
+  cachedCategories = null;
   const sb = getSupabase();
   if (sb) {
     try {
@@ -493,13 +524,18 @@ export async function saveFirestoreCategory(category: Category): Promise<void> {
   }
 }
 
-export async function getFirestoreSettings(): Promise<WebsiteSettings | null> {
+export async function getFirestoreSettings(forceFresh = false): Promise<WebsiteSettings | null> {
+  const now = Date.now();
+  if (!forceFresh && cachedSettings && now - lastSettingsFetchTime < CACHE_TTL_MS) {
+    return cachedSettings;
+  }
+
   const sb = getSupabase();
   if (sb) {
     try {
       const { data, error } = await sb.from('settings').select('*').limit(1).single();
       if (!error && data) {
-        return {
+        cachedSettings = {
           business_name: data.business_name || INITIAL_SETTINGS.business_name,
           tagline: data.tagline || INITIAL_SETTINGS.tagline,
           domain: data.domain || INITIAL_SETTINGS.domain,
@@ -515,13 +551,18 @@ export async function getFirestoreSettings(): Promise<WebsiteSettings | null> {
           announcement_banner: data.announcement_bar || INITIAL_SETTINGS.announcement_banner,
           default_seo: INITIAL_SETTINGS.default_seo,
         };
+        lastSettingsFetchTime = now;
+        return cachedSettings;
       }
     } catch {}
   }
+  cachedSettings = INITIAL_SETTINGS;
+  lastSettingsFetchTime = now;
   return INITIAL_SETTINGS;
 }
 
 export async function saveFirestoreSettings(settings: WebsiteSettings): Promise<void> {
+  cachedSettings = null;
   const sb = getSupabase();
   if (sb) {
     try {
@@ -574,13 +615,18 @@ export async function saveFirestorePage(page: WebsitePage): Promise<void> {
   }
 }
 
-export async function getFirestoreTestimonials(): Promise<Testimonial[]> {
+export async function getFirestoreTestimonials(forceFresh = false): Promise<Testimonial[]> {
+  const now = Date.now();
+  if (!forceFresh && cachedTestimonials && now - lastTestimonialsFetchTime < CACHE_TTL_MS) {
+    return cachedTestimonials;
+  }
+
   const sb = getSupabase();
   if (sb) {
     try {
       const { data, error } = await sb.from('testimonials').select('*').order('created_at', { ascending: false });
       if (!error && Array.isArray(data)) {
-        return data.map((row: any) => {
+        cachedTestimonials = data.map((row: any) => {
           const name = row.customer_name || row.author_name || 'Collector';
           const loc = row.location || row.author_location || '';
           const img = row.image_path || row.avatar_url || '';
@@ -601,6 +647,8 @@ export async function getFirestoreTestimonials(): Promise<Testimonial[]> {
             updated_at: row.updated_at || new Date().toISOString(),
           };
         });
+        lastTestimonialsFetchTime = now;
+        return cachedTestimonials;
       }
     } catch (e) {
       console.warn('[SupabaseCatalog] getFirestoreTestimonials exception:', e);
@@ -686,7 +734,12 @@ export async function deleteFirestoreTestimonial(id: string): Promise<boolean> {
   return false;
 }
 
-export async function getFirestoreFAQs(): Promise<FAQ[]> {
+export async function getFirestoreFAQs(forceFresh = false): Promise<FAQ[]> {
+  const now = Date.now();
+  if (!forceFresh && cachedFAQs && now - lastFAQsFetchTime < CACHE_TTL_MS) {
+    return cachedFAQs;
+  }
+
   const sb = getSupabase();
   if (sb) {
     try {
@@ -704,6 +757,8 @@ export async function getFirestoreFAQs(): Promise<FAQ[]> {
           created_at: row.created_at || new Date().toISOString(),
           updated_at: row.updated_at || new Date().toISOString(),
         }));
+        cachedFAQs = items;
+        lastFAQsFetchTime = now;
         if (typeof window !== 'undefined' && window.localStorage) {
           try {
             localStorage.setItem('app_custom_faqs', JSON.stringify(items));
@@ -721,15 +776,22 @@ export async function getFirestoreFAQs(): Promise<FAQ[]> {
       const stored = localStorage.getItem('app_custom_faqs');
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          cachedFAQs = parsed;
+          lastFAQsFetchTime = now;
+          return parsed;
+        }
       }
     } catch {}
   }
 
+  cachedFAQs = INITIAL_FAQS;
+  lastFAQsFetchTime = now;
   return INITIAL_FAQS;
 }
 
 export async function saveFirestoreFAQ(faq: FAQ): Promise<boolean> {
+  cachedFAQs = null;
   if (!faq || !faq.id) return false;
 
   // 1. Update local storage cache
@@ -848,6 +910,7 @@ export async function saveFirestoreFAQ(faq: FAQ): Promise<boolean> {
 }
 
 export async function deleteFirestoreFAQ(id: string): Promise<boolean> {
+  cachedFAQs = null;
   if (!id) return false;
 
   // 1. Remove from local storage cache

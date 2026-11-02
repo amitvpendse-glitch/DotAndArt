@@ -87,14 +87,35 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     }
   };
 
-  // User-provided or uploaded image ALWAYS takes top priority
-  addCandidate(initialCleanSrc);
+  // Optimize Supabase egress: If initialCleanSrc points to Supabase public storage and local static asset/thumbnail exists,
+  // load the local static asset from Vercel edge CDN to eliminate Supabase Storage egress bandwidth completely.
+  const isSupabaseStorageUrl = Boolean(initialCleanSrc && initialCleanSrc.includes('supabase.co/storage/v1/object/public/'));
+  const hasLocalStaticAsset = Boolean(staticArtPath || thumbnailPath || uppercaseStaticArtPath || uppercaseThumbnailPath);
 
-  // Fallbacks if primary image fails to load
-  addCandidate(staticArtPath);
-  addCandidate(thumbnailPath);
-  addCandidate(uppercaseStaticArtPath);
-  addCandidate(uppercaseThumbnailPath);
+  if (isSupabaseStorageUrl && hasLocalStaticAsset) {
+    if (useThumbnail || size !== 'lg') {
+      addCandidate(thumbnailPath);
+      addCandidate(uppercaseThumbnailPath);
+      addCandidate(staticArtPath);
+      addCandidate(uppercaseStaticArtPath);
+    } else {
+      addCandidate(staticArtPath);
+      addCandidate(uppercaseStaticArtPath);
+      addCandidate(thumbnailPath);
+      addCandidate(uppercaseThumbnailPath);
+    }
+    addCandidate(initialCleanSrc);
+  } else {
+    if (useThumbnail && (thumbnailPath || uppercaseThumbnailPath)) {
+      addCandidate(thumbnailPath);
+      addCandidate(uppercaseThumbnailPath);
+    }
+    addCandidate(initialCleanSrc);
+    addCandidate(staticArtPath);
+    addCandidate(thumbnailPath);
+    addCandidate(uppercaseStaticArtPath);
+    addCandidate(uppercaseThumbnailPath);
+  }
 
   // Reliable Public Domain Fallbacks for Mandalas and Lippan Art
   const isLippanArt = isLippan || cleanSku.startsWith('DA-LP');
