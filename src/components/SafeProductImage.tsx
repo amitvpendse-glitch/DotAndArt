@@ -52,22 +52,15 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
     'DA-MD-Set-7Chakra': 'DA-MD-Set-7Chakra.jpg',
   };
 
-  const appendCacheBuster = (url?: string) => {
-    if (!url) return url;
-    if (url.startsWith('data:') || url.startsWith('blob:') || url.includes('?')) return url;
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    return `${url}?v=20261026_v5`;
-  };
-
   const cleanSku = (sku || '').trim().toUpperCase();
   const rawSku = (sku || '').trim();
   const mappedFilename = EXACT_SKU_FILE_MAP[cleanSku] || EXACT_SKU_FILE_MAP[rawSku] || (cleanSku ? `${cleanSku}.jpg` : undefined);
   const uppercaseFilename = cleanSku ? `${cleanSku}.jpg` : undefined;
 
-  const staticArtPath = mappedFilename ? appendCacheBuster(`/static/assets/images/${mappedFilename}`) : undefined;
-  const thumbnailPath = mappedFilename ? appendCacheBuster(`/static/assets/thumbnails/${mappedFilename}`) : undefined;
-  const uppercaseStaticArtPath = uppercaseFilename ? appendCacheBuster(`/static/assets/images/${uppercaseFilename}`) : undefined;
-  const uppercaseThumbnailPath = uppercaseFilename ? appendCacheBuster(`/static/assets/thumbnails/${uppercaseFilename}`) : undefined;
+  const staticArtPath = mappedFilename ? `/static/assets/images/${mappedFilename}` : undefined;
+  const thumbnailPath = mappedFilename ? `/static/assets/thumbnails/${mappedFilename}` : undefined;
+  const uppercaseStaticArtPath = uppercaseFilename ? `/static/assets/images/${uppercaseFilename}` : undefined;
+  const uppercaseThumbnailPath = uppercaseFilename ? `/static/assets/thumbnails/${uppercaseFilename}` : undefined;
 
   let initialCleanSrc = src;
   if (initialCleanSrc && initialCleanSrc.startsWith('/public/')) {
@@ -76,8 +69,6 @@ export const SafeProductImage: React.FC<SafeProductImageProps> = ({
   if (!initialCleanSrc && cleanSku) {
     initialCleanSrc = staticArtPath;
   }
-
-  initialCleanSrc = appendCacheBuster(initialCleanSrc);
 
   // Build candidate fallback chain in priority order
   const candidates: string[] = [];

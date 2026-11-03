@@ -1,5 +1,5 @@
-const CACHE_NAME = 'dot-and-art-pwa-v5';
-const RUNTIME_CACHE = 'dot-and-art-runtime-v5';
+const CACHE_NAME = 'dot-and-art-pwa-v6';
+const RUNTIME_CACHE = 'dot-and-art-runtime-v6';
 
 const PRECACHE_URLS = [
   '/',
@@ -34,14 +34,14 @@ self.addEventListener('activate', (event) => {
 });
 
 // Fetch stage:
-// 1. Pass development / Vite / source code requests DIRECTLY to the network (never cache dev scripts)
-// 2. Cache-first for physical artwork images and fonts
-// 3. Network-first with fast timeout for API data
+// 1. Pass development / Vite / source code requests DIRECTLY to the network
+// 2. Cache-first for physical artwork images, thumbnails, and static assets
+// 3. Network-first for API data
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // CRITICAL: NEVER intercept or cache Vite / development / code bundle files
+  // Skip dev environment / Vite files
   if (
     url.pathname.startsWith('/src/') ||
     url.pathname.startsWith('/@vite/') ||
@@ -51,10 +51,9 @@ self.addEventListener('fetch', (event) => {
     url.pathname.endsWith('.tsx') ||
     url.pathname.endsWith('.ts') ||
     url.pathname.endsWith('.jsx') ||
-    url.pathname.includes('?import') ||
-    url.pathname.includes('?v=')
+    url.pathname.includes('?import')
   ) {
-    return; // Pass directly to network
+    return;
   }
 
   // Skip non-GET requests
@@ -72,9 +71,10 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static artwork images & fonts: Cache first with network fallback
+  // Static artwork images, thumbnails & fonts: Cache first with network fallback
   const isImageOrFont =
-    url.pathname.startsWith('/static/assets/images/') ||
+    url.pathname.startsWith('/static/assets/') ||
+    url.pathname.startsWith('/assets/') ||
     url.pathname.startsWith('/uploads/') ||
     /\.(png|jpg|jpeg|webp|svg|gif|ico|woff|woff2|ttf|eot)$/i.test(url.pathname);
 

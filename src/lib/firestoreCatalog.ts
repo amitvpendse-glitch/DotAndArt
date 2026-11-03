@@ -1127,6 +1127,7 @@ export async function uploadImageToSupabaseStorage(
         .upload(fileName, file, {
           contentType,
           upsert: true,
+          cacheControl: '31536000',
         });
 
       if (!error && data) {
@@ -1154,6 +1155,7 @@ export async function uploadImageToSupabaseStorage(
         'apikey': supabaseKey,
         'Content-Type': contentType,
         'x-upsert': 'true',
+        'cache-control': 'max-age=31536000, public, immutable',
       },
       body: file,
     });
